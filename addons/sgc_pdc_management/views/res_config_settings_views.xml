@@ -26,7 +26,7 @@
         <field name="name">PDC Settings</field>
         <field name="res_model">res.config.settings</field>
         <field name="view_mode">form</field>
-        <field name="target">inline</field>
+        <field name="target">current</field>
         <field name="view_id" ref="sgc_pdc_settings_form"/>
     </record>
 </odoo>

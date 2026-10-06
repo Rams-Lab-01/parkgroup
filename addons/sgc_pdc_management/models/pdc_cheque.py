@@ -2,7 +2,8 @@ import logging
 from datetime import timedelta
 
 from odoo import _, api, fields, models
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import UserError
+from odoo.fields import Domain
 
 _logger = logging.getLogger(__name__)
 
@@ -91,7 +92,8 @@ class SgcPdcCheque(models.Model):
         ('upcoming', 'Upcoming'),
         ('matured', 'Matured'),
         ('na', 'N/A'),
-    ], string='Maturity', compute='_compute_days_to_maturity')
+    ], string='Maturity', compute='_compute_days_to_maturity',
+        search='_search_maturity_status')
 
     upcoming_notified = fields.Boolean(copy=False, readonly=True)
     matured_notified = fields.Boolean(copy=False, readonly=True)
@@ -112,11 +114,21 @@ class SgcPdcCheque(models.Model):
             else:
                 rec.maturity_status = 'na'
 
-    @api.constrains('received_date', 'cheque_date')
-    def _check_dates(self):
-        for rec in self:
-            if rec.received_date and rec.cheque_date and rec.cheque_date < rec.received_date:
-                raise ValidationError(_('The maturity date cannot be before the received / issued date.'))
+    def _search_maturity_status(self, operator, value):
+        if operator not in ('=', '!=', 'in', 'not in'):
+            raise UserError(_('Unsupported operator for Maturity.'))
+        values = [value] if isinstance(value, str) or not value or not hasattr(value, '__iter__') \
+            else list(value)
+        today = fields.Date.context_today(self)
+        open_states = ('registered', 'deposited')
+        parts = {
+            'matured': [('state', 'in', open_states), ('cheque_date', '<=', today)],
+            'upcoming': [('state', 'in', open_states), ('cheque_date', '>', today)],
+            'na': ['|', ('state', 'not in', open_states), ('cheque_date', '=', False)],
+        }
+        wanted = [Domain(parts[v]) for v in values if v in parts]
+        domain = Domain.OR(wanted) if wanted else Domain.FALSE
+        return ~domain if operator in ('!=', 'not in') else domain
 
     @api.onchange('installment_id')
     def _onchange_installment_id(self):

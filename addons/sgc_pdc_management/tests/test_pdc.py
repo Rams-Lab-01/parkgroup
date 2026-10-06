@@ -111,3 +111,52 @@ class TestPdcCheque(TransactionCase):
             chq = self._cheque(direction=direction)
             html, _fmt = report._render_qweb_html(report.report_name, chq.ids)
             self.assertIn(b'CHEQUE RECEIPT' if direction == 'inbound' else b'PAYMENT VOUCHER', html)
+
+    def test_maturity_status_is_searchable(self):
+        up = self._cheque(days=3)
+        mat = self._cheque(days=-2)
+        draft = self._cheque(days=-2)
+        (up | mat).action_register()
+        cheques = up | mat | draft
+        Cheque = self.env['sgc.pdc.cheque']
+        self.assertEqual(Cheque.search([('id', 'in', cheques.ids), ('maturity_status', '=', 'matured')]), mat)
+        self.assertEqual(Cheque.search([('id', 'in', cheques.ids), ('maturity_status', '=', 'upcoming')]), up)
+        self.assertEqual(Cheque.search([('id', 'in', cheques.ids), ('maturity_status', '=', 'na')]), draft)
+        self.assertEqual(
+            Cheque.search([('id', 'in', cheques.ids), ('maturity_status', '!=', 'na')]), up | mat)
+
+    def test_back_dated_cheque_is_allowed(self):
+        chq = self._cheque(days=-5)
+        self.assertEqual(chq.maturity_status, 'na')
+        chq.action_register()
+        self.assertEqual(chq.maturity_status, 'matured')
+
+    def test_all_views_load_and_integrations_exist(self):
+        views = self.env['sgc.pdc.cheque'].get_views(
+            [(False, 'list'), (False, 'form'), (False, 'search'), (False, 'calendar'), (False, 'pivot')])
+        self.assertEqual(set(views['views']), {'list', 'form', 'search', 'calendar', 'pivot'})
+        for model in ('sale.contract', 'tenancy.details', 'rent.invoice'):
+            self.assertIn('pdc_count', self.env[model]._fields)
+            self.env[model].get_views([(False, 'form')])
+
+    def test_pdc_user_can_work_without_admin_rights(self):
+        user = self.env['res.users'].create({
+            'name': 'PDC Clerk', 'login': 'pdc_clerk', 'email': 'clerk@example.com',
+            'group_ids': [(6, 0, [self.env.ref('sgc_pdc_management.group_pdc_user').id])],
+        })
+        chq = self._cheque().with_user(user)
+        chq.action_register()
+        self.assertEqual(chq.state, 'registered')
+        with self.assertRaises(Exception):
+            chq.unlink()   # users cannot delete
+
+    def test_navigation_links_from_contract_objects(self):
+        contract = self.env['sale.contract'].create({'name': 'SC-1', 'buyer_id': self.partner.id})
+        inst = self.env['sale.contract.installment'].create({
+            'contract_id': contract.id, 'name': 'Inst 1',
+            'due_date': self.today + timedelta(days=10), 'amount': 2500})
+        chq = self._cheque(installment_id=inst.id, amount=2500)
+        self.assertEqual(chq.sale_contract_id, contract)
+        self.assertEqual(inst.pdc_count, 1)
+        self.assertEqual(contract.pdc_count, 1)
+        self.assertEqual(inst.action_view_pdc()['domain'], [('installment_id', '=', inst.id)])
