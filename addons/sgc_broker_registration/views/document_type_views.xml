@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sgc_broker_document_type_list" model="ir.ui.view">
+        <field name="name">sgc.broker.document.type.list</field>
+        <field name="model">sgc.broker.document.type</field>
+        <field name="arch" type="xml">
+            <list string="Document Requirements" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="applicant_type"/>
+                <field name="emirate"/>
+                <field name="required"/>
+                <field name="has_expiry"/>
+                <field name="is_agreement"/>
+                <field name="description" optional="show"/>
+                <field name="active" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_sgc_broker_document_type" model="ir.actions.act_window">
+        <field name="name">Document Requirements</field>
+        <field name="res_model">sgc.broker.document.type</field>
+        <field name="view_mode">list</field>
+    </record>
+</odoo>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="seq_sgc_broker_application" model="ir.sequence">
+            <field name="name">Broker Application</field>
+            <field name="code">sgc.broker.application</field>
+            <field name="prefix">BRK/%(year)s/</field>
+            <field name="padding">5</field>
+        </record>
+    </data>
+</odoo>

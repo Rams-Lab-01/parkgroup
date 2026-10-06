@@ -1,0 +1,30 @@
+{
+    "name": "SGC Broker Registration & Compliance (UAE)",
+    "version": "19.0.1.0.0",
+    "category": "Real Estate/Compliance",
+    "summary": "Public portal onboarding for UAE real estate brokers: email-verified "
+               "application, compliance document checklist, signed brokerage agreement, "
+               "review/approval and mapping to Contacts.",
+    "author": "SGC TECH AI",
+    "license": "OPL-1",
+    "depends": ["base", "mail", "contacts", "portal", "website"],
+    "data": [
+        "security/broker_groups.xml",
+        "security/ir.model.access.csv",
+        "security/broker_rules.xml",
+        "data/ir_sequence.xml",
+        "data/partner_category.xml",
+        "data/document_types.xml",
+        "data/mail_templates.xml",
+        "data/ir_cron.xml",
+        "report/agreement_report.xml",
+        "views/document_type_views.xml",
+        "views/broker_application_views.xml",
+        "views/res_partner_views.xml",
+        "views/menus.xml",
+        "views/portal_templates.xml",
+    ],
+    "installable": True,
+    "application": True,
+    "auto_install": False,
+}
