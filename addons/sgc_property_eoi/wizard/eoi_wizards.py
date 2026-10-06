@@ -40,6 +40,8 @@ class PropertyEoiPaymentWizard(models.TransientModel):
         eoi = self.eoi_id
         if self.amount <= 0:
             raise UserError(_('The payment amount must be greater than zero.'))
+        if self.journal_id.sudo().type not in ('bank', 'cash') or self.journal_id.sudo().company_id != eoi.company_id:
+            raise UserError(_('Choose a bank or cash journal of the same company as the record.'))
         line = self.journal_id.sudo()._get_available_payment_method_lines('inbound')[:1]
         if not line:
             raise UserError(_('Journal %s has no inbound payment method.', self.journal_id.display_name))

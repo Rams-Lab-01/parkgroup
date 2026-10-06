@@ -296,3 +296,12 @@ class TestEoiRegression(EoiCommon):
         self.assertTrue(booking.payment_verified)
         booking.action_confirm_sale()
         self.assertEqual(booking.property_id.state, 'confirmed_sale')
+
+    def test_wizard_rejects_non_bank_journal(self):
+        eoi = self.new_eoi()
+        eoi.action_confirm()
+        sales = self.env['account.journal'].search([('type', '=', 'sale'), ('company_id', '=', self.company.id)], limit=1)
+        wiz = self.env['property.eoi.payment.wizard'].create({
+            'eoi_id': eoi.id, 'amount': 10, 'journal_id': sales.id, 'payment_mode': 'cash'})
+        with self.assertRaises(UserError):
+            wiz.action_record()
