@@ -1,0 +1,60 @@
+#!/usr/bin/env python3
+"""Test stand-in for the docker CLI: forwards psql/pg_dump to a local PostgreSQL and fakes the rest."""
+import os, subprocess, sys
+
+args = sys.argv[1:]
+log = os.environ.get("FAKE_DOCKER_CALLS")
+if log:
+    with open(log, "a") as fh:
+        fh.write(" ".join(args) + "\n")
+PG = ["-h", os.environ.get("TEST_PG_HOST", "/tmp"), "-p", os.environ.get("TEST_PG_PORT", "5433")]
+if not args:
+    sys.exit(1)
+cmd = args[0]
+if cmd == "--version":
+    print("Docker version 27.0.0 (test shim)")
+elif cmd == "ps":
+    print("sgc_rent_mt\todoo:19\tUp 3 days\t0.0.0.0:8069->8069/tcp")
+elif cmd == "logs":
+    path = os.environ.get("FAKE_DOCKER_LOG_FILE")
+    lines = open(path).read().splitlines() if path else []
+    if "--tail" in args:
+        n = int(args[args.index("--tail") + 1])
+        lines = lines[-n:]
+    sys.stdout.write("\n".join(lines) + ("\n" if lines else ""))
+elif cmd == "restart":
+    print(args[1])
+elif cmd == "exec":
+    rest, env = args[1:], dict(os.environ)
+    while rest and rest[0].startswith("-"):
+        flag = rest.pop(0)
+        if flag in ("-e", "-u"):
+            val = rest.pop(0)
+            if flag == "-e":
+                k, v = val.split("=", 1)
+                env[k] = v
+    rest.pop(0)                       # container name
+    prog, rest = rest[0], rest[1:]
+    if prog == "psql":
+        cleaned, skip = [], False
+        for a in rest:
+            if skip:
+                skip = False
+                continue
+            if a == "-U":
+                skip = True
+                continue
+            cleaned.append(a)
+        os.execvpe("psql", ["psql", *PG, "-U", os.environ.get("TEST_PG_USER", "root"), *cleaned], env)
+    if prog == "pg_dump":
+        os.execvpe("pg_dump", ["pg_dump", *PG, "-U", os.environ.get("TEST_PG_USER", "root"), *rest], env)
+    if prog == "odoo":
+        if os.environ.get("FAKE_ODOO_FAIL"):
+            print("2026-01-01 CRITICAL db odoo.modules.loading: Failed to initialize database")
+            print("Traceback (most recent call last):")
+            sys.exit(1)
+        print("2026-01-01 INFO db odoo.modules.loading: modules loaded", " ".join(rest))
+        sys.exit(0)
+    sys.exit("shim: unsupported exec " + prog)
+else:
+    sys.exit("shim: unsupported docker command " + cmd)

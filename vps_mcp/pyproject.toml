@@ -1,0 +1,17 @@
+[project]
+name = "vps-mcp"
+version = "1.0.0"
+description = "MCP server for the Park Group Odoo VPS (audited, read-only by default)"
+requires-python = ">=3.11"
+dependencies = ["fastmcp>=3", "asyncssh>=2.14"]
+
+[project.optional-dependencies]
+test = ["pytest>=8", "pytest-asyncio>=0.23"]
+
+[project.scripts]
+vps-mcp = "vps_mcp.server:main"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+filterwarnings = ["ignore::DeprecationWarning"]
