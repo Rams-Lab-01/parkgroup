@@ -93,7 +93,7 @@ recon_work/audit5/*.pkl
 recon_work/audit5/deferred/
 
 # Root escrow templates (duplicates in addons)
-escrow_*.xml
+/escrow_*.xml
 
 # Working notes (not source)
 Parkgroup_Escrow_Construction_Expansion_Plan.md
