@@ -10,6 +10,7 @@ _logger = logging.getLogger(__name__)
 PARAM_UPCOMING_DAYS = 'sgc_pdc.upcoming_days'
 PARAM_EXTRA_EMAILS = 'sgc_pdc.extra_notify_emails'
 DEFAULT_UPCOMING_DAYS = 7
+CRON_COMMIT_EVERY = 20
 
 
 class SgcPdcCheque(models.Model):
@@ -334,31 +335,53 @@ class SgcPdcCheque(models.Model):
         return [e.strip() for e in raw.replace(';', ',').split(',') if e.strip()]
 
     @api.model
+    def _cron_progress(self, processed=0, remaining=None):
+        """Commit progress inside a real cron run only (Odoo's own convention). Returns the seconds left
+        in the run, 0 meaning "stop, the scheduler will call us again"."""
+        if not self.env.context.get('cron_id'):
+            return float('inf')
+        return self.env['ir.cron']._commit_progress(processed, remaining=remaining)
+
+    @api.model
     def _cron_notify_cheques(self):
+        """Daily job. Works in batches and commits as it goes so a large backlog never hits the cron
+        time limit: the scheduler runs it again for whatever is left."""
         today = fields.Date.context_today(self)
         horizon = today + timedelta(days=self._get_upcoming_days())
         base = [('state', 'in', ('registered', 'deposited'))]
         upcoming = self.search(base + [
             ('cheque_date', '>', today), ('cheque_date', '<=', horizon),
-            ('upcoming_notified', '=', False)])
+            ('upcoming_notified', '=', False)], order='cheque_date, id')
         matured = self.search(base + [
-            ('cheque_date', '<=', today), ('matured_notified', '=', False)])
-        upcoming._notify('sgc_pdc_management.mail_template_pdc_upcoming', 'upcoming_notified',
-                         _('Upcoming cheque'))
-        matured._notify('sgc_pdc_management.mail_template_pdc_matured', 'matured_notified',
-                        _('Matured cheque'))
-        _logger.info('PDC notifications: %s upcoming, %s matured', len(upcoming), len(matured))
-        return True
-
-    def _notify(self, template_xmlid, flag_field, summary):
-        template = self.env.ref(template_xmlid, raise_if_not_found=False)
+            ('cheque_date', '<=', today), ('matured_notified', '=', False)], order='cheque_date, id')
+        jobs = [(rec, 'sgc_pdc_management.mail_template_pdc_matured', 'matured_notified', _('Matured cheque'))
+                for rec in matured]
+        jobs += [(rec, 'sgc_pdc_management.mail_template_pdc_upcoming', 'upcoming_notified', _('Upcoming cheque'))
+                 for rec in upcoming]
         extra = self._get_extra_emails()
-        for rec in self:
+        templates = {}
+        if not self._cron_progress(remaining=len(jobs)):
+            return True                                   # no time left in this run, continue next time
+        done = pending = 0
+        for rec, xmlid, flag, summary in jobs:
+            template = templates.setdefault(xmlid, self.env.ref(xmlid, raise_if_not_found=False))
             try:
                 with self.env.cr.savepoint():
-                    rec._notify_one(template, extra, flag_field, summary)
+                    rec._notify_one(template, extra, flag, summary)
+                done += 1
             except Exception:  # one bad record must not stop the run
                 _logger.exception('PDC notification failed for %s', rec.display_name)
+            pending += 1
+            if pending >= CRON_COMMIT_EVERY:                # committing is costly: do it in chunks
+                if not self._cron_progress(pending):
+                    _logger.info('PDC notifications out of time; the scheduler will continue.')
+                    pending = 0
+                    break
+                pending = 0
+        if pending:
+            self._cron_progress(pending)
+        _logger.info('PDC notifications sent: %s of %s', done, len(jobs))
+        return True
 
     def _notify_one(self, template, extra_emails, flag_field, summary):
         self.ensure_one()

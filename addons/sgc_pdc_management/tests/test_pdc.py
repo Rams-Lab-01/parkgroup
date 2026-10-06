@@ -1,4 +1,5 @@
 from datetime import timedelta
+from unittest.mock import patch
 
 from odoo import fields
 from odoo.exceptions import UserError
@@ -160,3 +161,41 @@ class TestPdcCheque(TransactionCase):
         self.assertEqual(inst.pdc_count, 1)
         self.assertEqual(contract.pdc_count, 1)
         self.assertEqual(inst.action_view_pdc()['domain'], [('installment_id', '=', inst.id)])
+
+    def test_cron_stops_when_out_of_time_and_resumes(self):
+        cheques = self.env['sgc.pdc.cheque']
+        for i in range(4):
+            cheques |= self._cheque(days=-1 - i)
+        cheques.action_register()
+        calls = []
+
+        def out_of_time(cron, processed=0, *, remaining=None, deactivate=False):
+            calls.append(processed)
+            return float('inf') if remaining is not None else 0          # budget gone after 1st record
+
+        with patch.object(type(self.env['ir.cron']), '_commit_progress', out_of_time), \
+                patch('odoo.addons.sgc_pdc_management.models.pdc_cheque.CRON_COMMIT_EVERY', 1):
+            self.env['sgc.pdc.cheque'].with_context(cron_id=1)._cron_notify_cheques()
+        self.assertEqual(len(cheques.filtered('matured_notified')), 1, 'stopped after the first record')
+        self.env['sgc.pdc.cheque']._cron_notify_cheques()                # next scheduler run finishes the rest
+        self.assertEqual(len(cheques.filtered('matured_notified')), 4)
+        self.assertEqual(len(cheques.activity_ids), 4, 'no duplicates after resuming')
+
+    def test_matured_alerts_come_first_in_a_backlog(self):
+        up = self._cheque(days=2)
+        mat = self._cheque(days=-3)
+        (up | mat).action_register()
+        order = []
+        original = type(up)._notify_one
+
+        def spy(rec, *a, **k):
+            order.append(rec.id)
+            return original(rec, *a, **k)
+
+        with patch.object(type(up), '_notify_one', spy):
+            self.env['sgc.pdc.cheque']._cron_notify_cheques()
+        self.assertEqual(order, [mat.id, up.id])
+
+    def test_administrator_gets_manager_rights_on_install(self):
+        admin = self.env.ref('base.user_admin')
+        self.assertTrue(admin.has_group('sgc_pdc_management.group_pdc_manager'))
