@@ -1,0 +1,101 @@
+﻿external_id,name,property_code,project_code,unit_number,floor,floor_raw,unit_type,unit_type_raw,area,price,sale_price,admin_fee,state,property_type,sale_lease
+parkgroup.golf.unit_301,PARK Golf Views - 2 Bedrooms 301,GOLF-301,GOLF,301,3,3,2br,2 BHK,1014.68,1293717.0,1293717.0,,available,residential,sale
+parkgroup.golf.unit_302,PARK Golf Views - 2 Bedrooms 302,GOLF-302,GOLF,302,3,3,2br,2 BHK,1040.98,1348069.1,1348069.1,,sold,residential,sale
+parkgroup.golf.unit_303,PARK Golf Views - 2 Bedrooms 303,GOLF-303,GOLF,303,3,3,2br,2 BHK,1175.09,1386606.2,1386606.2,,available,residential,sale
+parkgroup.golf.unit_304,PARK Golf Views - Studio 304,GOLF-304,GOLF,304,3,3,studio,STUDIO,684.47,752917.0,752917.0,,available,residential,sale
+parkgroup.golf.unit_401,PARK Golf Views - 2 Bedrooms 401,GOLF-401,GOLF,401,4,4,2br,2 BHK,1014.68,1319084.0,1319084.0,,available,residential,sale
+parkgroup.golf.unit_402,PARK Golf Views - 2 Bedrooms 402,GOLF-402,GOLF,402,4,4,2br,2 BHK,1040.98,1374093.6,1374093.6,,available,residential,sale
+parkgroup.golf.unit_403,PARK Golf Views - 2 Bedrooms 403,GOLF-403,GOLF,403,4,4,2br,2 BHK,1175.09,1410108.0,1410108.0,,available,residential,sale
+parkgroup.golf.unit_404,PARK Golf Views - Studio 404,GOLF-404,GOLF,404,4,4,studio,STUDIO 1,684.47,838475.75,838475.75,,available,residential,sale
+parkgroup.golf.unit_g01,PARK Golf Views - 3 Bedrooms G01,GOLF-G01,GOLF,G01,0,G,3br,3 BHK,4914.08,4914080.0,4914080.0,,available,residential,sale
+parkgroup.golf.unit_r01,PARK Golf Views - 3 Bedrooms R01,GOLF-R01,GOLF,R01,,R,3br,3 BHK,4395.45,4615222.5,4500000.0,,sold,residential,sale
+parkgroup.br1.unit_shop01,PARK Beach Residence I -  SHOP-01,BR1-SHOP-01,BR1,SHOP-01,0,0,,-,780.17,,,,available,commercial,sale
+parkgroup.br1.unit_shop02,PARK Beach Residence I -  SHOP-02,BR1-SHOP-02,BR1,SHOP-02,0,0,,-,1085.32,,,,available,commercial,sale
+parkgroup.br1.unit_shop03,PARK Beach Residence I -  SHOP-03,BR1-SHOP-03,BR1,SHOP-03,0,0,,-,1485.74,,,,available,commercial,sale
+parkgroup.br1.unit_101,PARK Beach Residence I - 1 Bedroom 101,BR1-101,BR1,101,1,1,1br,1 BR,679.1,1290281.0,1290281.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_102,PARK Beach Residence I - 1 Bedroom 102,BR1-102,BR1,102,1,1,1br,1 BR,668.87,1203965.0,1203965.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_103,PARK Beach Residence I - Studio 103,BR1-103,BR1,103,1,1,studio,Studio,437.01,917731.0,917731.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_104,PARK Beach Residence I - Studio 104,BR1-104,BR1,104,1,1,studio,Studio,434.86,913210.0,913210.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_105,PARK Beach Residence I - Studio 105,BR1-105,BR1,105,1,1,studio,Studio,432.17,907559.0,907559.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_106,PARK Beach Residence I - Studio 106,BR1-106,BR1,106,1,1,studio,Studio,439.92,923834.0,923834.0,,sold,residential,sale
+parkgroup.br1.unit_107,PARK Beach Residence I - 1 Bedroom 107,BR1-107,BR1,107,1,1,1br,1 BR,664.56,1196215.0,1196215.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_108,PARK Beach Residence I - 1 Bedroom 108,BR1-108,BR1,108,1,1,1br,1 BR+S+P,1145.06,2290130.0,2290130.0,,sold,residential,sale
+parkgroup.br1.unit_109,PARK Beach Residence I - 1 Bedroom 109,BR1-109,BR1,109,1,1,1br,1 BR+S+P,1085.54,2171081.0,2171081.0,,sold,residential,sale
+parkgroup.br1.unit_201,PARK Beach Residence I - 1 Bedroom 201,BR1-201,BR1,201,2,2,1br,1 BR,679.1,1300281.0,1300281.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_202,PARK Beach Residence I - 1 Bedroom 202,BR1-202,BR1,202,2,2,1br,1 BR,668.87,1213965.0,1213965.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_203,PARK Beach Residence I - Studio 203,BR1-203,BR1,203,2,2,studio,Studio,437.01,927731.0,927731.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_204,PARK Beach Residence I - Studio 204,BR1-204,BR1,204,2,2,studio,Studio,434.86,923210.0,923210.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_205,PARK Beach Residence I - Studio 205,BR1-205,BR1,205,2,2,studio,Studio,432.17,917559.0,917559.0,2872.65,sold,residential,sale
+parkgroup.br1.unit_206,PARK Beach Residence I - Studio 206,BR1-206,BR1,206,2,2,studio,Studio,439.92,933834.0,933834.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_207,PARK Beach Residence I - 1 Bedroom 207,BR1-207,BR1,207,2,2,1br,1 BR,664.56,1206215.0,1206215.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_208,PARK Beach Residence I - 1 Bedroom 208,BR1-208,BR1,208,2,2,1br,1 BR+Study,978.76,1835179.0,1835179.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_209,PARK Beach Residence I - 1 Bedroom 209,BR1-209,BR1,209,2,2,1br,1 BR+Study,962.08,1803897.0,1803897.0,2869.13,sold,residential,sale
+parkgroup.br1.unit_210,PARK Beach Residence I - Studio 210,BR1-210,BR1,210,2,2,studio,Studio,423.56,995366.0,995366.0,2942.25,sold,residential,sale
+parkgroup.br1.unit_211,PARK Beach Residence I - 1 Bedroom 211,BR1-211,BR1,211,2,2,1br,1 BR,686.2,1406709.0,1406709.0,,sold,residential,sale
+parkgroup.br1.unit_212,PARK Beach Residence I - 1 Bedroom 212,BR1-212,BR1,212,2,2,1br,1 BR+S+P,942.38,1884761.0,1884761.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_213,PARK Beach Residence I - 1 Bedroom 213,BR1-213,BR1,213,2,2,1br,1 BR+S+P,958.74,1869546.0,1869546.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_301,PARK Beach Residence I - 1 Bedroom 301,BR1-301,BR1,301,3,3,1br,1 BR,679.1,1310281.0,1310281.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_302,PARK Beach Residence I - 1 Bedroom 302,BR1-302,BR1,302,3,3,1br,1 BR,668.87,1223965.0,1223965.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_303,PARK Beach Residence I - Studio 303,BR1-303,BR1,303,3,3,studio,Studio,437.01,937731.0,937731.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_304,PARK Beach Residence I - Studio 304,BR1-304,BR1,304,3,3,studio,Studio,434.86,933210.0,933210.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_305,PARK Beach Residence I - Studio 305,BR1-305,BR1,305,3,3,studio,Studio,432.17,927559.0,927559.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_306,PARK Beach Residence I - Studio 306,BR1-306,BR1,306,3,3,studio,Studio,439.92,943834.0,943834.0,,sold,residential,sale
+parkgroup.br1.unit_307,PARK Beach Residence I - 1 Bedroom 307,BR1-307,BR1,307,3,3,1br,1 BR,664.56,1216215.0,1216215.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_308,PARK Beach Residence I - 1 Bedroom 308,BR1-308,BR1,308,3,3,1br,1 BR+Study,978.76,1845179.0,1845179.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_309,PARK Beach Residence I - 1 Bedroom 309,BR1-309,BR1,309,3,3,1br,1 BR+Study,962.08,1813897.0,1813897.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_310,PARK Beach Residence I - Studio 310,BR1-310,BR1,310,3,3,studio,Studio,423.56,1005366.0,1005366.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_311,PARK Beach Residence I - 1 Bedroom 311,BR1-311,BR1,311,3,3,1br,1 BR,686.2,1416709.0,1416709.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_312,PARK Beach Residence I - 1 Bedroom 312,BR1-312,BR1,312,3,3,1br,1 BR+S+P,942.38,1894761.0,1894761.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_313,PARK Beach Residence I - 1 Bedroom 313,BR1-313,BR1,313,3,3,1br,1 BR+S+P,958.74,1879546.0,1879546.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_401,PARK Beach Residence I - 1 Bedroom 401,BR1-401,BR1,401,4,4,1br,1 BR,679.1,1320281.0,1320281.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_402,PARK Beach Residence I - 1 Bedroom 402,BR1-402,BR1,402,4,4,1br,1 BR,668.87,1233965.0,1233965.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_403,PARK Beach Residence I - Studio 403,BR1-403,BR1,403,4,4,studio,Studio,437.01,947731.0,947731.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_404,PARK Beach Residence I - Studio 404,BR1-404,BR1,404,4,4,studio,Studio,434.86,943210.0,943210.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_405,PARK Beach Residence I - Studio 405,BR1-405,BR1,405,4,4,studio,Studio,432.17,937559.0,937559.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_406,PARK Beach Residence I - Studio 406,BR1-406,BR1,406,4,4,studio,Studio,439.92,953834.0,953834.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_407,PARK Beach Residence I - 1 Bedroom 407,BR1-407,BR1,407,4,4,1br,1 BR,664.56,1226215.0,1226215.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_408,PARK Beach Residence I - 1 Bedroom 408,BR1-408,BR1,408,4,4,1br,1 BR+Study,978.76,1855179.0,1511739.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_409,PARK Beach Residence I - 1 Bedroom 409,BR1-409,BR1,409,4,4,1br,1 BR+Study,962.08,1805658.03,1805658.03,3000.0,sold,residential,sale
+parkgroup.br1.unit_410,PARK Beach Residence I - Studio 410,BR1-410,BR1,410,4,4,studio,Studio,423.56,1015366.0,1015366.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_411,PARK Beach Residence I - 1 Bedroom 411,BR1-411,BR1,411,4,4,1br,1 BR,686.2,1426709.0,1426709.0,2999.0,sold,residential,sale
+parkgroup.br1.unit_412,PARK Beach Residence I - 1 Bedroom 412,BR1-412,BR1,412,4,4,1br,1 BR+S+P,942.38,1904761.0,1904761.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_413,PARK Beach Residence I - 1 Bedroom 413,BR1-413,BR1,413,4,4,1br,1 BR+S+P,958.74,1889546.0,1889546.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_501,PARK Beach Residence I - 1 Bedroom 501,BR1-501,BR1,501,5,5,1br,1 BR,679.1,1330281.0,1330281.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_502,PARK Beach Residence I - 1 Bedroom 502,BR1-502,BR1,502,5,5,1br,1 BR,668.87,1243965.0,1243965.0,2999.86,sold,residential,sale
+parkgroup.br1.unit_503,PARK Beach Residence I - Studio 503,BR1-503,BR1,503,5,5,studio,Studio,437.01,957731.0,957731.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_504,PARK Beach Residence I - Studio 504,BR1-504,BR1,504,5,5,studio,Studio,434.86,953210.0,953210.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_505,PARK Beach Residence I - Studio 505,BR1-505,BR1,505,5,5,studio,Studio,432.17,947559.0,947559.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_506,PARK Beach Residence I - Studio 506,BR1-506,BR1,506,5,5,studio,Studio,439.92,963834.0,963834.0,2980.0,sold,residential,sale
+parkgroup.br1.unit_507,PARK Beach Residence I - 1 Bedroom 507,BR1-507,BR1,507,5,5,1br,1 BR,664.56,1236215.0,1236215.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_508,PARK Beach Residence I - 1 Bedroom 508,BR1-508,BR1,508,5,5,1br,1 BR+Study,978.76,1865179.0,1865179.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_509,PARK Beach Residence I - 1 Bedroom 509,BR1-509,BR1,509,5,5,1br,1 BR+Study,962.08,1815558.03,1815558.03,3000.0,sold,residential,sale
+parkgroup.br1.unit_510,PARK Beach Residence I - Studio 510,BR1-510,BR1,510,5,5,studio,Studio,423.56,1025366.0,1025366.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_511,PARK Beach Residence I - 1 Bedroom 511,BR1-511,BR1,511,5,5,1br,1 BR,686.2,1436709.0,1436709.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_512,PARK Beach Residence I - 1 Bedroom 512,BR1-512,BR1,512,5,5,1br,1 BR+S+P,942.38,1914761.0,1914761.0,2970.0,sold,residential,sale
+parkgroup.br1.unit_513,PARK Beach Residence I - 1 Bedroom 513,BR1-513,BR1,513,5,5,1br,1 BR+S+P,958.74,1899546.0,1899546.0,,sold,residential,sale
+parkgroup.br1.unit_601,PARK Beach Residence I - 1 Bedroom 601,BR1-601,BR1,601,6,6,1br,1 BR,679.1,1340281.0,1340281.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_602,PARK Beach Residence I - 1 Bedroom 602,BR1-602,BR1,602,6,6,1br,1 BR,668.87,1253965.0,1253965.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_603,PARK Beach Residence I - Studio 603,BR1-603,BR1,603,6,6,studio,Studio,437.01,967731.0,967731.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_604,PARK Beach Residence I - Studio 604,BR1-604,BR1,604,6,6,studio,Studio,434.86,963210.0,963210.0,2999.0,sold,residential,sale
+parkgroup.br1.unit_605,PARK Beach Residence I - Studio 605,BR1-605,BR1,605,6,6,studio,Studio,432.17,957559.0,957559.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_606,PARK Beach Residence I - Studio 606,BR1-606,BR1,606,6,6,studio,Studio,439.92,973834.0,973834.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_607,PARK Beach Residence I - 1 Bedroom 607,BR1-607,BR1,607,6,6,1br,1 BR,664.56,1208828.55,1208828.55,3000.0,sold,residential,sale
+parkgroup.br1.unit_608,PARK Beach Residence I - 1 Bedroom 608,BR1-608,BR1,608,6,6,1br,1 BR+Study,978.76,1837675.42,1837675.42,3000.0,sold,residential,sale
+parkgroup.br1.unit_609,PARK Beach Residence I - 1 Bedroom 609,BR1-609,BR1,609,6,6,1br,1 BR+Study,962.08,1843897.0,1843897.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_610,PARK Beach Residence I - Studio 610,BR1-610,BR1,610,6,6,studio,Studio,423.56,1077722.0,1077722.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_611,PARK Beach Residence I - 1 Bedroom 611,BR1-611,BR1,611,6,6,1br,1 BR,686.2,1446709.0,1446709.0,2980.0,sold,residential,sale
+parkgroup.br1.unit_612,PARK Beach Residence I - 1 Bedroom 612,BR1-612,BR1,612,6,6,1br,1 BR+S+P,942.38,1924761.0,1924761.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_613,PARK Beach Residence I - 1 Bedroom 613,BR1-613,BR1,613,6,6,1br,1 BR+S+P,958.74,1909546.0,1909546.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_701,PARK Beach Residence I - 1 Bedroom 701,BR1-701,BR1,701,7,7,1br,1 BR,679.1,1350281.0,1350281.0,,sold,residential,sale
+parkgroup.br1.unit_702,PARK Beach Residence I - 1 Bedroom 702,BR1-702,BR1,702,7,7,1br,1 BR,668.87,1263965.0,1263965.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_703,PARK Beach Residence I - Studio 703,BR1-703,BR1,703,7,7,studio,Studio,437.01,977731.0,977731.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_704,PARK Beach Residence I - Studio 704,BR1-704,BR1,704,7,7,studio,Studio,434.86,973210.0,973210.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_705,PARK Beach Residence I - Studio 705,BR1-705,BR1,705,7,7,studio,Studio,432.17,967559.0,967559.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_706,PARK Beach Residence I - Studio 706,BR1-706,BR1,706,7,7,studio,Studio,439.92,983834.0,983834.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_707,PARK Beach Residence I - 1 Bedroom 707,BR1-707,BR1,707,7,7,1br,1 BR,664.56,1256215.0,1256215.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_708,PARK Beach Residence I - 1 Bedroom 708,BR1-708,BR1,708,7,7,1br,1 BR+Study,978.76,1885179.0,1885179.0,,sold,residential,sale
+parkgroup.br1.unit_709,PARK Beach Residence I - 1 Bedroom 709,BR1-709,BR1,709,7,7,1br,1 BR+Study,962.08,1853897.0,1853897.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_710,PARK Beach Residence I - Studio 710,BR1-710,BR1,710,7,7,studio,Studio,423.56,1045366.0,1045366.0,2873.0,sold,residential,sale
+parkgroup.br1.unit_711,PARK Beach Residence I - 1 Bedroom 711,BR1-711,BR1,711,7,7,1br,1 BR,686.2,1456709.0,1456709.0,2999.98,sold,residential,sale
+parkgroup.br1.unit_712,PARK Beach Residence I - 1 Bedroom 712,BR1-712,BR1,712,7,7,1br,1 BR+S+P,942.38,1934761.0,1934761.0,3000.0,sold,residential,sale
+parkgroup.br1.unit_713,PARK Beach Residence I - 1 Bedroom 713,BR1-713,BR1,713,7,7,1br,1 BR+S+P,958.74,1919546.0,1919546.0,3000.0,sold,residential,sale

@@ -1,0 +1,79 @@
+column_name,data_type
+id,integer
+region_id,integer
+project_id,integer
+sub_project_id,integer
+state_id,integer
+country_id,integer
+bedrooms,integer
+bathrooms,integer
+payment_schedule_id,integer
+sold_booking_id,integer
+currency_id,integer
+owner_id,integer
+landlord_id,integer
+listing_agent_id,integer
+company_id,integer
+rera_form_a_ref,integer
+owner_noc_document,integer
+title_deed_verified_by,integer
+create_uid,integer
+write_uid,integer
+website_views_count,integer
+website_inquiry_count,integer
+name,character varying
+property_code,character varying
+property_type,character varying
+city,character varying
+zip,character varying
+makani_number,character varying
+dewa_premises_number,character varying
+title_deed_number,character varying
+booking_type,character varying
+listing_agent_license_number,character varying
+state,character varying
+sale_lease,character varying
+listing_category,character varying
+trakheesi_permit_number,character varying
+permit_status,character varying
+website_meta_title,character varying
+website_meta_keywords,character varying
+brochure_filename,character varying
+floor_plan_filename,character varying
+website_package,character varying
+permit_issue_date,date
+permit_expiry_date,date
+owner_noc_date,date
+title_deed_verified_date,date
+website_package_expiry,date
+address,text
+description,text
+portal_compliance_errors,text
+website_meta_description,text
+sale_price,numeric
+rent_price,numeric
+price,numeric
+registration_fee,numeric
+admin_fee,numeric
+total_maintenance,numeric
+extra_service_cost,numeric
+total_customer_obligation,numeric
+is_maintenance_service,boolean
+is_extra_service,boolean
+is_payment_plan,boolean
+active,boolean
+is_published_website,boolean
+title_deed_verified,boolean
+is_published_portal,boolean
+is_feed_sourced,boolean
+website_featured,boolean
+create_date,timestamp without time zone
+write_date,timestamp without time zone
+website_published_date,timestamp without time zone
+area,double precision
+registration_fee_percentage,double precision
+admin_fee_percentage,double precision
+booking_percentage,double precision
+floor,integer
+unit_number,character varying
+unit_type,character varying

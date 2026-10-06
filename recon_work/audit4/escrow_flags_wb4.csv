@@ -1,0 +1,69 @@
+Project Name,Unit No,Client Name,Status,Sold Price (AED),Escrow %,Expected Escrow (AED),Escrow Allocated (AED),Variance (AED),Collection %,Reconciliation Status,Notes / Follow-up
+PBR1,Unit 201,Manik Bhatheja / Robin Dhawan,Sold,1300281.0,0.1301841525,169275.98,98275.98,-71000.0,0.3100000821,⚠ UNDER-ALLOCATED,"Short by AED 71,000 — follow up needed"
+PBR1,Unit 202,Fady Karim,Sold,1213965.0,0.234464651,284631.88,215631.88,-69000.0,0.3094257365,⚠ UNDER-ALLOCATED,"Short by AED 69,000 — follow up needed"
+PBR1,Unit 206,Evgeny Kuzemin,Sold,933834.0,0.06210953981,58000.0,,,0.5334245701,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PBR1,Unit 208,Abhinav Reddy Kalakonda,Sold,1835179.0,0.0,0.0,,,0.2181804717,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PBR1,Unit 305,Iuliia Nikolaeva,Sold,927559.0,0.1002631639,93000.0,,,0.4130232322,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PBR1,Unit 403,Anvar Daianov,Sold,947731.0,0.0580333449,55000.0,,,0.4606691813,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PBR1,Unit 404,Aleksandr Iutalov,Sold,943210.0,0.0,0.0,,,0.4700864635,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PBR1,Unit 405,Valentin Alpatov,Sold,937559.0,0.0,0.0,,,0.4699995448,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PBR1,Unit 406,Ammar Jamal,Sold,953834.0,0.1016948442,97000.0,30000.0,-67000.0,0.3700112616,⚠ UNDER-ALLOCATED,"Short by AED 67,000 — follow up needed"
+PBR1,Unit 407,Maksim Iagniukov,Sold,1226215.0,0.2005582626,245927.55,183927.55,-62000.0,0.449999268,⚠ UNDER-ALLOCATED,"Short by AED 62,000 — follow up needed"
+PBR1,Unit 408,Charles William George Goldsmi,Sold,1511739.0,0.1809152217,273496.6,335630.12,62133.52,1.051617656,↑ OVER-ALLOCATED,"Excess by AED 62,134 — review needed"
+PBR1,Unit 410,Anna Tikhomirova,Sold,1015366.0,0.0,0.0,,,0.5278797309,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PBR1,Unit 413,Mick Sanders,Sold,1889546.0,0.03810439121,72000.0,,,0.3718329024,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PBR1,Unit 501,Mohammed Hamed Qayyum,Sold,1330281.0,0.2471068519,328721.55,159633.55,-169088.0,0.3400001746,⚠ UNDER-ALLOCATED,"Short by AED 169,088 — follow up needed"
+PBR1,Unit 502,Maksim Jevsejev,Sold,1243965.0,0.1004851423,125000.0,,,0.482704405,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PBR1,Unit 504,Andrei Sadovnikov,Sold,953210.0,0.0,0.0,,,0.4700004964,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PBR1,Unit 505,Tatiana Iutalova,Sold,947559.0,0.0,0.0,,,0.470000816,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PBR1,Unit 601,Irina Belousova,Sold,1340281.0,0.05073562932,68000.0,,,0.4499985244,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PBR1,Unit 608,Andrii Lavreshov,Sold,1837675.42,0.04462159047,82000.0,,,0.5000015191,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PBR1,Unit 612,Irina Belousova,Sold,1924761.0,0.05013609482,96500.0,,,0.4501314666,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PBR1,Unit 707,Alina Rase,Sold,1256215.0,0.05174273512,65000.0,,,0.4650680556,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PBR1,Unit 713,Maciej Pawel,Sold,1919546.0,0.0,0.0,,,0.3821218057,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PBR2,Unit 305,Kishore Iyadurai,Sold,2648141.917,0.01959999692,51903.57,52962.83,1059.26,0.3722656152,↑ OVER-ALLOCATED,"Excess by AED 1,059 — review needed"
+PBR2,Unit 506,VEYIS DINCER,Sold,2705826.479,0.2893472978,782923.58,647923.58,-135000.0,0.4422181798,⚠ UNDER-ALLOCATED,"Short by AED 135,000 — follow up needed"
+PBR2,Unit 512,MOHAMMED ASSAHRAOUI,Sold,1101903.66,0.05218242036,57500.0,0.0,-57500.0,0.3026877816,⚠ UNDER-ALLOCATED,"Short by AED 57,500 — follow up needed"
+PBR2,Unit 513,MOHAMMED ASSAHRAOUI,Sold,1105449.293,0.0520150498,57500.0,0.0,-57500.0,0.2945737797,⚠ UNDER-ALLOCATED,"Short by AED 57,500 — follow up needed"
+PBR2,Unit 604,DMITRII GORBACHEV,Sold,1090890.566,0.1000000398,109089.1,0.0,-109089.1,0.4454966569,⚠ UNDER-ALLOCATED,"Short by AED 109,089 — follow up needed"
+PBR2,Unit 702,THOMAS DYLAN LAFFERTY CHISHOLM,Sold,1134369.767,0.05000133259,56720.0,0.0,-56720.0,0.398381135,⚠ UNDER-ALLOCATED,"Short by AED 56,720 — follow up needed"
+PGV,302,Bilal Gulamali,Sold,1348069.1,,,,,0.2000008753,✗ NO ESCROW %,Sold price recorded but Escrow % missing
+PGV,R01,Yvonne Anakaur Musany,Sold,4500000.0,,,,,0.1200002511,✗ NO ESCROW %,Sold price recorded but Escrow % missing
+PRY,201,Omer Ali Taher Adam,Sold,870000.0,0.0,0.0,,,0.02011494253,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PRY,210,ALKHAIR ABDELAZEM,Sold,564060.6517,0.0,0.0,,,0.09662081522,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PRY,211,Saif Mohamed Hasan Mohamed Alh,Sold,575298.1633,0.0,0.0,,,0.1479091112,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PRY,213,Tahmina Begum,Sold,569991.5606,0.0,0.0,,,0.02000029612,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PRY,216,Mohamed Mohsen Korani Mohamed ,Sold,574205.63,0.0,0.0,,,0.1393229112,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PRY,302,Mahdi Noori,Sold,980000.0,0.0,0.0,,,0.02551020408,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PRY,304,Nosheen Imran,Sold,535105.7607,0.0,0.0,,,0.02007079869,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PRY,309,Omer Mighani Bakhit Mohamed,Sold,576122.678,0.0,0.0,,,0.08037177109,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PRY,311,David Vobornik,Sold,579265.7368,0.0,0.0,,,0.2400000227,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PRY,313,Husnain Iqbal Khan,Sold,573922.5369,0.0,0.0,,,0.1021269705,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PRY,316,Mohammad Nasir Haidary,Sold,572704.0563,0.0,0.0,,,0.1579405437,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PRY,317,Miroslav Racek,Sold,520207.662,0.1001523119,52100.0,,,0.6479376692,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PRY,318,Miroslav Racek,Sold,509175.5256,0.1001619234,51000.0,,,0.6458987784,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PRY,401,Muhammad Saad Nomani,Sold,980974.4848,0.0,0.0,,,0.0,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PRY,402,Farzanah Hossen,Sold,1005032.662,0.0,0.0,,,0.1651289617,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PRY,404,Václav Kulich & Jana Vorudova,Sold,511832.3252,0.0,0.0,,,0.2399999843,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PRY,406,Pavel Melek,Sold,974616.0338,0.0,0.0,,,0.4473339293,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PRY,407,Ladislav Koubek,Sold,996371.2955,0.0,0.0,,,0.239999989,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PRY,408,Aneta Trzicka,Sold,548660.2018,0.0,0.0,,,0.2389770564,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PRY,409,Radek Jagr,Sold,551065.2876,0.0,0.0,,,0.2599454243,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PRY,410,Jiri Krejci,Sold,543248.7587,0.0,0.0,,,0.250000019,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PRY,411,Vojtech Krotil,Sold,554071.6449,0.0,0.0,,,0.1984761376,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PRY,412,Plamen Petrov,Sold,540392.7193,0.0,0.0,,,0.1999999929,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PRY,413,Iva Janickova,Sold,520068.1618,0.0,0.0,,,0.4999999982,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PRY,416,David Vobornik,Sold,553019.4198,0.0,0.0,,,0.2399999625,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PRY,417,Miroslav Merinsky,Sold,552869.102,0.0,0.0,,,0.2599999882,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PRY,418,Jitka Zieba,Sold,541144.3086,0.0,0.0,,,0.239999974,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PRY,501,Muhammad Usman,Sold,910000.0,0.0,0.0,,,0.2449450549,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PRY,502,Nashwan Darwish Taalo Taalo,Sold,970200.0,0.0,0.0,,,0.08122861266,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PRY,504,Petr Hora,Sold,542435.9766,0.0,0.0,,,0.2400000104,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PRY,505,Nashwan Darwish Taalo Taalo,Sold,975150.0,0.0,0.0,,,0.08356890735,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PRY,508,Rana Elmoaz Yousif Elamin,Sold,581465.878,0.0,0.0,,,0.06001040013,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PRY,509,Gustavo Martin Villoldo,Sold,584014.7695,0.0,0.0,,,0.128091127,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PRY,512,JABOR MOHAMED A J AL NUAIMI,Sold,572704.0634,0.0,0.0,,,0.1450045762,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PRY,516,Vitali Leudanski,Sold,586085.7439,0.0,0.0,,,0.1777611401,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PRY,518,Roman Holod,Sold,573500.592,0.0,0.0,,,0.1100016301,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PRY,519,Khadija Rahimi,Sold,589271.8583,0.0,0.0,,,0.05006178317,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded
+PRY,520,Sameera Javed (NSN),Sold,532925.4251,0.0,0.0,,,0.5000005394,✗ NO ALLOCATION DATA,Escrow % exists but no allocation amount recorded

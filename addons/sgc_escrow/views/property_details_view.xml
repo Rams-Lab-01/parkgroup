@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright (C) 2026 SGC TECH AI (https://sgctech.ai)
+ Part of SGC Odoo Suite. See LICENSE file for full copyright and licensing details.-->
+<odoo>
+
+    <!--Unit (property.details)-->
+    <record id="view_property_details_escrow_form" model="ir.ui.view">
+        <field name="name">property.details.form.escrow</field>
+        <field name="model">property.details</field>
+        <field name="inherit_id" ref="sgc_offplan_rental_property_management.property_details_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Escrow" name="escrow" groups="sgc_escrow.group_escrow_user">
+                    <field name="escrow_allocation_ids" readonly="1">
+                        <list string="Escrow Allocation">
+                            <field name="project_id"/>
+                            <field name="partner_id"/>
+                            <field name="contract_id"/>
+                            <field name="escrow_pct"/>
+                            <field name="sale_price_snapshot"/>
+                            <field name="collected_amount"/>
+                            <field name="required_amount"/>
+                            <field name="allocated_amount"/>
+                            <field name="variance_amount"/>
+                            <field name="has_source_data" widget="boolean_toggle" readonly="1"/>
+                            <field name="flag_code"/>
+                        </list>
+                    </field>
+                    <div class="text-muted small mt-2" invisible="escrow_allocation_ids">
+                        No escrow allocation has been recorded for this unit yet.
+                        Load it from the Escrow Allocations register (Import Escrow Allocations).
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

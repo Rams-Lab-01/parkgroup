@@ -1,0 +1,3 @@
+id,name,model_id:id,domain_force,perm_read,perm_write,perm_create,perm_unlink
+escrow_allocation_company_rule,Escrow Allocation: multi-company,model_escrow_allocation,"['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]",1,1,1,1
+escrow_release_company_rule,Escrow Release: multi-company,model_escrow_release,"['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]",1,1,1,1

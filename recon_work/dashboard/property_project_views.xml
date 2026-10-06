@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2026 SGC TECH AI (https://sgctech.ai)
+    Part of SGC Odoo Suite. See LICENSE file for full copyright and licensing details.
+-->
+<odoo>
+    <!-- ═══════════════════ Property Project ═══════════════════ -->
+    <record id="property_project_view_tree" model="ir.ui.view">
+        <field name="name">property.project.view.tree</field>
+        <field name="model">property.project</field>
+        <field name="arch" type="xml">
+            <list string="Projects" sample="1">
+                <field name="image_256" widget="image" options="{'size': [40, 40]}"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="region_id"/>
+                <field name="property_count"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="property_project_view_kanban" model="ir.ui.view">
+        <field name="name">property.project.view.kanban</field>
+        <field name="model">property.project</field>
+        <field name="arch" type="xml">
+            <kanban records_draggable="0" sample="1">
+                <field name="region_id"/>
+                <field name="property_count"/>
+                <field name="image_512"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click oe_kanban_card p-0 overflow-hidden">
+                            <div class="position-relative w-100" style="height:140px;">
+                                <t t-if="record.image_512.raw_value">
+                                    <field name="image_512" widget="image"
+                                           class="w-100 h-100"
+                                           options="{'img_class': 'w-100 h-100 object-fit-cover'}"/>
+                                </t>
+                                <t t-else="">
+                                    <div class="bg-300 w-100 h-100 d-flex align-items-center justify-content-center">
+                                        <i class="fa fa-building fa-3x text-muted" title="Project"/>
+                                    </div>
+                                </t>
+                            </div>
+                            <div class="oe_kanban_details p-2">
+                                <div class="fw-bold fs-5 mb-1 text-truncate">
+                                    <field name="name"/>
+                                </div>
+                                <div class="text-muted mb-1">
+                                    <field name="region_id"/>
+                                </div>
+                                <span class="badge bg-info">
+                                    <field name="property_count"/> Properties
+                                </span>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="property_project_view_form" model="ir.ui.view">
+        <field name="name">property.project.view.form</field>
+        <field name="model">property.project</field>
+        <field name="arch" type="xml">
+            <form string="Project">
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,completed"/>
+                    <button name="action_start" type="object" string="Start Project"
+                            class="btn-primary"
+                            invisible="state != 'draft'"
+                            help="Activate the project for sales/leasing"/>
+                    <button name="action_complete" type="object" string="Mark Completed"
+                            class="btn-success"
+                            invisible="state == 'completed'"
+                            help="Mark all units as sold/rented and complete the project"/>
+                    <button name="action_cancel" type="object" string="Cancel Project"
+                            class="btn btn-outline-danger"
+                            invisible="state == 'cancelled'"
+                            help="Cancel the project"/>
+                     <button name="action_draft" type="object" string="Reset to Draft"
+                             invisible="state != 'cancelled'"
+                             help="Reopen a cancelled project"/>
+                     <button name="action_open_subproject_wizard" type="object"
+                             string="Create Sub-Project"
+                             help="Open the sub-project creation wizard, pre-filled from this project"/>
+                     <button name="action_open_unit_wizard" type="object"
+                             string="Bulk Create Units" class="btn-primary"
+                             help="Create units in bulk: floors x units per floor, with an optional unit mix"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_properties" type="object" class="oe_stat_button" icon="fa-home">
+                            <field name="property_count" string="Properties" widget="statinfo"/>
+                        </button>
+                        <button name="action_view_sub_projects" type="object" class="oe_stat_button" icon="fa-sitemap">
+                            <field name="sub_project_count" string="Sub Projects" widget="statinfo"/>
+                        </button>
+                        <button name="action_view_bookings" type="object" class="oe_stat_button" icon="fa-file-text-o">
+                            <field name="booking_count" string="Bookings" widget="statinfo"/>
+                        </button>
+                        <button name="action_open_booking_wizard" type="object" class="oe_stat_button" icon="fa-shopping-cart">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Create Booking</span>
+                            </div>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Cancelled" bg_color="text-bg-danger" invisible="state != 'cancelled'"/>
+                    <div class="oe_title">
+                        <table class="o_inner_group">
+                            <tbody>
+                                <tr>
+                                    <td class="o_property_avatar">
+                                        <field name="image_1920" widget="image"
+                                               options="{'preview_image': 'image_256', 'size': [128, 128], 'img_class': 'object-fit-contain rounded border'}"/>
+                                    </td>
+                                    <td style="width: 100%">
+                                        <label for="name" string="Project Name"/>
+                                        <h1>
+                                            <field name="name" placeholder="e.g. Marina Heights Master"/>
+                                        </h1>
+                                        <field name="code" placeholder="Project Code"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <group>
+                        <group string="Details">
+                            <field name="state" widget="badge" decoration-success="state == 'in_progress'" decoration-primary="state == 'draft'" decoration-muted="state in ('completed', 'cancelled')"/>
+                            <field name="region_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                         <group string="Property Status">
+                             <field name="available_count" string="Available"/>
+                             <field name="booked_count" string="Booked"/>
+                             <field name="sold_count" string="Sold"/>
+                             <field name="rented_count" string="Rented"/>
+                         </group>
+                     </group>
+                     <group string="Bulk Creation &amp; Payment">
+                         <group string="Unit Layout">
+                             <field name="total_floors"/>
+                             <field name="units_per_floor"/>
+                             <field name="floor_created" readonly="1"/>
+                         </group>
+                         <group string="Commercial">
+                             <field name="sale_lease"/>
+                             <field name="payment_schedule_id"/>
+                         </group>
+                     </group>
+                     <group string="Location">
+                         <field name="address" placeholder="Street / landmark"/>
+                         <field name="city"/>
+                         <field name="state_id"/>
+                         <field name="country_id"/>
+                         <field name="zip"/>
+                         <field name="geo_latitude" placeholder="e.g. 25.8090"/>
+                         <field name="geo_longitude" placeholder="e.g. 55.9420"/>
+                     </group>
+                     <group string="Description">
+                        <field name="description" widget="html" nolabel="1"
+                               placeholder="Marketing description... (type / for the Powerbox, then use AI to draft this)"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_property_project" model="ir.actions.act_window">
+        <field name="name">Projects</field>
+        <field name="res_model">property.project</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add your first project!
+            </p>
+        </field>
+    </record>
+
+    <!-- ═══════════════════ Property Sub Project ═══════════════════ -->
+    <record id="property_sub_project_view_tree" model="ir.ui.view">
+        <field name="name">property.sub.project.view.tree</field>
+        <field name="model">property.sub.project</field>
+        <field name="arch" type="xml">
+            <list string="Sub Projects" sample="1">
+                <field name="image_256" widget="image" options="{'size': [40, 40]}"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="project_id"/>
+                <field name="property_count"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="property_sub_project_view_kanban" model="ir.ui.view">
+        <field name="name">property.sub.project.view.kanban</field>
+        <field name="model">property.sub.project</field>
+        <field name="arch" type="xml">
+            <kanban records_draggable="0" sample="1">
+                <field name="project_id"/>
+                <field name="property_count"/>
+                <field name="image_512"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click oe_kanban_card p-0 overflow-hidden">
+                            <div class="position-relative w-100" style="height:140px;">
+                                <t t-if="record.image_512.raw_value">
+                                    <field name="image_512" widget="image"
+                                           class="w-100 h-100"
+                                           options="{'img_class': 'w-100 h-100 object-fit-cover'}"/>
+                                </t>
+                                <t t-else="">
+                                    <div class="bg-300 w-100 h-100 d-flex align-items-center justify-content-center">
+                                        <i class="fa fa-building-o fa-3x text-muted" title="Sub Project"/>
+                                    </div>
+                                </t>
+                            </div>
+                            <div class="oe_kanban_details p-2">
+                                <div class="fw-bold fs-5 mb-1 text-truncate">
+                                    <field name="name"/>
+                                </div>
+                                <div class="text-muted mb-1">
+                                    <field name="project_id"/>
+                                </div>
+                                <span class="badge bg-info">
+                                    <field name="property_count"/> Properties
+                                </span>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="property_sub_project_view_form" model="ir.ui.view">
+        <field name="name">property.sub.project.view.form</field>
+        <field name="model">property.sub.project</field>
+        <field name="arch" type="xml">
+            <form string="Sub Project">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_properties" type="object" class="oe_stat_button" icon="fa-home">
+                            <field name="property_count" string="Properties" widget="statinfo"/>
+                        </button>
+                        <button name="action_open_unit_wizard" type="object" class="oe_stat_button" icon="fa-cubes">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Bulk Create Units</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <table class="o_inner_group">
+                            <tbody>
+                                <tr>
+                                    <td class="o_property_avatar">
+                                        <field name="image_1920" widget="image"
+                                               options="{'preview_image': 'image_256', 'size': [128, 128], 'img_class': 'object-fit-contain rounded border'}"/>
+                                    </td>
+                                    <td style="width: 100%">
+                                        <label for="name" string="Sub Project Name"/>
+                                        <h1>
+                                            <field name="name" placeholder="e.g. Tower A"/>
+                                        </h1>
+                                        <field name="code" placeholder="Sub Project Code"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                     <group>
+                         <field name="project_id"/>
+                         <field name="region_id"/>
+                         <field name="company_id" groups="base.group_multi_company"/>
+                     </group>
+                     <group string="Bulk Creation &amp; Payment">
+                         <group string="Unit Layout">
+                             <field name="total_floors"/>
+                             <field name="units_per_floor"/>
+                             <field name="floor_created" readonly="1"/>
+                         </group>
+                         <group string="Commercial">
+                             <field name="sale_lease"/>
+                             <field name="payment_schedule_id"/>
+                         </group>
+                     </group>
+                     <group string="Location">
+                         <field name="address" placeholder="Street / landmark"/>
+                         <field name="city"/>
+                         <field name="state_id"/>
+                         <field name="country_id"/>
+                         <field name="zip"/>
+                     </group>
+                     <group string="Description">
+                        <field name="description" widget="html" nolabel="1"
+                               placeholder="Marketing description... (type / for the Powerbox, then use AI to draft this)"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_property_sub_project" model="ir.actions.act_window">
+        <field name="name">Sub Projects</field>
+        <field name="res_model">property.sub.project</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add your first sub project!
+            </p>
+        </field>
+    </record>
+</odoo>

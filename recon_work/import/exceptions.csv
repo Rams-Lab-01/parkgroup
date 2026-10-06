@@ -1,0 +1,254 @@
+﻿severity,project,unit,issue,action
+OBLIGATION DELTA,GOLF,302,collected+receivable=269615.00 vs sold price=1348069.10 (delta -1078454.10),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,GOLF,R01,collected+receivable=540001.13 vs sold price=4500000.00 (delta -3959998.87),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,101,collected+receivable=867736.93 vs sold price=2209581.10 (delta -1341844.17),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,102,collected+receivable=412073.33 vs sold price=1068670.56 (delta -656597.23),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,103,collected+receivable=523526.56 vs sold price=1669440.52 (delta -1145913.96),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+COLLECTIONS PENDING,BR2,104,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+BREAKDOWN UNAVAILABLE,BR2,105,collected 115231.06 below contractual 10%+20% (309692.55),single collected line imported; escrow split unavailable
+OBLIGATION DELTA,BR2,105,collected+receivable=115231.06 vs sold price=1032308.49 (delta -917077.43),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,106,collected+receivable=1634106.00 vs sold price=1565486.88 (delta 68619.12),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,107,collected+receivable=411066.09 vs sold price=1065901.66 (delta -654835.57),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,108,collected+receivable=465649.43 vs sold price=1068949.99 (delta -603300.57),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+DATE MISSING,BR2,109,no parseable SPA/Reservation date: spa='' resv='26 Oct 2024\nwith a requesting for a Tran',contract date left empty
+BREAKDOWN UNAVAILABLE,BR2,109,collected 538680.10 below contractual 10%+20% (619020.26),single collected line imported; escrow split unavailable
+OBLIGATION DELTA,BR2,109,collected+receivable=538680.10 vs sold price=2063400.88 (delta -1524720.78),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,201,collected+receivable=941802.91 vs sold price=2228129.45 (delta -1286326.54),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,202,collected+receivable=361284.63 vs sold price=1076395.99 (delta -715111.36),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,203,collected+receivable=446943.13 vs sold price=1049857.46 (delta -602914.34),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,204,collected+receivable=349299.16 vs sold price=1057707.58 (delta -708408.43),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+DATE MISSING,BR2,205,no parseable SPA/Reservation date: spa='' resv='02 OCT 2024',contract date left empty
+OBLIGATION DELTA,BR2,205,collected+receivable=530536.10 vs sold price=1049069.01 (delta -518532.91),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,206,collected+receivable=1341433.00 vs sold price=2682864.62 (delta -1341431.62),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+BREAKDOWN UNAVAILABLE,BR2,207,collected 473280.20 below contractual 10%+20% (700919.96),single collected line imported; escrow split unavailable
+OBLIGATION DELTA,BR2,207,collected+receivable=473280.20 vs sold price=2336399.86 (delta -1863119.66),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,208,collected+receivable=353379.95 vs sold price=1056596.21 (delta -703216.26),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,209,collected+receivable=665273.42 vs sold price=1571136.53 (delta -905863.11),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,210,collected+receivable=456764.53 vs sold price=1073654.85 (delta -616890.33),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,211,collected+receivable=938914.11 vs sold price=2108798.59 (delta -1169884.48),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+BREAKDOWN UNAVAILABLE,BR2,301,collected 444185.00 below contractual 10%+20% (666262.37),single collected line imported; escrow split unavailable
+OBLIGATION DELTA,BR2,301,collected+receivable=444185.00 vs sold price=2220874.58 (delta -1776689.58),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,302,collected+receivable=462396.79 vs sold price=1086655.50 (delta -624258.72),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,303,collected+receivable=722182.56 vs sold price=1705180.58 (delta -982998.02),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+DATE MISSING,BR2,304,no parseable SPA/Reservation date: spa='' resv='02 OCT 2024',contract date left empty
+BREAKDOWN UNAVAILABLE,BR2,304,collected 269721.01 below contractual 10%+20% (317150.98),single collected line imported; escrow split unavailable
+OBLIGATION DELTA,BR2,304,collected+receivable=269721.01 vs sold price=1057169.93 (delta -787448.92),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,305,collected+receivable=985812.18 vs sold price=2648141.92 (delta -1662329.74),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,306,collected+receivable=463674.83 vs sold price=1089703.63 (delta -626028.80),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,307,collected+receivable=406771.80 vs sold price=1113253.56 (delta -706481.76),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,308,collected+receivable=464990.23 vs sold price=1085684.60 (delta -620694.37),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,309,collected+receivable=827747.90 vs sold price=2714486.20 (delta -1886738.29),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,310,collected+receivable=446415.43 vs sold price=1048437.17 (delta -602021.74),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+DATE MISSING,BR2,311,no parseable SPA/Reservation date: spa='' resv='02 OCT 2024',contract date left empty
+OBLIGATION DELTA,BR2,311,collected+receivable=631736.34 vs sold price=1646674.85 (delta -1014938.51),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,312,collected+receivable=428695.80 vs sold price=1083839.67 (delta -655143.87),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+DATE MISSING,BR2,313,no parseable SPA/Reservation date: spa='' resv='03 OCT 2024',contract date left empty
+OBLIGATION DELTA,BR2,313,collected+receivable=473887.43 vs sold price=1112672.31 (delta -638784.88),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,314,collected+receivable=718038.52 vs sold price=1977879.08 (delta -1259840.56),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,401,collected+receivable=960377.34 vs sold price=2327713.92 (delta -1367336.58),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,402,collected+receivable=477179.18 vs sold price=1094486.68 (delta -617307.50),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,403,collected+receivable=443192.01 vs sold price=1066325.81 (delta -623133.80),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,404,collected+receivable=445956.91 vs sold price=1074159.68 (delta -628202.77),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,405,collected+receivable=442765.49 vs sold price=1065270.84 (delta -622505.36),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,406,collected+receivable=936467.97 vs sold price=2385818.05 (delta -1449350.08),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,407,collected+receivable=466961.88 vs sold price=1098366.64 (delta -631404.76),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,408,collected+receivable=444414.39 vs sold price=1120574.31 (delta -676159.92),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,409,collected+receivable=979912.54 vs sold price=2790850.54 (delta -1810938.00),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,410,collected+receivable=375806.64 vs sold price=1056596.21 (delta -680789.57),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,411,collected+receivable=694220.81 vs sold price=1601666.64 (delta -907445.82),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,412,collected+receivable=376723.42 vs sold price=1091569.00 (delta -714845.58),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+DATE MISSING,BR2,413,no parseable SPA/Reservation date: spa='' resv='12 OCT 2024',contract date left empty
+OBLIGATION DELTA,BR2,413,collected+receivable=574897.00 vs sold price=1137766.86 (delta -562869.86),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,414,collected+receivable=967763.20 vs sold price=2229692.16 (delta -1261928.95),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,501,collected+receivable=989585.67 vs sold price=2341875.46 (delta -1352289.79),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,502,collected+receivable=469483.18 vs sold price=1103532.02 (delta -634048.85),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,503,collected+receivable=437718.66 vs sold price=1106970.88 (delta -669252.22),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,504,collected+receivable=457206.17 vs sold price=1049411.84 (delta -592205.67),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,505,collected+receivable=349299.15 vs sold price=1073371.76 (delta -724072.61),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,506,collected+receivable=1196565.66 vs sold price=2705826.48 (delta -1509260.82),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+DATE MISSING,BR2,507,no parseable SPA/Reservation date: spa='' resv='01 OCT 2024',contract date left empty
+OBLIGATION DELTA,BR2,507,collected+receivable=481903.23 vs sold price=1106947.63 (delta -625044.40),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,508,collected+receivable=475138.58 vs sold price=1116995.20 (delta -641856.63),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,509,collected+receivable=1060631.44 vs sold price=2396879.04 (delta -1336247.60),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+DATE MISSING,BR2,510,no parseable SPA/Reservation date: spa='' resv='03 OCT 2024',contract date left empty
+OBLIGATION DELTA,BR2,510,collected+receivable=439967.13 vs sold price=1081073.34 (delta -641106.21),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,511,collected+receivable=711307.62 vs sold price=1679444.50 (delta -968136.88),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,512,collected+receivable=333532.77 vs sold price=1101903.66 (delta -768370.89),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+BREAKDOWN UNAVAILABLE,BR2,513,collected 325636.38 below contractual 10%+20% (331634.79),single collected line imported; escrow split unavailable
+OBLIGATION DELTA,BR2,513,collected+receivable=325636.38 vs sold price=1105449.29 (delta -779812.92),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,514,collected+receivable=775693.12 vs sold price=1971308.04 (delta -1195614.92),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,515,collected+receivable=841497.37 vs sold price=2142300.18 (delta -1300802.81),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,601,collected+receivable=897475.84 vs sold price=2346150.35 (delta -1448674.51),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,602,collected+receivable=562857.43 vs sold price=1113821.89 (delta -550964.47),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,603,collected+receivable=409271.17 vs sold price=1115304.73 (delta -706033.56),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,604,collected+receivable=485988.10 vs sold price=1090890.57 (delta -604902.47),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,605,collected+receivable=356885.71 vs sold price=1081472.68 (delta -724586.97),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+DATE MISSING,BR2,606,no parseable SPA/Reservation date: spa='' resv='04 OCT 2024',contract date left empty
+OBLIGATION DELTA,BR2,606,collected+receivable=1207500.00 vs sold price=2402792.00 (delta -1195292.00),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+BREAKDOWN UNAVAILABLE,BR2,607,collected 327891.72 below contractual 10%+20% (341554.32),single collected line imported; escrow split unavailable
+OBLIGATION DELTA,BR2,607,collected+receivable=327891.72 vs sold price=1138514.41 (delta -810622.69),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,608,collected+receivable=472771.47 vs sold price=1111330.69 (delta -638559.23),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,609,collected+receivable=1130657.82 vs sold price=2438472.08 (delta -1307814.26),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,610,collected+receivable=459915.00 vs sold price=1072914.30 (delta -612999.30),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,611,collected+receivable=479548.87 vs sold price=1578785.69 (delta -1099236.81),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,612,collected+receivable=455948.95 vs sold price=1109611.70 (delta -653662.75),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,613,collected+receivable=898860.26 vs sold price=2289386.87 (delta -1390526.60),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+BREAKDOWN UNAVAILABLE,BR2,614,collected 249000.00 below contractual 10%+20% (354741.91),single collected line imported; escrow split unavailable
+OBLIGATION DELTA,BR2,614,collected+receivable=249000.00 vs sold price=1182473.04 (delta -933473.04),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,615,collected+receivable=450574.69 vs sold price=1234755.07 (delta -784180.38),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,701,collected+receivable=479217.44 vs sold price=1100507.37 (delta -621289.93),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,702,collected+receivable=451911.52 vs sold price=1134369.77 (delta -682458.25),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+DATE MISSING,BR2,703,no parseable SPA/Reservation date: spa='' resv='03 OCT 2024',contract date left empty
+OBLIGATION DELTA,BR2,703,collected+receivable=467423.05 vs sold price=1099186.31 (delta -631763.26),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+DATE MISSING,BR2,704,no parseable SPA/Reservation date: spa='' resv='02 OCT 2024',contract date left empty
+OBLIGATION DELTA,BR2,704,collected+receivable=463627.57 vs sold price=1089573.60 (delta -625946.04),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,706,collected+receivable=949513.94 vs sold price=2482931.66 (delta -1533417.72),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,707,collected+receivable=477880.44 vs sold price=1097391.43 (delta -619510.99),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,708,collected+receivable=595668.98 vs sold price=1594107.14 (delta -998438.16),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,710,collected+receivable=387922.99 vs sold price=1123304.47 (delta -735381.48),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,711,collected+receivable=974182.44 vs sold price=2200432.83 (delta -1226250.39),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR2,712,collected+receivable=727271.18 vs sold price=2004099.75 (delta -1276828.57),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+DATE MISSING,BR2,713,no parseable SPA/Reservation date: spa='' resv='01 OCT 2024',contract date left empty
+OBLIGATION DELTA,BR2,713,collected+receivable=426570.08 vs sold price=1136812.10 (delta -710242.02),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,101,collected+receivable=1341892.24 vs sold price=1290281.00 (delta 51611.24),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,102,collected+receivable=1252123.60 vs sold price=1203965.00 (delta 48158.60),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,103,collected+receivable=954440.24 vs sold price=917731.00 (delta 36709.24),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+COLLECTION WITHHELD,BR1,104,amount_collected withheld by prior reconciliation,no paid lines; balance only if present
+OBLIGATION DELTA,BR1,105,collected+receivable=943861.36 vs sold price=907559.00 (delta 36302.36),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,106,collected+receivable=960787.36 vs sold price=923834.00 (delta 36953.36),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,107,collected+receivable=1244063.60 vs sold price=1196215.00 (delta 47848.60),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,108,collected+receivable=2381735.20 vs sold price=2290130.00 (delta 91605.20),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+BREAKDOWN UNAVAILABLE,BR1,109,collected 613886.37 below contractual 10%+20% (651324.30),single collected line imported; escrow split unavailable
+OBLIGATION DELTA,BR1,109,collected+receivable=2257924.24 vs sold price=2171081.00 (delta 86843.24),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,201,collected+receivable=1352292.24 vs sold price=1300281.00 (delta 52011.24),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,202,collected+receivable=1262523.60 vs sold price=1213965.00 (delta 48558.60),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,203,collected+receivable=964840.24 vs sold price=927731.00 (delta 37109.24),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,204,collected+receivable=960138.40 vs sold price=923210.00 (delta 36928.40),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,205,collected+receivable=954261.36 vs sold price=917559.00 (delta 36702.36),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,206,collected+receivable=971187.36 vs sold price=933834.00 (delta 37353.36),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,207,collected+receivable=1254463.60 vs sold price=1206215.00 (delta 48248.60),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+BREAKDOWN UNAVAILABLE,BR1,208,collected 403400.22 below contractual 10%+20% (550553.70),single collected line imported; escrow split unavailable
+OBLIGATION DELTA,BR1,208,collected+receivable=1908586.16 vs sold price=1835179.00 (delta 73407.16),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+BREAKDOWN UNAVAILABLE,BR1,209,collected 472066.31 below contractual 10%+20% (541169.10),single collected line imported; escrow split unavailable
+OBLIGATION DELTA,BR1,209,collected+receivable=1876052.88 vs sold price=1803897.00 (delta 72155.88),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,210,collected+receivable=1035180.64 vs sold price=995366.00 (delta 39814.64),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+COLLECTION WITHHELD,BR1,211,amount_collected withheld by prior reconciliation,no paid lines; balance only if present
+OBLIGATION DELTA,BR1,212,collected+receivable=1960151.44 vs sold price=1884761.00 (delta 75390.44),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,213,collected+receivable=1944327.84 vs sold price=1869546.00 (delta 74781.84),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,301,collected+receivable=1362692.24 vs sold price=1310281.00 (delta 52411.24),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,302,collected+receivable=1272923.60 vs sold price=1223965.00 (delta 48958.60),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,303,collected+receivable=975240.24 vs sold price=937731.00 (delta 37509.24),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,304,collected+receivable=970538.40 vs sold price=933210.00 (delta 37328.40),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,305,collected+receivable=964661.36 vs sold price=927559.00 (delta 37102.36),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,306,collected+receivable=981587.36 vs sold price=943834.00 (delta 37753.36),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,307,collected+receivable=1264863.60 vs sold price=1216215.00 (delta 48648.60),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,308,collected+receivable=1918986.16 vs sold price=1845179.00 (delta 73807.16),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,309,collected+receivable=1886452.88 vs sold price=1813897.00 (delta 72555.88),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,310,collected+receivable=1045580.64 vs sold price=1005366.00 (delta 40214.64),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+COLLECTION WITHHELD,BR1,311,amount_collected withheld by prior reconciliation,no paid lines; balance only if present
+OBLIGATION DELTA,BR1,312,collected+receivable=1970551.44 vs sold price=1894761.00 (delta 75790.44),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,313,collected+receivable=1954727.84 vs sold price=1879546.00 (delta 75181.84),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,401,collected+receivable=1373092.24 vs sold price=1320281.00 (delta 52811.24),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,402,collected+receivable=1283323.60 vs sold price=1233965.00 (delta 49358.60),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,403,collected+receivable=985640.24 vs sold price=947731.00 (delta 37909.24),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,404,collected+receivable=980938.40 vs sold price=943210.00 (delta 37728.40),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,405,collected+receivable=975061.36 vs sold price=937559.00 (delta 37502.36),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,406,collected+receivable=991987.36 vs sold price=953834.00 (delta 38153.36),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,407,collected+receivable=1275263.60 vs sold price=1226215.00 (delta 49048.60),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+COLLECTIONS PENDING,BR1,408,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+OBLIGATION DELTA,BR1,409,collected+receivable=1877884.35 vs sold price=1805658.03 (delta 72226.32),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,410,collected+receivable=1055980.64 vs sold price=1015366.00 (delta 40614.64),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,411,collected+receivable=1483777.36 vs sold price=1426709.00 (delta 57068.36),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,412,collected+receivable=1980951.44 vs sold price=1904761.00 (delta 76190.44),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,413,collected+receivable=1965127.84 vs sold price=1889546.00 (delta 75581.84),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,501,collected+receivable=1383492.24 vs sold price=1330281.00 (delta 53211.24),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,502,collected+receivable=1293723.60 vs sold price=1243965.00 (delta 49758.60),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,503,collected+receivable=996040.24 vs sold price=957731.00 (delta 38309.24),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,504,collected+receivable=991338.40 vs sold price=953210.00 (delta 38128.40),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,505,collected+receivable=985461.36 vs sold price=947559.00 (delta 37902.36),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,506,collected+receivable=1002387.36 vs sold price=963834.00 (delta 38553.36),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,507,collected+receivable=1285663.60 vs sold price=1236215.00 (delta 49448.60),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,508,collected+receivable=1939786.16 vs sold price=1865179.00 (delta 74607.16),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,509,collected+receivable=1888180.35 vs sold price=1815558.03 (delta 72622.32),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,510,collected+receivable=1066380.64 vs sold price=1025366.00 (delta 41014.64),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,511,collected+receivable=1494177.36 vs sold price=1436709.00 (delta 57468.36),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,512,collected+receivable=1991351.44 vs sold price=1914761.00 (delta 76590.44),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+BREAKDOWN UNAVAILABLE,BR1,513,collected 382908.60 below contractual 10%+20% (569863.80),single collected line imported; escrow split unavailable
+OBLIGATION DELTA,BR1,513,collected+receivable=1975527.84 vs sold price=1899546.00 (delta 75981.84),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,601,collected+receivable=1393892.24 vs sold price=1340281.00 (delta 53611.24),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,602,collected+receivable=1304123.60 vs sold price=1253965.00 (delta 50158.60),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,603,collected+receivable=1006440.24 vs sold price=967731.00 (delta 38709.24),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,604,collected+receivable=1001738.40 vs sold price=963210.00 (delta 38528.40),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,605,collected+receivable=995861.36 vs sold price=957559.00 (delta 38302.36),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,606,collected+receivable=1012787.36 vs sold price=973834.00 (delta 38953.36),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,607,collected+receivable=1257181.69 vs sold price=1208828.55 (delta 48353.14),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+COLLECTION WITHHELD,BR1,608,amount_collected withheld by prior reconciliation,no paid lines; balance only if present
+OBLIGATION DELTA,BR1,609,collected+receivable=1917652.88 vs sold price=1843897.00 (delta 73755.88),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,610,collected+receivable=1120830.88 vs sold price=1077722.00 (delta 43108.88),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,611,collected+receivable=1504577.36 vs sold price=1446709.00 (delta 57868.36),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,612,collected+receivable=2001751.44 vs sold price=1924761.00 (delta 76990.44),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,613,collected+receivable=1985927.84 vs sold price=1909546.00 (delta 76381.84),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,701,collected+receivable=1404292.24 vs sold price=1350281.00 (delta 54011.24),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,702,collected+receivable=1314523.60 vs sold price=1263965.00 (delta 50558.60),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,703,collected+receivable=1016840.24 vs sold price=977731.00 (delta 39109.24),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,704,collected+receivable=1012138.40 vs sold price=973210.00 (delta 38928.40),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,705,collected+receivable=1006261.36 vs sold price=967559.00 (delta 38702.36),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,706,collected+receivable=1023187.36 vs sold price=983834.00 (delta 39353.36),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,707,collected+receivable=1306463.60 vs sold price=1256215.00 (delta 50248.60),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,708,collected+receivable=1960586.16 vs sold price=1885179.00 (delta 75407.16),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,709,collected+receivable=1928052.88 vs sold price=1853897.00 (delta 74155.88),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,710,collected+receivable=1087180.64 vs sold price=1045366.00 (delta 41814.64),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,711,collected+receivable=1514977.36 vs sold price=1456709.00 (delta 58268.36),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,712,collected+receivable=2012151.44 vs sold price=1934761.00 (delta 77390.44),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+OBLIGATION DELTA,BR1,713,collected+receivable=1996327.84 vs sold price=1919546.00 (delta 76781.84),informational - delta = registration/transfer fees + receivable basis; confirm fee split with client
+COLLECTIONS PENDING,RES,201,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,208,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,209,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,210,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,211,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,212,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,213,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,216,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,217,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,218,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,302,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,304,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,308,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,309,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,310,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,311,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,312,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,313,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,316,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,317,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,318,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+DATE MISSING,RES,401,no parseable SPA/Reservation date: spa='' resv='AJ',contract date left empty
+COLLECTIONS PENDING,RES,401,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,402,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,404,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,406,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,407,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,408,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,409,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,410,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,411,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,412,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,413,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,416,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,417,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,418,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,501,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,502,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,504,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,505,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,508,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,509,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,510,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,511,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,512,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,513,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,516,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,517,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,518,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,519,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred
+COLLECTIONS PENDING,RES,520,not in reconciled import sheet (RES/PRY or excluded row),installments+commission deferred

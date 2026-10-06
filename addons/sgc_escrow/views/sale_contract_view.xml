@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright (C) 2026 SGC TECH AI (https://sgctech.ai)
+ Part of SGC Odoo Suite. See LICENSE file for full copyright and licensing details.-->
+<odoo>
+
+    <!--Sale Contract-->
+    <record id="view_sale_contract_escrow_form" model="ir.ui.view">
+        <field name="name">sale.contract.form.escrow</field>
+        <field name="model">sale.contract</field>
+        <field name="inherit_id" ref="sgc_offplan_rental_property_management.sale_contract_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Escrow" name="escrow" groups="sgc_escrow.group_escrow_user">
+                    <group>
+                        <group>
+                            <field name="escrow_project_id"/>
+                            <field name="escrow_amount_required"/>
+                        </group>
+                        <group>
+                            <field name="escrow_allocation_count"/>
+                            <field name="escrow_amount_allocated"/>
+                            <field name="escrow_amount_variance"/>
+                        </group>
+                    </group>
+                    <field name="escrow_allocation_ids" readonly="1">
+                        <list string="Escrow Allocations">
+                            <field name="unit_id"/>
+                            <field name="escrow_pct"/>
+                            <field name="required_amount"/>
+                            <field name="allocated_amount"/>
+                            <field name="variance_amount"/>
+                            <field name="has_source_data" widget="boolean_toggle" readonly="1"/>
+                            <field name="flag_code"/>
+                        </list>
+                    </field>
+                    <div class="text-muted small mt-2" invisible="escrow_allocation_ids">
+                        No escrow allocation has been recorded for this contract yet.
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

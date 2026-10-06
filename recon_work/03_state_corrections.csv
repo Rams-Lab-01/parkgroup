@@ -1,0 +1,54 @@
+﻿project,unit,key,wb_status,odoo_state,action,blocked
+BR2,Unit 212,212,Available,sold,HOLD (blocked row: missing buyer data),YES
+BR2,Unit 705,705,Available,sold,HOLD (blocked row: missing buyer data),YES
+BR2,Unit 709,709,Available,sold,HOLD (blocked row: missing buyer data),YES
+RES,201,201,Sold,available,set sold,no
+RES,208,208,Sold,available,set sold,no
+RES,209,209,Sold,available,set sold,no
+RES,210,210,Sold,available,set sold,no
+RES,211,211,Sold,available,set sold,no
+RES,212,212,Sold,available,set sold,no
+RES,213,213,Sold,available,set sold,no
+RES,216,216,Sold,available,set sold,no
+RES,217,217,Sold,available,set sold,no
+RES,218,218,Sold,available,set sold,no
+RES,302,302,Sold,available,set sold,no
+RES,304,304,Sold,available,set sold,no
+RES,308,308,Sold,available,set sold,no
+RES,309,309,Sold,available,set sold,no
+RES,310,310,Sold,available,set sold,no
+RES,311,311,Sold,available,set sold,no
+RES,312,312,Sold,available,set sold,no
+RES,313,313,Sold,available,set sold,no
+RES,316,316,Sold,available,set sold,no
+RES,317,317,Sold,available,set sold,no
+RES,318,318,Sold,available,set sold,no
+RES,401,401,Sold,available,set sold,no
+RES,402,402,Sold,available,set sold,no
+RES,404,404,Sold,available,set sold,no
+RES,406,406,Sold,available,set sold,no
+RES,407,407,Sold,available,set sold,no
+RES,408,408,Sold,available,set sold,no
+RES,409,409,Sold,available,set sold,no
+RES,410,410,Sold,available,set sold,no
+RES,411,411,Sold,available,set sold,no
+RES,412,412,Sold,available,set sold,no
+RES,413,413,Sold,available,set sold,no
+RES,416,416,Sold,available,set sold,no
+RES,417,417,Sold,available,set sold,no
+RES,418,418,Sold,available,set sold,no
+RES,501,501,Sold,available,set sold,no
+RES,502,502,Sold,available,set sold,no
+RES,504,504,Sold,available,set sold,no
+RES,505,505,Sold,available,set sold,no
+RES,508,508,Sold,available,set sold,no
+RES,509,509,Sold,available,set sold,no
+RES,510,510,Sold,available,set sold,no
+RES,511,511,Sold,available,set sold,no
+RES,512,512,Sold,available,set sold,no
+RES,513,513,Sold,available,set sold,no
+RES,516,516,Sold,available,set sold,no
+RES,517,517,Sold,available,set sold,no
+RES,518,518,Sold,available,set sold,no
+RES,519,519,Sold,available,set sold,no
+RES,520,520,Sold,available,set sold,no

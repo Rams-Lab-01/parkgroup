@@ -1,0 +1,782 @@
+proj,unit_number,sequence,name,state,due_date,amount,percentage
+BR1,409,1,Booking / Escrow 10% (historic),paid,2024-07-01,180565.80,10.00
+BR1,612,1,Booking / Escrow 10% (historic),paid,,192476.10,10.00
+BR1,407,1,Booking / Escrow 10% (historic),paid,2025-11-05,122621.50,10.00
+BR1,711,1,Booking / Escrow 10% (historic),paid,2024-04-07,145670.90,10.00
+BR1,406,1,Booking / Escrow 10% (historic),paid,2024-11-07,95383.40,10.00
+BR1,611,1,Booking / Escrow 10% (historic),paid,2024-06-20,144670.90,10.00
+BR1,405,1,Booking / Escrow 10% (historic),paid,,93755.90,10.00
+BR1,102,1,Booking / Escrow 10% (historic),paid,2024-07-06,120396.50,10.00
+BR1,404,1,Booking / Escrow 10% (historic),paid,,94321.00,10.00
+BR1,610,1,Booking / Escrow 10% (historic),paid,2024-04-07,107772.20,10.00
+BR1,403,1,Booking / Escrow 10% (historic),paid,,94773.10,10.00
+BR1,710,1,Booking / Escrow 10% (historic),paid,2024-11-27,104536.60,10.00
+BR1,402,1,Booking / Escrow 10% (historic),paid,2024-08-09,123396.50,10.00
+BR1,609,1,Booking / Escrow 10% (historic),paid,2024-06-21,184389.70,10.00
+BR1,401,1,Booking / Escrow 10% (historic),paid,2024-07-06,132028.10,10.00
+BR1,103,1,Booking / Escrow 10% (historic),paid,2024-07-19,91773.10,10.00
+BR1,313,1,Booking / Escrow 10% (historic),paid,2024-07-18,187954.60,10.00
+BR1,607,1,Booking / Escrow 10% (historic),paid,2024-06-14,120882.86,10.00
+BR1,312,1,Booking / Escrow 10% (historic),paid,2024-07-22,189476.10,10.00
+BR1,709,1,Booking / Escrow 10% (historic),paid,2024-06-06,185389.70,10.00
+BR1,310,1,Booking / Escrow 10% (historic),paid,2024-12-19,100536.60,10.00
+BR1,606,1,Booking / Escrow 10% (historic),paid,2024-04-07,97383.40,10.00
+BR1,309,1,Booking / Escrow 10% (historic),paid,2024-08-09,181389.70,10.00
+BR1,201,1,Booking / Escrow 10% (historic),paid,2024-11-07,130028.10,10.00
+BR1,308,1,Booking / Escrow 10% (historic),paid,2024-10-02,184517.90,10.00
+BR1,605,1,Booking / Escrow 10% (historic),paid,2024-08-30,95755.90,10.00
+BR1,307,1,Booking / Escrow 10% (historic),paid,2024-07-12,121621.50,10.00
+BR1,204,1,Booking / Escrow 10% (historic),paid,2024-06-13,92321.00,10.00
+BR1,105,1,Booking / Escrow 10% (historic),paid,2024-07-24,90755.90,10.00
+BR1,306,1,Booking / Escrow 10% (historic),paid,2024-08-15,94383.40,10.00
+BR1,604,1,Booking / Escrow 10% (historic),paid,2025-12-23,96321.00,10.00
+BR1,305,1,Booking / Escrow 10% (historic),paid,2024-11-07,92755.90,10.00
+BR1,708,1,Booking / Escrow 10% (historic),paid,2024-12-27,188517.90,10.00
+BR1,304,1,Booking / Escrow 10% (historic),paid,2025-04-12,93321.00,10.00
+BR1,603,1,Booking / Escrow 10% (historic),paid,2024-07-05,96773.10,10.00
+BR1,303,1,Booking / Escrow 10% (historic),paid,2024-06-28,93773.10,10.00
+BR1,106,1,Booking / Escrow 10% (historic),paid,2024-10-28,92383.40,10.00
+BR1,302,1,Booking / Escrow 10% (historic),paid,2024-06-24,122396.50,10.00
+BR1,602,1,Booking / Escrow 10% (historic),paid,2024-06-11,125396.50,10.00
+BR1,301,1,Booking / Escrow 10% (historic),paid,2024-09-30,131028.10,10.00
+BR1,707,1,Booking / Escrow 10% (historic),paid,,125621.50,10.00
+BR1,213,1,Booking / Escrow 10% (historic),paid,2024-08-06,186954.60,10.00
+BR1,601,1,Booking / Escrow 10% (historic),paid,,134028.10,10.00
+BR1,205,1,Booking / Escrow 10% (historic),paid,2024-11-27,91755.90,10.00
+BR1,206,1,Booking / Escrow 10% (historic),paid,,93383.40,10.00
+BR1,207,1,Booking / Escrow 10% (historic),paid,2024-07-03,120621.50,10.00
+BR1,104,1,Booking / Escrow 10% (historic),paid,,91321.00,10.00
+BR1,104,1,Escrow 20% (historic),paid,,182642.00,20.00
+BR1,104,1,Further collections (05-10-2026 report),paid,,136955.00,0.00
+BR1,211,1,Booking / Escrow 10% (historic),paid,,140670.90,10.00
+BR1,211,1,Escrow 20% (historic),paid,,281341.80,20.00
+BR1,211,1,Further collections (05-10-2026 report),paid,,218427.21,0.00
+BR1,311,1,Booking / Escrow 10% (historic),paid,,141670.90,10.00
+BR1,311,1,Escrow 20% (historic),paid,,283341.80,20.00
+BR1,311,1,Further collections (05-10-2026 report),paid,,198337.84,0.00
+BR1,408,1,Booking / Escrow 10% (historic),paid,,151173.90,10.00
+BR1,408,1,Escrow 20% (historic),paid,,302347.80,20.00
+BR1,408,1,Further collections (05-10-2026 report),paid,,1497417.29,0.00
+BR1,608,1,Booking / Escrow 10% (historic),paid,,183767.54,10.00
+BR1,608,1,Escrow 20% (historic),paid,,367535.08,20.00
+BR1,608,1,Further collections (05-10-2026 report),paid,,367537.88,0.00
+BR1,212,1,Booking / Escrow 10% (historic),paid,,188476.10,10.00
+BR1,513,1,"Collected to date (historic, no schedule breakdown)",paid,,382908.60,0.00
+BR1,210,1,Booking / Escrow 10% (historic),paid,2024-08-16,99536.60,10.00
+BR1,107,1,Booking / Escrow 10% (historic),paid,2024-07-19,119621.50,10.00
+BR1,512,1,Booking / Escrow 10% (historic),paid,2024-07-26,191476.10,10.00
+BR1,706,1,Booking / Escrow 10% (historic),paid,2024-06-21,98383.40,10.00
+BR1,511,1,Booking / Escrow 10% (historic),paid,2024-07-08,143670.90,10.00
+BR1,108,1,Booking / Escrow 10% (historic),paid,2024-09-23,229013.00,10.00
+BR1,510,1,Booking / Escrow 10% (historic),paid,2024-07-05,102536.60,10.00
+BR1,705,1,Booking / Escrow 10% (historic),paid,2024-08-05,96755.90,10.00
+BR1,509,1,Booking / Escrow 10% (historic),paid,2024-06-28,181555.80,10.00
+BR1,109,1,"Collected to date (historic, no schedule breakdown)",paid,,613886.37,0.00
+BR1,508,1,Booking / Escrow 10% (historic),paid,2024-08-06,186517.90,10.00
+BR1,704,1,Booking / Escrow 10% (historic),paid,2024-07-05,97321.00,10.00
+BR1,507,1,Booking / Escrow 10% (historic),paid,2024-06-28,123621.50,10.00
+BR1,209,1,"Collected to date (historic, no schedule breakdown)",paid,,469197.18,0.00
+BR1,506,1,Booking / Escrow 10% (historic),paid,2024-08-16,96383.40,10.00
+BR1,703,1,Booking / Escrow 10% (historic),paid,2024-07-05,97773.10,10.00
+BR1,505,1,Booking / Escrow 10% (historic),paid,,94755.90,10.00
+BR1,713,1,Booking / Escrow 10% (historic),paid,,191954.60,10.00
+BR1,504,1,Booking / Escrow 10% (historic),paid,,95321.00,10.00
+BR1,702,1,Booking / Escrow 10% (historic),paid,2024-07-15,126396.50,10.00
+BR1,503,1,Booking / Escrow 10% (historic),paid,2024-07-05,95773.10,10.00
+BR1,203,1,Booking / Escrow 10% (historic),paid,2024-07-25,92773.10,10.00
+BR1,502,1,Booking / Escrow 10% (historic),paid,2024-12-10,124396.50,10.00
+BR1,202,1,Booking / Escrow 10% (historic),paid,2024-11-07,121396.50,10.00
+BR1,501,1,Booking / Escrow 10% (historic),paid,2024-09-24,133028.10,10.00
+BR1,208,1,"Collected to date (historic, no schedule breakdown)",paid,,400400.22,0.00
+BR1,413,1,Booking / Escrow 10% (historic),paid,,188954.60,10.00
+BR1,104,1,Outstanding balance (per reconciled source),pending,,502292.00,0.00
+BR1,211,1,Outstanding balance (per reconciled source),pending,,766269.09,0.00
+BR1,311,1,Outstanding balance (per reconciled source),pending,,793358.46,0.00
+BR1,608,1,Outstanding balance (per reconciled source),pending,,918834.92,0.00
+BR1,701,1,Booking / Escrow 10% (historic),paid,2024-07-08,135028.10,10.00
+BR1,412,1,Booking / Escrow 10% (historic),paid,2024-06-20,190476.10,10.00
+BR1,712,1,Booking / Escrow 10% (historic),paid,2024-11-27,193476.10,10.00
+BR1,411,1,Booking / Escrow 10% (historic),paid,,142670.90,10.00
+BR1,613,1,Booking / Escrow 10% (historic),paid,2024-07-03,190954.60,10.00
+BR1,410,1,Booking / Escrow 10% (historic),paid,,101536.60,10.00
+BR1,101,1,Booking / Escrow 10% (historic),paid,2024-07-22,129028.10,10.00
+BR1,502,2,Escrow 20% (historic),paid,,248793.00,20.00
+BR1,713,2,Escrow 20% (historic),paid,,383909.20,20.00
+BR1,712,2,Escrow 20% (historic),paid,2025-04-05,386952.20,20.00
+BR1,711,2,Escrow 20% (historic),paid,2026-06-16,291341.80,20.00
+BR1,710,2,Escrow 20% (historic),paid,2026-01-07,209073.20,20.00
+BR1,709,2,Escrow 20% (historic),paid,2024-07-21,370779.40,20.00
+BR1,708,2,Escrow 20% (historic),paid,2025-01-10,377035.80,20.00
+BR1,707,2,Escrow 20% (historic),paid,,251243.00,20.00
+BR1,706,2,Escrow 20% (historic),paid,2024-06-21,196766.80,20.00
+BR1,705,2,Escrow 20% (historic),paid,2025-02-05,193511.80,20.00
+BR1,704,2,Escrow 20% (historic),paid,2024-08-10,194642.00,20.00
+BR1,703,2,Escrow 20% (historic),paid,2024-08-10,195546.20,20.00
+BR1,702,2,Escrow 20% (historic),paid,2025-06-09,252793.00,20.00
+BR1,701,2,Escrow 20% (historic),paid,2025-02-27,270056.20,20.00
+BR1,613,2,Escrow 20% (historic),paid,2024-08-07,381909.20,20.00
+BR1,612,2,Escrow 20% (historic),paid,,384952.20,20.00
+BR1,611,2,Escrow 20% (historic),paid,2025-06-12,289341.80,20.00
+BR1,610,2,Escrow 20% (historic),paid,2026-06-16,215544.40,20.00
+BR1,609,2,Escrow 20% (historic),paid,,368779.40,20.00
+BR1,607,2,Escrow 20% (historic),paid,2024-06-26,241765.71,20.00
+BR1,606,2,Escrow 20% (historic),paid,2026-06-16,194766.80,20.00
+BR1,605,2,Escrow 20% (historic),paid,2024-12-11,191511.80,20.00
+BR1,604,2,Escrow 20% (historic),paid,2024-12-23,192642.00,20.00
+BR1,603,2,Escrow 20% (historic),paid,2024-12-11,193546.20,20.00
+BR1,602,2,Escrow 20% (historic),paid,2024-07-25,250793.00,20.00
+BR1,601,2,Escrow 20% (historic),paid,,268056.20,20.00
+BR1,512,2,Escrow 20% (historic),paid,2024-07-26,382952.20,20.00
+BR1,511,2,Escrow 20% (historic),paid,2024-08-21,287341.80,20.00
+BR1,510,2,Escrow 20% (historic),paid,2024-07-25,205073.20,20.00
+BR1,509,2,Escrow 20% (historic),paid,2024-08-02,363111.61,20.00
+BR1,508,2,Escrow 20% (historic),paid,2024-10-07,373035.80,20.00
+BR1,507,2,Escrow 20% (historic),paid,2024-11-08,247243.00,20.00
+BR1,506,2,Escrow 20% (historic),paid,2024-08-17,192766.80,20.00
+BR1,505,2,Escrow 20% (historic),paid,,189511.80,20.00
+BR1,504,2,Escrow 20% (historic),paid,,190642.00,20.00
+BR1,503,2,Escrow 20% (historic),paid,2024-12-11,191546.20,20.00
+BR1,501,2,Escrow 20% (historic),paid,2025-05-10,266056.20,20.00
+BR1,413,2,Escrow 20% (historic),paid,,377909.20,20.00
+BR1,412,2,Escrow 20% (historic),paid,2024-08-06,380952.20,20.00
+BR1,411,2,Escrow 20% (historic),paid,,285341.80,20.00
+BR1,410,2,Escrow 20% (historic),paid,,203073.20,20.00
+BR1,409,2,Escrow 20% (historic),paid,2024-08-01,361131.61,20.00
+BR1,407,2,Escrow 20% (historic),paid,,245243.00,20.00
+BR1,406,2,Escrow 20% (historic),paid,,190766.80,20.00
+BR1,405,2,Escrow 20% (historic),paid,,187511.80,20.00
+BR1,404,2,Escrow 20% (historic),paid,,188642.00,20.00
+BR1,403,2,Escrow 20% (historic),paid,,189546.20,20.00
+BR1,402,2,Escrow 20% (historic),paid,,246793.00,20.00
+BR1,401,2,Escrow 20% (historic),paid,2024-07-06,264056.20,20.00
+BR1,313,2,Escrow 20% (historic),paid,2024-08-13,375909.20,20.00
+BR1,312,2,Escrow 20% (historic),paid,2024-10-17,378952.20,20.00
+BR1,310,2,Escrow 20% (historic),paid,2025-07-01,201073.20,20.00
+BR1,309,2,Escrow 20% (historic),paid,2024-09-09,362779.40,20.00
+BR1,308,2,Escrow 20% (historic),paid,2024-12-30,369035.80,20.00
+BR1,307,2,Escrow 20% (historic),paid,2024-08-02,243243.00,20.00
+BR1,306,2,Escrow 20% (historic),paid,2024-08-15,188766.80,20.00
+BR1,305,2,Escrow 20% (historic),paid,,185511.80,20.00
+BR1,304,2,Escrow 20% (historic),paid,,186642.00,20.00
+BR1,303,2,Escrow 20% (historic),paid,2024-08-09,187546.20,20.00
+BR1,302,2,Escrow 20% (historic),paid,2025-03-17,244793.00,20.00
+BR1,301,2,Escrow 20% (historic),paid,,262056.20,20.00
+BR1,213,2,Escrow 20% (historic),paid,2024-07-10,373909.20,20.00
+BR1,212,2,Escrow 20% (historic),paid,,376952.20,20.00
+BR1,210,2,Escrow 20% (historic),paid,2024-12-23,199073.20,20.00
+BR1,207,2,Escrow 20% (historic),paid,2024-09-19,241243.00,20.00
+BR1,206,2,Escrow 20% (historic),paid,,186766.80,20.00
+BR1,205,2,Escrow 20% (historic),paid,2025-07-07,183511.80,20.00
+BR1,204,2,Escrow 20% (historic),paid,2024-07-23,184642.00,20.00
+BR1,203,2,Escrow 20% (historic),paid,2024-08-15,185546.20,20.00
+BR1,202,2,Escrow 20% (historic),paid,2025-04-17,242793.00,20.00
+BR1,108,2,Escrow 20% (historic),paid,2024-09-24,458026.00,20.00
+BR1,201,2,Escrow 20% (historic),paid,,260056.20,20.00
+BR1,107,2,Escrow 20% (historic),paid,2024-08-27,239243.00,20.00
+BR1,106,2,Escrow 20% (historic),paid,2024-12-30,184766.80,20.00
+BR1,105,2,Escrow 20% (historic),paid,2024-08-17,181511.80,20.00
+BR1,103,2,Escrow 20% (historic),paid,2024-09-03,183546.20,20.00
+BR1,102,2,Escrow 20% (historic),paid,2024-09-10,240793.00,20.00
+BR1,101,2,Escrow 20% (historic),paid,2024-12-16,258056.20,20.00
+BR1,109,2,Outstanding balance (per reconciled source),pending,,1557194.63,0.00
+BR1,208,2,Outstanding balance (per reconciled source),pending,,1434778.78,0.00
+BR1,209,2,Outstanding balance (per reconciled source),pending,,1334699.82,0.00
+BR1,513,2,Outstanding balance (per reconciled source),pending,,1516637.40,0.00
+BR1,205,3,"Further collections (historic, no breakdown)",paid,,137814.43,0.00
+BR1,206,3,"Further collections (historic, no breakdown)",paid,,217979.80,0.00
+BR1,207,3,"Further collections (historic, no breakdown)",paid,,181045.51,0.00
+BR1,609,3,"Further collections (historic, no breakdown)",paid,,184390.27,0.00
+BR1,607,3,"Further collections (historic, no breakdown)",paid,,169235.64,0.00
+BR1,210,3,"Further collections (historic, no breakdown)",paid,,139991.22,0.00
+BR1,212,3,"Further collections (historic, no breakdown)",paid,,264013.68,0.00
+BR1,213,3,"Further collections (historic, no breakdown)",paid,,149601.20,0.00
+BR1,301,3,"Further collections (historic, no breakdown)",paid,,18972.12,0.00
+BR1,302,3,"Further collections (historic, no breakdown)",paid,,122395.60,0.00
+BR1,303,3,"Further collections (historic, no breakdown)",paid,,84394.58,0.00
+BR1,304,3,"Further collections (historic, no breakdown)",paid,,145345.16,0.00
+BR1,305,3,"Further collections (historic, no breakdown)",paid,,104835.72,0.00
+BR1,307,3,"Further collections (historic, no breakdown)",paid,,182493.02,0.00
+BR1,308,3,"Further collections (historic, no breakdown)",paid,,169068.30,0.00
+BR1,309,3,"Further collections (historic, no breakdown)",paid,,236930.83,0.00
+BR1,310,3,"Further collections (historic, no breakdown)",paid,,10006.43,0.00
+BR1,312,3,"Further collections (historic, no breakdown)",paid,,227372.23,0.00
+BR1,313,3,"Further collections (historic, no breakdown)",paid,,263136.78,0.00
+BR1,401,3,"Further collections (historic, no breakdown)",paid,,307915.95,0.00
+BR1,402,3,"Further collections (historic, no breakdown)",paid,,175754.96,0.00
+BR1,403,3,"Further collections (historic, no breakdown)",paid,,152271.16,0.00
+BR1,404,3,"Further collections (historic, no breakdown)",paid,,160427.25,0.00
+BR1,405,3,"Further collections (historic, no breakdown)",paid,,159384.60,0.00
+BR1,406,3,"Further collections (historic, no breakdown)",paid,,66779.12,0.00
+BR1,407,3,"Further collections (historic, no breakdown)",paid,,183931.35,0.00
+BR1,409,3,"Further collections (historic, no breakdown)",paid,,273859.19,0.00
+BR1,410,3,"Further collections (historic, no breakdown)",paid,,231381.33,0.00
+BR1,411,3,"Further collections (historic, no breakdown)",paid,,199735.71,0.00
+BR1,412,3,"Further collections (historic, no breakdown)",paid,,190475.66,0.00
+BR1,413,3,"Further collections (historic, no breakdown)",paid,,135731.57,0.00
+BR1,501,3,"Further collections (historic, no breakdown)",paid,,53211.47,0.00
+BR1,502,3,"Further collections (historic, no breakdown)",paid,,227277.89,0.00
+BR1,503,3,"Further collections (historic, no breakdown)",paid,,143659.85,0.00
+BR1,504,3,"Further collections (historic, no breakdown)",paid,,162046.17,0.00
+BR1,505,3,"Further collections (historic, no breakdown)",paid,,161085.80,0.00
+BR1,506,3,"Further collections (historic, no breakdown)",paid,,144599.30,0.00
+BR1,507,3,"Further collections (historic, no breakdown)",paid,,160707.54,0.00
+BR1,508,3,"Further collections (historic, no breakdown)",paid,,118365.88,0.00
+BR1,106,3,"Further collections (historic, no breakdown)",paid,,2998.18,0.00
+BR1,603,3,"Further collections (historic, no breakdown)",paid,,141362.03,0.00
+BR1,604,3,"Further collections (historic, no breakdown)",paid,,154114.24,0.00
+BR1,509,3,"Further collections (historic, no breakdown)",paid,,277110.39,0.00
+BR1,605,3,"Further collections (historic, no breakdown)",paid,,153220.25,0.00
+BR1,707,3,"Further collections (historic, no breakdown)",paid,,207360.97,0.00
+BR1,602,3,"Further collections (historic, no breakdown)",paid,,200637.50,0.00
+BR1,510,3,"Further collections (historic, no breakdown)",paid,,254330.20,0.00
+BR1,709,3,"Further collections (historic, no breakdown)",paid,,278085.87,0.00
+BR1,511,3,"Further collections (historic, no breakdown)",paid,,201137.20,0.00
+BR1,713,3,"Further collections (historic, no breakdown)",paid,,157636.58,0.00
+BR1,512,3,"Further collections (historic, no breakdown)",paid,,172306.83,0.00
+BR1,611,3,"Further collections (historic, no breakdown)",paid,,216990.89,0.00
+BR1,601,3,"Further collections (historic, no breakdown)",paid,,201040.17,0.00
+BR1,703,3,"Further collections (historic, no breakdown)",paid,,146659.45,0.00
+BR1,702,3,"Further collections (historic, no breakdown)",paid,,189604.10,0.00
+BR1,613,3,"Further collections (historic, no breakdown)",paid,,286469.88,0.00
+BR1,612,3,"Further collections (historic, no breakdown)",paid,,288967.19,0.00
+BR1,610,3,"Further collections (historic, no breakdown)",paid,,140230.49,0.00
+BR1,706,3,"Further collections (historic, no breakdown)",paid,,196874.85,0.00
+BR1,101,3,"Further collections (historic, no breakdown)",paid,,301017.81,0.00
+BR1,102,3,"Further collections (historic, no breakdown)",paid,,96324.02,0.00
+BR1,710,3,"Further collections (historic, no breakdown)",paid,,104599.36,0.00
+BR1,103,3,"Further collections (historic, no breakdown)",paid,,45887.81,0.00
+BR1,711,3,"Further collections (historic, no breakdown)",paid,,184797.40,0.00
+BR1,105,3,"Further collections (historic, no breakdown)",paid,,127068.20,0.00
+BR1,712,3,"Further collections (historic, no breakdown)",paid,,162047.90,0.00
+BR1,107,3,"Further collections (historic, no breakdown)",paid,,83733.01,0.00
+BR1,306,3,"Further collections (historic, no breakdown)",paid,,143541.05,0.00
+BR1,201,3,"Further collections (historic, no breakdown)",paid,,13002.92,0.00
+BR1,606,3,"Further collections (historic, no breakdown)",paid,,126237.52,0.00
+BR1,202,3,"Further collections (historic, no breakdown)",paid,,11442.51,0.00
+BR1,701,3,"Further collections (historic, no breakdown)",paid,,143447.54,0.00
+BR1,708,3,"Further collections (historic, no breakdown)",paid,,129996.41,0.00
+BR1,704,3,"Further collections (historic, no breakdown)",paid,,145972.50,0.00
+BR1,108,3,"Further collections (historic, no breakdown)",paid,,1568687.22,0.00
+BR1,203,3,"Further collections (historic, no breakdown)",paid,,148477.81,0.00
+BR1,705,3,"Further collections (historic, no breakdown)",paid,,110243.35,0.00
+BR1,204,3,"Further collections (historic, no breakdown)",paid,,147711.00,0.00
+BR1,712,4,Outstanding balance (per reconciled source),pending,,1192284.80,0.00
+BR1,204,4,Outstanding balance (per reconciled source),pending,,498536.00,0.00
+BR1,203,4,Outstanding balance (per reconciled source),pending,,500933.89,0.00
+BR1,202,4,Outstanding balance (per reconciled source),pending,,838332.99,0.00
+BR1,201,4,Outstanding balance (per reconciled source),pending,,897193.78,0.00
+BR1,108,4,Outstanding balance (per reconciled source),pending,,34403.78,0.00
+BR1,107,4,Outstanding balance (per reconciled source),pending,,753617.49,0.00
+BR1,106,4,Outstanding balance (per reconciled source),pending,,643685.62,0.00
+BR1,105,4,Outstanding balance (per reconciled source),pending,,508223.10,0.00
+BR1,103,4,Outstanding balance (per reconciled source),pending,,596523.89,0.00
+BR1,102,4,Outstanding balance (per reconciled source),pending,,746451.48,0.00
+BR1,101,4,Outstanding balance (per reconciled source),pending,,602178.89,0.00
+BR1,205,4,Outstanding balance (per reconciled source),pending,,504476.87,0.00
+BR1,206,4,Outstanding balance (per reconciled source),pending,,435704.00,0.00
+BR1,207,4,Outstanding balance (per reconciled source),pending,,663304.99,0.00
+BR1,210,4,Outstanding balance (per reconciled source),pending,,556764.98,0.00
+BR1,212,4,Outstanding balance (per reconciled source),pending,,1055319.02,0.00
+BR1,213,4,Outstanding balance (per reconciled source),pending,,1159081.00,0.00
+BR1,301,4,Outstanding balance (per reconciled source),pending,,898224.58,0.00
+BR1,302,4,Outstanding balance (per reconciled source),pending,,734379.90,0.00
+BR1,303,4,Outstanding balance (per reconciled source),pending,,572017.12,0.00
+BR1,304,4,Outstanding balance (per reconciled source),pending,,507901.84,0.00
+BR1,305,4,Outstanding balance (per reconciled source),pending,,544455.58,0.00
+BR1,306,4,Outstanding balance (per reconciled source),pending,,517142.75,0.00
+BR1,307,4,Outstanding balance (per reconciled source),pending,,668857.48,0.00
+BR1,308,4,Outstanding balance (per reconciled source),pending,,1122557.00,0.00
+BR1,309,4,Outstanding balance (per reconciled source),pending,,1032797.07,0.00
+BR1,310,4,Outstanding balance (per reconciled source),pending,,693749.77,0.00
+BR1,312,4,Outstanding balance (per reconciled source),pending,,1098960.47,0.00
+BR1,313,4,Outstanding balance (per reconciled source),pending,,1052545.42,0.00
+BR1,401,4,Outstanding balance (per reconciled source),pending,,616280.75,0.00
+BR1,402,4,Outstanding balance (per reconciled source),pending,,688020.54,0.00
+BR1,403,4,Outstanding balance (per reconciled source),pending,,511140.54,0.00
+BR1,404,4,Outstanding balance (per reconciled source),pending,,499819.75,0.00
+BR1,405,4,Outstanding balance (per reconciled source),pending,,496906.70,0.00
+BR1,406,4,Outstanding balance (per reconciled source),pending,,600904.68,0.00
+BR1,407,4,Outstanding balance (per reconciled source),pending,,674419.15,0.00
+BR1,409,4,Outstanding balance (per reconciled source),pending,,990101.43,0.00
+BR1,410,4,Outstanding balance (per reconciled source),pending,,479374.87,0.00
+BR1,411,4,Outstanding balance (per reconciled source),pending,,798960.59,0.00
+BR1,412,4,Outstanding balance (per reconciled source),pending,,1142857.04,0.00
+BR1,413,4,Outstanding balance (per reconciled source),pending,,1186950.63,0.00
+BR1,501,4,Outstanding balance (per reconciled source),pending,,877985.23,0.00
+BR1,502,4,Outstanding balance (per reconciled source),pending,,643497.61,0.00
+BR1,503,4,Outstanding balance (per reconciled source),pending,,526751.85,0.00
+BR1,504,4,Outstanding balance (per reconciled source),pending,,505200.83,0.00
+BR1,505,4,Outstanding balance (per reconciled source),pending,,502205.50,0.00
+BR1,506,4,Outstanding balance (per reconciled source),pending,,530084.50,0.00
+BR1,507,4,Outstanding balance (per reconciled source),pending,,704642.96,0.00
+BR1,508,4,Outstanding balance (per reconciled source),pending,,1187259.42,0.00
+BR1,509,4,Outstanding balance (per reconciled source),pending,,993780.23,0.00
+BR1,510,4,Outstanding balance (per reconciled source),pending,,463426.00,0.00
+BR1,511,4,Outstanding balance (per reconciled source),pending,,804559.10,0.00
+BR1,512,4,Outstanding balance (per reconciled source),pending,,1168025.87,0.00
+BR1,601,4,Outstanding balance (per reconciled source),pending,,737156.53,0.00
+BR1,602,4,Outstanding balance (per reconciled source),pending,,677138.00,0.00
+BR1,603,4,Outstanding balance (per reconciled source),pending,,536049.67,0.00
+BR1,604,4,Outstanding balance (per reconciled source),pending,,520132.76,0.00
+BR1,605,4,Outstanding balance (per reconciled source),pending,,517071.05,0.00
+BR1,606,4,Outstanding balance (per reconciled source),pending,,555446.28,0.00
+BR1,607,4,Outstanding balance (per reconciled source),pending,,676944.35,0.00
+BR1,609,4,Outstanding balance (per reconciled source),pending,,1106337.63,0.00
+BR1,610,4,Outstanding balance (per reconciled source),pending,,614174.91,0.00
+BR1,611,4,Outstanding balance (per reconciled source),pending,,795705.41,0.00
+BR1,612,4,Outstanding balance (per reconciled source),pending,,1058365.51,0.00
+BR1,613,4,Outstanding balance (per reconciled source),pending,,1050212.32,0.00
+BR1,701,4,Outstanding balance (per reconciled source),pending,,801749.16,0.00
+BR1,702,4,Outstanding balance (per reconciled source),pending,,695171.40,0.00
+BR1,703,4,Outstanding balance (per reconciled source),pending,,537752.25,0.00
+BR1,704,4,Outstanding balance (per reconciled source),pending,,535274.50,0.00
+BR1,705,4,Outstanding balance (per reconciled source),pending,,567047.95,0.00
+BR1,706,4,Outstanding balance (per reconciled source),pending,,491808.95,0.00
+BR1,707,4,Outstanding balance (per reconciled source),pending,,671989.53,0.00
+BR1,708,4,Outstanding balance (per reconciled source),pending,,1189628.89,0.00
+BR1,709,4,Outstanding balance (per reconciled source),pending,,1019642.03,0.00
+BR1,710,4,Outstanding balance (per reconciled source),pending,,627156.84,0.00
+BR1,711,4,Outstanding balance (per reconciled source),pending,,834898.90,0.00
+BR1,713,4,Outstanding balance (per reconciled source),pending,,1186045.62,0.00
+BR2,413,1,Booking / Escrow 10% (historic),paid,,113776.69,10.00
+BR2,104,1,Outstanding balance (per reconciled source),pending,,649916.12,0.00
+BR2,104,1,Booking / Escrow 10% (historic),paid,,102486.71,10.00
+BR2,104,1,Escrow 20% (historic),paid,,204973.42,20.00
+BR2,104,1,Further collections (05-10-2026 report),paid,,67490.85,0.00
+BR2,106,1,Booking / Escrow 10% (historic),paid,,156548.69,10.00
+BR2,107,1,Booking / Escrow 10% (historic),paid,2025-02-12,106590.17,10.00
+BR2,101,1,Booking / Escrow 10% (historic),paid,2024-11-07,220958.11,10.00
+BR2,102,1,Booking / Escrow 10% (historic),paid,2024-11-25,106867.06,10.00
+BR2,103,1,Booking / Escrow 10% (historic),paid,2024-10-01,166944.05,10.00
+BR2,105,1,"Collected to date (historic, no schedule breakdown)",paid,,115231.06,0.00
+BR2,108,1,Booking / Escrow 10% (historic),paid,2024-11-06,106895.00,10.00
+BR2,109,1,"Collected to date (historic, no schedule breakdown)",paid,,538680.10,0.00
+BR2,201,1,Booking / Escrow 10% (historic),paid,2026-02-16,222812.95,10.00
+BR2,202,1,Booking / Escrow 10% (historic),paid,2026-06-11,107639.60,10.00
+BR2,203,1,Booking / Escrow 10% (historic),paid,2024-11-12,104985.75,10.00
+BR2,204,1,Booking / Escrow 10% (historic),paid,2025-03-06,105770.76,10.00
+BR2,205,1,Booking / Escrow 10% (historic),paid,,104906.90,10.00
+BR2,206,1,Booking / Escrow 10% (historic),paid,,268286.46,10.00
+BR2,207,1,"Collected to date (historic, no schedule breakdown)",paid,,473280.20,0.00
+BR2,208,1,Booking / Escrow 10% (historic),paid,2025-02-25,105659.62,10.00
+BR2,209,1,Booking / Escrow 10% (historic),paid,2024-10-04,157113.65,10.00
+BR2,210,1,Booking / Escrow 10% (historic),paid,2024-11-08,107365.49,10.00
+BR2,211,1,Booking / Escrow 10% (historic),paid,2025-11-18,210879.86,10.00
+BR2,301,1,"Collected to date (historic, no schedule breakdown)",paid,,444185.00,0.00
+BR2,302,1,Booking / Escrow 10% (historic),paid,2024-11-20,108665.55,10.00
+BR2,303,1,Booking / Escrow 10% (historic),paid,,170518.06,10.00
+BR2,304,1,"Collected to date (historic, no schedule breakdown)",paid,,269721.01,0.00
+BR2,305,1,Booking / Escrow 10% (historic),paid,,264814.19,10.00
+BR2,306,1,Booking / Escrow 10% (historic),paid,2024-11-04,108970.36,10.00
+BR2,307,1,Booking / Escrow 10% (historic),paid,2024-09-29,111325.36,10.00
+BR2,308,1,Booking / Escrow 10% (historic),paid,2024-09-28,108568.46,10.00
+BR2,309,1,Booking / Escrow 10% (historic),paid,2025-12-16,271448.62,10.00
+BR2,310,1,Booking / Escrow 10% (historic),paid,2024-11-02,104843.72,10.00
+BR2,311,1,Booking / Escrow 10% (historic),paid,2024-10-21,164667.49,10.00
+BR2,312,1,Booking / Escrow 10% (historic),paid,2025-01-03,108383.97,10.00
+BR2,313,1,Booking / Escrow 10% (historic),paid,2026-02-17,111267.23,10.00
+BR2,314,1,Booking / Escrow 10% (historic),paid,2024-12-20,197787.91,10.00
+BR2,401,1,Booking / Escrow 10% (historic),paid,,232771.39,10.00
+BR2,402,1,Booking / Escrow 10% (historic),paid,2024-11-08,109448.67,10.00
+BR2,403,1,Booking / Escrow 10% (historic),paid,2025-10-06,106632.58,10.00
+BR2,404,1,Booking / Escrow 10% (historic),paid,2024-11-13,107415.97,10.00
+BR2,405,1,Booking / Escrow 10% (historic),paid,2025-05-31,106527.08,10.00
+BR2,406,1,Booking / Escrow 10% (historic),paid,2025-04-07,238581.80,10.00
+BR2,407,1,Booking / Escrow 10% (historic),paid,2024-11-15,109836.66,10.00
+BR2,408,1,Booking / Escrow 10% (historic),paid,2025-01-17,112057.43,10.00
+BR2,409,1,Booking / Escrow 10% (historic),paid,2026-03-26,279085.05,10.00
+BR2,410,1,Booking / Escrow 10% (historic),paid,2025-02-06,105659.62,10.00
+BR2,411,1,Booking / Escrow 10% (historic),paid,2025-11-06,160166.66,10.00
+BR2,412,1,Booking / Escrow 10% (historic),paid,2025-02-19,109156.90,10.00
+BR2,414,1,Booking / Escrow 10% (historic),paid,2024-11-07,222969.22,10.00
+BR2,501,1,Booking / Escrow 10% (historic),paid,2024-11-19,234187.55,10.00
+BR2,502,1,Booking / Escrow 10% (historic),paid,2024-11-20,110353.20,10.00
+BR2,503,1,Booking / Escrow 10% (historic),paid,2024-11-11,110697.09,10.00
+BR2,504,1,Booking / Escrow 10% (historic),paid,2024-10-31,104941.18,10.00
+BR2,505,1,Booking / Escrow 10% (historic),paid,2025-03-06,107337.18,10.00
+BR2,506,1,Booking / Escrow 10% (historic),paid,2025-02-27,270582.65,10.00
+BR2,507,1,Booking / Escrow 10% (historic),paid,2025-04-03,110694.76,10.00
+BR2,508,1,Booking / Escrow 10% (historic),paid,2024-10-29,111699.52,10.00
+BR2,509,1,Booking / Escrow 10% (historic),paid,2024-11-04,239687.90,10.00
+BR2,510,1,Booking / Escrow 10% (historic),paid,2025-05-30,108107.33,10.00
+BR2,511,1,Booking / Escrow 10% (historic),paid,2025-01-22,167944.45,10.00
+BR2,512,1,Booking / Escrow 10% (historic),paid,,110190.37,10.00
+BR2,513,1,"Collected to date (historic, no schedule breakdown)",paid,,325636.38,0.00
+BR2,514,1,Booking / Escrow 10% (historic),paid,2024-11-11,197130.80,10.00
+BR2,515,1,Booking / Escrow 10% (historic),paid,2025-02-21,214230.02,10.00
+BR2,601,1,Booking / Escrow 10% (historic),paid,2025-02-28,234615.03,10.00
+BR2,602,1,Booking / Escrow 10% (historic),paid,2025-07-08,111382.19,10.00
+BR2,603,1,Booking / Escrow 10% (historic),paid,2024-11-13,111530.47,10.00
+BR2,604,1,Booking / Escrow 10% (historic),paid,2025-12-23,109089.06,10.00
+BR2,605,1,Booking / Escrow 10% (historic),paid,2025-01-29,108147.27,10.00
+BR2,606,1,Booking / Escrow 10% (historic),paid,,240279.20,10.00
+BR2,607,1,"Collected to date (historic, no schedule breakdown)",paid,,327891.72,0.00
+BR2,608,1,Booking / Escrow 10% (historic),paid,2024-10-18,111133.07,10.00
+BR2,609,1,Booking / Escrow 10% (historic),paid,2024-10-31,243847.21,10.00
+BR2,610,1,Booking / Escrow 10% (historic),paid,,107291.43,10.00
+BR2,611,1,Booking / Escrow 10% (historic),paid,2025-10-27,157878.57,10.00
+BR2,612,1,Booking / Escrow 10% (historic),paid,,110961.17,10.00
+BR2,613,1,Booking / Escrow 10% (historic),paid,2024-11-13,228938.69,10.00
+BR2,614,1,"Collected to date (historic, no schedule breakdown)",paid,,249000.00,0.00
+BR2,615,1,Booking / Escrow 10% (historic),paid,2025-08-13,123475.51,10.00
+BR2,701,1,Booking / Escrow 10% (historic),paid,2024-10-30,110050.74,10.00
+BR2,702,1,Booking / Escrow 10% (historic),paid,,113436.98,10.00
+BR2,703,1,Booking / Escrow 10% (historic),paid,2025-07-02,109918.63,10.00
+BR2,704,1,Booking / Escrow 10% (historic),paid,,108957.36,10.00
+BR2,706,1,Booking / Escrow 10% (historic),paid,2024-11-04,248293.17,10.00
+BR2,707,1,Booking / Escrow 10% (historic),paid,2024-11-05,109739.14,10.00
+BR2,708,1,Booking / Escrow 10% (historic),paid,2024-11-29,159410.71,10.00
+BR2,710,1,Booking / Escrow 10% (historic),paid,2024-11-07,112330.45,10.00
+BR2,711,1,Booking / Escrow 10% (historic),paid,2024-11-04,220043.28,10.00
+BR2,712,1,Booking / Escrow 10% (historic),paid,2025-03-05,200409.98,10.00
+BR2,713,1,Booking / Escrow 10% (historic),paid,2025-09-29,113681.21,10.00
+BR2,209,2,Escrow 20% (historic),paid,2025-03-01,314227.31,20.00
+BR2,105,2,Outstanding balance (per reconciled source),pending,,917077.43,0.00
+BR2,510,2,Escrow 20% (historic),paid,,216214.67,20.00
+BR2,404,2,Escrow 20% (historic),paid,2026-05-25,214831.94,20.00
+BR2,707,2,Escrow 20% (historic),paid,2025-07-04,219478.29,20.00
+BR2,511,2,Escrow 20% (historic),paid,2025-04-03,335888.90,20.00
+BR2,305,2,Escrow 20% (historic),paid,,529628.38,20.00
+BR2,706,2,Escrow 20% (historic),paid,2024-09-27,496586.33,20.00
+BR2,512,2,Escrow 20% (historic),paid,,220380.73,20.00
+BR2,208,2,Escrow 20% (historic),paid,,211319.24,20.00
+BR2,704,2,Escrow 20% (historic),paid,,217914.72,20.00
+BR2,109,2,Outstanding balance (per reconciled source),pending,,1524720.78,0.00
+BR2,514,2,Escrow 20% (historic),paid,,394261.61,20.00
+BR2,405,2,Escrow 20% (historic),paid,2026-06-16,213054.17,20.00
+BR2,703,2,Escrow 20% (historic),paid,,219837.26,20.00
+BR2,515,2,Escrow 20% (historic),paid,2025-02-21,428460.04,20.00
+BR2,312,2,Escrow 20% (historic),paid,2025-08-28,216767.93,20.00
+BR2,702,2,Escrow 20% (historic),paid,,226873.95,20.00
+BR2,601,2,Escrow 20% (historic),paid,2025-07-17,469230.07,20.00
+BR2,206,2,Escrow 20% (historic),paid,,536572.93,20.00
+BR2,701,2,Escrow 20% (historic),paid,2025-09-01,220101.47,20.00
+BR2,602,2,Escrow 20% (historic),paid,2026-03-05,222764.38,20.00
+BR2,406,2,Escrow 20% (historic),paid,2026-06-16,477163.61,20.00
+BR2,615,2,Escrow 20% (historic),paid,,246951.01,20.00
+BR2,603,2,Escrow 20% (historic),paid,2025-09-20,223060.95,20.00
+BR2,307,2,Escrow 20% (historic),paid,2025-01-16,222650.71,20.00
+BR2,304,2,Outstanding balance (per reconciled source),pending,,787448.92,0.00
+BR2,604,2,Escrow 20% (historic),paid,,218178.11,20.00
+BR2,205,2,Escrow 20% (historic),paid,,209813.80,20.00
+BR2,613,2,Escrow 20% (historic),paid,2025-09-20,457877.37,20.00
+BR2,605,2,Escrow 20% (historic),paid,2025-10-25,216294.54,20.00
+BR2,407,2,Escrow 20% (historic),paid,2025-04-07,219673.33,20.00
+BR2,612,2,Escrow 20% (historic),paid,,221922.34,20.00
+BR2,606,2,Escrow 20% (historic),paid,,480558.40,20.00
+BR2,303,2,Escrow 20% (historic),paid,,341036.12,20.00
+BR2,301,2,Outstanding balance (per reconciled source),pending,,1776689.58,0.00
+BR2,207,2,Outstanding balance (per reconciled source),pending,,1863119.66,0.00
+BR2,608,2,Escrow 20% (historic),paid,,222266.14,20.00
+BR2,204,2,Escrow 20% (historic),paid,2025-03-06,211541.52,20.00
+BR2,611,2,Escrow 20% (historic),paid,,315757.14,20.00
+BR2,609,2,Escrow 20% (historic),paid,2026-10-31,487694.42,20.00
+BR2,408,2,Escrow 20% (historic),paid,2025-01-17,224114.86,20.00
+BR2,610,2,Escrow 20% (historic),paid,,214582.86,20.00
+BR2,308,2,Escrow 20% (historic),paid,2024-11-30,217136.92,20.00
+BR2,614,2,Outstanding balance (per reconciled source),pending,,933473.04,0.00
+BR2,409,2,Escrow 20% (historic),paid,2026-03-26,558170.11,20.00
+BR2,313,2,Escrow 20% (historic),paid,,222534.46,20.00
+BR2,203,2,Escrow 20% (historic),paid,2025-09-09,209971.49,20.00
+BR2,410,2,Escrow 20% (historic),paid,,211319.24,20.00
+BR2,310,2,Escrow 20% (historic),paid,2025-04-02,209687.43,20.00
+BR2,202,2,Escrow 20% (historic),paid,,215279.20,20.00
+BR2,411,2,Escrow 20% (historic),paid,2025-04-11,320333.33,20.00
+BR2,302,2,Escrow 20% (historic),paid,2025-04-18,217331.10,20.00
+BR2,201,2,Escrow 20% (historic),paid,,445625.89,20.00
+BR2,412,2,Escrow 20% (historic),paid,2025-04-10,218313.80,20.00
+BR2,314,2,Escrow 20% (historic),paid,2025-02-28,395575.82,20.00
+BR2,108,2,Escrow 20% (historic),paid,2025-04-02,213790.00,20.00
+BR2,413,2,Escrow 20% (historic),paid,,227553.37,20.00
+BR2,309,2,Escrow 20% (historic),paid,,542897.24,20.00
+BR2,103,2,Escrow 20% (historic),paid,2025-11-05,333888.11,20.00
+BR2,414,2,Escrow 20% (historic),paid,2025-03-28,445938.43,20.00
+BR2,211,2,Escrow 20% (historic),paid,,421759.72,20.00
+BR2,102,2,Escrow 20% (historic),paid,2026-02-17,213734.11,20.00
+BR2,501,2,Escrow 20% (historic),paid,2025-06-28,468375.09,20.00
+BR2,401,2,Escrow 20% (historic),paid,,465542.78,20.00
+BR2,101,2,Escrow 20% (historic),paid,2026-06-08,441916.22,20.00
+BR2,502,2,Escrow 20% (historic),paid,2025-04-03,220706.41,20.00
+BR2,306,2,Escrow 20% (historic),paid,2025-09-06,217940.73,20.00
+BR2,107,2,Escrow 20% (historic),paid,2026-06-09,213180.33,20.00
+BR2,503,2,Escrow 20% (historic),paid,2025-05-31,221394.18,20.00
+BR2,607,2,Outstanding balance (per reconciled source),pending,,810622.69,0.00
+BR2,106,2,Escrow 20% (historic),paid,,313097.38,20.00
+BR2,504,2,Escrow 20% (historic),paid,2024-11-21,209882.37,20.00
+BR2,402,2,Escrow 20% (historic),paid,2025-03-19,218897.34,20.00
+BR2,713,2,Escrow 20% (historic),paid,,227362.42,20.00
+BR2,505,2,Escrow 20% (historic),paid,2025-03-06,214674.35,20.00
+BR2,311,2,Escrow 20% (historic),paid,2025-03-08,329334.97,20.00
+BR2,712,2,Escrow 20% (historic),paid,,400819.95,20.00
+BR2,506,2,Escrow 20% (historic),paid,2025-09-01,541165.30,20.00
+BR2,210,2,Escrow 20% (historic),paid,2025-04-03,214730.97,20.00
+BR2,711,2,Escrow 20% (historic),paid,2024-12-09,440086.57,20.00
+BR2,507,2,Escrow 20% (historic),paid,,221389.53,20.00
+BR2,403,2,Escrow 20% (historic),paid,,213265.16,20.00
+BR2,710,2,Escrow 20% (historic),paid,2025-04-29,224660.89,20.00
+BR2,508,2,Escrow 20% (historic),paid,2025-04-02,223399.04,20.00
+BR2,513,2,Outstanding balance (per reconciled source),pending,,779812.92,0.00
+BR2,708,2,Escrow 20% (historic),paid,2025-03-27,318821.43,20.00
+BR2,509,2,Escrow 20% (historic),paid,2024-12-09,479375.81,20.00
+BR2,408,3,"Further collections (historic, no breakdown)",paid,,108242.09,0.00
+BR2,308,3,"Further collections (historic, no breakdown)",paid,,139284.85,0.00
+BR2,309,3,"Further collections (historic, no breakdown)",paid,,13402.05,0.00
+BR2,310,3,"Further collections (historic, no breakdown)",paid,,131884.28,0.00
+BR2,311,3,"Further collections (historic, no breakdown)",paid,,137733.89,0.00
+BR2,312,3,"Further collections (historic, no breakdown)",paid,,103543.90,0.00
+BR2,313,3,"Further collections (historic, no breakdown)",paid,,140085.74,0.00
+BR2,314,3,"Further collections (historic, no breakdown)",paid,,124674.80,0.00
+BR2,401,3,"Further collections (historic, no breakdown)",paid,,262063.16,0.00
+BR2,402,3,"Further collections (historic, no breakdown)",paid,,148833.17,0.00
+BR2,403,3,"Further collections (historic, no breakdown)",paid,,123294.27,0.00
+BR2,404,3,"Further collections (historic, no breakdown)",paid,,123709.01,0.00
+BR2,405,3,"Further collections (historic, no breakdown)",paid,,123184.23,0.00
+BR2,406,3,"Further collections (historic, no breakdown)",paid,,220722.56,0.00
+BR2,407,3,"Further collections (historic, no breakdown)",paid,,137451.88,0.00
+BR2,409,3,"Further collections (historic, no breakdown)",paid,,142657.38,0.00
+BR2,410,3,"Further collections (historic, no breakdown)",paid,,58827.77,0.00
+BR2,411,3,"Further collections (historic, no breakdown)",paid,,213720.82,0.00
+BR2,412,3,"Further collections (historic, no breakdown)",paid,,49252.72,0.00
+BR2,413,3,"Further collections (historic, no breakdown)",paid,,233566.94,0.00
+BR2,414,3,"Further collections (historic, no breakdown)",paid,,298855.56,0.00
+BR2,501,3,"Further collections (historic, no breakdown)",paid,,287023.03,0.00
+BR2,502,3,"Further collections (historic, no breakdown)",paid,,138423.57,0.00
+BR2,503,3,"Further collections (historic, no breakdown)",paid,,105627.39,0.00
+BR2,504,3,"Further collections (historic, no breakdown)",paid,,142382.61,0.00
+BR2,505,3,"Further collections (historic, no breakdown)",paid,,27287.62,0.00
+BR2,506,3,"Further collections (historic, no breakdown)",paid,,384817.72,0.00
+BR2,507,3,"Further collections (historic, no breakdown)",paid,,149818.94,0.00
+BR2,508,3,"Further collections (historic, no breakdown)",paid,,140040.02,0.00
+BR2,509,3,"Further collections (historic, no breakdown)",paid,,341567.73,0.00
+BR2,510,3,"Further collections (historic, no breakdown)",paid,,115645.13,0.00
+BR2,511,3,"Further collections (historic, no breakdown)",paid,,207474.27,0.00
+BR2,512,3,"Further collections (historic, no breakdown)",paid,,2961.68,0.00
+BR2,514,3,"Further collections (historic, no breakdown)",paid,,184300.71,0.00
+BR2,515,3,"Further collections (historic, no breakdown)",paid,,198807.31,0.00
+BR2,601,3,"Further collections (historic, no breakdown)",paid,,193630.73,0.00
+BR2,602,3,"Further collections (historic, no breakdown)",paid,,228710.86,0.00
+BR2,603,3,"Further collections (historic, no breakdown)",paid,,74679.75,0.00
+BR2,604,3,"Further collections (historic, no breakdown)",paid,,158720.93,0.00
+BR2,605,3,"Further collections (historic, no breakdown)",paid,,32443.91,0.00
+BR2,606,3,"Further collections (historic, no breakdown)",paid,,486662.40,0.00
+BR2,608,3,"Further collections (historic, no breakdown)",paid,,139372.26,0.00
+BR2,609,3,"Further collections (historic, no breakdown)",paid,,399116.20,0.00
+BR2,610,3,"Further collections (historic, no breakdown)",paid,,138040.71,0.00
+BR2,611,3,"Further collections (historic, no breakdown)",paid,,5913.17,0.00
+BR2,612,3,"Further collections (historic, no breakdown)",paid,,123065.44,0.00
+BR2,613,3,"Further collections (historic, no breakdown)",paid,,212044.20,0.00
+BR2,615,3,"Further collections (historic, no breakdown)",paid,,80148.17,0.00
+BR2,701,3,"Further collections (historic, no breakdown)",paid,,149065.23,0.00
+BR2,702,3,"Further collections (historic, no breakdown)",paid,,111600.59,0.00
+BR2,703,3,"Further collections (historic, no breakdown)",paid,,137667.16,0.00
+BR2,704,3,"Further collections (historic, no breakdown)",paid,,136755.49,0.00
+BR2,706,3,"Further collections (historic, no breakdown)",paid,,204634.44,0.00
+BR2,707,3,"Further collections (historic, no breakdown)",paid,,148663.01,0.00
+BR2,708,3,"Further collections (historic, no breakdown)",paid,,117436.84,0.00
+BR2,710,3,"Further collections (historic, no breakdown)",paid,,50931.65,0.00
+BR2,711,3,"Further collections (historic, no breakdown)",paid,,314052.59,0.00
+BR2,712,3,"Further collections (historic, no breakdown)",paid,,126041.25,0.00
+BR2,713,3,"Further collections (historic, no breakdown)",paid,,85526.45,0.00
+BR2,106,3,"Further collections (historic, no breakdown)",paid,,1164459.94,0.00
+BR2,101,3,"Further collections (historic, no breakdown)",paid,,204862.60,0.00
+BR2,102,3,"Further collections (historic, no breakdown)",paid,,91472.16,0.00
+BR2,103,3,"Further collections (historic, no breakdown)",paid,,22694.41,0.00
+BR2,107,3,"Further collections (historic, no breakdown)",paid,,91295.59,0.00
+BR2,108,3,"Further collections (historic, no breakdown)",paid,,144964.43,0.00
+BR2,201,3,"Further collections (historic, no breakdown)",paid,,273364.07,0.00
+BR2,202,3,"Further collections (historic, no breakdown)",paid,,38365.83,0.00
+BR2,203,3,"Further collections (historic, no breakdown)",paid,,131985.89,0.00
+BR2,204,3,"Further collections (historic, no breakdown)",paid,,31986.88,0.00
+BR2,205,3,"Further collections (historic, no breakdown)",paid,,215815.39,0.00
+BR2,206,3,"Further collections (historic, no breakdown)",paid,,536573.61,0.00
+BR2,208,3,"Further collections (historic, no breakdown)",paid,,36401.09,0.00
+BR2,209,3,"Further collections (historic, no breakdown)",paid,,193932.46,0.00
+BR2,210,3,"Further collections (historic, no breakdown)",paid,,134668.07,0.00
+BR2,211,3,"Further collections (historic, no breakdown)",paid,,306274.53,0.00
+BR2,302,3,"Further collections (historic, no breakdown)",paid,,136400.13,0.00
+BR2,303,3,"Further collections (historic, no breakdown)",paid,,210628.39,0.00
+BR2,305,3,"Further collections (historic, no breakdown)",paid,,191369.60,0.00
+BR2,306,3,"Further collections (historic, no breakdown)",paid,,136763.74,0.00
+BR2,307,3,"Further collections (historic, no breakdown)",paid,,72795.74,0.00
+BR2,103,4,Outstanding balance (per reconciled source),pending,,1145913.96,0.00
+BR2,313,4,Outstanding balance (per reconciled source),pending,,638784.88,0.00
+BR2,314,4,Outstanding balance (per reconciled source),pending,,1259840.56,0.00
+BR2,504,4,Outstanding balance (per reconciled source),pending,,592205.67,0.00
+BR2,505,4,Outstanding balance (per reconciled source),pending,,724072.61,0.00
+BR2,404,4,Outstanding balance (per reconciled source),pending,,628202.77,0.00
+BR2,601,4,Outstanding balance (per reconciled source),pending,,1448674.51,0.00
+BR2,401,4,Outstanding balance (per reconciled source),pending,,1367336.58,0.00
+BR2,512,4,Outstanding balance (per reconciled source),pending,,768370.89,0.00
+BR2,102,4,Outstanding balance (per reconciled source),pending,,656597.23,0.00
+BR2,713,4,Outstanding balance (per reconciled source),pending,,710242.02,0.00
+BR2,402,4,Outstanding balance (per reconciled source),pending,,617307.50,0.00
+BR2,608,4,Outstanding balance (per reconciled source),pending,,638559.23,0.00
+BR2,101,4,Outstanding balance (per reconciled source),pending,,1341844.17,0.00
+BR2,403,4,Outstanding balance (per reconciled source),pending,,623133.81,0.00
+BR2,712,4,Outstanding balance (per reconciled source),pending,,1276828.58,0.00
+BR2,405,4,Outstanding balance (per reconciled source),pending,,622505.36,0.00
+BR2,506,4,Outstanding balance (per reconciled source),pending,,1509260.82,0.00
+BR2,711,4,Outstanding balance (per reconciled source),pending,,1226250.39,0.00
+BR2,406,4,Outstanding balance (per reconciled source),pending,,1449350.08,0.00
+BR2,710,4,Outstanding balance (per reconciled source),pending,,735381.48,0.00
+BR2,407,4,Outstanding balance (per reconciled source),pending,,631404.76,0.00
+BR2,507,4,Outstanding balance (per reconciled source),pending,,625044.40,0.00
+BR2,708,4,Outstanding balance (per reconciled source),pending,,998438.16,0.00
+BR2,408,4,Outstanding balance (per reconciled source),pending,,676159.92,0.00
+BR2,511,4,Outstanding balance (per reconciled source),pending,,968136.88,0.00
+BR2,707,4,Outstanding balance (per reconciled source),pending,,619510.99,0.00
+BR2,409,4,Outstanding balance (per reconciled source),pending,,1810938.00,0.00
+BR2,606,4,Outstanding balance (per reconciled source),pending,,1195292.00,0.00
+BR2,706,4,Outstanding balance (per reconciled source),pending,,1533417.72,0.00
+BR2,605,4,Outstanding balance (per reconciled source),pending,,724586.97,0.00
+BR2,704,4,Outstanding balance (per reconciled source),pending,,625946.04,0.00
+BR2,508,4,Outstanding balance (per reconciled source),pending,,641856.63,0.00
+BR2,703,4,Outstanding balance (per reconciled source),pending,,631763.26,0.00
+BR2,702,4,Outstanding balance (per reconciled source),pending,,682458.25,0.00
+BR2,410,4,Outstanding balance (per reconciled source),pending,,680789.57,0.00
+BR2,514,4,Outstanding balance (per reconciled source),pending,,1195614.92,0.00
+BR2,701,4,Outstanding balance (per reconciled source),pending,,621289.93,0.00
+BR2,411,4,Outstanding balance (per reconciled source),pending,,907445.82,0.00
+BR2,604,4,Outstanding balance (per reconciled source),pending,,604902.47,0.00
+BR2,615,4,Outstanding balance (per reconciled source),pending,,784180.38,0.00
+BR2,412,4,Outstanding balance (per reconciled source),pending,,714845.58,0.00
+BR2,509,4,Outstanding balance (per reconciled source),pending,,1336247.60,0.00
+BR2,413,4,Outstanding balance (per reconciled source),pending,,562869.86,0.00
+BR2,414,4,Outstanding balance (per reconciled source),pending,,1261928.95,0.00
+BR2,515,4,Outstanding balance (per reconciled source),pending,,1300802.82,0.00
+BR2,209,4,Outstanding balance (per reconciled source),pending,,905863.11,0.00
+BR2,613,4,Outstanding balance (per reconciled source),pending,,1390526.60,0.00
+BR2,208,4,Outstanding balance (per reconciled source),pending,,703216.26,0.00
+BR2,210,4,Outstanding balance (per reconciled source),pending,,616890.33,0.00
+BR2,501,4,Outstanding balance (per reconciled source),pending,,1352289.79,0.00
+BR2,211,4,Outstanding balance (per reconciled source),pending,,1169884.48,0.00
+BR2,302,4,Outstanding balance (per reconciled source),pending,,624258.72,0.00
+BR2,603,4,Outstanding balance (per reconciled source),pending,,706033.56,0.00
+BR2,206,4,Outstanding balance (per reconciled source),pending,,1341431.63,0.00
+BR2,303,4,Outstanding balance (per reconciled source),pending,,982998.02,0.00
+BR2,612,4,Outstanding balance (per reconciled source),pending,,653662.75,0.00
+BR2,205,4,Outstanding balance (per reconciled source),pending,,518532.91,0.00
+BR2,204,4,Outstanding balance (per reconciled source),pending,,708408.43,0.00
+BR2,305,4,Outstanding balance (per reconciled source),pending,,1662329.74,0.00
+BR2,502,4,Outstanding balance (per reconciled source),pending,,634048.85,0.00
+BR2,203,4,Outstanding balance (per reconciled source),pending,,602914.34,0.00
+BR2,306,4,Outstanding balance (per reconciled source),pending,,626028.80,0.00
+BR2,602,4,Outstanding balance (per reconciled source),pending,,550964.47,0.00
+BR2,202,4,Outstanding balance (per reconciled source),pending,,715111.36,0.00
+BR2,307,4,Outstanding balance (per reconciled source),pending,,706481.76,0.00
+BR2,611,4,Outstanding balance (per reconciled source),pending,,1099236.82,0.00
+BR2,201,4,Outstanding balance (per reconciled source),pending,,1286326.54,0.00
+BR2,308,4,Outstanding balance (per reconciled source),pending,,620694.37,0.00
+BR2,610,4,Outstanding balance (per reconciled source),pending,,612999.30,0.00
+BR2,309,4,Outstanding balance (per reconciled source),pending,,1886738.29,0.00
+BR2,310,4,Outstanding balance (per reconciled source),pending,,602021.74,0.00
+BR2,503,4,Outstanding balance (per reconciled source),pending,,669252.22,0.00
+BR2,108,4,Outstanding balance (per reconciled source),pending,,603300.57,0.00
+BR2,311,4,Outstanding balance (per reconciled source),pending,,1014938.51,0.00
+BR2,510,4,Outstanding balance (per reconciled source),pending,,641106.21,0.00
+BR2,107,4,Outstanding balance (per reconciled source),pending,,654835.57,0.00
+BR2,312,4,Outstanding balance (per reconciled source),pending,,655143.87,0.00
+BR2,609,4,Outstanding balance (per reconciled source),pending,,1307814.26,0.00
+GOLF,302,1,"Further collections (historic, no breakdown)",paid,,269615.00,0.00
+GOLF,R01,1,"Further collections (historic, no breakdown)",paid,,540001.13,0.00
+GOLF,R01,2,Outstanding balance (per reconciled source),pending,,3959998.87,0.00
+GOLF,302,2,Outstanding balance (per reconciled source),pending,,1078454.10,0.00
+RES,520,1,Collected to date (05-10-2026 report),paid,,266463.00,0.00
+RES,519,1,Collected to date (05-10-2026 report),paid,,29500.00,0.00
+RES,518,1,Collected to date (05-10-2026 report),paid,,63086.00,0.00
+RES,517,1,Collected to date (05-10-2026 report),paid,,42420.40,0.00
+RES,516,1,Collected to date (05-10-2026 report),paid,,104183.27,0.00
+RES,513,1,Collected to date (05-10-2026 report),paid,,116356.22,0.00
+RES,512,1,Collected to date (05-10-2026 report),paid,,83044.71,0.00
+RES,511,1,Collected to date (05-10-2026 report),paid,,111538.69,0.00
+RES,510,1,Collected to date (05-10-2026 report),paid,,160723.47,0.00
+RES,509,1,Collected to date (05-10-2026 report),paid,,74807.11,0.00
+RES,508,1,Collected to date (05-10-2026 report),paid,,34894.00,0.00
+RES,505,1,Collected to date (05-10-2026 report),paid,,81492.22,0.00
+RES,504,1,Collected to date (05-10-2026 report),paid,,130184.64,0.00
+RES,502,1,Collected to date (05-10-2026 report),paid,,78808.00,0.00
+RES,501,1,Collected to date (05-10-2026 report),paid,,222900.00,0.00
+RES,418,1,Collected to date (05-10-2026 report),paid,,129874.62,0.00
+RES,209,1,Outstanding balance (per reconciled source),pending,,458912.56,0.00
+RES,417,1,Collected to date (05-10-2026 report),paid,,143745.96,0.00
+RES,416,1,Collected to date (05-10-2026 report),paid,,132724.64,0.00
+RES,413,1,Collected to date (05-10-2026 report),paid,,260034.08,0.00
+RES,412,1,Collected to date (05-10-2026 report),paid,,108078.54,0.00
+RES,411,1,Collected to date (05-10-2026 report),paid,,109970.00,0.00
+RES,410,1,Collected to date (05-10-2026 report),paid,,135812.20,0.00
+RES,409,1,Collected to date (05-10-2026 report),paid,,143246.90,0.00
+RES,408,1,Collected to date (05-10-2026 report),paid,,131117.20,0.00
+RES,407,1,Collected to date (05-10-2026 report),paid,,239129.10,0.00
+RES,406,1,Collected to date (05-10-2026 report),paid,,435978.82,0.00
+RES,404,1,Collected to date (05-10-2026 report),paid,,122839.75,0.00
+RES,402,1,Collected to date (05-10-2026 report),paid,,165960.00,0.00
+RES,318,1,Collected to date (05-10-2026 report),paid,,328875.85,0.00
+RES,317,1,Collected to date (05-10-2026 report),paid,,337062.14,0.00
+RES,316,1,Collected to date (05-10-2026 report),paid,,90453.19,0.00
+RES,313,1,Collected to date (05-10-2026 report),paid,,58612.97,0.00
+RES,312,1,Collected to date (05-10-2026 report),paid,,153590.49,0.00
+RES,311,1,Collected to date (05-10-2026 report),paid,,139023.79,0.00
+RES,310,1,Collected to date (05-10-2026 report),paid,,152490.51,0.00
+RES,309,1,Collected to date (05-10-2026 report),paid,,46304.00,0.00
+RES,308,1,Collected to date (05-10-2026 report),paid,,142222.00,0.00
+RES,304,1,Collected to date (05-10-2026 report),paid,,10740.00,0.00
+RES,302,1,Collected to date (05-10-2026 report),paid,,25000.00,0.00
+RES,218,1,Collected to date (05-10-2026 report),paid,,111600.00,0.00
+RES,217,1,Collected to date (05-10-2026 report),paid,,113700.00,0.00
+RES,216,1,Collected to date (05-10-2026 report),paid,,80000.00,0.00
+RES,213,1,Collected to date (05-10-2026 report),paid,,11400.00,0.00
+RES,212,1,Collected to date (05-10-2026 report),paid,,151323.02,0.00
+RES,211,1,Collected to date (05-10-2026 report),paid,,85091.84,0.00
+RES,210,1,Collected to date (05-10-2026 report),paid,,54500.00,0.00
+RES,209,1,Collected to date (05-10-2026 report),paid,,113264.07,0.00
+RES,208,1,Collected to date (05-10-2026 report),paid,,148720.12,0.00
+RES,201,1,Collected to date (05-10-2026 report),paid,,17500.00,0.00
+RES,520,1,Outstanding balance (per reconciled source),pending,,266462.43,0.00
+RES,519,1,Outstanding balance (per reconciled source),pending,,559771.86,0.00
+RES,518,1,Outstanding balance (per reconciled source),pending,,510414.59,0.00
+RES,517,1,Outstanding balance (per reconciled source),pending,,531787.51,0.00
+RES,516,1,Outstanding balance (per reconciled source),pending,,481902.47,0.00
+RES,513,1,Outstanding balance (per reconciled source),pending,,465428.27,0.00
+RES,512,1,Outstanding balance (per reconciled source),pending,,489659.35,0.00
+RES,511,1,Outstanding balance (per reconciled source),pending,,482807.79,0.00
+RES,510,1,Outstanding balance (per reconciled source),pending,,411980.59,0.00
+RES,509,1,Outstanding balance (per reconciled source),pending,,509207.66,0.00
+RES,508,1,Outstanding balance (per reconciled source),pending,,546571.88,0.00
+RES,505,1,Outstanding balance (per reconciled source),pending,,893657.78,0.00
+RES,504,1,Outstanding balance (per reconciled source),pending,,412251.34,0.00
+RES,502,1,Outstanding balance (per reconciled source),pending,,891392.00,0.00
+RES,501,1,Outstanding balance (per reconciled source),pending,,687100.00,0.00
+RES,418,1,Outstanding balance (per reconciled source),pending,,411269.69,0.00
+RES,417,1,Outstanding balance (per reconciled source),pending,,409123.14,0.00
+RES,416,1,Outstanding balance (per reconciled source),pending,,420294.78,0.00
+RES,413,1,Outstanding balance (per reconciled source),pending,,260034.08,0.00
+RES,412,1,Outstanding balance (per reconciled source),pending,,432314.18,0.00
+RES,411,1,Outstanding balance (per reconciled source),pending,,444101.64,0.00
+RES,410,1,Outstanding balance (per reconciled source),pending,,407436.56,0.00
+RES,409,1,Outstanding balance (per reconciled source),pending,,407818.39,0.00
+RES,408,1,Outstanding balance (per reconciled source),pending,,417543.00,0.00
+RES,407,1,Outstanding balance (per reconciled source),pending,,757242.20,0.00
+RES,406,1,Outstanding balance (per reconciled source),pending,,538637.21,0.00
+RES,404,1,Outstanding balance (per reconciled source),pending,,388992.58,0.00
+RES,402,1,Outstanding balance (per reconciled source),pending,,839072.66,0.00
+RES,401,1,Outstanding balance (per reconciled source),pending,,980974.48,0.00
+RES,318,1,Outstanding balance (per reconciled source),pending,,180299.68,0.00
+RES,317,1,Outstanding balance (per reconciled source),pending,,183145.52,0.00
+RES,316,1,Outstanding balance (per reconciled source),pending,,482250.87,0.00
+RES,313,1,Outstanding balance (per reconciled source),pending,,515309.57,0.00
+RES,312,1,Outstanding balance (per reconciled source),pending,,411374.33,0.00
+RES,311,1,Outstanding balance (per reconciled source),pending,,440241.95,0.00
+RES,310,1,Outstanding balance (per reconciled source),pending,,415460.22,0.00
+RES,309,1,Outstanding balance (per reconciled source),pending,,529818.68,0.00
+RES,308,1,Outstanding balance (per reconciled source),pending,,431386.23,0.00
+RES,304,1,Outstanding balance (per reconciled source),pending,,524365.76,0.00
+RES,302,1,Outstanding balance (per reconciled source),pending,,955000.00,0.00
+RES,218,1,Outstanding balance (per reconciled source),pending,,450275.58,0.00
+RES,217,1,Outstanding balance (per reconciled source),pending,,460349.55,0.00
+RES,216,1,Outstanding balance (per reconciled source),pending,,494205.63,0.00
+RES,213,1,Outstanding balance (per reconciled source),pending,,558591.56,0.00
+RES,212,1,Outstanding balance (per reconciled source),pending,,409772.18,0.00
+RES,211,1,Outstanding balance (per reconciled source),pending,,490206.32,0.00
+RES,210,1,Outstanding balance (per reconciled source),pending,,509560.65,0.00
+RES,208,1,Outstanding balance (per reconciled source),pending,,420959.29,0.00
+RES,201,1,Outstanding balance (per reconciled source),pending,,852500.00,0.00

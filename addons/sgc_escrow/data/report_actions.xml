@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright (C) 2026 SGC TECH AI (https://sgctech.ai)
+ Part of SGC Odoo Suite. See LICENSE file for full copyright and licensing details.
+
+ Report ACTIONS. Must load before views/menus.xml, which references them.-->
+<odoo>
+
+    <!--Project escrow statement: the document handed to the escrow bank / auditor-->
+    <record id="action_report_escrow_project_statement" model="ir.actions.report">
+        <field name="name">Escrow Project Statement</field>
+        <field name="model">property.project</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">sgc_escrow.report_escrow_project_statement</field>
+        <field name="report_file">sgc_escrow.report_escrow_project_statement</field>
+        <field name="print_report_name">'Escrow Statement - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="sgc_offplan_rental_property_management.model_property_project"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_escrow_statement"/>
+    </record>
+
+    <!--Allocation register: the auditable per-unit source of truth-->
+    <record id="action_report_escrow_allocation_register" model="ir.actions.report">
+        <field name="name">Escrow Allocation Register</field>
+        <field name="model">escrow.allocation</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">sgc_escrow.report_escrow_allocation_register</field>
+        <field name="report_file">sgc_escrow.report_escrow_allocation_register</field>
+        <field name="print_report_name">'Escrow Allocation Register'</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_escrow_register"/>
+    </record>
+
+    <!--Release voucher: the document the escrow bank signs off against-->
+    <record id="action_report_escrow_release_voucher" model="ir.actions.report">
+        <field name="name">Escrow Release Voucher</field>
+        <field name="model">escrow.release</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">sgc_escrow.report_escrow_release_voucher</field>
+        <field name="report_file">sgc_escrow.report_escrow_release_voucher</field>
+        <field name="print_report_name">'Escrow Release - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_escrow_release"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_escrow_statement"/>
+    </record>
+
+</odoo>

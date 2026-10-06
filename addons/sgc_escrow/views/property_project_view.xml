@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright (C) 2026 SGC TECH AI (https://sgctech.ai)
+ Part of SGC Odoo Suite. See LICENSE file for full copyright and licensing details.
+
+ Escrow control panel injected onto the Property Management project form.
+ Everything here reads the ledger; nothing here invents a figure.
+
+ The base project form has no <notebook>, so this extension adds one at the
+ bottom of the sheet rather than appending to an existing notebook page.-->
+<odoo>
+
+    <record id="view_property_project_escrow_form" model="ir.ui.view">
+        <field name="name">property.project.view.form.escrow</field>
+        <field name="model">property.project</field>
+        <field name="inherit_id" ref="sgc_offplan_rental_property_management.property_project_view_form"/>
+        <field name="arch" type="xml">
+
+            <!--Smart buttons in the existing button box-->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button type="object" name="action_view_escrow_releases"
+                        class="oe_stat_button" icon="fa-money"
+                        groups="sgc_escrow.group_escrow_user">
+                    <field name="escrow_release_count" string="Releases" widget="statinfo"/>
+                </button>
+                <button type="object" name="action_view_escrow_allocations"
+                        class="oe_stat_button" icon="fa-table"
+                        groups="sgc_escrow.group_escrow_user">
+                    <field name="escrow_allocation_count" string="Escrowed Units" widget="statinfo"/>
+                </button>
+            </xpath>
+
+            <xpath expr="//form/sheet" position="inside">
+                <notebook name="escrow_notebook" groups="sgc_escrow.group_escrow_user">
+                    <page string="Escrow" name="escrow">
+
+                        <div class="alert alert-warning" role="alert" invisible="escrow_enabled">
+                            <p><strong>Escrow is not enabled for this project.</strong></p>
+                            <p class="mb-0">
+                                No entitlement is calculated and no release can be created until an
+                                escrow bank journal is configured below and escrow is switched on.
+                                The escrow account must be registered with the DLD / RERA first.
+                            </p>
+                        </div>
+
+                        <!--Money summary-->
+                        <div class="o_row justify-content-between mb-3" invisible="not escrow_enabled">
+                            <div class="o_row">
+                                <button type="object" name="action_view_escrow_ledger"
+                                        class="btn btn-primary me-2" invisible="not escrow_account_id">
+                                    <i class="fa fa-book me-1"/>Escrow Bank Ledger
+                                </button>
+                                <button type="object" name="action_setup_escrow_journal"
+                                        class="btn btn-secondary" invisible="escrow_bank_journal_id">
+                                    <i class="fa fa-plus me-1"/>Create Escrow Bank Account
+                                </button>
+                            </div>
+                            <div class="o_row" invisible="not escrow_bank_journal_id">
+                                <field name="escrow_received_amount" class="oe_inline"/>
+                                <field name="escrow_released_amount" class="oe_inline ms-4"/>
+                                <field name="escrow_balance_amount" class="oe_inline ms-4"/>
+                                <field name="escrow_entitled_amount" class="oe_inline ms-4"/>
+                                <field name="escrow_releasable_amount" class="oe_inline ms-4"/>
+                            </div>
+                        </div>
+
+                        <!--Entitlement control-->
+                        <group string="Release Entitlement">
+                            <group>
+                                <field name="escrow_certified_progress"/>
+                                <field name="escrow_certified_date"/>
+                                <field name="escrow_certified_by"/>
+                                <field name="escrow_progress_source"/>
+                                <field name="escrow_progress_evidence" filename="escrow_progress_evidence_filename"/>
+                                <field name="escrow_progress_evidence_filename" invisible="1"/>
+                            </group>
+                            <group>
+                                <field name="escrow_retention_pct"/>
+                                <field name="escrow_allocation_count"/>
+                                <field name="escrow_allocation_pending_count"
+                                       invisible="escrow_allocation_pending_count == 0"/>
+                                <field name="escrow_allocation_flag_count"
+                                       invisible="escrow_allocation_flag_count == 0"/>
+                                <field name="escrow_release_count"/>
+                                <field name="escrow_release_pending_count"
+                                       invisible="escrow_release_pending_count == 0"/>
+                            </group>
+                        </group>
+
+                        <p class="text-muted small">
+                            Releasable now = received x certified progress % x (1 - retention %)
+                            - everything already released. The certified percentage moves the
+                            entitlement ceiling immediately, so it is change-tracked and audited.
+                        </p>
+
+                        <!--Bank configuration-->
+                        <group string="Escrow Account Configuration">
+                            <group>
+                                <field name="escrow_enabled"/>
+                                <field name="escrow_bank_journal_id"
+                                       groups="sgc_escrow.group_escrow_manager"/>
+                                <field name="escrow_account_id"
+                                       groups="sgc_escrow.group_escrow_manager"/>
+                            </group>
+                            <group>
+                                <field name="escrow_release_journal_id"
+                                       groups="sgc_escrow.group_escrow_manager"/>
+                                <field name="escrow_agent_id"/>
+                                <field name="escrow_account_ref"/>
+                                <field name="escrow_currency_id"/>
+                            </group>
+                        </group>
+
+                    </page>
+
+                    <!--Allocation register-->
+                    <page string="Allocations" name="escrow_allocations">
+                            <div class="o_row mb-2">
+                                <button type="object" name="action_view_escrow_allocations"
+                                        class="btn btn-secondary">
+                                    <i class="fa fa-table me-1"/>Allocation Register
+                                </button>
+                                <div class="o_row ms-auto">
+                                    <field name="escrow_allocation_required_amount" class="oe_inline"/>
+                                    <field name="escrow_allocation_allocated_amount" class="oe_inline ms-3"/>
+                                    <field name="escrow_allocation_variance_amount" class="oe_inline ms-3"/>
+                                </div>
+                            </div>
+                            <field name="escrow_allocation_ids" readonly="1">
+                                <list string="Escrow Allocations">
+                                    <field name="unit_id"/>
+                                    <field name="partner_id"/>
+                                    <field name="escrow_pct"/>
+                                    <field name="required_amount"/>
+                                    <field name="allocated_amount"/>
+                                    <field name="variance_amount"/>
+                                    <field name="has_source_data" widget="boolean_toggle" readonly="1"/>
+                                    <field name="flag_code"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <!--Release register-->
+                        <page string="Releases" name="escrow_releases">
+                            <div class="o_row mb-2">
+                                <button type="object" name="action_view_escrow_releases"
+                                        class="btn btn-secondary">
+                                    <i class="fa fa-money me-1"/>Release Documents
+                                </button>
+                            </div>
+                            <field name="escrow_release_ids" readonly="1">
+                                <list string="Escrow Releases">
+                                    <field name="name"/>
+                                    <field name="date"/>
+                                    <field name="certified_progress_snapshot"/>
+                                    <field name="releasable_snapshot"/>
+                                    <field name="amount"/>
+                                    <field name="is_override" widget="boolean_toggle" readonly="1"/>
+                                    <field name="state" widget="badge"
+                                           decoration-success="state == 'posted'"
+                                           decoration-info="state == 'approved'"
+                                           decoration-danger="state == 'cancelled'"/>
+                                    <field name="payment_reference"/>
+                                </list>
+                            </field>
+                        </page>
+
+                </notebook>
+            </xpath>
+
+        </field>
+    </record>
+
+    <!--Project list: surface the escrow position without opening each project-->
+    <record id="view_property_project_escrow_list" model="ir.ui.view">
+        <field name="name">property.project.list.escrow</field>
+        <field name="model">property.project</field>
+        <field name="inherit_id" ref="sgc_offplan_rental_property_management.property_project_view_tree"/>
+        <field name="arch" type="xml">
+            <field name="code" position="after">
+                <field name="escrow_enabled" widget="boolean_toggle"
+                       groups="sgc_escrow.group_escrow_user" optional="show"/>
+                <field name="escrow_balance_amount" sum="Escrow Balance"
+                       groups="sgc_escrow.group_escrow_user" optional="hide"/>
+                <field name="escrow_releasable_amount" sum="Releasable"
+                       groups="sgc_escrow.group_escrow_user" optional="hide"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

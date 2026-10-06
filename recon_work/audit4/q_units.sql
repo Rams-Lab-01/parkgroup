@@ -1,0 +1,1 @@
+select pr.code proj, d.id unit_id, d.unit_number, d.floor, d.unit_type, d.state, d.area, d.price, d.sale_price, d.admin_fee, d.registration_fee, d.payment_schedule_id, d.active from property_details d left join property_project pr on pr.id=d.project_id order by 1,3

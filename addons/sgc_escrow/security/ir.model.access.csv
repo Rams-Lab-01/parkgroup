@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_escrow_allocation_user,escrow.allocation.user,model_escrow_allocation,sgc_escrow.group_escrow_user,1,0,0,0
+access_escrow_allocation_approver,escrow.allocation.approver,model_escrow_allocation,sgc_escrow.group_escrow_approver,1,0,0,0
+access_escrow_allocation_manager,escrow.allocation.manager,model_escrow_allocation,sgc_escrow.group_escrow_manager,1,1,1,1
+access_escrow_release_user,escrow.release.user,model_escrow_release,sgc_escrow.group_escrow_user,1,0,1,0
+access_escrow_release_approver,escrow.release.approver,model_escrow_release,sgc_escrow.group_escrow_approver,1,1,1,0
+access_escrow_release_manager,escrow.release.manager,model_escrow_release,sgc_escrow.group_escrow_manager,1,1,1,1
+access_escrow_allocation_import_user,escrow.allocation.import.user,model_escrow_allocation_import,sgc_escrow.group_escrow_user,1,1,1,1
+access_escrow_allocation_import_manager,escrow.allocation.import.manager,model_escrow_allocation_import,sgc_escrow.group_escrow_manager,1,1,1,1
+access_escrow_allocation_import_line_user,escrow.allocation.import.line.user,model_escrow_allocation_import_line,sgc_escrow.group_escrow_user,1,1,1,1
+access_escrow_allocation_import_line_manager,escrow.allocation.import.line.manager,model_escrow_allocation_import_line,sgc_escrow.group_escrow_manager,1,1,1,1

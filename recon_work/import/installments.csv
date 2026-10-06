@@ -1,0 +1,571 @@
+﻿contract_key,sequence,name,amount,percentage,due_date,payment_date,state,notes
+golf_302,1,"Further collections (historic, no breakdown)",269615.0,0,,,paid,Historic fact imported from reconciled sales workbook
+golf_r01,1,"Further collections (historic, no breakdown)",540001.13,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_101,1,Booking / Escrow 10% (historic),220958.11,10,2024-11-07,2024-11-07,paid,Historic fact imported from reconciled sales workbook
+br2_101,2,Escrow 20% (historic),441916.22,20,2026-06-08,2026-06-08,paid,Historic fact imported from reconciled sales workbook
+br2_101,3,"Further collections (historic, no breakdown)",204862.6,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_102,1,Booking / Escrow 10% (historic),106867.06,10,2024-11-25,2024-11-25,paid,Historic fact imported from reconciled sales workbook
+br2_102,2,Escrow 20% (historic),213734.11,20,2026-02-17,2026-02-17,paid,Historic fact imported from reconciled sales workbook
+br2_102,3,"Further collections (historic, no breakdown)",91472.16,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_103,1,Booking / Escrow 10% (historic),166944.05,10,2024-10-01,2024-10-01,paid,Historic fact imported from reconciled sales workbook
+br2_103,2,Escrow 20% (historic),333888.11,20,2025-11-05,2025-11-05,paid,Historic fact imported from reconciled sales workbook
+br2_103,3,"Further collections (historic, no breakdown)",22694.41,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_105,1,"Collected to date (historic, no schedule breakdown)",115231.06,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_106,1,Booking / Escrow 10% (historic),156548.69,10,,,paid,Historic fact imported from reconciled sales workbook
+br2_106,2,Escrow 20% (historic),313097.38,20,,,paid,Historic fact imported from reconciled sales workbook
+br2_106,3,"Further collections (historic, no breakdown)",1164459.94,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_107,1,Booking / Escrow 10% (historic),106590.17,10,2025-02-12,2025-02-12,paid,Historic fact imported from reconciled sales workbook
+br2_107,2,Escrow 20% (historic),213180.33,20,2026-06-09,2026-06-09,paid,Historic fact imported from reconciled sales workbook
+br2_107,3,"Further collections (historic, no breakdown)",91295.59,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_108,1,Booking / Escrow 10% (historic),106895.0,10,2024-11-06,2024-11-06,paid,Historic fact imported from reconciled sales workbook
+br2_108,2,Escrow 20% (historic),213790.0,20,2025-04-02,2025-04-02,paid,Historic fact imported from reconciled sales workbook
+br2_108,3,"Further collections (historic, no breakdown)",144964.43,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_109,1,"Collected to date (historic, no schedule breakdown)",538680.1,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_201,1,Booking / Escrow 10% (historic),222812.95,10,2026-02-16,2026-02-16,paid,Historic fact imported from reconciled sales workbook
+br2_201,2,Escrow 20% (historic),445625.89,20,,,paid,Historic fact imported from reconciled sales workbook
+br2_201,3,"Further collections (historic, no breakdown)",273364.07,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_202,1,Booking / Escrow 10% (historic),107639.6,10,2026-06-11,2026-06-11,paid,Historic fact imported from reconciled sales workbook
+br2_202,2,Escrow 20% (historic),215279.2,20,,,paid,Historic fact imported from reconciled sales workbook
+br2_202,3,"Further collections (historic, no breakdown)",38365.83,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_203,1,Booking / Escrow 10% (historic),104985.75,10,2024-11-12,2024-11-12,paid,Historic fact imported from reconciled sales workbook
+br2_203,2,Escrow 20% (historic),209971.49,20,2025-09-09,2025-09-09,paid,Historic fact imported from reconciled sales workbook
+br2_203,3,"Further collections (historic, no breakdown)",131985.89,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_204,1,Booking / Escrow 10% (historic),105770.76,10,2025-03-06,2025-03-06,paid,Historic fact imported from reconciled sales workbook
+br2_204,2,Escrow 20% (historic),211541.52,20,2025-03-06,2025-03-06,paid,Historic fact imported from reconciled sales workbook
+br2_204,3,"Further collections (historic, no breakdown)",31986.88,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_205,1,Booking / Escrow 10% (historic),104906.9,10,,,paid,Historic fact imported from reconciled sales workbook
+br2_205,2,Escrow 20% (historic),209813.8,20,,,paid,Historic fact imported from reconciled sales workbook
+br2_205,3,"Further collections (historic, no breakdown)",215815.39,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_206,1,Booking / Escrow 10% (historic),268286.46,10,,,paid,Historic fact imported from reconciled sales workbook
+br2_206,2,Escrow 20% (historic),536572.93,20,,,paid,Historic fact imported from reconciled sales workbook
+br2_206,3,"Further collections (historic, no breakdown)",536573.61,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_207,1,"Collected to date (historic, no schedule breakdown)",473280.2,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_208,1,Booking / Escrow 10% (historic),105659.62,10,2025-02-25,2025-02-25,paid,Historic fact imported from reconciled sales workbook
+br2_208,2,Escrow 20% (historic),211319.24,20,,,paid,Historic fact imported from reconciled sales workbook
+br2_208,3,"Further collections (historic, no breakdown)",36401.09,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_209,1,Booking / Escrow 10% (historic),157113.65,10,2024-10-04,2024-10-04,paid,Historic fact imported from reconciled sales workbook
+br2_209,2,Escrow 20% (historic),314227.31,20,2025-03-01,2025-03-01,paid,Historic fact imported from reconciled sales workbook
+br2_209,3,"Further collections (historic, no breakdown)",193932.46,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_210,1,Booking / Escrow 10% (historic),107365.49,10,2024-11-08,2024-11-08,paid,Historic fact imported from reconciled sales workbook
+br2_210,2,Escrow 20% (historic),214730.97,20,2025-04-03,2025-04-03,paid,Historic fact imported from reconciled sales workbook
+br2_210,3,"Further collections (historic, no breakdown)",134668.07,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_211,1,Booking / Escrow 10% (historic),210879.86,10,2025-11-18,2025-11-18,paid,Historic fact imported from reconciled sales workbook
+br2_211,2,Escrow 20% (historic),421759.72,20,,,paid,Historic fact imported from reconciled sales workbook
+br2_211,3,"Further collections (historic, no breakdown)",306274.53,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_301,1,"Collected to date (historic, no schedule breakdown)",444185.0,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_302,1,Booking / Escrow 10% (historic),108665.55,10,2024-11-20,2024-11-20,paid,Historic fact imported from reconciled sales workbook
+br2_302,2,Escrow 20% (historic),217331.1,20,2025-04-18,2025-04-18,paid,Historic fact imported from reconciled sales workbook
+br2_302,3,"Further collections (historic, no breakdown)",136400.13,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_303,1,Booking / Escrow 10% (historic),170518.06,10,,,paid,Historic fact imported from reconciled sales workbook
+br2_303,2,Escrow 20% (historic),341036.12,20,,,paid,Historic fact imported from reconciled sales workbook
+br2_303,3,"Further collections (historic, no breakdown)",210628.39,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_304,1,"Collected to date (historic, no schedule breakdown)",269721.01,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_305,1,Booking / Escrow 10% (historic),264814.19,10,,,paid,Historic fact imported from reconciled sales workbook
+br2_305,2,Escrow 20% (historic),529628.38,20,,,paid,Historic fact imported from reconciled sales workbook
+br2_305,3,"Further collections (historic, no breakdown)",191369.6,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_306,1,Booking / Escrow 10% (historic),108970.36,10,2024-11-04,2024-11-04,paid,Historic fact imported from reconciled sales workbook
+br2_306,2,Escrow 20% (historic),217940.73,20,2025-09-06,2025-09-06,paid,Historic fact imported from reconciled sales workbook
+br2_306,3,"Further collections (historic, no breakdown)",136763.74,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_307,1,Booking / Escrow 10% (historic),111325.36,10,2024-09-29,2024-09-29,paid,Historic fact imported from reconciled sales workbook
+br2_307,2,Escrow 20% (historic),222650.71,20,2025-01-16,2025-01-16,paid,Historic fact imported from reconciled sales workbook
+br2_307,3,"Further collections (historic, no breakdown)",72795.74,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_308,1,Booking / Escrow 10% (historic),108568.46,10,2024-09-28,2024-09-28,paid,Historic fact imported from reconciled sales workbook
+br2_308,2,Escrow 20% (historic),217136.92,20,2024-11-30,2024-11-30,paid,Historic fact imported from reconciled sales workbook
+br2_308,3,"Further collections (historic, no breakdown)",139284.85,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_309,1,Booking / Escrow 10% (historic),271448.62,10,2025-12-16,2025-12-16,paid,Historic fact imported from reconciled sales workbook
+br2_309,2,Escrow 20% (historic),542897.24,20,,,paid,Historic fact imported from reconciled sales workbook
+br2_309,3,"Further collections (historic, no breakdown)",13402.05,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_310,1,Booking / Escrow 10% (historic),104843.72,10,2024-11-02,2024-11-02,paid,Historic fact imported from reconciled sales workbook
+br2_310,2,Escrow 20% (historic),209687.43,20,2025-04-02,2025-04-02,paid,Historic fact imported from reconciled sales workbook
+br2_310,3,"Further collections (historic, no breakdown)",131884.28,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_311,1,Booking / Escrow 10% (historic),164667.49,10,2024-10-21,2024-10-21,paid,Historic fact imported from reconciled sales workbook
+br2_311,2,Escrow 20% (historic),329334.97,20,2025-03-08,2025-03-08,paid,Historic fact imported from reconciled sales workbook
+br2_311,3,"Further collections (historic, no breakdown)",137733.89,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_312,1,Booking / Escrow 10% (historic),108383.97,10,2025-01-03,2025-01-03,paid,Historic fact imported from reconciled sales workbook
+br2_312,2,Escrow 20% (historic),216767.93,20,2025-08-28,2025-08-28,paid,Historic fact imported from reconciled sales workbook
+br2_312,3,"Further collections (historic, no breakdown)",103543.9,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_313,1,Booking / Escrow 10% (historic),111267.23,10,2026-02-17,2026-02-17,paid,Historic fact imported from reconciled sales workbook
+br2_313,2,Escrow 20% (historic),222534.46,20,,,paid,Historic fact imported from reconciled sales workbook
+br2_313,3,"Further collections (historic, no breakdown)",140085.74,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_314,1,Booking / Escrow 10% (historic),197787.91,10,2024-12-20,2024-12-20,paid,Historic fact imported from reconciled sales workbook
+br2_314,2,Escrow 20% (historic),395575.82,20,2025-02-28,2025-02-28,paid,Historic fact imported from reconciled sales workbook
+br2_314,3,"Further collections (historic, no breakdown)",124674.8,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_401,1,Booking / Escrow 10% (historic),232771.39,10,,,paid,Historic fact imported from reconciled sales workbook
+br2_401,2,Escrow 20% (historic),465542.78,20,,,paid,Historic fact imported from reconciled sales workbook
+br2_401,3,"Further collections (historic, no breakdown)",262063.16,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_402,1,Booking / Escrow 10% (historic),109448.67,10,2024-11-08,2024-11-08,paid,Historic fact imported from reconciled sales workbook
+br2_402,2,Escrow 20% (historic),218897.34,20,2025-03-19,2025-03-19,paid,Historic fact imported from reconciled sales workbook
+br2_402,3,"Further collections (historic, no breakdown)",148833.17,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_403,1,Booking / Escrow 10% (historic),106632.58,10,2025-10-06,2025-10-06,paid,Historic fact imported from reconciled sales workbook
+br2_403,2,Escrow 20% (historic),213265.16,20,,,paid,Historic fact imported from reconciled sales workbook
+br2_403,3,"Further collections (historic, no breakdown)",123294.27,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_404,1,Booking / Escrow 10% (historic),107415.97,10,2024-11-13,2024-11-13,paid,Historic fact imported from reconciled sales workbook
+br2_404,2,Escrow 20% (historic),214831.94,20,2026-05-25,2026-05-25,paid,Historic fact imported from reconciled sales workbook
+br2_404,3,"Further collections (historic, no breakdown)",123709.01,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_405,1,Booking / Escrow 10% (historic),106527.08,10,2025-05-31,2025-05-31,paid,Historic fact imported from reconciled sales workbook
+br2_405,2,Escrow 20% (historic),213054.17,20,2026-06-16,2026-06-16,paid,Historic fact imported from reconciled sales workbook
+br2_405,3,"Further collections (historic, no breakdown)",123184.23,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_406,1,Booking / Escrow 10% (historic),238581.8,10,2025-04-07,2025-04-07,paid,Historic fact imported from reconciled sales workbook
+br2_406,2,Escrow 20% (historic),477163.61,20,2026-06-16,2026-06-16,paid,Historic fact imported from reconciled sales workbook
+br2_406,3,"Further collections (historic, no breakdown)",220722.56,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_407,1,Booking / Escrow 10% (historic),109836.66,10,2024-11-15,2024-11-15,paid,Historic fact imported from reconciled sales workbook
+br2_407,2,Escrow 20% (historic),219673.33,20,2025-04-07,2025-04-07,paid,Historic fact imported from reconciled sales workbook
+br2_407,3,"Further collections (historic, no breakdown)",137451.88,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_408,1,Booking / Escrow 10% (historic),112057.43,10,2025-01-17,2025-01-17,paid,Historic fact imported from reconciled sales workbook
+br2_408,2,Escrow 20% (historic),224114.86,20,2025-01-17,2025-01-17,paid,Historic fact imported from reconciled sales workbook
+br2_408,3,"Further collections (historic, no breakdown)",108242.09,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_409,1,Booking / Escrow 10% (historic),279085.05,10,2026-03-26,2026-03-26,paid,Historic fact imported from reconciled sales workbook
+br2_409,2,Escrow 20% (historic),558170.11,20,2026-03-26,2026-03-26,paid,Historic fact imported from reconciled sales workbook
+br2_409,3,"Further collections (historic, no breakdown)",142657.38,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_410,1,Booking / Escrow 10% (historic),105659.62,10,2025-02-06,2025-02-06,paid,Historic fact imported from reconciled sales workbook
+br2_410,2,Escrow 20% (historic),211319.24,20,,,paid,Historic fact imported from reconciled sales workbook
+br2_410,3,"Further collections (historic, no breakdown)",58827.77,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_411,1,Booking / Escrow 10% (historic),160166.66,10,2025-11-06,2025-11-06,paid,Historic fact imported from reconciled sales workbook
+br2_411,2,Escrow 20% (historic),320333.33,20,2025-04-11,2025-04-11,paid,Historic fact imported from reconciled sales workbook
+br2_411,3,"Further collections (historic, no breakdown)",213720.82,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_412,1,Booking / Escrow 10% (historic),109156.9,10,2025-02-19,2025-02-19,paid,Historic fact imported from reconciled sales workbook
+br2_412,2,Escrow 20% (historic),218313.8,20,2025-04-10,2025-04-10,paid,Historic fact imported from reconciled sales workbook
+br2_412,3,"Further collections (historic, no breakdown)",49252.72,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_413,1,Booking / Escrow 10% (historic),113776.69,10,,,paid,Historic fact imported from reconciled sales workbook
+br2_413,2,Escrow 20% (historic),227553.37,20,,,paid,Historic fact imported from reconciled sales workbook
+br2_413,3,"Further collections (historic, no breakdown)",233566.94,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_414,1,Booking / Escrow 10% (historic),222969.22,10,2024-11-07,2024-11-07,paid,Historic fact imported from reconciled sales workbook
+br2_414,2,Escrow 20% (historic),445938.43,20,2025-03-28,2025-03-28,paid,Historic fact imported from reconciled sales workbook
+br2_414,3,"Further collections (historic, no breakdown)",298855.56,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_501,1,Booking / Escrow 10% (historic),234187.55,10,2024-11-19,2024-11-19,paid,Historic fact imported from reconciled sales workbook
+br2_501,2,Escrow 20% (historic),468375.09,20,2025-06-28,2025-06-28,paid,Historic fact imported from reconciled sales workbook
+br2_501,3,"Further collections (historic, no breakdown)",287023.03,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_502,1,Booking / Escrow 10% (historic),110353.2,10,2024-11-20,2024-11-20,paid,Historic fact imported from reconciled sales workbook
+br2_502,2,Escrow 20% (historic),220706.41,20,2025-04-03,2025-04-03,paid,Historic fact imported from reconciled sales workbook
+br2_502,3,"Further collections (historic, no breakdown)",138423.57,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_503,1,Booking / Escrow 10% (historic),110697.09,10,2024-11-11,2024-11-11,paid,Historic fact imported from reconciled sales workbook
+br2_503,2,Escrow 20% (historic),221394.18,20,2025-05-31,2025-05-31,paid,Historic fact imported from reconciled sales workbook
+br2_503,3,"Further collections (historic, no breakdown)",105627.39,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_504,1,Booking / Escrow 10% (historic),104941.18,10,2024-10-31,2024-10-31,paid,Historic fact imported from reconciled sales workbook
+br2_504,2,Escrow 20% (historic),209882.37,20,2024-11-21,2024-11-21,paid,Historic fact imported from reconciled sales workbook
+br2_504,3,"Further collections (historic, no breakdown)",142382.61,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_505,1,Booking / Escrow 10% (historic),107337.18,10,2025-03-06,2025-03-06,paid,Historic fact imported from reconciled sales workbook
+br2_505,2,Escrow 20% (historic),214674.35,20,2025-03-06,2025-03-06,paid,Historic fact imported from reconciled sales workbook
+br2_505,3,"Further collections (historic, no breakdown)",27287.62,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_506,1,Booking / Escrow 10% (historic),270582.65,10,2025-02-27,2025-02-27,paid,Historic fact imported from reconciled sales workbook
+br2_506,2,Escrow 20% (historic),541165.3,20,2025-09-01,2025-09-01,paid,Historic fact imported from reconciled sales workbook
+br2_506,3,"Further collections (historic, no breakdown)",384817.72,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_507,1,Booking / Escrow 10% (historic),110694.76,10,2025-04-03,2025-04-03,paid,Historic fact imported from reconciled sales workbook
+br2_507,2,Escrow 20% (historic),221389.53,20,,,paid,Historic fact imported from reconciled sales workbook
+br2_507,3,"Further collections (historic, no breakdown)",149818.94,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_508,1,Booking / Escrow 10% (historic),111699.52,10,2024-10-29,2024-10-29,paid,Historic fact imported from reconciled sales workbook
+br2_508,2,Escrow 20% (historic),223399.04,20,2025-04-02,2025-04-02,paid,Historic fact imported from reconciled sales workbook
+br2_508,3,"Further collections (historic, no breakdown)",140040.02,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_509,1,Booking / Escrow 10% (historic),239687.9,10,2024-11-04,2024-11-04,paid,Historic fact imported from reconciled sales workbook
+br2_509,2,Escrow 20% (historic),479375.81,20,2024-12-09,2024-12-09,paid,Historic fact imported from reconciled sales workbook
+br2_509,3,"Further collections (historic, no breakdown)",341567.73,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_510,1,Booking / Escrow 10% (historic),108107.33,10,2025-05-30,2025-05-30,paid,Historic fact imported from reconciled sales workbook
+br2_510,2,Escrow 20% (historic),216214.67,20,,,paid,Historic fact imported from reconciled sales workbook
+br2_510,3,"Further collections (historic, no breakdown)",115645.13,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_511,1,Booking / Escrow 10% (historic),167944.45,10,2025-01-22,2025-01-22,paid,Historic fact imported from reconciled sales workbook
+br2_511,2,Escrow 20% (historic),335888.9,20,2025-04-03,2025-04-03,paid,Historic fact imported from reconciled sales workbook
+br2_511,3,"Further collections (historic, no breakdown)",207474.27,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_512,1,Booking / Escrow 10% (historic),110190.37,10,,,paid,Historic fact imported from reconciled sales workbook
+br2_512,2,Escrow 20% (historic),220380.73,20,,,paid,Historic fact imported from reconciled sales workbook
+br2_512,3,"Further collections (historic, no breakdown)",2961.68,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_513,1,"Collected to date (historic, no schedule breakdown)",325636.38,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_514,1,Booking / Escrow 10% (historic),197130.8,10,2024-11-11,2024-11-11,paid,Historic fact imported from reconciled sales workbook
+br2_514,2,Escrow 20% (historic),394261.61,20,,,paid,Historic fact imported from reconciled sales workbook
+br2_514,3,"Further collections (historic, no breakdown)",184300.71,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_515,1,Booking / Escrow 10% (historic),214230.02,10,2025-02-21,2025-02-21,paid,Historic fact imported from reconciled sales workbook
+br2_515,2,Escrow 20% (historic),428460.04,20,2025-02-21,2025-02-21,paid,Historic fact imported from reconciled sales workbook
+br2_515,3,"Further collections (historic, no breakdown)",198807.31,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_601,1,Booking / Escrow 10% (historic),234615.03,10,2025-02-28,2025-02-28,paid,Historic fact imported from reconciled sales workbook
+br2_601,2,Escrow 20% (historic),469230.07,20,2025-07-17,2025-07-17,paid,Historic fact imported from reconciled sales workbook
+br2_601,3,"Further collections (historic, no breakdown)",193630.73,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_602,1,Booking / Escrow 10% (historic),111382.19,10,2025-07-08,2025-07-08,paid,Historic fact imported from reconciled sales workbook
+br2_602,2,Escrow 20% (historic),222764.38,20,2026-03-05,2026-03-05,paid,Historic fact imported from reconciled sales workbook
+br2_602,3,"Further collections (historic, no breakdown)",228710.86,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_603,1,Booking / Escrow 10% (historic),111530.47,10,2024-11-13,2024-11-13,paid,Historic fact imported from reconciled sales workbook
+br2_603,2,Escrow 20% (historic),223060.95,20,2025-09-20,2025-09-20,paid,Historic fact imported from reconciled sales workbook
+br2_603,3,"Further collections (historic, no breakdown)",74679.75,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_604,1,Booking / Escrow 10% (historic),109089.06,10,2025-12-23,2025-12-23,paid,Historic fact imported from reconciled sales workbook
+br2_604,2,Escrow 20% (historic),218178.11,20,,,paid,Historic fact imported from reconciled sales workbook
+br2_604,3,"Further collections (historic, no breakdown)",158720.93,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_605,1,Booking / Escrow 10% (historic),108147.27,10,2025-01-29,2025-01-29,paid,Historic fact imported from reconciled sales workbook
+br2_605,2,Escrow 20% (historic),216294.54,20,2025-10-25,2025-10-25,paid,Historic fact imported from reconciled sales workbook
+br2_605,3,"Further collections (historic, no breakdown)",32443.91,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_606,1,Booking / Escrow 10% (historic),240279.2,10,,,paid,Historic fact imported from reconciled sales workbook
+br2_606,2,Escrow 20% (historic),480558.4,20,,,paid,Historic fact imported from reconciled sales workbook
+br2_606,3,"Further collections (historic, no breakdown)",486662.4,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_607,1,"Collected to date (historic, no schedule breakdown)",327891.72,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_608,1,Booking / Escrow 10% (historic),111133.07,10,2024-10-18,2024-10-18,paid,Historic fact imported from reconciled sales workbook
+br2_608,2,Escrow 20% (historic),222266.14,20,,,paid,Historic fact imported from reconciled sales workbook
+br2_608,3,"Further collections (historic, no breakdown)",139372.26,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_609,1,Booking / Escrow 10% (historic),243847.21,10,2024-10-31,2024-10-31,paid,Historic fact imported from reconciled sales workbook
+br2_609,2,Escrow 20% (historic),487694.42,20,2026-10-31,2026-10-31,paid,Historic fact imported from reconciled sales workbook
+br2_609,3,"Further collections (historic, no breakdown)",399116.2,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_610,1,Booking / Escrow 10% (historic),107291.43,10,,,paid,Historic fact imported from reconciled sales workbook
+br2_610,2,Escrow 20% (historic),214582.86,20,,,paid,Historic fact imported from reconciled sales workbook
+br2_610,3,"Further collections (historic, no breakdown)",138040.71,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_611,1,Booking / Escrow 10% (historic),157878.57,10,2025-10-27,2025-10-27,paid,Historic fact imported from reconciled sales workbook
+br2_611,2,Escrow 20% (historic),315757.14,20,,,paid,Historic fact imported from reconciled sales workbook
+br2_611,3,"Further collections (historic, no breakdown)",5913.17,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_612,1,Booking / Escrow 10% (historic),110961.17,10,,,paid,Historic fact imported from reconciled sales workbook
+br2_612,2,Escrow 20% (historic),221922.34,20,,,paid,Historic fact imported from reconciled sales workbook
+br2_612,3,"Further collections (historic, no breakdown)",123065.44,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_613,1,Booking / Escrow 10% (historic),228938.69,10,2024-11-13,2024-11-13,paid,Historic fact imported from reconciled sales workbook
+br2_613,2,Escrow 20% (historic),457877.37,20,2025-09-20,2025-09-20,paid,Historic fact imported from reconciled sales workbook
+br2_613,3,"Further collections (historic, no breakdown)",212044.2,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_614,1,"Collected to date (historic, no schedule breakdown)",249000.0,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_615,1,Booking / Escrow 10% (historic),123475.51,10,2025-08-13,2025-08-13,paid,Historic fact imported from reconciled sales workbook
+br2_615,2,Escrow 20% (historic),246951.01,20,,,paid,Historic fact imported from reconciled sales workbook
+br2_615,3,"Further collections (historic, no breakdown)",80148.17,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_701,1,Booking / Escrow 10% (historic),110050.74,10,2024-10-30,2024-10-30,paid,Historic fact imported from reconciled sales workbook
+br2_701,2,Escrow 20% (historic),220101.47,20,2025-09-01,2025-09-01,paid,Historic fact imported from reconciled sales workbook
+br2_701,3,"Further collections (historic, no breakdown)",149065.23,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_702,1,Booking / Escrow 10% (historic),113436.98,10,,,paid,Historic fact imported from reconciled sales workbook
+br2_702,2,Escrow 20% (historic),226873.95,20,,,paid,Historic fact imported from reconciled sales workbook
+br2_702,3,"Further collections (historic, no breakdown)",111600.59,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_703,1,Booking / Escrow 10% (historic),109918.63,10,2025-07-02,2025-07-02,paid,Historic fact imported from reconciled sales workbook
+br2_703,2,Escrow 20% (historic),219837.26,20,,,paid,Historic fact imported from reconciled sales workbook
+br2_703,3,"Further collections (historic, no breakdown)",137667.16,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_704,1,Booking / Escrow 10% (historic),108957.36,10,,,paid,Historic fact imported from reconciled sales workbook
+br2_704,2,Escrow 20% (historic),217914.72,20,,,paid,Historic fact imported from reconciled sales workbook
+br2_704,3,"Further collections (historic, no breakdown)",136755.49,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_706,1,Booking / Escrow 10% (historic),248293.17,10,2024-11-04,2024-11-04,paid,Historic fact imported from reconciled sales workbook
+br2_706,2,Escrow 20% (historic),496586.33,20,2024-09-27,2024-09-27,paid,Historic fact imported from reconciled sales workbook
+br2_706,3,"Further collections (historic, no breakdown)",204634.44,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_707,1,Booking / Escrow 10% (historic),109739.14,10,2024-11-05,2024-11-05,paid,Historic fact imported from reconciled sales workbook
+br2_707,2,Escrow 20% (historic),219478.29,20,2025-07-04,2025-07-04,paid,Historic fact imported from reconciled sales workbook
+br2_707,3,"Further collections (historic, no breakdown)",148663.01,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_708,1,Booking / Escrow 10% (historic),159410.71,10,2024-11-29,2024-11-29,paid,Historic fact imported from reconciled sales workbook
+br2_708,2,Escrow 20% (historic),318821.43,20,2025-03-27,2025-03-27,paid,Historic fact imported from reconciled sales workbook
+br2_708,3,"Further collections (historic, no breakdown)",117436.84,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_710,1,Booking / Escrow 10% (historic),112330.45,10,2024-11-07,2024-11-07,paid,Historic fact imported from reconciled sales workbook
+br2_710,2,Escrow 20% (historic),224660.89,20,2025-04-29,2025-04-29,paid,Historic fact imported from reconciled sales workbook
+br2_710,3,"Further collections (historic, no breakdown)",50931.65,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_711,1,Booking / Escrow 10% (historic),220043.28,10,2024-11-04,2024-11-04,paid,Historic fact imported from reconciled sales workbook
+br2_711,2,Escrow 20% (historic),440086.57,20,2024-12-09,2024-12-09,paid,Historic fact imported from reconciled sales workbook
+br2_711,3,"Further collections (historic, no breakdown)",314052.59,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_712,1,Booking / Escrow 10% (historic),200409.98,10,2025-03-05,2025-03-05,paid,Historic fact imported from reconciled sales workbook
+br2_712,2,Escrow 20% (historic),400819.95,20,,,paid,Historic fact imported from reconciled sales workbook
+br2_712,3,"Further collections (historic, no breakdown)",126041.25,0,,,paid,Historic fact imported from reconciled sales workbook
+br2_713,1,Booking / Escrow 10% (historic),113681.21,10,2025-09-29,2025-09-29,paid,Historic fact imported from reconciled sales workbook
+br2_713,2,Escrow 20% (historic),227362.42,20,,,paid,Historic fact imported from reconciled sales workbook
+br2_713,3,"Further collections (historic, no breakdown)",85526.45,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_101,1,Booking / Escrow 10% (historic),129028.1,10,2024-07-22,2024-07-22,paid,Historic fact imported from reconciled sales workbook
+br1_101,2,Escrow 20% (historic),258056.2,20,2024-12-16,2024-12-16,paid,Historic fact imported from reconciled sales workbook
+br1_101,3,"Further collections (historic, no breakdown)",304017.81,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_101,4,Outstanding balance (per reconciled source),650790.13,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_102,1,Booking / Escrow 10% (historic),120396.5,10,2024-07-06,2024-07-06,paid,Historic fact imported from reconciled sales workbook
+br1_102,2,Escrow 20% (historic),240793.0,20,2024-09-10,2024-09-10,paid,Historic fact imported from reconciled sales workbook
+br1_102,3,"Further collections (historic, no breakdown)",99324.02,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_102,4,Outstanding balance (per reconciled source),791610.08,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_103,1,Booking / Escrow 10% (historic),91773.1,10,2024-07-19,2024-07-19,paid,Historic fact imported from reconciled sales workbook
+br1_103,2,Escrow 20% (historic),183546.2,20,2024-09-03,2024-09-03,paid,Historic fact imported from reconciled sales workbook
+br1_103,3,"Further collections (historic, no breakdown)",48887.81,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_103,4,Outstanding balance (per reconciled source),630233.13,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_105,1,Booking / Escrow 10% (historic),90755.9,10,2024-07-24,2024-07-24,paid,Historic fact imported from reconciled sales workbook
+br1_105,2,Escrow 20% (historic),181511.8,20,2024-08-17,2024-08-17,paid,Historic fact imported from reconciled sales workbook
+br1_105,3,"Further collections (historic, no breakdown)",130068.2,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_105,4,Outstanding balance (per reconciled source),541525.46,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_106,1,Booking / Escrow 10% (historic),92383.4,10,2024-10-28,2024-10-28,paid,Historic fact imported from reconciled sales workbook
+br1_106,2,Escrow 20% (historic),184766.8,20,2024-12-30,2024-12-30,paid,Historic fact imported from reconciled sales workbook
+br1_106,3,"Further collections (historic, no breakdown)",2998.18,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_106,4,Outstanding balance (per reconciled source),680638.98,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_107,1,Booking / Escrow 10% (historic),119621.5,10,2024-07-19,2024-07-19,paid,Historic fact imported from reconciled sales workbook
+br1_107,2,Escrow 20% (historic),239243.0,20,2024-08-27,2024-08-27,paid,Historic fact imported from reconciled sales workbook
+br1_107,3,"Further collections (historic, no breakdown)",86733.01,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_107,4,Outstanding balance (per reconciled source),798466.09,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_108,1,Booking / Escrow 10% (historic),229013.0,10,2024-09-23,2024-09-23,paid,Historic fact imported from reconciled sales workbook
+br1_108,2,Escrow 20% (historic),458026.0,20,2024-09-24,2024-09-24,paid,Historic fact imported from reconciled sales workbook
+br1_108,3,"Further collections (historic, no breakdown)",1568687.22,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_108,4,Outstanding balance (per reconciled source),126008.98,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_109,1,"Collected to date (historic, no schedule breakdown)",613886.37,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_109,2,Outstanding balance (per reconciled source),1644037.87,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_201,1,Booking / Escrow 10% (historic),130028.1,10,2024-11-07,2024-11-07,paid,Historic fact imported from reconciled sales workbook
+br1_201,2,Escrow 20% (historic),260056.2,20,,,paid,Historic fact imported from reconciled sales workbook
+br1_201,3,"Further collections (historic, no breakdown)",16002.92,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_201,4,Outstanding balance (per reconciled source),946205.02,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_202,1,Booking / Escrow 10% (historic),121396.5,10,2024-11-07,2024-11-07,paid,Historic fact imported from reconciled sales workbook
+br1_202,2,Escrow 20% (historic),242793.0,20,2025-04-17,2025-04-17,paid,Historic fact imported from reconciled sales workbook
+br1_202,3,"Further collections (historic, no breakdown)",14442.51,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_202,4,Outstanding balance (per reconciled source),883891.59,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_203,1,Booking / Escrow 10% (historic),92773.1,10,2024-07-25,2024-07-25,paid,Historic fact imported from reconciled sales workbook
+br1_203,2,Escrow 20% (historic),185546.2,20,2024-08-15,2024-08-15,paid,Historic fact imported from reconciled sales workbook
+br1_203,3,"Further collections (historic, no breakdown)",151477.81,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_203,4,Outstanding balance (per reconciled source),535043.13,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_204,1,Booking / Escrow 10% (historic),92321.0,10,2024-06-13,2024-06-13,paid,Historic fact imported from reconciled sales workbook
+br1_204,2,Escrow 20% (historic),184642.0,20,2024-07-23,2024-07-23,paid,Historic fact imported from reconciled sales workbook
+br1_204,3,"Further collections (historic, no breakdown)",150711.0,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_204,4,Outstanding balance (per reconciled source),532464.4,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_205,1,Booking / Escrow 10% (historic),91755.9,10,2024-11-27,2024-11-27,paid,Historic fact imported from reconciled sales workbook
+br1_205,2,Escrow 20% (historic),183511.8,20,2025-07-07,2025-07-07,paid,Historic fact imported from reconciled sales workbook
+br1_205,3,"Further collections (historic, no breakdown)",140687.08,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_205,4,Outstanding balance (per reconciled source),538306.58,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_206,1,Booking / Escrow 10% (historic),93383.4,10,,,paid,Historic fact imported from reconciled sales workbook
+br1_206,2,Escrow 20% (historic),186766.8,20,,,paid,Historic fact imported from reconciled sales workbook
+br1_206,3,"Further collections (historic, no breakdown)",220979.8,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_206,4,Outstanding balance (per reconciled source),470057.36,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_207,1,Booking / Escrow 10% (historic),120621.5,10,2024-07-03,2024-07-03,paid,Historic fact imported from reconciled sales workbook
+br1_207,2,Escrow 20% (historic),241243.0,20,2024-09-19,2024-09-19,paid,Historic fact imported from reconciled sales workbook
+br1_207,3,"Further collections (historic, no breakdown)",184045.51,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_207,4,Outstanding balance (per reconciled source),708553.6,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_208,1,"Collected to date (historic, no schedule breakdown)",403400.22,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_208,2,Outstanding balance (per reconciled source),1505185.94,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_209,1,"Collected to date (historic, no schedule breakdown)",472066.31,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_209,2,Outstanding balance (per reconciled source),1403986.57,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_210,1,Booking / Escrow 10% (historic),99536.6,10,2024-08-16,2024-08-16,paid,Historic fact imported from reconciled sales workbook
+br1_210,2,Escrow 20% (historic),199073.2,20,2024-12-23,2024-12-23,paid,Historic fact imported from reconciled sales workbook
+br1_210,3,"Further collections (historic, no breakdown)",142933.47,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_210,4,Outstanding balance (per reconciled source),593637.37,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_212,1,Booking / Escrow 10% (historic),188476.1,10,,,paid,Historic fact imported from reconciled sales workbook
+br1_212,2,Escrow 20% (historic),376952.2,20,,,paid,Historic fact imported from reconciled sales workbook
+br1_212,3,"Further collections (historic, no breakdown)",267013.68,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_212,4,Outstanding balance (per reconciled source),1127709.46,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_213,1,Booking / Escrow 10% (historic),186954.6,10,2024-08-06,2024-08-06,paid,Historic fact imported from reconciled sales workbook
+br1_213,2,Escrow 20% (historic),373909.2,20,2024-07-10,2024-07-10,paid,Historic fact imported from reconciled sales workbook
+br1_213,3,"Further collections (historic, no breakdown)",152601.2,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_213,4,Outstanding balance (per reconciled source),1230862.84,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_301,1,Booking / Escrow 10% (historic),131028.1,10,2024-09-30,2024-09-30,paid,Historic fact imported from reconciled sales workbook
+br1_301,2,Escrow 20% (historic),262056.2,20,,,paid,Historic fact imported from reconciled sales workbook
+br1_301,3,"Further collections (historic, no breakdown)",21972.12,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_301,4,Outstanding balance (per reconciled source),947635.82,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_302,1,Booking / Escrow 10% (historic),122396.5,10,2024-06-24,2024-06-24,paid,Historic fact imported from reconciled sales workbook
+br1_302,2,Escrow 20% (historic),244793.0,20,2025-03-17,2025-03-17,paid,Historic fact imported from reconciled sales workbook
+br1_302,3,"Further collections (historic, no breakdown)",125395.6,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_302,4,Outstanding balance (per reconciled source),780338.5,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_303,1,Booking / Escrow 10% (historic),93773.1,10,2024-06-28,2024-06-28,paid,Historic fact imported from reconciled sales workbook
+br1_303,2,Escrow 20% (historic),187546.2,20,2024-08-09,2024-08-09,paid,Historic fact imported from reconciled sales workbook
+br1_303,3,"Further collections (historic, no breakdown)",87394.58,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_303,4,Outstanding balance (per reconciled source),606526.36,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_304,1,Booking / Escrow 10% (historic),93321.0,10,2025-04-12,2025-04-12,paid,Historic fact imported from reconciled sales workbook
+br1_304,2,Escrow 20% (historic),186642.0,20,,,paid,Historic fact imported from reconciled sales workbook
+br1_304,3,"Further collections (historic, no breakdown)",148345.16,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_304,4,Outstanding balance (per reconciled source),542230.24,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_305,1,Booking / Escrow 10% (historic),92755.9,10,2024-11-07,2024-11-07,paid,Historic fact imported from reconciled sales workbook
+br1_305,2,Escrow 20% (historic),185511.8,20,,,paid,Historic fact imported from reconciled sales workbook
+br1_305,3,"Further collections (historic, no breakdown)",107835.72,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_305,4,Outstanding balance (per reconciled source),578557.94,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_306,1,Booking / Escrow 10% (historic),94383.4,10,2024-08-15,2024-08-15,paid,Historic fact imported from reconciled sales workbook
+br1_306,2,Escrow 20% (historic),188766.8,20,2024-08-15,2024-08-15,paid,Historic fact imported from reconciled sales workbook
+br1_306,3,"Further collections (historic, no breakdown)",143541.05,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_306,4,Outstanding balance (per reconciled source),554896.11,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_307,1,Booking / Escrow 10% (historic),121621.5,10,2024-07-12,2024-07-12,paid,Historic fact imported from reconciled sales workbook
+br1_307,2,Escrow 20% (historic),243243.0,20,2024-08-02,2024-08-02,paid,Historic fact imported from reconciled sales workbook
+br1_307,3,"Further collections (historic, no breakdown)",185493.02,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_307,4,Outstanding balance (per reconciled source),714506.08,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_308,1,Booking / Escrow 10% (historic),184517.9,10,2024-10-02,2024-10-02,paid,Historic fact imported from reconciled sales workbook
+br1_308,2,Escrow 20% (historic),369035.8,20,2024-12-30,2024-12-30,paid,Historic fact imported from reconciled sales workbook
+br1_308,3,"Further collections (historic, no breakdown)",172068.3,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_308,4,Outstanding balance (per reconciled source),1193364.16,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_309,1,Booking / Escrow 10% (historic),181389.7,10,2024-08-09,2024-08-09,paid,Historic fact imported from reconciled sales workbook
+br1_309,2,Escrow 20% (historic),362779.4,20,2024-09-09,2024-09-09,paid,Historic fact imported from reconciled sales workbook
+br1_309,3,"Further collections (historic, no breakdown)",239930.83,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_309,4,Outstanding balance (per reconciled source),1102352.95,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_310,1,Booking / Escrow 10% (historic),100536.6,10,2024-12-19,2024-12-19,paid,Historic fact imported from reconciled sales workbook
+br1_310,2,Escrow 20% (historic),201073.2,20,2025-07-01,2025-07-01,paid,Historic fact imported from reconciled sales workbook
+br1_310,3,"Further collections (historic, no breakdown)",13006.43,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_310,4,Outstanding balance (per reconciled source),730964.41,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_312,1,Booking / Escrow 10% (historic),189476.1,10,2024-07-22,2024-07-22,paid,Historic fact imported from reconciled sales workbook
+br1_312,2,Escrow 20% (historic),378952.2,20,2024-10-17,2024-10-17,paid,Historic fact imported from reconciled sales workbook
+br1_312,3,"Further collections (historic, no breakdown)",230372.23,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_312,4,Outstanding balance (per reconciled source),1171750.91,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_313,1,Booking / Escrow 10% (historic),187954.6,10,2024-07-18,2024-07-18,paid,Historic fact imported from reconciled sales workbook
+br1_313,2,Escrow 20% (historic),375909.2,20,2024-08-13,2024-08-13,paid,Historic fact imported from reconciled sales workbook
+br1_313,3,"Further collections (historic, no breakdown)",266136.78,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_313,4,Outstanding balance (per reconciled source),1124727.26,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_401,1,Booking / Escrow 10% (historic),132028.1,10,2024-07-06,2024-07-06,paid,Historic fact imported from reconciled sales workbook
+br1_401,2,Escrow 20% (historic),264056.2,20,2024-07-06,2024-07-06,paid,Historic fact imported from reconciled sales workbook
+br1_401,3,"Further collections (historic, no breakdown)",310915.95,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_401,4,Outstanding balance (per reconciled source),666091.99,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_402,1,Booking / Escrow 10% (historic),123396.5,10,2024-08-09,2024-08-09,paid,Historic fact imported from reconciled sales workbook
+br1_402,2,Escrow 20% (historic),246793.0,20,,,paid,Historic fact imported from reconciled sales workbook
+br1_402,3,"Further collections (historic, no breakdown)",178754.96,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_402,4,Outstanding balance (per reconciled source),734379.14,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_403,1,Booking / Escrow 10% (historic),94773.1,10,,,paid,Historic fact imported from reconciled sales workbook
+br1_403,2,Escrow 20% (historic),189546.2,20,,,paid,Historic fact imported from reconciled sales workbook
+br1_403,3,"Further collections (historic, no breakdown)",155271.16,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_403,4,Outstanding balance (per reconciled source),546049.78,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_404,1,Booking / Escrow 10% (historic),94321.0,10,,,paid,Historic fact imported from reconciled sales workbook
+br1_404,2,Escrow 20% (historic),188642.0,20,,,paid,Historic fact imported from reconciled sales workbook
+br1_404,3,"Further collections (historic, no breakdown)",163427.25,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_404,4,Outstanding balance (per reconciled source),534548.15,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_405,1,Booking / Escrow 10% (historic),93755.9,10,,,paid,Historic fact imported from reconciled sales workbook
+br1_405,2,Escrow 20% (historic),187511.8,20,,,paid,Historic fact imported from reconciled sales workbook
+br1_405,3,"Further collections (historic, no breakdown)",162384.6,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_405,4,Outstanding balance (per reconciled source),531409.06,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_406,1,Booking / Escrow 10% (historic),95383.4,10,2024-11-07,2024-11-07,paid,Historic fact imported from reconciled sales workbook
+br1_406,2,Escrow 20% (historic),190766.8,20,,,paid,Historic fact imported from reconciled sales workbook
+br1_406,3,"Further collections (historic, no breakdown)",69779.12,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_406,4,Outstanding balance (per reconciled source),636058.04,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_407,1,Booking / Escrow 10% (historic),122621.5,10,2025-11-05,2025-11-05,paid,Historic fact imported from reconciled sales workbook
+br1_407,2,Escrow 20% (historic),245243.0,20,,,paid,Historic fact imported from reconciled sales workbook
+br1_407,3,"Further collections (historic, no breakdown)",186931.35,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_407,4,Outstanding balance (per reconciled source),720467.75,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_409,1,Booking / Escrow 10% (historic),180565.8,10,2024-07-01,2024-07-01,paid,Historic fact imported from reconciled sales workbook
+br1_409,2,Escrow 20% (historic),361131.61,20,2024-08-01,2024-08-01,paid,Historic fact imported from reconciled sales workbook
+br1_409,3,"Further collections (historic, no breakdown)",276859.19,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_409,4,Outstanding balance (per reconciled source),1059327.75,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_410,1,Booking / Escrow 10% (historic),101536.6,10,,,paid,Historic fact imported from reconciled sales workbook
+br1_410,2,Escrow 20% (historic),203073.2,20,,,paid,Historic fact imported from reconciled sales workbook
+br1_410,3,"Further collections (historic, no breakdown)",234381.33,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_410,4,Outstanding balance (per reconciled source),516989.51,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_411,1,Booking / Escrow 10% (historic),142670.9,10,,,paid,Historic fact imported from reconciled sales workbook
+br1_411,2,Escrow 20% (historic),285341.8,20,,,paid,Historic fact imported from reconciled sales workbook
+br1_411,3,"Further collections (historic, no breakdown)",202734.71,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_411,4,Outstanding balance (per reconciled source),853029.95,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_412,1,Booking / Escrow 10% (historic),190476.1,10,2024-06-20,2024-06-20,paid,Historic fact imported from reconciled sales workbook
+br1_412,2,Escrow 20% (historic),380952.2,20,2024-08-06,2024-08-06,paid,Historic fact imported from reconciled sales workbook
+br1_412,3,"Further collections (historic, no breakdown)",193475.66,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_412,4,Outstanding balance (per reconciled source),1216047.48,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_413,1,Booking / Escrow 10% (historic),188954.6,10,,,paid,Historic fact imported from reconciled sales workbook
+br1_413,2,Escrow 20% (historic),377909.2,20,,,paid,Historic fact imported from reconciled sales workbook
+br1_413,3,"Further collections (historic, no breakdown)",138731.57,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_413,4,Outstanding balance (per reconciled source),1259532.47,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_501,1,Booking / Escrow 10% (historic),133028.1,10,2024-09-24,2024-09-24,paid,Historic fact imported from reconciled sales workbook
+br1_501,2,Escrow 20% (historic),266056.2,20,2025-05-10,2025-05-10,paid,Historic fact imported from reconciled sales workbook
+br1_501,3,"Further collections (historic, no breakdown)",56211.47,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_501,4,Outstanding balance (per reconciled source),928196.47,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_502,1,Booking / Escrow 10% (historic),124396.5,10,2024-12-10,2024-12-10,paid,Historic fact imported from reconciled sales workbook
+br1_502,2,Escrow 20% (historic),248793.0,20,,,paid,Historic fact imported from reconciled sales workbook
+br1_502,3,"Further collections (historic, no breakdown)",230277.75,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_502,4,Outstanding balance (per reconciled source),690256.35,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_503,1,Booking / Escrow 10% (historic),95773.1,10,2024-07-05,2024-07-05,paid,Historic fact imported from reconciled sales workbook
+br1_503,2,Escrow 20% (historic),191546.2,20,2024-12-11,2024-12-11,paid,Historic fact imported from reconciled sales workbook
+br1_503,3,"Further collections (historic, no breakdown)",146659.85,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_503,4,Outstanding balance (per reconciled source),562061.09,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_504,1,Booking / Escrow 10% (historic),95321.0,10,,,paid,Historic fact imported from reconciled sales workbook
+br1_504,2,Escrow 20% (historic),190642.0,20,,,paid,Historic fact imported from reconciled sales workbook
+br1_504,3,"Further collections (historic, no breakdown)",165046.17,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_504,4,Outstanding balance (per reconciled source),540329.23,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_505,1,Booking / Escrow 10% (historic),94755.9,10,,,paid,Historic fact imported from reconciled sales workbook
+br1_505,2,Escrow 20% (historic),189511.8,20,,,paid,Historic fact imported from reconciled sales workbook
+br1_505,3,"Further collections (historic, no breakdown)",164085.8,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_505,4,Outstanding balance (per reconciled source),537107.86,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_506,1,Booking / Escrow 10% (historic),96383.4,10,2024-08-16,2024-08-16,paid,Historic fact imported from reconciled sales workbook
+br1_506,2,Escrow 20% (historic),192766.8,20,2024-08-17,2024-08-17,paid,Historic fact imported from reconciled sales workbook
+br1_506,3,"Further collections (historic, no breakdown)",147579.3,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_506,4,Outstanding balance (per reconciled source),565657.86,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_507,1,Booking / Escrow 10% (historic),123621.5,10,2024-06-28,2024-06-28,paid,Historic fact imported from reconciled sales workbook
+br1_507,2,Escrow 20% (historic),247243.0,20,2024-11-08,2024-11-08,paid,Historic fact imported from reconciled sales workbook
+br1_507,3,"Further collections (historic, no breakdown)",163707.54,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_507,4,Outstanding balance (per reconciled source),751091.56,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_508,1,Booking / Escrow 10% (historic),186517.9,10,2024-08-06,2024-08-06,paid,Historic fact imported from reconciled sales workbook
+br1_508,2,Escrow 20% (historic),373035.8,20,2024-10-07,2024-10-07,paid,Historic fact imported from reconciled sales workbook
+br1_508,3,"Further collections (historic, no breakdown)",121365.88,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_508,4,Outstanding balance (per reconciled source),1258866.58,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_509,1,Booking / Escrow 10% (historic),181555.8,10,2024-06-28,2024-06-28,paid,Historic fact imported from reconciled sales workbook
+br1_509,2,Escrow 20% (historic),363111.61,20,2024-08-02,2024-08-02,paid,Historic fact imported from reconciled sales workbook
+br1_509,3,"Further collections (historic, no breakdown)",280110.39,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_509,4,Outstanding balance (per reconciled source),1063402.55,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_510,1,Booking / Escrow 10% (historic),102536.6,10,2024-07-05,2024-07-05,paid,Historic fact imported from reconciled sales workbook
+br1_510,2,Escrow 20% (historic),205073.2,20,2024-07-25,2024-07-25,paid,Historic fact imported from reconciled sales workbook
+br1_510,3,"Further collections (historic, no breakdown)",257330.2,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_510,4,Outstanding balance (per reconciled source),501440.64,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_511,1,Booking / Escrow 10% (historic),143670.9,10,2024-07-08,2024-07-08,paid,Historic fact imported from reconciled sales workbook
+br1_511,2,Escrow 20% (historic),287341.8,20,2024-08-21,2024-08-21,paid,Historic fact imported from reconciled sales workbook
+br1_511,3,"Further collections (historic, no breakdown)",204137.2,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_511,4,Outstanding balance (per reconciled source),859027.46,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_512,1,Booking / Escrow 10% (historic),191476.1,10,2024-07-26,2024-07-26,paid,Historic fact imported from reconciled sales workbook
+br1_512,2,Escrow 20% (historic),382952.2,20,2024-07-26,2024-07-26,paid,Historic fact imported from reconciled sales workbook
+br1_512,3,"Further collections (historic, no breakdown)",175276.83,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_512,4,Outstanding balance (per reconciled source),1241646.31,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_513,1,"Collected to date (historic, no schedule breakdown)",382908.6,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_513,2,Outstanding balance (per reconciled source),1592619.24,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_601,1,Booking / Escrow 10% (historic),134028.1,10,,,paid,Historic fact imported from reconciled sales workbook
+br1_601,2,Escrow 20% (historic),268056.2,20,,,paid,Historic fact imported from reconciled sales workbook
+br1_601,3,"Further collections (historic, no breakdown)",204040.17,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_601,4,Outstanding balance (per reconciled source),787767.77,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_602,1,Booking / Escrow 10% (historic),125396.5,10,2024-06-11,2024-06-11,paid,Historic fact imported from reconciled sales workbook
+br1_602,2,Escrow 20% (historic),250793.0,20,2024-07-25,2024-07-25,paid,Historic fact imported from reconciled sales workbook
+br1_602,3,"Further collections (historic, no breakdown)",203637.5,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_602,4,Outstanding balance (per reconciled source),724296.6,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_603,1,Booking / Escrow 10% (historic),96773.1,10,2024-07-05,2024-07-05,paid,Historic fact imported from reconciled sales workbook
+br1_603,2,Escrow 20% (historic),193546.2,20,2024-12-11,2024-12-11,paid,Historic fact imported from reconciled sales workbook
+br1_603,3,"Further collections (historic, no breakdown)",144362.03,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_603,4,Outstanding balance (per reconciled source),571758.91,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_604,1,Booking / Escrow 10% (historic),96321.0,10,2025-12-23,2025-12-23,paid,Historic fact imported from reconciled sales workbook
+br1_604,2,Escrow 20% (historic),192642.0,20,2024-12-23,2024-12-23,paid,Historic fact imported from reconciled sales workbook
+br1_604,3,"Further collections (historic, no breakdown)",157113.24,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_604,4,Outstanding balance (per reconciled source),555662.16,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_605,1,Booking / Escrow 10% (historic),95755.9,10,2024-08-30,2024-08-30,paid,Historic fact imported from reconciled sales workbook
+br1_605,2,Escrow 20% (historic),191511.8,20,2024-12-11,2024-12-11,paid,Historic fact imported from reconciled sales workbook
+br1_605,3,"Further collections (historic, no breakdown)",156220.25,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_605,4,Outstanding balance (per reconciled source),552373.41,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_606,1,Booking / Escrow 10% (historic),97383.4,10,2024-04-07,2024-04-07,paid,Historic fact imported from reconciled sales workbook
+br1_606,2,Escrow 20% (historic),194766.8,20,2026-06-16,2026-06-16,paid,Historic fact imported from reconciled sales workbook
+br1_606,3,"Further collections (historic, no breakdown)",129237.52,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_606,4,Outstanding balance (per reconciled source),591399.64,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_607,1,Booking / Escrow 10% (historic),120882.86,10,2024-06-14,2024-06-14,paid,Historic fact imported from reconciled sales workbook
+br1_607,2,Escrow 20% (historic),241765.71,20,2024-06-26,2024-06-26,paid,Historic fact imported from reconciled sales workbook
+br1_607,3,"Further collections (historic, no breakdown)",172235.64,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_607,4,Outstanding balance (per reconciled source),722297.49,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_609,1,Booking / Escrow 10% (historic),184389.7,10,2024-06-21,2024-06-21,paid,Historic fact imported from reconciled sales workbook
+br1_609,2,Escrow 20% (historic),368779.4,20,,,paid,Historic fact imported from reconciled sales workbook
+br1_609,3,"Further collections (historic, no breakdown)",187390.27,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_609,4,Outstanding balance (per reconciled source),1177093.51,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_610,1,Booking / Escrow 10% (historic),107772.2,10,2024-04-07,2024-04-07,paid,Historic fact imported from reconciled sales workbook
+br1_610,2,Escrow 20% (historic),215544.4,20,2026-06-16,2026-06-16,paid,Historic fact imported from reconciled sales workbook
+br1_610,3,"Further collections (historic, no breakdown)",143230.49,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_610,4,Outstanding balance (per reconciled source),654283.79,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_611,1,Booking / Escrow 10% (historic),144670.9,10,2024-06-20,2024-06-20,paid,Historic fact imported from reconciled sales workbook
+br1_611,2,Escrow 20% (historic),289341.8,20,2025-06-12,2025-06-12,paid,Historic fact imported from reconciled sales workbook
+br1_611,3,"Further collections (historic, no breakdown)",219970.89,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_611,4,Outstanding balance (per reconciled source),850593.77,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_612,1,Booking / Escrow 10% (historic),192476.1,10,,,paid,Historic fact imported from reconciled sales workbook
+br1_612,2,Escrow 20% (historic),384952.2,20,,,paid,Historic fact imported from reconciled sales workbook
+br1_612,3,"Further collections (historic, no breakdown)",291967.19,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_612,4,Outstanding balance (per reconciled source),1132355.95,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_613,1,Booking / Escrow 10% (historic),190954.6,10,2024-07-03,2024-07-03,paid,Historic fact imported from reconciled sales workbook
+br1_613,2,Escrow 20% (historic),381909.2,20,2024-08-07,2024-08-07,paid,Historic fact imported from reconciled sales workbook
+br1_613,3,"Further collections (historic, no breakdown)",289469.88,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_613,4,Outstanding balance (per reconciled source),1123594.16,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_701,1,Booking / Escrow 10% (historic),135028.1,10,2024-07-08,2024-07-08,paid,Historic fact imported from reconciled sales workbook
+br1_701,2,Escrow 20% (historic),270056.2,20,2025-02-27,2025-02-27,paid,Historic fact imported from reconciled sales workbook
+br1_701,3,"Further collections (historic, no breakdown)",143447.54,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_701,4,Outstanding balance (per reconciled source),855760.4,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_702,1,Booking / Escrow 10% (historic),126396.5,10,2024-07-15,2024-07-15,paid,Historic fact imported from reconciled sales workbook
+br1_702,2,Escrow 20% (historic),252793.0,20,2025-06-09,2025-06-09,paid,Historic fact imported from reconciled sales workbook
+br1_702,3,"Further collections (historic, no breakdown)",192604.1,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_702,4,Outstanding balance (per reconciled source),742730.0,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_703,1,Booking / Escrow 10% (historic),97773.1,10,2024-07-05,2024-07-05,paid,Historic fact imported from reconciled sales workbook
+br1_703,2,Escrow 20% (historic),195546.2,20,2024-08-10,2024-08-10,paid,Historic fact imported from reconciled sales workbook
+br1_703,3,"Further collections (historic, no breakdown)",149659.45,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_703,4,Outstanding balance (per reconciled source),573861.49,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_704,1,Booking / Escrow 10% (historic),97321.0,10,2024-07-05,2024-07-05,paid,Historic fact imported from reconciled sales workbook
+br1_704,2,Escrow 20% (historic),194642.0,20,2024-08-10,2024-08-10,paid,Historic fact imported from reconciled sales workbook
+br1_704,3,"Further collections (historic, no breakdown)",148972.5,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_704,4,Outstanding balance (per reconciled source),571202.9,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_705,1,Booking / Escrow 10% (historic),96755.9,10,2024-08-05,2024-08-05,paid,Historic fact imported from reconciled sales workbook
+br1_705,2,Escrow 20% (historic),193511.8,20,2025-02-05,2025-02-05,paid,Historic fact imported from reconciled sales workbook
+br1_705,3,"Further collections (historic, no breakdown)",113243.35,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_705,4,Outstanding balance (per reconciled source),602750.31,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_706,1,Booking / Escrow 10% (historic),98383.4,10,2024-06-21,2024-06-21,paid,Historic fact imported from reconciled sales workbook
+br1_706,2,Escrow 20% (historic),196766.8,20,2024-06-21,2024-06-21,paid,Historic fact imported from reconciled sales workbook
+br1_706,3,"Further collections (historic, no breakdown)",199874.85,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_706,4,Outstanding balance (per reconciled source),528162.31,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_707,1,Booking / Escrow 10% (historic),125621.5,10,,,paid,Historic fact imported from reconciled sales workbook
+br1_707,2,Escrow 20% (historic),251243.0,20,,,paid,Historic fact imported from reconciled sales workbook
+br1_707,3,"Further collections (historic, no breakdown)",210360.97,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_707,4,Outstanding balance (per reconciled source),719238.13,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_708,1,Booking / Escrow 10% (historic),188517.9,10,2024-12-27,2024-12-27,paid,Historic fact imported from reconciled sales workbook
+br1_708,2,Escrow 20% (historic),377035.8,20,2025-01-10,2025-01-10,paid,Historic fact imported from reconciled sales workbook
+br1_708,3,"Further collections (historic, no breakdown)",129996.41,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_708,4,Outstanding balance (per reconciled source),1265036.05,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_709,1,Booking / Escrow 10% (historic),185389.7,10,2024-06-06,2024-06-06,paid,Historic fact imported from reconciled sales workbook
+br1_709,2,Escrow 20% (historic),370779.4,20,2024-07-21,2024-07-21,paid,Historic fact imported from reconciled sales workbook
+br1_709,3,"Further collections (historic, no breakdown)",281085.87,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_709,4,Outstanding balance (per reconciled source),1090797.91,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_710,1,Booking / Escrow 10% (historic),104536.6,10,2024-11-27,2024-11-27,paid,Historic fact imported from reconciled sales workbook
+br1_710,2,Escrow 20% (historic),209073.2,20,2026-01-07,2026-01-07,paid,Historic fact imported from reconciled sales workbook
+br1_710,3,"Further collections (historic, no breakdown)",107472.36,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_710,4,Outstanding balance (per reconciled source),666098.48,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_711,1,Booking / Escrow 10% (historic),145670.9,10,2024-04-07,2024-04-07,paid,Historic fact imported from reconciled sales workbook
+br1_711,2,Escrow 20% (historic),291341.8,20,2026-06-16,2026-06-16,paid,Historic fact imported from reconciled sales workbook
+br1_711,3,"Further collections (historic, no breakdown)",187797.38,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_711,4,Outstanding balance (per reconciled source),890167.28,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_712,1,Booking / Escrow 10% (historic),193476.1,10,2024-11-27,2024-11-27,paid,Historic fact imported from reconciled sales workbook
+br1_712,2,Escrow 20% (historic),386952.2,20,2025-04-05,2025-04-05,paid,Historic fact imported from reconciled sales workbook
+br1_712,3,"Further collections (historic, no breakdown)",165047.9,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_712,4,Outstanding balance (per reconciled source),1266675.24,0,,,pending,Historic fact imported from reconciled sales workbook
+br1_713,1,Booking / Escrow 10% (historic),191954.6,10,,,paid,Historic fact imported from reconciled sales workbook
+br1_713,2,Escrow 20% (historic),383909.2,20,,,paid,Historic fact imported from reconciled sales workbook
+br1_713,3,"Further collections (historic, no breakdown)",160636.58,0,,,paid,Historic fact imported from reconciled sales workbook
+br1_713,4,Outstanding balance (per reconciled source),1259827.46,0,,,pending,Historic fact imported from reconciled sales workbook

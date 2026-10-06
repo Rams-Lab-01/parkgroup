@@ -1,0 +1,89 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Temp / backup
+~$*
+*.tmp
+*.bak
+
+# Python
+__pycache__/
+*.py[cod]
+.env
+.env.example
+.venv/
+venv/
+
+# Excel workbooks (not source)
+*.xlsx
+*.xls
+*.xlsm
+
+# Generated reports
+*.pdf
+*.png
+
+# Logs
+*.log
+
+# Pickle / binary
+*.pkl
+
+# Session artifacts
+session-*.md
+
+# OMC internal state
+.omc/
+
+# Odoo MCP output files
+company_map_report.txt
+company_probe.txt
+company_recon.txt
+link_verify.txt
+map_out.txt
+plans_probe.txt
+terms_out.txt
+validate_out.txt
+vp_out.txt
+vp2.txt
+vp3.txt
+vp5.txt
+recon_report.txt
+readiness_2026-10-06.json
+sheets_structure.txt
+
+# Recon work output artifacts
+recon_work/audit5/db_state.txt
+recon_work/audit5/audit5_report.txt
+recon_work/recon_summary.txt
+vp4.txt
+recon_work/2026-10-05-*-via-ssh-and.txt
+recon_work/import/recon2_0510/
+
+# Odoo MCP generated dirs
+migration_out/
+target_out/
+odoo_mcp/data/*.csv
+odoo_mcp/data/*.xlsx
+
+# Recon work pickles
+recon_work/audit4/*.pkl
+recon_work/audit5/*.pkl
+recon_work/audit5/deferred/
+
+# Root escrow templates (duplicates in addons)
+escrow_*.xml
+
+# Working notes (not source)
+Parkgroup_Escrow_Construction_Expansion_Plan.md
+Parkgroup_Unreconciled_Items_2026-10-05.md
+05-10-2026\ Final\ Full\ Report.xlsx
+GCFO_Sales_Performance_Briefing*.pdf
+Consolidated_Sales_Workbook*.xlsx
+Master\ File*.xlsx
+Parkgroup_Units_Consolidated.xlsx
+Parkgroup_Escrow_Unit_Discrepancy_Report_2026-10-05.xlsx
+PBR*.xlsx
+PGV*.xlsx
+PRY*.xlsx
