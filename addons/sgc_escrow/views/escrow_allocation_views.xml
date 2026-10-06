@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2026 SGC TECH AI (https://sgctech.ai)
+    Part of SGC Odoo Suite. See LICENSE file for full copyright and licensing details.
+-->
+<odoo>
+
+    <!-- Escrow Allocation List View -->
+    <record id="view_escrow_allocation_tree" model="ir.ui.view">
+        <field name="name">escrow.allocation.list</field>
+        <field name="model">escrow.allocation</field>
+        <field name="arch" type="xml">
+            <list string="Escrow Allocations">
+                <field name="project_id"/>
+                <field name="unit_id"/>
+                <field name="partner_id"/>
+                <field name="sold_id"/>
+                <field name="escrow_pct"/>
+                <field name="sale_price_snapshot"/>
+                <field name="required_amount"/>
+                <field name="allocated_amount"/>
+                <field name="variance_amount"/>
+                <field name="has_source_data" widget="boolean_toggle"/>
+                <field name="flag_code"/>
+                <field name="reconciliation_state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Escrow Allocation Form View -->
+    <record id="view_escrow_allocation_form" model="ir.ui.view">
+        <field name="name">escrow.allocation.form</field>
+        <field name="model">escrow.allocation</field>
+        <field name="arch" type="xml">
+            <form string="Escrow Allocation">
+                <sheet>
+                    <group>
+                        <group string="Unit &amp; Client">
+                            <field name="project_id"/>
+                            <field name="unit_id"/>
+                            <field name="partner_id"/>
+                            <field name="sold_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group string="Source Allocation Figures">
+                            <field name="sale_price_snapshot"/>
+                            <field name="collected_amount"/>
+                            <field name="escrow_pct"/>
+                            <field name="required_amount"/>
+                            <field name="allocated_amount"/>
+                            <field name="variance_amount"/>
+                            <field name="has_source_data" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+                    <group string="Reconciliation &amp; Audit">
+                        <group>
+                            <field name="reconciliation_state"/>
+                            <field name="reconciled" widget="boolean_toggle"/>
+                            <field name="reconciled_on"/>
+                            <field name="reconciled_by"/>
+                        </group>
+                        <group>
+                            <field name="flag_code"/>
+                            <field name="flag_note"/>
+                            <field name="reconciliation_note"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Escrow Allocation Search View -->
+    <record id="view_escrow_allocation_search" model="ir.ui.view">
+        <field name="name">escrow.allocation.search</field>
+        <field name="model">escrow.allocation</field>
+        <field name="arch" type="xml">
+            <search string="Search Escrow Allocations">
+                <field name="project_id"/>
+                <field name="unit_id"/>
+                <field name="partner_id"/>
+                <field name="flag_code"/>
+                <filter string="Has Source Data" name="has_source_data" domain="[('has_source_data', '=', True)]"/>
+                <filter string="No Source Data" name="no_source_data" domain="[('has_source_data', '=', False)]"/>
+                <filter string="Reconciled" name="reconciled" domain="[('reconciled', '=', True)]"/>
+                <filter string="Pending Sign-off" name="unreconciled" domain="[('reconciled', '=', False)]"/>
+                <filter string="Project" name="group_project" context="{'group_by': 'project_id'}"/>
+                <filter string="Reconciliation State" name="group_recon_state" context="{'group_by': 'reconciliation_state'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Escrow Allocation Action -->
+    <record id="action_escrow_allocation" model="ir.actions.act_window">
+        <field name="name">Escrow Allocations</field>
+        <field name="res_model">escrow.allocation</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_escrow_allocation_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No escrow allocations found.
+            </p>
+            <p>
+                Import allocations from external source files or record them against project units.
+            </p>
+        </field>
+    </record>
+
+</odoo>

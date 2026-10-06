@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2026 SGC TECH AI (https://sgctech.ai)
+    Part of SGC Odoo Suite. See LICENSE file for full copyright and licensing details.
+-->
+<odoo>
+
+    <template id="report_escrow_allocation_register">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h2 class="text-center mb-4">Escrow Allocation Register</h2>
+
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Project</th>
+                                <th>Unit</th>
+                                <th>Client</th>
+                                <th>Escrow %</th>
+                                <th>Required</th>
+                                <th>Allocated</th>
+                                <th>Variance</th>
+                                <th>Source Facts?</th>
+                                <th>Flag</th>
+                                <th>Recon State</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="docs" t-as="o">
+                                <tr>
+                                    <td><span t-field="o.project_id.code"/></td>
+                                    <td><span t-field="o.unit_id.name"/></td>
+                                    <td><span t-field="o.partner_id.name"/></td>
+                                    <td><span t-field="o.escrow_pct"/>%</td>
+                                    <td><span t-field="o.required_amount"/></td>
+                                    <td><span t-field="o.allocated_amount"/></td>
+                                    <td><span t-field="o.variance_amount"/></td>
+                                    <td><span t-field="o.has_source_data"/></td>
+                                    <td><span t-field="o.flag_code"/></td>
+                                    <td><span t-field="o.reconciliation_state"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>

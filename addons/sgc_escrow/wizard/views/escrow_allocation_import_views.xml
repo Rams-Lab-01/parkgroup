@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2026 SGC TECH AI (https://sgctech.ai)
+    Part of SGC Odoo Suite. See LICENSE file for full copyright and licensing details.
+-->
+<odoo>
+
+    <record id="view_escrow_allocation_import_form" model="ir.ui.view">
+        <field name="name">escrow.allocation.import.form</field>
+        <field name="model">escrow.allocation.import</field>
+        <field name="arch" type="xml">
+            <form string="Import Escrow Allocations">
+                <sheet>
+                    <div class="oe_title">
+                        <h2>Import Per-Unit Escrow Allocations</h2>
+                    </div>
+                    <group>
+                        <group string="Files">
+                            <field name="data_file" filename="data_filename"/>
+                            <field name="data_filename" invisible="1"/>
+                            <field name="flags_file" filename="flags_filename"/>
+                            <field name="flags_filename" invisible="1"/>
+                        </group>
+                        <group string="Options">
+                            <field name="dry_run" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+                    <notebook invisible="state == 'draft'">
+                        <page string="Import Summary" name="summary">
+                            <group>
+                                <field name="summary" readonly="1"/>
+                            </group>
+                            <field name="line_ids" readonly="1">
+                                <list string="Import Lines">
+                                    <field name="project_code"/>
+                                    <field name="unit_code"/>
+                                    <field name="client_name"/>
+                                    <field name="escrow_pct"/>
+                                    <field name="escrow_allocated"/>
+                                    <field name="status"/>
+                                    <field name="note"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <footer>
+                    <button name="action_import" string="Run Import" type="object" class="oe_highlight"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_escrow_allocation_import" model="ir.actions.act_window">
+        <field name="name">Import Escrow Allocations</field>
+        <field name="res_model">escrow.allocation.import</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

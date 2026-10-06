@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2026 SGC TECH AI (https://sgctech.ai)
+    Part of SGC Odoo Suite. See LICENSE file for full copyright and licensing details.
+-->
+<odoo noupdate="1">
+
+    <record id="seq_escrow_release" model="ir.sequence">
+        <field name="name">Escrow Release</field>
+        <field name="code">sgc_escrow.escrow_release</field>
+        <field name="prefix">ESC/REL/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+</odoo>

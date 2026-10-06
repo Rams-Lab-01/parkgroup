@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_sgc_pdc_cheque_user,sgc.pdc.cheque.user,model_sgc_pdc_cheque,group_pdc_user,1,1,1,0
+access_sgc_pdc_cheque_manager,sgc.pdc.cheque.manager,model_sgc_pdc_cheque,group_pdc_manager,1,1,1,1
+access_sgc_pdc_cheque_officer,sgc.pdc.cheque.officer,model_sgc_pdc_cheque,sgc_offplan_rental_property_management.property_rental_officer,1,0,0,0
+access_sgc_pdc_bounce_wizard_user,sgc.pdc.bounce.wizard.user,model_sgc_pdc_bounce_wizard,group_pdc_user,1,1,1,1

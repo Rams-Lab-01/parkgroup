@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sgc_broker_expiry_tracker_list" model="ir.ui.view">
+        <field name="name">sgc.broker.expiry.tracker.list</field>
+        <field name="model">sgc.broker.expiry.tracker</field>
+        <field name="arch" type="xml">
+            <list string="Expiry Monitor" create="0" edit="0" delete="0"
+                  decoration-danger="status == 'expired'" decoration-warning="status == 'due'">
+                <field name="application_id"/>
+                <field name="partner_id"/>
+                <field name="label"/>
+                <field name="expiry_date"/>
+                <field name="days_left"/>
+                <field name="status" widget="badge"/>
+                <field name="pre_alert_date" optional="show"/>
+                <field name="last_alert_date" optional="show"/>
+            </list>
+        </field>
+    </record>
+    <record id="sgc_broker_expiry_tracker_search" model="ir.ui.view">
+        <field name="name">sgc.broker.expiry.tracker.search</field>
+        <field name="model">sgc.broker.expiry.tracker</field>
+        <field name="arch" type="xml">
+            <search string="Expiry Monitor">
+                <field name="partner_id"/>
+                <field name="application_id"/>
+                <field name="label"/>
+                <filter name="f_expired" string="Expired"
+                        domain="[('expiry_date', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="f_30" string="Expiring in 30 days"
+                        domain="[('expiry_date', '&gt;=', context_today().strftime('%Y-%m-%d')),
+                                 ('expiry_date', '&lt;=', (context_today() + datetime.timedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+                <group>
+                    <filter name="g_partner" string="Broker" context="{'group_by': 'partner_id'}"/>
+                    <filter name="g_label" string="Item" context="{'group_by': 'label'}"/>
+                    <filter name="g_month" string="Expiry month" context="{'group_by': 'expiry_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="action_sgc_broker_expiry_tracker" model="ir.actions.act_window">
+        <field name="name">Expiry Monitor</field>
+        <field name="res_model">sgc.broker.expiry.tracker</field>
+        <field name="view_mode">list</field>
+        <field name="context">{'search_default_f_30': 1}</field>
+        <field name="search_view_id" ref="sgc_broker_expiry_tracker_search"/>
+    </record>
+</odoo>

@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Shared step indicator -->
+    <template id="broker_steps" name="Broker registration steps">
+        <ol class="list-inline small text-muted mb-4">
+            <li class="list-inline-item"><span t-attf-class="badge #{'text-bg-primary' if step == 1 else 'text-bg-secondary'}">1</span> Your details</li>
+            <li class="list-inline-item"><span t-attf-class="badge #{'text-bg-primary' if step == 2 else 'text-bg-secondary'}">2</span> Verify email</li>
+            <li class="list-inline-item"><span t-attf-class="badge #{'text-bg-primary' if step == 3 else 'text-bg-secondary'}">3</span> Documents</li>
+            <li class="list-inline-item"><span t-attf-class="badge #{'text-bg-primary' if step == 4 else 'text-bg-secondary'}">4</span> Sign &amp; submit</li>
+        </ol>
+    </template>
+
+    <!-- 1. Registration -->
+    <template id="register_page" name="Broker registration">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+                <div class="container py-5" style="max-width: 820px;">
+                    <h1 class="mb-1">Broker Registration</h1>
+                    <p class="text-muted">Register as a real estate broker or brokerage company. You will verify your
+                        email, upload the compliance documents and sign the brokerage agreement online.</p>
+                    <t t-call="sgc_broker_registration.broker_steps"><t t-set="step" t-value="1"/></t>
+                    <div t-if="error" class="alert alert-danger" role="alert"><t t-out="error"/></div>
+                    <form action="/broker/register/submit" method="post" class="row g-3">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <div style="position:absolute; left:-9999px;" aria-hidden="true">
+                            <input type="text" name="website_hp" tabindex="-1" autocomplete="off"/>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="applicant_type">I am registering as *</label>
+                            <select name="applicant_type" id="applicant_type" class="form-select" required="required">
+                                <option value="company" t-att-selected="values.get('applicant_type', 'company') == 'company'">A brokerage company</option>
+                                <option value="individual" t-att-selected="values.get('applicant_type') == 'individual'">An individual broker</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="emirate">Regulator / Emirate *</label>
+                            <select name="emirate" id="emirate" class="form-select" required="required">
+                                <option value="">Select...</option>
+                                <t t-foreach="emirates" t-as="em">
+                                    <option t-att-value="em[0]" t-att-selected="values.get('emirate') == em[0]"><t t-out="em[1]"/></option>
+                                </t>
+                            </select>
+                        </div>
+                        <div class="col-12" id="company_name_group">
+                            <label class="form-label" for="company_name">Company / trade name *</label>
+                            <input type="text" name="company_name" id="company_name" class="form-control"
+                                   t-att-value="values.get('company_name')" maxlength="200"/>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="full_name">Your full name (as in passport) *</label>
+                            <input type="text" name="full_name" id="full_name" class="form-control" required="required"
+                                   t-att-value="values.get('full_name')" maxlength="200"/>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="nationality_id">Nationality</label>
+                            <select name="nationality_id" id="nationality_id" class="form-select">
+                                <option value="">Select...</option>
+                                <t t-foreach="countries" t-as="c">
+                                    <option t-att-value="c.id" t-att-selected="str(c.id) == values.get('nationality_id')"><t t-out="c.name"/></option>
+                                </t>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="email">Email * <span class="text-muted small">(we send a verification code)</span></label>
+                            <input type="email" name="email" id="email" class="form-control" required="required"
+                                   t-att-value="values.get('email')" maxlength="200"/>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="phone">Mobile * <span class="text-muted small">(+971 50 123 4567)</span></label>
+                            <input type="tel" name="phone" id="phone" class="form-control" required="required"
+                                   t-att-value="values.get('phone')" maxlength="30"/>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="street">Office address</label>
+                            <input type="text" name="street" id="street" class="form-control" t-att-value="values.get('street')" maxlength="200"/>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="city">City</label>
+                            <input type="text" name="city" id="city" class="form-control" t-att-value="values.get('city')" maxlength="100"/>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="po_box">P.O. Box</label>
+                            <input type="text" name="po_box" id="po_box" class="form-control" t-att-value="values.get('po_box')" maxlength="30"/>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label" for="website">Website</label>
+                            <input type="text" name="website" id="website" class="form-control" t-att-value="values.get('website')" maxlength="200"/>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary btn-lg">Continue and verify email</button>
+                        </div>
+                    </form>
+                    <script>
+                        (function () {
+                            var type = document.getElementById('applicant_type');
+                            var group = document.getElementById('company_name_group');
+                            var name = document.getElementById('company_name');
+                            function sync() {
+                                var company = type.value === 'company';
+                                group.style.display = company ? '' : 'none';
+                                name.required = company;
+                            }
+                            type.addEventListener('change', sync); sync();
+                        })();
+                    </script>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="already_registered_page" name="Broker already registered">
+        <t t-call="website.layout">
+            <div id="wrap"><div class="container py-5" style="max-width: 640px;">
+                <h2>Check your inbox</h2>
+                <p>If this email address has a registration in progress, we have sent a message to it with the
+                    link to continue. If you do not receive it within a few minutes, check your spam folder.</p>
+            </div></div>
+        </t>
+    </template>
+
+    <!-- 2. Verify -->
+    <template id="verify_page" name="Verify email">
+        <t t-call="website.layout">
+            <div id="wrap"><div class="container py-5" style="max-width: 560px;">
+                <h2>Verify your email</h2>
+                <t t-call="sgc_broker_registration.broker_steps"><t t-set="step" t-value="2"/></t>
+                <p>We sent a 6-digit code to <strong t-out="app.email"/>. It is valid for 10 minutes.</p>
+                <div t-if="error" class="alert alert-danger" role="alert"><t t-out="error"/></div>
+                <div t-if="info" class="alert alert-success" role="status"><t t-out="info"/></div>
+                <form t-attf-action="/broker/verify/#{app.access_token}/check" method="post" class="mb-3">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <label class="form-label" for="code">Verification code</label>
+                    <input type="text" name="code" id="code" class="form-control form-control-lg text-center"
+                           inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code"
+                           required="required" autofocus="autofocus" style="letter-spacing: 8px;"/>
+                    <button type="submit" class="btn btn-primary mt-3">Verify</button>
+                </form>
+                <form t-attf-action="/broker/verify/#{app.access_token}/resend" method="post">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <button type="submit" class="btn btn-link p-0">Send me a new code</button>
+                </form>
+            </div></div>
+        </t>
+    </template>
+
+    <!-- 3/4. Application -->
+    <template id="application_page" name="Broker application">
+        <t t-call="website.layout">
+            <div id="wrap"><div class="container py-5" style="max-width: 960px;">
+                <h1 class="mb-1">Application <t t-out="app.name"/></h1>
+                <p class="text-muted">
+                    <t t-out="app.company_name or app.full_name"/> - <t t-out="emirates.get(app.emirate)"/> -
+                    Status: <span class="badge text-bg-info" t-out="dict(app._fields['state'].selection).get(app.state)"/>
+                </p>
+                <div t-if="error" class="alert alert-danger" role="alert" style="white-space: pre-line;"><t t-out="error"/></div>
+                <div t-if="info" class="alert alert-success" role="status"><t t-out="info"/></div>
+                <div t-if="app.state == 'needs_info' and app.review_note" class="alert alert-warning">
+                    <strong>Action needed:</strong> <t t-out="app.review_note"/>
+                </div>
+                <div t-if="app.state == 'approved'" class="alert alert-success">
+                    Your registration is approved. Thank you.
+                </div>
+                <div t-if="app.state == 'rejected'" class="alert alert-danger">
+                    Your application was not approved. <t t-out="app.review_note"/>
+                </div>
+                <div t-if="app.state in ('submitted', 'in_review')" class="alert alert-info">
+                    Your application is with our compliance team. You will be notified by email.
+                </div>
+
+                <!-- Details -->
+                <h3 class="mt-4">1. Registration details</h3>
+                <form t-attf-action="/broker/application/#{app.access_token}/details" method="post" class="row g-3">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <fieldset class="row g-3 m-0 p-0" t-att-disabled="None if can_edit else 'disabled'">
+                        <div class="col-md-6" t-if="app.applicant_type == 'company'">
+                            <label class="form-label">Company / trade name</label>
+                            <input type="text" name="company_name" class="form-control" t-att-value="app.company_name"/>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Full name</label>
+                            <input type="text" name="full_name" class="form-control" t-att-value="app.full_name"/>
+                        </div>
+                        <div class="col-md-4"><label class="form-label">Mobile</label>
+                            <input type="tel" name="phone" class="form-control" t-att-value="app.phone"/></div>
+                        <div class="col-md-4"><label class="form-label">Emirates ID * (784-YYYY-NNNNNNN-C)</label>
+                            <input type="text" name="emirates_id" class="form-control" t-att-value="app.emirates_id"/></div>
+                        <div class="col-md-4" t-if="app.applicant_type == 'individual'"><label class="form-label">Passport no. *</label>
+                            <input type="text" name="passport_no" class="form-control" t-att-value="app.passport_no"/></div>
+                        <t t-if="app.applicant_type == 'company'">
+                            <div class="col-md-4"><label class="form-label">Trade licence no. *</label>
+                                <input type="text" name="trade_license_no" class="form-control" t-att-value="app.trade_license_no"/></div>
+                            <div class="col-md-4"><label class="form-label">Licensing authority</label>
+                                <input type="text" name="trade_license_authority" class="form-control" t-att-value="app.trade_license_authority"/></div>
+                            <div class="col-md-4"><label class="form-label">Licence issue date</label>
+                                <input type="date" name="trade_license_issue_date" class="form-control" t-att-value="app.trade_license_issue_date"/></div>
+                            <div class="col-md-4"><label class="form-label">Licence expiry date *</label>
+                                <input type="date" name="trade_license_expiry" class="form-control" t-att-value="app.trade_license_expiry"/></div>
+                            <div class="col-md-4"><label class="form-label">Brokerage office no. (ORN) *</label>
+                                <input type="text" name="orn" class="form-control" t-att-value="app.orn"/></div>
+                            <div class="col-md-4"><label class="form-label">Authorised signatory *</label>
+                                <input type="text" name="signatory_name" class="form-control" t-att-value="app.signatory_name"/></div>
+                            <div class="col-md-4"><label class="form-label">Signatory title</label>
+                                <input type="text" name="signatory_title" class="form-control" t-att-value="app.signatory_title"/></div>
+                            <div class="col-md-4"><label class="form-label">goAML registration ID</label>
+                                <input type="text" name="goaml_id" class="form-control" t-att-value="app.goaml_id"/></div>
+                        </t>
+                        <t t-if="app.applicant_type == 'individual'">
+                            <div class="col-md-4"><label class="form-label">Broker registration no. (BRN) *</label>
+                                <input type="text" name="brn" class="form-control" t-att-value="app.brn"/></div>
+                        </t>
+                        <div class="col-md-4"><label class="form-label">Regulator card / registration expiry</label>
+                            <input type="date" name="regulator_expiry" class="form-control" t-att-value="app.regulator_expiry"/></div>
+                        <div class="col-md-4"><label class="form-label">VAT TRN (15 digits)</label>
+                            <input type="text" name="vat_trn" class="form-control" t-att-value="app.vat_trn"/></div>
+                        <div class="col-md-6"><label class="form-label">Office address</label>
+                            <input type="text" name="street" class="form-control" t-att-value="app.street"/></div>
+                        <div class="col-md-3"><label class="form-label">City</label>
+                            <input type="text" name="city" class="form-control" t-att-value="app.city"/></div>
+                        <div class="col-md-3"><label class="form-label">P.O. Box</label>
+                            <input type="text" name="po_box" class="form-control" t-att-value="app.po_box"/></div>
+                        <div class="col-md-4"><label class="form-label">Bank name</label>
+                            <input type="text" name="bank_name" class="form-control" t-att-value="app.bank_name"/></div>
+                        <div class="col-md-4"><label class="form-label">IBAN (AE + 21 digits)</label>
+                            <input type="text" name="iban" class="form-control" t-att-value="app.iban"/></div>
+                        <div class="col-md-4"><label class="form-label">Account holder</label>
+                            <input type="text" name="account_holder" class="form-control" t-att-value="app.account_holder"/></div>
+                        <div class="col-12" t-if="can_edit">
+                            <button type="submit" class="btn btn-outline-primary">Save details</button>
+                        </div>
+                    </fieldset>
+                </form>
+
+                <!-- Documents -->
+                <h3 class="mt-5">2. Compliance documents</h3>
+                <p class="text-muted">PDF, JPG or PNG, up to <t t-out="max_mb"/> MB each. Documents marked
+                    <span class="text-danger">*</span> are required.</p>
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead><tr><th>Document</th><th>Uploaded</th><th style="min-width: 320px;">Upload</th></tr></thead>
+                        <tbody>
+                            <t t-foreach="types" t-as="dt">
+                                <tr>
+                                    <td>
+                                        <strong t-out="dt.name"/> <span t-if="dt.required" class="text-danger">*</span>
+                                        <div class="small text-muted" t-out="dt.description"/>
+                                        <a t-if="dt.is_agreement" class="small"
+                                           t-attf-href="/broker/application/#{app.access_token}/agreement" target="_blank">Download agreement to sign</a>
+                                    </td>
+                                    <td>
+                                        <t t-foreach="docs_by_type.get(dt.id, [])" t-as="d">
+                                            <div>
+                                                <span t-out="d.filename"/>
+                                                <span t-attf-class="badge #{'text-bg-success' if d.state == 'accepted' else ('text-bg-danger' if d.state == 'rejected' else 'text-bg-secondary')}"
+                                                      t-out="dict(d._fields['state'].selection).get(d.state)"/>
+                                                <span t-if="d.expiry_date" class="small text-muted">exp. <t t-out="d.expiry_date"/></span>
+                                                <div t-if="d.remarks" class="small text-danger" t-out="d.remarks"/>
+                                                <form t-if="can_edit and d.state != 'accepted'" method="post" class="d-inline"
+                                                      t-attf-action="/broker/application/#{app.access_token}/delete/#{d.id}">
+                                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                                    <button type="submit" class="btn btn-link btn-sm text-danger p-0">remove</button>
+                                                </form>
+                                            </div>
+                                        </t>
+                                        <span t-if="not docs_by_type.get(dt.id)" class="text-muted">-</span>
+                                    </td>
+                                    <td>
+                                        <form t-if="can_edit" method="post" enctype="multipart/form-data"
+                                              t-attf-action="/broker/application/#{app.access_token}/upload" class="row g-1">
+                                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                            <input type="hidden" name="type_id" t-att-value="dt.id"/>
+                                            <div class="col-12"><input type="file" name="file" class="form-control form-control-sm"
+                                                   accept=".pdf,.jpg,.jpeg,.png" required="required"/></div>
+                                            <t t-if="dt.has_expiry">
+                                                <div class="col-6"><input type="date" name="issue_date" class="form-control form-control-sm" title="Issue date"/></div>
+                                                <div class="col-6"><input type="date" name="expiry_date" class="form-control form-control-sm" title="Expiry date" required="required"/></div>
+                                            </t>
+                                            <div class="col-12"><button type="submit" class="btn btn-sm btn-outline-primary">Upload</button></div>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+                <div t-if="app.missing_type_ids and can_edit" class="alert alert-warning">
+                    Still missing: <t t-out="', '.join(app.missing_type_ids.mapped('name'))"/>
+                </div>
+
+                <!-- Submit -->
+                <t t-if="can_edit">
+                    <h3 class="mt-5">3. Declaration and electronic signature</h3>
+                    <form t-attf-action="/broker/application/#{app.access_token}/submit" method="post">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" name="accept_terms" id="accept_terms" value="1" t-att-checked="app.accept_terms"/>
+                            <label class="form-check-label" for="accept_terms">I have read and accept the brokerage agreement and I am authorised to bind the broker.</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" name="accept_aml" id="accept_aml" value="1" t-att-checked="app.accept_aml"/>
+                            <label class="form-check-label" for="accept_aml">I confirm compliance with UAE anti-money-laundering and sanctions rules, including goAML registration, and that no owner or signatory is subject to sanctions.</label>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" name="accept_accuracy" id="accept_accuracy" value="1" t-att-checked="app.accept_accuracy"/>
+                            <label class="form-check-label" for="accept_accuracy">All information and documents provided are true, complete and valid.</label>
+                        </div>
+                        <div class="mb-3" style="max-width: 420px;">
+                            <label class="form-label" for="declared_name">Type your full name as your electronic signature *</label>
+                            <input type="text" name="declared_name" id="declared_name" class="form-control" t-att-value="app.declared_name" required="required"/>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg">Submit application</button>
+                    </form>
+                </t>
+            </div></div>
+        </t>
+    </template>
+</odoo>
