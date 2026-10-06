@@ -118,7 +118,7 @@ export class RentalPropertyDashboard extends Component {
                 // formatted_read_group returns dicts; the month groupby key is
                 // "payment_date:month" and its value is a pair
                 // ["2024-04-01", "April 2024"] — not a plain date under "payment_date".
-                const cols = await this.orm._read_group("sale.contract.installment", [["state","=","paid"],["payment_date","!=",false]], ["payment_date:month"], ["amount:sum"]);
+                const cols = await this.orm.call("sale.contract.installment", "formatted_read_group", [[["state","=","paid"],["payment_date","!=",false]], ["payment_date:month"], ["amount:sum"]]);
                 const collMap = new Map();
                 for (const r of cols) {
                     const pair = r["payment_date:month"] ?? r.payment_date;
@@ -139,7 +139,7 @@ export class RentalPropertyDashboard extends Component {
                 // formatted_read_group returns project_id as [id, display_name] —
                 // use the display name directly (a name lookup keyed on p.id broke
                 // because p.id is the whole [id, name] array).
-                const escRows = await this.orm._read_group("escrow.allocation", [], ["project_id"], ["required_amount:sum","allocated_amount:sum"]);
+                const escRows = await this.orm.call("escrow.allocation", "formatted_read_group", [[], ["project_id"], ["required_amount:sum","allocated_amount:sum"]]);
                 const escMap = {};
                 for (const r of escRows) {
                     const proj = r.project_id;
