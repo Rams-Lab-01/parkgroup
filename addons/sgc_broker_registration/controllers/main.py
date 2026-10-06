@@ -262,7 +262,7 @@ class BrokerRegistration(http.Controller):
             if dtype.has_expiry:
                 if not vals.get('expiry_date'):
                     raise ValidationError(_('Enter the expiry date for "%s".', dtype.name))
-                if vals['expiry_date'] < today:
+                if vals['expiry_date'] <= today:
                     raise ValidationError(_('"%s" has expired. Upload a valid document.', dtype.name))
             request.env['sgc.broker.application.document'].sudo().create(vals)
         except (ValidationError, UserError, ValueError) as exc:

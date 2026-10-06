@@ -5,6 +5,8 @@ import re
 import secrets
 from datetime import timedelta
 
+from dateutil.relativedelta import relativedelta
+
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
@@ -17,7 +19,13 @@ CODE_MAX_ATTEMPTS = 5
 CODE_COOLDOWN_SECONDS = 60
 CODE_MAX_SENDS_PER_HOUR = 5
 MAX_APPLICATIONS_PER_EMAIL_PER_DAY = 3
-EXPIRY_WARNING_DAYS = 30
+PARAM_AGREEMENT_MONTHS = 'sgc_broker.agreement_validity_months'
+PARAM_PRE_DAYS = 'sgc_broker.expiry_pre_days'
+PARAM_REPEAT_DAYS = 'sgc_broker.expiry_repeat_days'
+PARAM_EXTRA_EMAILS = 'sgc_broker.extra_notify_emails'
+DEFAULT_AGREEMENT_MONTHS = 12
+DEFAULT_PRE_DAYS = 5
+DEFAULT_REPEAT_DAYS = 15
 EDITABLE_STATES = ('draft', 'verified', 'needs_info')
 
 EMAIL_RE = re.compile(r'^[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$')
@@ -94,7 +102,7 @@ class SgcBrokerApplication(models.Model):
         ('submitted', 'Submitted'),
         ('in_review', 'In review'),
         ('needs_info', 'More information needed'),
-        ('approved', 'Approved'),
+        ('approved', 'Registered'),
         ('rejected', 'Rejected'),
     ], default='draft', required=True, tracking=True, copy=False, index=True)
     company_id = fields.Many2one('res.company', default=lambda self: self.env.company, required=True)
@@ -165,7 +173,10 @@ class SgcBrokerApplication(models.Model):
     reviewed_at = fields.Datetime(copy=False)
     review_note = fields.Text(string='Reviewer note to applicant', copy=False)
     submitted_at = fields.Datetime(copy=False)
-    licence_alerted = fields.Boolean(copy=False)
+    agreement_start = fields.Date(string='Agreement Start', readonly=True, copy=False, tracking=True)
+    agreement_expiry = fields.Date(string='Agreement Expiry', copy=False, tracking=True,
+                                   help='Set to one year after approval; extended on renewal.')
+    expiry_tracker_ids = fields.One2many('sgc.broker.expiry.tracker', 'application_id', string='Expiry Monitor')
 
     _email_state_idx = models.Index('(email, state)')
 
@@ -193,7 +204,7 @@ class SgcBrokerApplication(models.Model):
                 continue
             valid = rec.document_ids.filtered(
                 lambda d: d.state != 'rejected' and not (d.type_id.has_expiry and (
-                    not d.expiry_date or d.expiry_date < today))).type_id
+                    not d.expiry_date or d.expiry_date <= today))).type_id
             missing = rec._required_types() - valid
             rec.missing_type_ids = missing
             rec.docs_complete = not missing
@@ -326,9 +337,9 @@ class SgcBrokerApplication(models.Model):
                 if not self[field]:
                     errors.append(_('%s is required.', label))
         today = fields.Date.context_today(self)
-        if self.trade_license_expiry and self.trade_license_expiry < today:
+        if self.trade_license_expiry and self.trade_license_expiry <= today:
             errors.append(_('The trade licence has expired.'))
-        if self.regulator_expiry and self.regulator_expiry < today:
+        if self.regulator_expiry and self.regulator_expiry <= today:
             errors.append(_('The regulator registration / card has expired.'))
         for missing in self.missing_type_ids:
             errors.append(_('Missing required document: %s', missing.name))
@@ -382,10 +393,16 @@ class SgcBrokerApplication(models.Model):
             accepted_types = rec.document_ids.filtered(lambda d: d.state == 'accepted').type_id
             if not rec._required_types() <= accepted_types:
                 raise UserError(_('Accept every required document before approving %s.', rec.name))
+            today = fields.Date.context_today(rec)
+            rec.write({'agreement_start': today,
+                       'agreement_expiry': today + relativedelta(months=rec._agreement_months())})
             partner = rec._map_to_partner()
             rec.write({'state': 'approved', 'partner_id': partner.id, 'reviewer_id': self.env.user.id,
                        'reviewed_at': fields.Datetime.now()})
-            rec.message_post(body=_('Approved and mapped to contact %s.', partner.display_name))
+            rec.sudo()._sync_expiry_trackers()
+            rec.sudo()._refresh_broker_status()
+            rec.message_post(body=_('Registered. Agreement valid until %(date)s. Mapped to contact %(partner)s.',
+                                    date=rec.agreement_expiry, partner=partner.display_name))
             rec.env.ref('sgc_broker_registration.mail_template_approved').sudo().send_mail(
                 rec.id, force_send=False, raise_exception=False)
             rec.activity_unlink(['mail.mail_activity_data_todo'])
@@ -469,7 +486,8 @@ class SgcBrokerApplication(models.Model):
             'category_id': [(4, self.env.ref('sgc_broker_registration.partner_category_registered_broker').id)],
             'sgc_is_broker': True,
             'sgc_broker_type': self.applicant_type,
-            'sgc_broker_status': 'active',
+            'sgc_broker_status': 'registered',
+            'sgc_agreement_expiry': self.agreement_expiry or False,
             'sgc_regulator': self.emirate,
             'sgc_broker_orn': self.orn or False,
             'sgc_broker_brn': self.brn or False,
@@ -532,31 +550,182 @@ class SgcBrokerApplication(models.Model):
         return partner
 
     # ------------------------------------------------------------------
-    # Expiry monitoring
+    # Expiry monitoring: agreement, licences, expiring documents
     # ------------------------------------------------------------------
     @api.model
-    def _cron_check_expiries(self):
+    def _param_int(self, key, default, minimum=0):
+        raw = self.env['ir.config_parameter'].sudo().get_param(key)
+        try:
+            return max(int(raw), minimum) if raw not in (False, None, '') else default
+        except (TypeError, ValueError):
+            return default
+
+    def _agreement_months(self):
+        return self._param_int(PARAM_AGREEMENT_MONTHS, DEFAULT_AGREEMENT_MONTHS, minimum=1)
+
+    def _expiry_items(self):
+        """Everything of this registered broker that can lapse: [(key, label, date)]."""
+        self.ensure_one()
+        items = [
+            ('agreement', _('Brokerage agreement'), self.agreement_expiry),
+            ('trade_license', _('Trade licence'), self.trade_license_expiry),
+            ('regulator', _('Regulator registration / broker card'), self.regulator_expiry),
+        ]
+        for doc in self.document_ids.filtered(lambda d: d.state == 'accepted' and d.expiry_date):
+            items.append(('doc%s' % doc.id, doc.type_id.name, doc.expiry_date))
+        return [item for item in items if item[2]]
+
+    def _sync_expiry_trackers(self):
+        """Create / update / remove the tracker rows so they mirror the current expiry dates."""
+        Tracker = self.env['sgc.broker.expiry.tracker'].sudo()
+        for rec in self:
+            items = {key: (label, date) for key, label, date in rec._expiry_items()}
+            existing = {t.key: t for t in rec.expiry_tracker_ids}
+            for key, (label, date) in items.items():
+                tracker = existing.get(key)
+                if not tracker:
+                    Tracker.create({'application_id': rec.id, 'key': key, 'label': label, 'expiry_date': date})
+                elif tracker.expiry_date != date or tracker.label != label:
+                    # renewed or corrected: start the reminder cycle again
+                    vals = {'label': label, 'expiry_date': date}
+                    if tracker.expiry_date != date:
+                        vals.update({'pre_alert_date': False, 'last_alert_date': False})
+                    tracker.write(vals)
+            for key, tracker in existing.items():
+                if key not in items:
+                    tracker.unlink()
+
+    def _refresh_broker_status(self):
+        """Contact status: Registered while agreement and licences are valid, otherwise Expired."""
         today = fields.Date.context_today(self)
-        horizon = today + timedelta(days=EXPIRY_WARNING_DAYS)
-        approved = self.search([('state', '=', 'approved')])
-        for app in approved:
-            lapsing = []
-            if app.trade_license_expiry and app.trade_license_expiry <= horizon:
-                lapsing.append(_('Trade licence expires %s', app.trade_license_expiry))
-            if app.regulator_expiry and app.regulator_expiry <= horizon:
-                lapsing.append(_('Regulator registration expires %s', app.regulator_expiry))
-            if lapsing and not app.licence_alerted:
-                app._notify_officers(_('%(name)s: %(what)s', name=app.partner_id.display_name or app.name,
-                                       what='; '.join(lapsing)))
-                app.licence_alerted = True
-            if app.trade_license_expiry and app.trade_license_expiry < today and app.partner_id:
-                app.partner_id.sudo().sgc_broker_status = 'expired'
-            for doc in app.document_ids.filtered(
-                    lambda d: d.expiry_date and d.expiry_date <= horizon and not d.expiry_alerted):
-                app._notify_officers(_('%(name)s: "%(doc)s" expires %(date)s', name=app.name,
-                                       doc=doc.type_id.name, date=doc.expiry_date))
-                doc.expiry_alerted = True
+        for rec in self.filtered(lambda r: r.state == 'approved' and r.partner_id):
+            critical = [d for d in (rec.agreement_expiry, rec.trade_license_expiry, rec.regulator_expiry) if d]
+            lapsed = any(d <= today for d in critical)
+            partner = rec.partner_id.sudo()
+            if partner.sgc_broker_status != 'suspended':
+                new = 'expired' if lapsed else 'registered'
+                if partner.sgc_broker_status != new:
+                    partner.sgc_broker_status = new
+            if partner.sgc_agreement_expiry != rec.agreement_expiry:
+                partner.sgc_agreement_expiry = rec.agreement_expiry
+
+    def write(self, vals):
+        res = super().write(vals)
+        if {'agreement_expiry', 'trade_license_expiry', 'regulator_expiry'} & set(vals):
+            approved = self.filtered(lambda r: r.state == 'approved')
+            approved.sudo()._sync_expiry_trackers()
+            approved.sudo()._refresh_broker_status()
+        return res
+
+    def action_renew_agreement(self):
+        self._check_state(('approved',))
+        today = fields.Date.context_today(self)
+        for rec in self:
+            base = max(rec.agreement_expiry or today, today)
+            rec.write({'agreement_start': today,
+                       'agreement_expiry': base + relativedelta(months=rec._agreement_months())})
+            rec.message_post(body=_('Agreement renewed until %s.', rec.agreement_expiry))
+
+    @api.model
+    def _extra_notify_emails(self):
+        raw = self.env['ir.config_parameter'].sudo().get_param(PARAM_EXTRA_EMAILS) or ''
+        return [e.strip() for e in raw.replace(';', ',').split(',') if e.strip()]
+
+    @api.model
+    def _cron_check_expiries(self):
+        """Daily job. For the PRE_DAYS days before an expiry date it reminds every day; on the
+        expiry date (first day of expiration) it sends the expired notice, then repeats every
+        REPEAT_DAYS days until the date is renewed."""
+        today = fields.Date.context_today(self)
+        pre_days = self._param_int(PARAM_PRE_DAYS, DEFAULT_PRE_DAYS)
+        repeat_days = self._param_int(PARAM_REPEAT_DAYS, DEFAULT_REPEAT_DAYS, minimum=1)
+        sent = 0
+        for app in self.search([('state', '=', 'approved')]):
+            try:
+                with self.env.cr.savepoint():
+                    app._sync_expiry_trackers()
+                    app._refresh_broker_status()
+                    for tracker in app.expiry_tracker_ids:
+                        days_left = (tracker.expiry_date - today).days
+                        if days_left <= 0:
+                            # the expiry date is the first day of expiration: notify, then every N days
+                            due = (not tracker.last_alert_date
+                                   or (today - tracker.last_alert_date).days >= repeat_days)
+                            kind = 'expired'
+                        elif days_left <= pre_days:
+                            # daily, for the last PRE_DAYS days before expiry
+                            due = tracker.pre_alert_date != today
+                            kind = 'upcoming'
+                        else:
+                            continue
+                        if due:
+                            app._send_expiry_notice(tracker, kind, days_left)
+                            tracker.write({'last_alert_date': today} if kind == 'expired'
+                                          else {'pre_alert_date': today})
+                            sent += 1
+            except Exception:
+                _logger.exception('Expiry check failed for %s', app.display_name)
+        _logger.info('Broker expiry reminders sent: %s', sent)
         return True
+
+    def _send_expiry_notice(self, tracker, kind, days_left):
+        self.ensure_one()
+        name = self.partner_id.display_name or self.company_name or self.full_name
+        if kind == 'upcoming':
+            summary = _('%(what)s of %(name)s expires in %(days)s day(s) (%(date)s)',
+                        what=tracker.label, name=name, days=days_left, date=tracker.expiry_date)
+            xmlid = 'sgc_broker_registration.mail_template_expiry_upcoming'
+        else:
+            summary = (_('%(what)s of %(name)s EXPIRES TODAY (%(date)s)', what=tracker.label, name=name,
+                         date=tracker.expiry_date) if days_left == 0 else
+                       _('%(what)s of %(name)s EXPIRED on %(date)s (%(days)s day(s) ago)',
+                         what=tracker.label, name=name, date=tracker.expiry_date, days=-days_left))
+            xmlid = 'sgc_broker_registration.mail_template_expiry_expired'
+        # 1) Odoo notification + to-do for compliance officers (replace the previous open reminder)
+        stale = self.activity_ids.filtered(lambda a: a.summary and a.summary.startswith('[%s]' % tracker.label))
+        stale.unlink()
+        officers = self._officers()
+        self.message_post(body=summary, partner_ids=officers.partner_id.ids,
+                          subtype_xmlid='mail.mt_note', message_type='notification')
+        for user in officers:
+            self.activity_schedule('mail.mail_activity_data_todo', user_id=user.id,
+                                   date_deadline=tracker.expiry_date,
+                                   summary='[%s] %s' % (tracker.label, summary), note=summary)
+        # 2) Email to the broker, copying the configured extra recipients
+        template = self.env.ref(xmlid, raise_if_not_found=False)
+        if template:
+            recipients = ([self.email] if self.email else []) + self._extra_notify_emails()
+            template.sudo().with_context(
+                item_label=tracker.label, item_date=tracker.expiry_date, days_left=abs(days_left)
+            ).send_mail(self.id, force_send=False, raise_exception=False,
+                        email_values={'email_to': ','.join(recipients)})
+
+
+class SgcBrokerExpiryTracker(models.Model):
+    _name = 'sgc.broker.expiry.tracker'
+    _description = 'Broker Expiry Tracker'
+    _order = 'expiry_date, id'
+
+    _key_unique = models.Constraint('UNIQUE(application_id, key)', 'One tracker per item.')
+
+    application_id = fields.Many2one('sgc.broker.application', required=True, ondelete='cascade', index=True)
+    partner_id = fields.Many2one(related='application_id.partner_id', store=True)
+    key = fields.Char(required=True)
+    label = fields.Char(required=True)
+    expiry_date = fields.Date(required=True, index=True)
+    pre_alert_date = fields.Date(string='Pre-expiry reminder sent', readonly=True)
+    last_alert_date = fields.Date(string='Last reminder sent', readonly=True)
+    days_left = fields.Integer(compute='_compute_days_left')
+    status = fields.Selection([('valid', 'Valid'), ('due', 'Due soon'), ('expired', 'Expired')],
+                              compute='_compute_days_left')
+
+    @api.depends('expiry_date')
+    def _compute_days_left(self):
+        today = fields.Date.context_today(self)
+        pre_days = self.env['sgc.broker.application']._param_int(PARAM_PRE_DAYS, DEFAULT_PRE_DAYS)
+        for rec in self:
+            rec.days_left = (rec.expiry_date - today).days if rec.expiry_date else 0
+            rec.status = ('expired' if rec.days_left <= 0 else 'due' if rec.days_left <= pre_days else 'valid')
 
 
 class SgcBrokerRejectWizard(models.TransientModel):

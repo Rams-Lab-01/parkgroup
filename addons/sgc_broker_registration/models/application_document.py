@@ -26,7 +26,6 @@ class SgcBrokerApplicationDocument(models.Model):
         ('rejected', 'Rejected'),
     ], default='pending', required=True)
     remarks = fields.Char(string='Reviewer remarks')
-    expiry_alerted = fields.Boolean(copy=False)
     has_expiry = fields.Boolean(related='type_id.has_expiry')
 
     @api.model

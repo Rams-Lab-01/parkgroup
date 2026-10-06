@@ -37,6 +37,9 @@
                             invisible="state not in ('submitted', 'in_review')"/>
                     <button name="action_open_reject_wizard" string="Reject" type="object"
                             invisible="state not in ('submitted', 'in_review')"/>
+                    <button name="action_renew_agreement" string="Renew Agreement" type="object"
+                            invisible="state != 'approved'"
+                            confirm="Extend the agreement by the configured validity period?"/>
                     <button name="action_reset_to_review" string="Reopen" type="object"
                             invisible="state != 'rejected'"/>
                     <field name="state" widget="statusbar"
@@ -49,7 +52,7 @@
                             <div class="o_stat_info"><span class="o_stat_text">Contact</span></div>
                         </button>
                     </div>
-                    <widget name="web_ribbon" title="Approved" invisible="state != 'approved'"/>
+                    <widget name="web_ribbon" title="Registered" invisible="state != 'approved'"/>
                     <widget name="web_ribbon" title="Rejected" bg_color="text-bg-danger"
                             invisible="state != 'rejected'"/>
                     <div class="oe_title"><h1><field name="name"/></h1></div>
@@ -118,6 +121,22 @@
                                 </list>
                             </field>
                         </page>
+                        <page string="Agreement and Expiry" name="expiry" invisible="state != 'approved'">
+                            <group>
+                                <field name="agreement_start"/>
+                                <field name="agreement_expiry"/>
+                            </group>
+                            <field name="expiry_tracker_ids" readonly="1">
+                                <list decoration-danger="status == 'expired'" decoration-warning="status == 'due'">
+                                    <field name="label"/>
+                                    <field name="expiry_date"/>
+                                    <field name="days_left"/>
+                                    <field name="status" widget="badge"/>
+                                    <field name="pre_alert_date"/>
+                                    <field name="last_alert_date"/>
+                                </list>
+                            </field>
+                        </page>
                         <page string="Declaration" name="declaration">
                             <group>
                                 <field name="accept_terms"/>
@@ -158,7 +177,7 @@
                 <field name="trade_license_no"/>
                 <filter name="f_to_review" string="To Review" domain="[('state', 'in', ('submitted', 'in_review'))]"/>
                 <filter name="f_needs_info" string="Waiting for Applicant" domain="[('state', '=', 'needs_info')]"/>
-                <filter name="f_approved" string="Approved" domain="[('state', '=', 'approved')]"/>
+                <filter name="f_approved" string="Registered" domain="[('state', '=', 'approved')]"/>
                 <filter name="f_rejected" string="Rejected" domain="[('state', '=', 'rejected')]"/>
                 <separator/>
                 <filter name="f_company" string="Companies" domain="[('applicant_type', '=', 'company')]"/>

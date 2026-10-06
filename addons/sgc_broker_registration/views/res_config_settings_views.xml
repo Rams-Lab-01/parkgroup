@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sgc_broker_settings_form" model="ir.ui.view">
+        <field name="name">sgc.broker.settings.form</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority">90</field>
+        <field name="arch" type="xml">
+            <form string="Broker Registration Settings" class="oe_form_configuration">
+                <header>
+                    <button string="Save" type="object" name="execute" class="oe_highlight"/>
+                    <button string="Cancel" special="cancel"/>
+                </header>
+                <group string="Agreement and reminders">
+                    <field name="sgc_broker_agreement_validity_months"/>
+                    <field name="sgc_broker_expiry_pre_days"/>
+                    <field name="sgc_broker_expiry_repeat_days"/>
+                    <field name="sgc_broker_extra_notify_emails" placeholder="compliance@company.com"/>
+                </group>
+                <group string="Portal">
+                    <field name="sgc_broker_max_upload_mb"/>
+                </group>
+                <div class="text-muted">
+                    A daily job reminds the broker (email) and the compliance officers (Odoo notification and
+                    to-do) before the agreement, trade licence, regulator registration or any accepted
+                    document expires, and repeatedly after expiry until the date is renewed.
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="action_sgc_broker_settings" model="ir.actions.act_window">
+        <field name="name">Broker Registration Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="view_id" ref="sgc_broker_settings_form"/>
+    </record>
+</odoo>

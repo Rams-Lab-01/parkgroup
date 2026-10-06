@@ -21,6 +21,8 @@
         "views/document_type_views.xml",
         "views/broker_application_views.xml",
         "views/res_partner_views.xml",
+        "views/expiry_views.xml",
+        "views/res_config_settings_views.xml",
         "views/menus.xml",
         "views/portal_templates.xml",
     ],

@@ -21,6 +21,7 @@
                             <field name="sgc_trade_license_authority"/>
                             <field name="sgc_trade_license_expiry"/>
                             <field name="sgc_regulator_expiry"/>
+                            <field name="sgc_agreement_expiry"/>
                             <field name="sgc_goaml_id"/>
                             <field name="sgc_emirates_id"/>
                             <field name="sgc_passport_no"/>

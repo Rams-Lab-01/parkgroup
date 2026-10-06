@@ -1,6 +1,9 @@
 import base64
 import re
 from datetime import timedelta
+from unittest.mock import patch
+
+from dateutil.relativedelta import relativedelta
 
 from odoo import fields
 from odoo.exceptions import AccessError, UserError, ValidationError
@@ -236,7 +239,12 @@ class TestBrokerPortalFlow(HttpCase):
         self.assertEqual(partner.sgc_broker_orn, '12345')
         self.assertEqual(partner.sgc_trade_license_no, 'TL-998')
         self.assertEqual(partner.sgc_regulator, 'dubai')
-        self.assertEqual(partner.sgc_broker_status, 'active')
+        self.assertEqual(partner.sgc_broker_status, 'registered')
+        self.assertEqual(app.agreement_start, fields.Date.today())
+        self.assertEqual(app.agreement_expiry, fields.Date.today() + relativedelta(years=1))
+        self.assertEqual(partner.sgc_agreement_expiry, app.agreement_expiry)
+        self.assertTrue(app.expiry_tracker_ids.filtered(lambda t: t.key == 'agreement'))
+        self.assertTrue(app.expiry_tracker_ids.filtered(lambda t: t.key == 'trade_license'))
         self.assertIn('Registered Broker', partner.category_id.mapped('name'))
         self.assertTrue(partner.child_ids.filtered(lambda c: c.name == 'Jane Broker'))
         self.assertTrue(partner.bank_ids.filtered(lambda b: b.sanitized_acc_number == GOOD_IBAN))
@@ -292,25 +300,113 @@ class TestBrokerPortalFlow(HttpCase):
         with self.assertRaises(AccessError):
             app.with_user(public).read(['email'])
 
-    def test_expiry_cron_alerts_once_and_flags_partner(self):
+    # -- expiry engine ---------------------------------------------------
+    def _registered_app(self):
         app = self._verified_app()
-        self._details(app, trade_license_expiry=str(fields.Date.today() + timedelta(days=300)))
+        self._details(app)
         self._upload_all_required(app)
         self._submit(app)
         app = app.with_user(self.officer)
         app.document_ids.action_accept()
         app.action_approve()
-        app.sudo().trade_license_expiry = fields.Date.today() + timedelta(days=10)
-        app.sudo().activity_ids.unlink()
-        self.Application._cron_check_expiries()
-        self.assertTrue(app.sudo().licence_alerted)
-        n = len(app.sudo().activity_ids)
-        self.assertGreater(n, 0)
-        self.Application._cron_check_expiries()
-        self.assertEqual(len(app.sudo().activity_ids), n)
-        app.sudo().trade_license_expiry = fields.Date.today() - timedelta(days=1)
-        self.Application._cron_check_expiries()
+        return app
+
+    def _tracker(self, app, key):
+        return app.sudo().expiry_tracker_ids.filtered(lambda t: t.key == key)
+
+    def _notices(self, app, label_part):
+        mails = self.env['mail.mail'].search([('subject', 'ilike', label_part)])
+        return mails.filtered(lambda m: app.email in (m.email_to or ''))
+
+    def test_registered_status_and_one_year_agreement(self):
+        app = self._registered_app()
+        self.assertEqual(app.state, 'approved')
+        self.assertEqual(app.partner_id.sgc_broker_status, 'registered')
+        self.assertEqual(app.agreement_expiry, fields.Date.today() + relativedelta(years=1))
+
+    def _on(self, day):
+        """Run code as if today were `day` (the cron and all date logic read context_today)."""
+        return patch.object(fields.Date, 'context_today', staticmethod(lambda record, timestamp=None: day))
+
+    def test_daily_for_5_days_then_expiry_day_then_every_15_days(self):
+        app = self._registered_app()
+        expiry = fields.Date.today() + timedelta(days=40)
+        app.sudo().trade_license_expiry = expiry
+        label = 'Trade licence'
+        counts = {}
+        for offset in (7, 6, 5, 4, 3, 2, 1):
+            with self._on(expiry - timedelta(days=offset)):
+                self.Application._cron_check_expiries()
+                self.Application._cron_check_expiries()          # a second run the same day adds nothing
+            counts[offset] = len(self._notices(app, 'Reminder: %s' % label))
+        self.assertEqual(counts, {7: 0, 6: 0, 5: 1, 4: 2, 3: 3, 2: 4, 1: 5}, 'one reminder per day, last 5 days')
+        self.assertEqual(app.partner_id.sgc_broker_status, 'registered')
+
+        # expiry date = first day of expiration
+        with self._on(expiry):
+            self.Application._cron_check_expiries()
+        expired = self._notices(app, 'EXPIRED: %s' % label)
+        self.assertEqual(len(expired), 1)
         self.assertEqual(app.partner_id.sgc_broker_status, 'expired')
+        self.assertEqual(len(self._notices(app, 'Reminder: %s' % label)), 5)
+
+        # afterwards only every 15 days
+        for after, total in ((1, 1), (14, 1), (15, 2), (16, 2), (29, 2), (30, 3), (44, 3), (45, 4)):
+            with self._on(expiry + timedelta(days=after)):
+                self.Application._cron_check_expiries()
+            self.assertEqual(len(self._notices(app, 'EXPIRED: %s' % label)), total, 'day +%s' % after)
+        # one open to-do per item, never piled up
+        self.assertEqual(len(app.sudo().activity_ids.filtered(
+            lambda a: a.summary.startswith('[Trade licence]'))), len(app._officers()))
+
+        # renewal restarts everything and the contact is registered again
+        app.sudo().trade_license_expiry = fields.Date.today() + timedelta(days=365)
+        self.assertEqual(app.partner_id.sgc_broker_status, 'registered')
+        self.assertFalse(self._tracker(app, 'trade_license').last_alert_date)
+        self.assertFalse(self._tracker(app, 'trade_license').pre_alert_date)
+
+    def test_agreement_reminders_and_renewal(self):
+        app = self._registered_app()
+        today = fields.Date.today()
+        app.sudo().agreement_expiry = today + timedelta(days=3)
+        self.Application._cron_check_expiries()
+        self.assertEqual(len(self._notices(app, 'Reminder: Brokerage agreement')), 1)
+        app.sudo().agreement_expiry = today - timedelta(days=2)
+        self.Application._cron_check_expiries()
+        self.assertEqual(len(self._notices(app, 'EXPIRED: Brokerage agreement')), 1)
+        self.assertEqual(app.partner_id.sgc_broker_status, 'expired')
+        app.action_renew_agreement()
+        self.assertEqual(app.agreement_expiry, today + relativedelta(years=1))
+        self.assertEqual(app.partner_id.sgc_broker_status, 'registered')
+        self.assertEqual(app.partner_id.sgc_agreement_expiry, app.agreement_expiry)
+        # renewing early extends from the current expiry, not from today
+        before = app.agreement_expiry
+        app.action_renew_agreement()
+        self.assertEqual(app.agreement_expiry, before + relativedelta(years=1))
+
+    def test_document_expiry_is_monitored_and_settings_are_respected(self):
+        app = self._registered_app()
+        today = fields.Date.today()
+        doc = app.sudo().document_ids.filtered(lambda d: d.type_id.has_expiry)[:1]
+        doc.expiry_date = today + timedelta(days=8)
+        self.Application._cron_check_expiries()
+        self.assertFalse(self._notices(app, 'Reminder: %s' % doc.type_id.name))
+        self.env['ir.config_parameter'].set_param('sgc_broker.expiry_pre_days', '10')
+        self.env['ir.config_parameter'].set_param('sgc_broker.extra_notify_emails', 'compliance@example.com')
+        self.Application._cron_check_expiries()
+        notices = self._notices(app, 'Reminder: %s' % doc.type_id.name)
+        self.assertEqual(len(notices), 1)
+        self.assertIn('compliance@example.com', notices.email_to)
+        self.env['ir.config_parameter'].set_param('sgc_broker.agreement_validity_months', '24')
+        app.action_renew_agreement()
+        self.assertGreaterEqual(app.agreement_expiry, today + relativedelta(years=2))
+
+    def test_not_registered_applications_are_not_monitored(self):
+        app = self._verified_app()
+        self._details(app)
+        app.sudo().trade_license_expiry = fields.Date.today() - timedelta(days=3)
+        self.Application._cron_check_expiries()
+        self.assertFalse(app.sudo().expiry_tracker_ids)
 
     def test_agreement_report_renders(self):
         app = self._verified_app()

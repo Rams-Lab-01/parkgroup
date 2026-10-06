@@ -9,7 +9,7 @@ class ResPartner(models.Model):
     sgc_is_broker = fields.Boolean(string='Registered Broker', tracking=True)
     sgc_broker_type = fields.Selection([('individual', 'Individual broker'),
                                         ('company', 'Brokerage company')], string='Broker Type')
-    sgc_broker_status = fields.Selection([('active', 'Active'), ('expired', 'Registration expired'),
+    sgc_broker_status = fields.Selection([('registered', 'Registered'), ('expired', 'Expired'),
                                           ('suspended', 'Suspended')], string='Broker Status', tracking=True)
     sgc_regulator = fields.Selection(EMIRATES, string='Regulator / Emirate')
     sgc_broker_orn = fields.Char(string='ORN', index=True)
@@ -18,6 +18,7 @@ class ResPartner(models.Model):
     sgc_trade_license_authority = fields.Char(string='Licensing Authority')
     sgc_trade_license_expiry = fields.Date(string='Trade Licence Expiry')
     sgc_regulator_expiry = fields.Date(string='Regulator Registration Expiry')
+    sgc_agreement_expiry = fields.Date(string='Brokerage Agreement Expiry', tracking=True)
     sgc_goaml_id = fields.Char(string='goAML ID')
     sgc_emirates_id = fields.Char(string='Emirates ID')
     sgc_passport_no = fields.Char(string='Passport No.')

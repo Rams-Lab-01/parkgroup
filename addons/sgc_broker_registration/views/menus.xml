@@ -4,6 +4,10 @@
               groups="group_broker_officer"/>
     <menuitem id="menu_sgc_broker_applications" name="Applications" parent="menu_sgc_broker_root"
               action="action_sgc_broker_application" sequence="10"/>
+    <menuitem id="menu_sgc_broker_expiry" name="Expiry Monitor" parent="menu_sgc_broker_root"
+              action="action_sgc_broker_expiry_tracker" sequence="20"/>
     <menuitem id="menu_sgc_broker_document_types" name="Document Requirements" parent="menu_sgc_broker_root"
               action="action_sgc_broker_document_type" sequence="90" groups="group_broker_manager"/>
+    <menuitem id="menu_sgc_broker_settings" name="Settings" parent="menu_sgc_broker_root"
+              action="action_sgc_broker_settings" sequence="95" groups="group_broker_manager"/>
 </odoo>

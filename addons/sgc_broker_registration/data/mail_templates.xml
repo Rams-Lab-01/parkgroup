@@ -21,6 +21,44 @@
             </field>
         </record>
 
+        <record id="mail_template_expiry_upcoming" model="mail.template">
+            <field name="name">Broker registration: expiry reminder</field>
+            <field name="model_id" ref="model_sgc_broker_application"/>
+            <field name="subject">Reminder: {{ ctx.get('item_label') }} expires on {{ ctx.get('item_date') }}</field>
+            <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+            <field name="email_to">{{ object.email }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+<div style="font-family: Arial, sans-serif; font-size: 14px;">
+    <p>Dear <t t-out="object.full_name"/>,</p>
+    <p>Your <b t-out="ctx.get('item_label')"/> with <t t-out="object.company_id.name"/> expires on
+       <b t-out="ctx.get('item_date')"/> (in <t t-out="ctx.get('days_left')"/> day(s)).</p>
+    <p>Please send us the renewed document before that date so your broker registration stays valid.
+       If it is not renewed, your registration status will change to <b>Expired</b>.</p>
+</div>
+            </field>
+        </record>
+
+        <record id="mail_template_expiry_expired" model="mail.template">
+            <field name="name">Broker registration: expired notice</field>
+            <field name="model_id" ref="model_sgc_broker_application"/>
+            <field name="subject">EXPIRED: {{ ctx.get('item_label') }} ({{ ctx.get('item_date') }})</field>
+            <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+            <field name="email_to">{{ object.email }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+<div style="font-family: Arial, sans-serif; font-size: 14px;">
+    <p>Dear <t t-out="object.full_name"/>,</p>
+    <p>Your <b t-out="ctx.get('item_label')"/> with <t t-out="object.company_id.name"/>
+       <t t-if="ctx.get('days_left') == 0"><b>expires today (<t t-out="ctx.get('item_date')"/>)</b>.</t>
+       <t t-else=""><b>expired on <t t-out="ctx.get('item_date')"/></b>
+       (<t t-out="ctx.get('days_left')"/> day(s) ago).</t></p>
+    <p>Your broker registration is not valid until it is renewed. Please send us the renewed document
+       immediately. We will keep reminding you until it is updated.</p>
+</div>
+            </field>
+        </record>
+
         <record id="mail_template_resume_link" model="mail.template">
             <field name="name">Broker registration: resume link</field>
             <field name="model_id" ref="model_sgc_broker_application"/>
