@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sgc_broker_application_list" model="ir.ui.view">
+        <field name="name">sgc.broker.application.list</field>
+        <field name="model">sgc.broker.application</field>
+        <field name="arch" type="xml">
+            <list string="Broker Applications"
+                  decoration-success="state == 'approved'" decoration-danger="state == 'rejected'"
+                  decoration-info="state in ('submitted', 'in_review')"
+                  decoration-muted="state == 'draft'">
+                <field name="name"/>
+                <field name="applicant_type"/>
+                <field name="company_name"/>
+                <field name="full_name"/>
+                <field name="email"/>
+                <field name="emirate" optional="show"/>
+                <field name="submitted_at" optional="show"/>
+                <field name="docs_complete" optional="hide"/>
+                <field name="reviewer_id" widget="many2one_avatar_user" optional="show"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="sgc_broker_application_form" model="ir.ui.view">
+        <field name="name">sgc.broker.application.form</field>
+        <field name="model">sgc.broker.application</field>
+        <field name="arch" type="xml">
+            <form string="Broker Application">
+                <header>
+                    <button name="action_start_review" string="Start Review" type="object" class="btn-primary"
+                            invisible="state not in ('submitted', 'needs_info')"/>
+                    <button name="action_approve" string="Approve and Create Contact" type="object" class="btn-primary"
+                            invisible="state not in ('submitted', 'in_review')"
+                            confirm="This creates / updates the contact and notifies the applicant. Continue?"/>
+                    <button name="action_open_info_wizard" string="Request Information" type="object"
+                            invisible="state not in ('submitted', 'in_review')"/>
+                    <button name="action_open_reject_wizard" string="Reject" type="object"
+                            invisible="state not in ('submitted', 'in_review')"/>
+                    <button name="action_renew_agreement" string="Renew Agreement" type="object"
+                            invisible="state != 'approved'"
+                            confirm="Extend the agreement by the configured validity period?"/>
+                    <button name="action_reset_to_review" string="Reopen" type="object"
+                            invisible="state != 'rejected'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,verified,submitted,in_review,approved"/>
+                </header>
+                <sheet>
+                    <div name="button_box" class="oe_button_box">
+                        <button name="action_open_partner" type="object" class="oe_stat_button"
+                                icon="fa-address-book-o" invisible="not partner_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Contact</span></div>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Registered" invisible="state != 'approved'"/>
+                    <widget name="web_ribbon" title="Rejected" bg_color="text-bg-danger"
+                            invisible="state != 'rejected'"/>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group string="Applicant">
+                            <field name="applicant_type"/>
+                            <field name="emirate"/>
+                            <field name="company_name" invisible="applicant_type != 'company'"/>
+                            <field name="full_name"/>
+                            <field name="email"/>
+                            <field name="email_verified"/>
+                            <field name="phone"/>
+                            <field name="nationality_id"/>
+                        </group>
+                        <group string="Office / Bank">
+                            <field name="street"/>
+                            <field name="city"/>
+                            <field name="po_box"/>
+                            <field name="website"/>
+                            <field name="bank_name"/>
+                            <field name="iban"/>
+                            <field name="account_holder"/>
+                        </group>
+                    </group>
+                    <group string="Registrations">
+                        <group>
+                            <field name="trade_license_no"/>
+                            <field name="trade_license_authority"/>
+                            <field name="trade_license_issue_date"/>
+                            <field name="trade_license_expiry"/>
+                            <field name="orn"/>
+                            <field name="brn"/>
+                            <field name="regulator_expiry"/>
+                        </group>
+                        <group>
+                            <field name="vat_trn"/>
+                            <field name="goaml_id"/>
+                            <field name="emirates_id"/>
+                            <field name="passport_no"/>
+                            <field name="signatory_name" invisible="applicant_type != 'company'"/>
+                            <field name="signatory_title" invisible="applicant_type != 'company'"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Documents" name="documents">
+                            <field name="missing_type_ids" invisible="1"/>
+                            <div class="alert alert-warning" role="alert" invisible="docs_complete">
+                                Missing required documents:
+                                <field name="missing_type_ids" widget="many2many_tags" readonly="1"/>
+                            </div>
+                            <field name="docs_complete" invisible="1"/>
+                            <field name="document_ids">
+                                <list editable="bottom" decoration-danger="state == 'rejected'"
+                                      decoration-success="state == 'accepted'">
+                                    <field name="type_id"/>
+                                    <field name="file" filename="filename" widget="binary"/>
+                                    <field name="filename" column_invisible="True"/>
+                                    <field name="issue_date"/>
+                                    <field name="expiry_date"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="remarks"/>
+                                    <button name="action_accept" type="object" string="Accept" icon="fa-check"
+                                            invisible="state == 'accepted'"/>
+                                    <button name="action_reject" type="object" string="Reject" icon="fa-times"
+                                            invisible="state == 'rejected'"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Agreement and Expiry" name="expiry" invisible="state != 'approved'">
+                            <group>
+                                <field name="agreement_start"/>
+                                <field name="agreement_expiry"/>
+                            </group>
+                            <field name="expiry_tracker_ids" readonly="1">
+                                <list decoration-danger="status == 'expired'" decoration-warning="status == 'due'">
+                                    <field name="label"/>
+                                    <field name="expiry_date"/>
+                                    <field name="days_left"/>
+                                    <field name="status" widget="badge"/>
+                                    <field name="pre_alert_date"/>
+                                    <field name="last_alert_date"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Declaration" name="declaration">
+                            <group>
+                                <field name="accept_terms"/>
+                                <field name="accept_aml"/>
+                                <field name="accept_accuracy"/>
+                                <field name="declared_name"/>
+                                <field name="declared_at"/>
+                                <field name="declared_ip"/>
+                                <field name="submitted_at"/>
+                            </group>
+                        </page>
+                        <page string="Review" name="review">
+                            <group>
+                                <field name="reviewer_id"/>
+                                <field name="reviewed_at"/>
+                                <field name="review_note"/>
+                                <field name="partner_id"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="sgc_broker_application_search" model="ir.ui.view">
+        <field name="name">sgc.broker.application.search</field>
+        <field name="model">sgc.broker.application</field>
+        <field name="arch" type="xml">
+            <search string="Applications">
+                <field name="name"/>
+                <field name="company_name"/>
+                <field name="full_name"/>
+                <field name="email"/>
+                <field name="orn"/>
+                <field name="brn"/>
+                <field name="trade_license_no"/>
+                <filter name="f_to_review" string="To Review" domain="[('state', 'in', ('submitted', 'in_review'))]"/>
+                <filter name="f_needs_info" string="Waiting for Applicant" domain="[('state', '=', 'needs_info')]"/>
+                <filter name="f_approved" string="Registered" domain="[('state', '=', 'approved')]"/>
+                <filter name="f_rejected" string="Rejected" domain="[('state', '=', 'rejected')]"/>
+                <separator/>
+                <filter name="f_company" string="Companies" domain="[('applicant_type', '=', 'company')]"/>
+                <filter name="f_individual" string="Individuals" domain="[('applicant_type', '=', 'individual')]"/>
+                <group>
+                    <filter name="g_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="g_emirate" string="Emirate" context="{'group_by': 'emirate'}"/>
+                    <filter name="g_type" string="Type" context="{'group_by': 'applicant_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_sgc_broker_application" model="ir.actions.act_window">
+        <field name="name">Broker Applications</field>
+        <field name="res_model">sgc.broker.application</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_f_to_review': 1}</field>
+        <field name="search_view_id" ref="sgc_broker_application_search"/>
+    </record>
+
+    <record id="sgc_broker_reject_wizard_form" model="ir.ui.view">
+        <field name="name">sgc.broker.reject.wizard.form</field>
+        <field name="model">sgc.broker.reject.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Decision">
+                <group>
+                    <field name="application_id" invisible="1"/>
+                    <field name="mode" invisible="1"/>
+                    <field name="reason" placeholder="Explain to the applicant what is wrong or missing"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" string="Confirm" type="object" class="btn-primary"/>
+                    <button string="Cancel" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

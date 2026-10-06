@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_broker_agreement" model="ir.actions.report">
+        <field name="name">Brokerage Agreement</field>
+        <field name="model">sgc.broker.application</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">sgc_broker_registration.report_broker_agreement</field>
+        <field name="report_file">sgc_broker_registration.report_broker_agreement</field>
+        <field name="print_report_name">'Brokerage-Agreement-%s' % (object.name or '').replace('/', '-')</field>
+        <field name="binding_model_id" ref="model_sgc_broker_application"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_broker_agreement_document">
+        <t t-set="o" t-value="doc"/>
+        <t t-call="web.external_layout">
+            <div class="page" style="font-size: 12px;">
+                <h2 class="text-center">BROKERAGE COOPERATION AGREEMENT</h2>
+                <p class="text-center text-muted">Reference <span t-field="doc.name"/> -
+                    Date <span t-out="time.strftime('%d %B %Y')"/></p>
+
+                <h5>1. Parties</h5>
+                <p><strong>The Company:</strong> <span t-field="doc.company_id.name"/>
+                   (the "Company").</p>
+                <p><strong>The Broker:</strong>
+                    <t t-if="doc.applicant_type == 'company'"><span t-field="doc.company_name"/>, represented by
+                        <span t-field="doc.signatory_name"/> (<span t-field="doc.signatory_title"/>),</t>
+                    <t t-else=""><span t-field="doc.full_name"/>,</t>
+                    Emirates ID <span t-field="doc.emirates_id"/>
+                    (the "Broker").</p>
+                <table class="table table-sm table-bordered">
+                    <tr><td>Regulator / Emirate</td><td><span t-field="doc.emirate"/></td>
+                        <td>Trade licence no.</td><td><span t-field="doc.trade_license_no"/></td></tr>
+                    <tr><td>Brokerage office no. (ORN)</td><td><span t-field="doc.orn"/></td>
+                        <td>Broker registration no. (BRN)</td><td><span t-field="doc.brn"/></td></tr>
+                    <tr><td>VAT TRN</td><td><span t-field="doc.vat_trn"/></td>
+                        <td>goAML ID</td><td><span t-field="doc.goaml_id"/></td></tr>
+                    <tr><td>Address</td><td colspan="3"><span t-field="doc.street"/> <span t-field="doc.city"/>
+                        <span t-field="doc.po_box"/></td></tr>
+                </table>
+
+                <h5>2. Appointment</h5>
+                <p>The Company appoints the Broker, on a non-exclusive basis, to introduce buyers, sellers,
+                   landlords and tenants for the Company's properties and projects, in accordance with the
+                   laws and regulations of the United Arab Emirates and of the emirate in which the
+                   property is located.</p>
+                <h5>3. Regulatory status</h5>
+                <p>The Broker declares that it holds, and will keep valid throughout this agreement, a trade
+                   licence covering real estate brokerage and the registration or card required by the
+                   competent real estate regulator, and that it will notify the Company immediately of any
+                   suspension, expiry or cancellation.</p>
+                <h5>4. Commission</h5>
+                <p>Commission is earned only on transactions introduced by the Broker that are concluded and
+                   paid for in accordance with the Company's commission schedule in force on the date of the
+                   transaction, and is payable only after the Company has received the corresponding
+                   customer payment. Commission is paid to the bank account declared by the Broker. Value
+                   added tax is applied where applicable.</p>
+                <h5>5. Conduct and advertising</h5>
+                <p>The Broker will deal honestly and transparently with all parties, will not make
+                   misleading statements, will not collect payments from customers on behalf of the Company
+                   unless authorised in writing, and will advertise properties only with the permits
+                   required by the regulator.</p>
+                <h5>6. Anti-money laundering and sanctions</h5>
+                <p>The Broker confirms compliance with the UAE anti-money-laundering, counter-terrorist
+                   financing and sanctions laws applicable to real estate brokers, including registration on
+                   the goAML platform and reporting of suspicious transactions, and will cooperate with
+                   the Company's due-diligence requests.</p>
+                <h5>7. Confidentiality and personal data</h5>
+                <p>Each party keeps confidential the information it receives and processes personal data
+                   only for the purposes of this agreement and in accordance with the applicable UAE data
+                   protection law.</p>
+                <h5>8. Term and termination</h5>
+                <p>This agreement starts on signature and continues until terminated by either party with
+                   thirty (30) days' written notice, or immediately by the Company if the Broker breaches
+                   this agreement or loses its licence or registration.</p>
+                <h5>9. Governing law</h5>
+                <p>This agreement is governed by the laws of the United Arab Emirates as applied in the
+                   emirate of <span t-field="doc.emirate"/>, and the competent courts of that emirate have
+                   jurisdiction.</p>
+
+                <div class="row" style="margin-top: 50px;">
+                    <div class="col-6">
+                        <div style="border-top: 1px solid #000; padding-top: 4px;">
+                            For the Company: <span t-field="doc.company_id.name"/><br/>Name / signature / stamp
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div style="border-top: 1px solid #000; padding-top: 4px;">
+                            For the Broker:
+                            <t t-if="doc.applicant_type == 'company'"><span t-field="doc.company_name"/></t>
+                            <t t-else=""><span t-field="doc.full_name"/></t><br/>Name / signature / stamp
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_broker_agreement">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="sgc_broker_registration.report_broker_agreement_document"/>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_broker" model="ir.ui.view">
+        <field name="name">res.partner.form.broker</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Broker Compliance" name="broker_compliance" invisible="not sgc_is_broker">
+                    <group>
+                        <group>
+                            <field name="sgc_is_broker"/>
+                            <field name="sgc_broker_type"/>
+                            <field name="sgc_broker_status"/>
+                            <field name="sgc_regulator"/>
+                            <field name="sgc_broker_orn"/>
+                            <field name="sgc_broker_brn"/>
+                        </group>
+                        <group>
+                            <field name="sgc_trade_license_no"/>
+                            <field name="sgc_trade_license_authority"/>
+                            <field name="sgc_trade_license_expiry"/>
+                            <field name="sgc_regulator_expiry"/>
+                            <field name="sgc_agreement_expiry"/>
+                            <field name="sgc_goaml_id"/>
+                            <field name="sgc_emirates_id"/>
+                            <field name="sgc_passport_no"/>
+                            <field name="sgc_broker_application_id"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_res_partner_filter_broker" model="ir.ui.view">
+        <field name="name">res.partner.search.broker</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='inactive']" position="before">
+                <filter name="sgc_registered_broker" string="Registered Brokers" domain="[('sgc_is_broker', '=', True)]"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

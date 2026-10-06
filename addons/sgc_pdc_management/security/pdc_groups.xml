@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="group_pdc_user" model="res.groups">
+            <field name="name">PDC User</field>
+            <field name="privilege_id" ref="sgc_offplan_rental_property_management.res_groups_privilege_rental_suite"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+        <record id="group_pdc_manager" model="res.groups">
+            <field name="name">PDC Manager</field>
+            <field name="privilege_id" ref="sgc_offplan_rental_property_management.res_groups_privilege_rental_suite"/>
+            <field name="implied_ids" eval="[(4, ref('group_pdc_user'))]"/>
+        </record>
+
+        <!-- The administrator can use the app straight after installation -->
+        <record id="base.user_admin" model="res.users">
+            <field name="group_ids" eval="[(4, ref('group_pdc_manager'))]"/>
+        </record>
+        <record id="base.user_root" model="res.users">
+            <field name="group_ids" eval="[(4, ref('group_pdc_manager'))]"/>
+        </record>
+    </data>
+</odoo>

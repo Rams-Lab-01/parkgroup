@@ -12,17 +12,27 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup SSH
+        env:
+          VPS_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_HOST: ${{ secrets.VPS_HOST }}
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/deploy_key
+          set -e
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          # Tolerate the usual paste problems: Windows line endings and a key stored on one line with literal \n
+          case "$VPS_KEY" in *$'\n'*) ;; *) VPS_KEY=$(printf '%b' "$VPS_KEY") ;; esac
+          printf '%s\n' "$VPS_KEY" | tr -d '\r' > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -p 22 ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
+          if ! ssh-keygen -y -f ~/.ssh/deploy_key > /dev/null 2>&1; then
+            echo "::error::VPS_SSH_KEY is not a valid, unencrypted private key. Re-paste the whole key (BEGIN and END lines included, no passphrase)."
+            exit 1
+          fi
+          ssh-keyscan -p 22 "$VPS_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
 
       - name: Deploy to VPS
         run: |
           echo "Auto-deploy triggered by push to master"
           echo "Deploying to ${{ secrets.VPS_HOST }} as ${{ secrets.VPS_USER }}"
-          ssh -o StrictHostKeyChecking=no -p 22 -i ~/.ssh/deploy_key ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "cd ${{ secrets.WORKTREE_FOLDER }} && git pull && docker compose pull && docker compose up -d"
+          ssh -o StrictHostKeyChecking=no -o IdentitiesOnly=yes -p 22 -i ~/.ssh/deploy_key ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "cd ${{ secrets.WORKTREE_FOLDER }} && git pull && docker compose pull && docker compose up -d"
 
       - name: Notify Telegram
         run: |

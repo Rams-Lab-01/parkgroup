@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sale_contract_form_pdc" model="ir.ui.view">
+        <field name="name">sale.contract.form.pdc</field>
+        <field name="model">sale.contract</field>
+        <field name="inherit_id" ref="sgc_offplan_rental_property_management.sale_contract_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_pdc" type="object" class="oe_stat_button" icon="fa-money">
+                    <field name="pdc_count" widget="statinfo" string="Cheques"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="tenancy_details_form_pdc" model="ir.ui.view">
+        <field name="name">tenancy.details.form.pdc</field>
+        <field name="model">tenancy.details</field>
+        <field name="inherit_id" ref="sgc_offplan_rental_property_management.tenancy_details_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_register_pdc" string="Register Cheque" type="object"/>
+                <button name="action_view_pdc" type="object" icon="fa-money">
+                    <field name="pdc_count" widget="statinfo" string="Cheques"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="rent_invoice_form_pdc" model="ir.ui.view">
+        <field name="name">rent.invoice.form.pdc</field>
+        <field name="model">rent.invoice</field>
+        <field name="inherit_id" ref="sgc_offplan_rental_property_management.rent_invoice_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_register_pdc" string="Register Cheque" type="object"/>
+                <button name="action_view_pdc" type="object" icon="fa-money">
+                    <field name="pdc_count" widget="statinfo" string="Cheques"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>

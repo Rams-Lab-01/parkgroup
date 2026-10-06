@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_sgc_broker_application_officer,sgc.broker.application.officer,model_sgc_broker_application,group_broker_officer,1,1,1,0
+access_sgc_broker_application_manager,sgc.broker.application.manager,model_sgc_broker_application,group_broker_manager,1,1,1,1
+access_sgc_broker_app_doc_officer,sgc.broker.application.document.officer,model_sgc_broker_application_document,group_broker_officer,1,1,1,1
+access_sgc_broker_app_doc_manager,sgc.broker.application.document.manager,model_sgc_broker_application_document,group_broker_manager,1,1,1,1
+access_sgc_broker_doctype_officer,sgc.broker.document.type.officer,model_sgc_broker_document_type,group_broker_officer,1,0,0,0
+access_sgc_broker_doctype_manager,sgc.broker.document.type.manager,model_sgc_broker_document_type,group_broker_manager,1,1,1,1
+access_sgc_broker_reject_wizard_officer,sgc.broker.reject.wizard.officer,model_sgc_broker_reject_wizard,group_broker_officer,1,1,1,1
+access_sgc_broker_tracker_officer,sgc.broker.expiry.tracker.officer,model_sgc_broker_expiry_tracker,group_broker_officer,1,0,0,0
+access_sgc_broker_tracker_manager,sgc.broker.expiry.tracker.manager,model_sgc_broker_expiry_tracker,group_broker_manager,1,1,1,1
