@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_pdc_receipt" model="ir.actions.report">
+        <field name="name">PDC Receipt / Voucher</field>
+        <field name="model">sgc.pdc.cheque</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">sgc_pdc_management.report_pdc_receipt</field>
+        <field name="report_file">sgc_pdc_management.report_pdc_receipt</field>
+        <field name="print_report_name">'PDC-%s' % (object.name or '').replace('/', '-')</field>
+        <field name="binding_model_id" ref="model_sgc_pdc_cheque"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sgc_pdc_cheque_list" model="ir.ui.view">
+        <field name="name">sgc.pdc.cheque.list</field>
+        <field name="model">sgc.pdc.cheque</field>
+        <field name="arch" type="xml">
+            <list string="Post-Dated Cheques"
+                  decoration-danger="maturity_status == 'matured'"
+                  decoration-warning="maturity_status == 'upcoming' and days_to_maturity &lt;= 7"
+                  decoration-success="state == 'cleared'"
+                  decoration-muted="state in ('cancelled', 'returned')">
+                <field name="name"/>
+                <field name="direction" optional="show"/>
+                <field name="partner_id"/>
+                <field name="property_id" optional="show"/>
+                <field name="cheque_number"/>
+                <field name="bank_name" optional="show"/>
+                <field name="received_date" optional="show"/>
+                <field name="cheque_date"/>
+                <field name="deposit_date" optional="hide"/>
+                <field name="clear_date" optional="hide"/>
+                <field name="bounce_date" optional="hide"/>
+                <field name="days_to_maturity" optional="show"/>
+                <field name="amount" sum="Total"/>
+                <field name="currency_id" column_invisible="True"/>
+                <field name="maturity_status" widget="badge" optional="hide"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'registered'"
+                       decoration-warning="state == 'deposited'"
+                       decoration-success="state == 'cleared'"
+                       decoration-danger="state == 'bounced'"/>
+                <field name="user_id" widget="many2one_avatar_user" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="sgc_pdc_cheque_form" model="ir.ui.view">
+        <field name="name">sgc.pdc.cheque.form</field>
+        <field name="model">sgc.pdc.cheque</field>
+        <field name="arch" type="xml">
+            <form string="Post-Dated Cheque">
+                <header>
+                    <button name="action_print_receipt" string="Print Receipt" type="object"
+                            invisible="state == 'draft'"/>
+                    <button name="action_register" string="Register (In Hand)" type="object"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_deposit" string="Deposit" type="object"
+                            class="btn-primary" invisible="state != 'registered'"/>
+                    <button name="action_clear" string="Mark Cleared" type="object"
+                            class="btn-primary" invisible="state not in ('registered', 'deposited')"
+                            confirm="This books the payment in the selected journal. Continue?"/>
+                    <button name="action_bounce" string="Bounced" type="object"
+                            invisible="state not in ('registered', 'deposited')"/>
+                    <button name="action_return" string="Return to Party" type="object"
+                            invisible="state not in ('registered', 'bounced')"/>
+                    <button name="action_cancel" string="Cancel" type="object"
+                            invisible="state not in ('draft', 'registered', 'bounced', 'returned')"/>
+                    <button name="action_reset_draft" string="Reset to Draft" type="object"
+                            invisible="state not in ('cancelled', 'bounced', 'returned')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,registered,deposited,cleared"/>
+                </header>
+                <sheet>
+                    <div name="button_box" class="oe_button_box">
+                        <button name="action_open_invoice" type="object" class="oe_stat_button"
+                                icon="fa-file-text-o" invisible="not invoice_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Invoice</span></div>
+                        </button>
+                        <button name="action_open_payment" type="object" class="oe_stat_button"
+                                icon="fa-money" invisible="not payment_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Payment</span></div>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Matured" bg_color="text-bg-danger"
+                            invisible="maturity_status != 'matured'"/>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group string="Cheque">
+                            <field name="direction" readonly="state != 'draft'"/>
+                            <field name="partner_id" readonly="state != 'draft'"/>
+                            <field name="cheque_number" readonly="state != 'draft'"/>
+                            <field name="bank_name" readonly="state != 'draft'"/>
+                            <field name="received_date" readonly="state not in ('draft', 'registered')"/>
+                            <field name="cheque_date" readonly="state in ('cleared', 'cancelled')"/>
+                            <field name="amount" readonly="state != 'draft'"/>
+                            <field name="currency_id" readonly="state != 'draft'"/>
+                        </group>
+                        <group string="Processing">
+                            <field name="journal_id" required="state in ('deposited')"
+                                   readonly="state in ('cleared', 'cancelled')"/>
+                            <field name="user_id" widget="many2one_avatar_user"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="days_to_maturity"
+                                   invisible="state not in ('registered', 'deposited')"/>
+                            <field name="maturity_status" widget="badge" invisible="maturity_status == 'na'"/>
+                            <field name="deposit_date" invisible="not deposit_date"/>
+                            <field name="clear_date" invisible="not clear_date"/>
+                            <field name="bounce_date" invisible="not bounce_date"/>
+                            <field name="returned_date" invisible="not returned_date"/>
+                            <field name="bounce_reason" invisible="not bounce_reason"/>
+                        </group>
+                    </group>
+                    <group string="Linked Records">
+                        <group>
+                            <field name="installment_id" readonly="state != 'draft'"/>
+                            <field name="sale_contract_id" readonly="state != 'draft'"/>
+                            <field name="tenancy_id" readonly="state != 'draft'"/>
+                        </group>
+                        <group>
+                            <field name="rent_invoice_id" readonly="state != 'draft'"/>
+                            <field name="property_id" readonly="state != 'draft'"/>
+                            <field name="invoice_id" readonly="state in ('cleared', 'cancelled')"/>
+                        </group>
+                    </group>
+                    <field name="notes" placeholder="Notes..."/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="sgc_pdc_cheque_search" model="ir.ui.view">
+        <field name="name">sgc.pdc.cheque.search</field>
+        <field name="model">sgc.pdc.cheque</field>
+        <field name="arch" type="xml">
+            <search string="Cheques">
+                <field name="name"/>
+                <field name="cheque_number"/>
+                <field name="partner_id"/>
+                <field name="property_id"/>
+                <field name="bank_name"/>
+                <field name="deposit_date"/>
+                <field name="clear_date"/>
+                <filter name="f_receivable" string="Receivable" domain="[('direction', '=', 'inbound')]"/>
+                <filter name="f_payable" string="Payable" domain="[('direction', '=', 'outbound')]"/>
+                <separator/>
+                <filter name="f_in_hand" string="In Hand" domain="[('state', '=', 'registered')]"/>
+                <filter name="f_deposited" string="Deposited" domain="[('state', '=', 'deposited')]"/>
+                <filter name="f_cleared" string="Cleared" domain="[('state', '=', 'cleared')]"/>
+                <filter name="f_bounced" string="Bounced" domain="[('state', '=', 'bounced')]"/>
+                <separator/>
+                <filter name="f_matured" string="Matured (action needed)"
+                        domain="[('maturity_status', '=', 'matured')]"/>
+                <filter name="f_upcoming" string="Upcoming (next 7 days)"
+                        domain="[('state', 'in', ('registered', 'deposited')),
+                                 ('cheque_date', '&gt;', context_today().strftime('%Y-%m-%d')),
+                                 ('cheque_date', '&lt;=', (context_today() + datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <filter name="f_mine" string="My Cheques" domain="[('user_id', '=', uid)]"/>
+                <group>
+                    <filter name="g_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="g_direction" string="Direction" context="{'group_by': 'direction'}"/>
+                    <filter name="g_partner" string="Party" context="{'group_by': 'partner_id'}"/>
+                    <filter name="g_property" string="Property" context="{'group_by': 'property_id'}"/>
+                    <filter name="g_month" string="Maturity Month" context="{'group_by': 'cheque_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="sgc_pdc_cheque_calendar" model="ir.ui.view">
+        <field name="name">sgc.pdc.cheque.calendar</field>
+        <field name="model">sgc.pdc.cheque</field>
+        <field name="arch" type="xml">
+            <calendar string="Cheque Maturity" date_start="cheque_date" color="state" mode="month">
+                <field name="partner_id"/>
+                <field name="amount"/>
+                <field name="state"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="sgc_pdc_cheque_pivot" model="ir.ui.view">
+        <field name="name">sgc.pdc.cheque.pivot</field>
+        <field name="model">sgc.pdc.cheque</field>
+        <field name="arch" type="xml">
+            <pivot string="Cheque Analysis">
+                <field name="cheque_date" interval="month" type="row"/>
+                <field name="state" type="col"/>
+                <field name="amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_sgc_pdc_cheque_all" model="ir.actions.act_window">
+        <field name="name">Post-Dated Cheques</field>
+        <field name="res_model">sgc.pdc.cheque</field>
+        <field name="view_mode">list,form,calendar,pivot</field>
+        <field name="search_view_id" ref="sgc_pdc_cheque_search"/>
+    </record>
+    <record id="action_sgc_pdc_cheque_receivable" model="ir.actions.act_window">
+        <field name="name">Receivable Cheques</field>
+        <field name="res_model">sgc.pdc.cheque</field>
+        <field name="view_mode">list,form,calendar,pivot</field>
+        <field name="domain">[('direction', '=', 'inbound')]</field>
+        <field name="context">{'default_direction': 'inbound'}</field>
+        <field name="search_view_id" ref="sgc_pdc_cheque_search"/>
+    </record>
+    <record id="action_sgc_pdc_cheque_payable" model="ir.actions.act_window">
+        <field name="name">Payable Cheques</field>
+        <field name="res_model">sgc.pdc.cheque</field>
+        <field name="view_mode">list,form,calendar,pivot</field>
+        <field name="domain">[('direction', '=', 'outbound')]</field>
+        <field name="context">{'default_direction': 'outbound'}</field>
+        <field name="search_view_id" ref="sgc_pdc_cheque_search"/>
+    </record>
+    <record id="action_sgc_pdc_cheque_attention" model="ir.actions.act_window">
+        <field name="name">Cheques Needing Attention</field>
+        <field name="res_model">sgc.pdc.cheque</field>
+        <field name="view_mode">list,form,calendar</field>
+        <field name="context">{'search_default_f_matured': 1}</field>
+        <field name="search_view_id" ref="sgc_pdc_cheque_search"/>
+    </record>
+</odoo>
