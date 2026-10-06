@@ -90,3 +90,24 @@ class TestPdcCheque(TransactionCase):
         chq.action_register()
         with self.assertRaises(UserError):
             chq.unlink()
+
+    def test_stage_dates_recorded(self):
+        chq = self._cheque()
+        self.assertTrue(chq.received_date)
+        chq.action_register()
+        chq.action_deposit()
+        self.assertEqual(chq.deposit_date, self.today)
+        chq._do_bounce('No funds')
+        self.assertEqual(chq.bounce_date, self.today)
+        chq.action_reset_draft()
+        self.assertFalse(chq.bounce_date or chq.deposit_date)
+        chq.action_register()
+        chq.action_clear()
+        self.assertEqual(chq.clear_date, self.today)
+
+    def test_receipt_renders_for_both_directions(self):
+        report = self.env.ref('sgc_pdc_management.action_report_pdc_receipt')
+        for direction in ('inbound', 'outbound'):
+            chq = self._cheque(direction=direction)
+            html, _fmt = report._render_qweb_html(report.report_name, chq.ids)
+            self.assertIn(b'PDC RECEIPT' if direction == 'inbound' else b'PAYMENT VOUCHER', html)

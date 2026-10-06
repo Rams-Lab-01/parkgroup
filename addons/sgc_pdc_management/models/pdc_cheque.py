@@ -42,7 +42,10 @@ class SgcPdcCheque(models.Model):
     partner_id = fields.Many2one('res.partner', string='Party', required=True, tracking=True)
     cheque_number = fields.Char(string='Cheque No.', required=True, tracking=True)
     bank_name = fields.Char(string='Drawee Bank', tracking=True)
-    issue_date = fields.Date(string='Received / Issued On', default=fields.Date.context_today)
+    received_date = fields.Date(
+        string='Received / Issued On', default=fields.Date.context_today, tracking=True,
+        help='Date the cheque was received from the customer (receivable) or '
+             'handed to the vendor (payable).')
     cheque_date = fields.Date(string='Maturity Date', required=True, tracking=True, index=True)
     amount = fields.Monetary(string='Amount', currency_field='currency_id', required=True,
                              tracking=True)
@@ -78,6 +81,8 @@ class SgcPdcCheque(models.Model):
 
     deposit_date = fields.Date(string='Deposited On', readonly=True, copy=False, tracking=True)
     clear_date = fields.Date(string='Cleared On', readonly=True, copy=False, tracking=True)
+    bounce_date = fields.Date(string='Bounced On', readonly=True, copy=False, tracking=True)
+    returned_date = fields.Date(string='Returned On', readonly=True, copy=False, tracking=True)
     bounce_reason = fields.Text(string='Bounce Reason', readonly=True, copy=False)
     notes = fields.Text(string='Notes')
 
@@ -107,10 +112,10 @@ class SgcPdcCheque(models.Model):
             else:
                 rec.maturity_status = 'na'
 
-    @api.constrains('issue_date', 'cheque_date')
+    @api.constrains('received_date', 'cheque_date')
     def _check_dates(self):
         for rec in self:
-            if rec.issue_date and rec.cheque_date and rec.cheque_date < rec.issue_date:
+            if rec.received_date and rec.cheque_date and rec.cheque_date < rec.received_date:
                 raise ValidationError(_('The maturity date cannot be before the received / issued date.'))
 
     @api.onchange('installment_id')
@@ -228,7 +233,8 @@ class SgcPdcCheque(models.Model):
     def _do_bounce(self, reason):
         self._check_state(('registered', 'deposited'))
         for rec in self:
-            rec.write({'state': 'bounced', 'bounce_reason': reason})
+            rec.write({'state': 'bounced', 'bounce_reason': reason,
+                       'bounce_date': fields.Date.context_today(rec)})
             rec.message_post(body=_('Cheque bounced. Reason: %s', reason or '-'))
             if rec.user_id:
                 rec.activity_schedule(
@@ -239,7 +245,7 @@ class SgcPdcCheque(models.Model):
 
     def action_return(self):
         self._check_state(('registered', 'bounced'))
-        self.write({'state': 'returned'})
+        self.write({'state': 'returned', 'returned_date': fields.Date.context_today(self)})
 
     def action_cancel(self):
         self._check_state(('draft', 'registered', 'bounced', 'returned'))
@@ -247,8 +253,13 @@ class SgcPdcCheque(models.Model):
 
     def action_reset_draft(self):
         self._check_state(('cancelled', 'bounced', 'returned'))
-        self.write({'state': 'draft', 'bounce_reason': False,
+        self.write({'state': 'draft', 'bounce_reason': False, 'bounce_date': False,
+                    'returned_date': False, 'deposit_date': False, 'clear_date': False,
                     'upcoming_notified': False, 'matured_notified': False})
+
+    def action_print_receipt(self):
+        self.ensure_one()
+        return self.env.ref('sgc_pdc_management.action_report_pdc_receipt').report_action(self)
 
     def action_open_invoice(self):
         self.ensure_one()

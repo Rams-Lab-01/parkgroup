@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_pdc_receipt_document">
+        <t t-set="o" t-value="doc"/>
+        <t t-call="web.external_layout">
+            <t t-set="is_in" t-value="doc.direction == 'inbound'"/>
+            <div class="page">
+                <h2 class="text-center mb-1">
+                    <t t-if="is_in">PDC RECEIPT</t><t t-else="">PDC PAYMENT VOUCHER</t>
+                </h2>
+                <p class="text-center text-muted">
+                    <t t-if="is_in">Post-dated cheque received</t><t t-else="">Post-dated cheque issued</t>
+                </p>
+
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <strong>Receipt No.:</strong> <span t-field="doc.name"/><br/>
+                        <strong>Date:</strong> <span t-field="doc.received_date"/><br/>
+                        <strong>Status:</strong> <span t-field="doc.state"/>
+                    </div>
+                    <div class="col-6">
+                        <strong><t t-if="is_in">Received from</t><t t-else="">Paid to</t>:</strong>
+                        <span t-field="doc.partner_id"/><br/>
+                        <t t-if="doc.partner_id.phone"><span t-field="doc.partner_id.phone"/><br/></t>
+                        <t t-if="doc.property_id"><strong>Property:</strong> <span t-field="doc.property_id"/><br/></t>
+                        <t t-if="doc.sale_contract_id"><strong>Sale contract:</strong> <span t-field="doc.sale_contract_id"/><br/></t>
+                        <t t-if="doc.tenancy_id"><strong>Tenancy:</strong> <span t-field="doc.tenancy_id"/><br/></t>
+                    </div>
+                </div>
+
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Cheque No.</th><th>Drawee Bank</th><th>Maturity Date</th>
+                            <th class="text-end">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span t-field="doc.cheque_number"/></td>
+                            <td><span t-field="doc.bank_name"/></td>
+                            <td><span t-field="doc.cheque_date"/></td>
+                            <td class="text-end"><span t-field="doc.amount"
+                                t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p><strong>Amount in words:</strong>
+                   <span t-out="doc.currency_id.amount_to_text(doc.amount)"/></p>
+                <p t-if="doc.invoice_id"><strong>Against invoice:</strong> <span t-field="doc.invoice_id"/></p>
+
+                <h5 class="mt-4">Cheque history</h5>
+                <table class="table table-sm table-bordered">
+                    <thead><tr><th>Stage</th><th>Date</th></tr></thead>
+                    <tbody>
+                        <tr><td><t t-if="is_in">Received</t><t t-else="">Issued</t></td>
+                            <td><span t-field="doc.received_date"/></td></tr>
+                        <tr><td>Maturity date</td><td><span t-field="doc.cheque_date"/></td></tr>
+                        <tr><td>Deposited</td>
+                            <td><span t-if="doc.deposit_date" t-field="doc.deposit_date"/><span t-else="">-</span></td></tr>
+                        <tr><td>Cleared</td>
+                            <td><span t-if="doc.clear_date" t-field="doc.clear_date"/><span t-else="">-</span></td></tr>
+                        <tr t-if="doc.bounce_date"><td>Bounced</td>
+                            <td><span t-field="doc.bounce_date"/> - <span t-field="doc.bounce_reason"/></td></tr>
+                        <tr t-if="doc.returned_date"><td>Returned</td>
+                            <td><span t-field="doc.returned_date"/></td></tr>
+                    </tbody>
+                </table>
+
+                <p class="text-muted small mt-3">
+                    This is an acknowledgement of the cheque above only. It is not a payment receipt
+                    until the cheque is cleared by the bank.
+                </p>
+
+                <div class="row mt-5">
+                    <div class="col-6">
+                        <div style="border-top: 1px solid #000; width: 80%; padding-top: 4px;">
+                            <t t-if="is_in">Received by (<span t-out="doc.user_id.name"/>)</t>
+                            <t t-else="">Issued by (<span t-out="doc.user_id.name"/>)</t>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div style="border-top: 1px solid #000; width: 80%; padding-top: 4px;">
+                            <t t-if="is_in">Customer signature</t><t t-else="">Vendor / payee signature</t>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_pdc_receipt">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="doc" t-value="doc.with_context(lang=doc.partner_id.lang or user.lang)"/>
+                <t t-call="sgc_pdc_management.report_pdc_receipt_document"/>
+            </t>
+        </t>
+    </template>
+</odoo>

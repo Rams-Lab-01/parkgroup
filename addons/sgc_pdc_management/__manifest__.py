@@ -19,6 +19,8 @@
         "data/mail_templates.xml",
         "data/ir_sequence.xml",
         "data/ir_cron.xml",
+        "report/pdc_report.xml",
+        "report/pdc_receipt_templates.xml",
         "wizard/pdc_bounce_wizard_views.xml",
         "views/pdc_cheque_views.xml",
         "views/res_config_settings_views.xml",

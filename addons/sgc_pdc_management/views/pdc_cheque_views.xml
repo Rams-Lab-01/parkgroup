@@ -15,7 +15,11 @@
                 <field name="property_id" optional="show"/>
                 <field name="cheque_number"/>
                 <field name="bank_name" optional="show"/>
+                <field name="received_date" optional="show"/>
                 <field name="cheque_date"/>
+                <field name="deposit_date" optional="hide"/>
+                <field name="clear_date" optional="hide"/>
+                <field name="bounce_date" optional="hide"/>
                 <field name="days_to_maturity" optional="show"/>
                 <field name="amount" sum="Total"/>
                 <field name="currency_id" column_invisible="True"/>
@@ -36,6 +40,8 @@
         <field name="arch" type="xml">
             <form string="Post-Dated Cheque">
                 <header>
+                    <button name="action_print_receipt" string="Print Receipt" type="object"
+                            invisible="state == 'draft'"/>
                     <button name="action_register" string="Register (In Hand)" type="object"
                             class="btn-primary" invisible="state != 'draft'"/>
                     <button name="action_deposit" string="Deposit" type="object"
@@ -76,7 +82,7 @@
                             <field name="partner_id" readonly="state != 'draft'"/>
                             <field name="cheque_number" readonly="state != 'draft'"/>
                             <field name="bank_name" readonly="state != 'draft'"/>
-                            <field name="issue_date" readonly="state != 'draft'"/>
+                            <field name="received_date" readonly="state not in ('draft', 'registered')"/>
                             <field name="cheque_date" readonly="state in ('cleared', 'cancelled')"/>
                             <field name="amount" readonly="state != 'draft'"/>
                             <field name="currency_id" readonly="state != 'draft'"/>
@@ -89,8 +95,10 @@
                             <field name="days_to_maturity"
                                    invisible="state not in ('registered', 'deposited')"/>
                             <field name="maturity_status" widget="badge" invisible="maturity_status == 'na'"/>
-                            <field name="deposit_date"/>
-                            <field name="clear_date"/>
+                            <field name="deposit_date" invisible="not deposit_date"/>
+                            <field name="clear_date" invisible="not clear_date"/>
+                            <field name="bounce_date" invisible="not bounce_date"/>
+                            <field name="returned_date" invisible="not returned_date"/>
                             <field name="bounce_reason" invisible="not bounce_reason"/>
                         </group>
                     </group>
@@ -123,6 +131,8 @@
                 <field name="partner_id"/>
                 <field name="property_id"/>
                 <field name="bank_name"/>
+                <field name="deposit_date"/>
+                <field name="clear_date"/>
                 <filter name="f_receivable" string="Receivable" domain="[('direction', '=', 'inbound')]"/>
                 <filter name="f_payable" string="Payable" domain="[('direction', '=', 'outbound')]"/>
                 <separator/>
