@@ -17,3 +17,7 @@ class ResConfigSettings(models.TransientModel):
         help='Comma-separated emails (for example compliance@company.com) copied on every expiry email.')
     sgc_broker_max_upload_mb = fields.Integer(
         string='Maximum upload size (MB)', config_parameter='sgc_broker.max_upload_mb', default=10)
+    sgc_broker_max_registrations_per_ip_hour = fields.Integer(
+        string='Max registrations per IP per hour', config_parameter='sgc_broker.max_registrations_per_ip_hour',
+        default=10, help='Anti-abuse limit. Behind a reverse proxy Odoo must run with proxy_mode, '
+                         'otherwise every visitor shares the proxy address.')

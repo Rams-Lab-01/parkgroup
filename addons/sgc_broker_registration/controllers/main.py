@@ -2,6 +2,8 @@ import base64
 import logging
 from datetime import timedelta
 
+from psycopg2 import IntegrityError
+
 from odoo import _, fields, http
 from odoo.exceptions import UserError, ValidationError
 from odoo.http import request
@@ -22,6 +24,7 @@ DETAIL_FIELDS = ['company_name', 'full_name', 'phone', 'street', 'city', 'po_box
                  'bank_name', 'iban', 'account_holder']
 DATE_FIELDS = ['trade_license_issue_date', 'trade_license_expiry', 'regulator_expiry']
 MAX_REGISTRATIONS_PER_IP_PER_HOUR = 10
+PARAM_MAX_PER_IP = 'sgc_broker.max_registrations_per_ip_hour'
 
 CODE_MESSAGES = {
     'bad': _lt('That code is not correct. Please try again.'),
@@ -119,7 +122,7 @@ class BrokerRegistration(http.Controller):
             now = fields.Datetime.now()
             if Application.search_count([('create_ip', '=', self._ip()),
                                          ('create_date', '>', now - timedelta(hours=1))]) \
-                    >= MAX_REGISTRATIONS_PER_IP_PER_HOUR:
+                    >= Application._param_int(PARAM_MAX_PER_IP, MAX_REGISTRATIONS_PER_IP_PER_HOUR, minimum=1):
                 raise ValidationError(_('Too many registrations from your network. Try again later.'))
 
             existing = Application.search([('email', '=', values['email']), ('state', '!=', 'rejected')],
@@ -138,7 +141,16 @@ class BrokerRegistration(http.Controller):
                 raise ValidationError(_('Too many attempts for this email today.'))
 
             values.update({'create_ip': self._ip(), 'company_id': request.website.company_id.id})
-            app = Application.create(values)
+            try:
+                with request.env.cr.savepoint():
+                    app = Application.create(values)
+            except IntegrityError:
+                # lost a race with another request for the same email: behave like the duplicate case
+                existing = Application.search([('email', '=', values['email']), ('state', '!=', 'rejected')], limit=1)
+                if existing and existing.state != 'approved':
+                    existing.env.ref('sgc_broker_registration.mail_template_resume_link').sudo().send_mail(
+                        existing.id, force_send=True, raise_exception=False)
+                return request.render('sgc_broker_registration.already_registered_page', {})
         except (ValidationError, UserError) as exc:
             return request.render('sgc_broker_registration.register_page',
                                   self._register_values(values=post, error=_error_text(exc)))
@@ -293,11 +305,13 @@ class BrokerRegistration(http.Controller):
         if not app:
             return request.not_found()
         try:
+            declared = request.env['sgc.broker.application'].sudo()._clean_vals(
+                {'declared_name': post.get('declared_name') or ''})
             app.write({
                 'accept_terms': bool(post.get('accept_terms')),
                 'accept_aml': bool(post.get('accept_aml')),
                 'accept_accuracy': bool(post.get('accept_accuracy')),
-                'declared_name': (post.get('declared_name') or '').strip(),
+                'declared_name': declared['declared_name'],
             })
             app.action_submit(ip=self._ip())
         except (ValidationError, UserError) as exc:

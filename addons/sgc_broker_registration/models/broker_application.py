@@ -26,7 +26,12 @@ PARAM_EXTRA_EMAILS = 'sgc_broker.extra_notify_emails'
 DEFAULT_AGREEMENT_MONTHS = 12
 DEFAULT_PRE_DAYS = 5
 DEFAULT_REPEAT_DAYS = 15
+CRON_COMMIT_EVERY = 10
 EDITABLE_STATES = ('draft', 'verified', 'needs_info')
+
+CONTROL_CHARS_RE = re.compile(r'[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]')
+MAX_LEN = {'street': 300}
+DEFAULT_MAX_LEN = 200
 
 EMAIL_RE = re.compile(r'^[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$')
 
@@ -178,7 +183,8 @@ class SgcBrokerApplication(models.Model):
                                    help='Set to one year after approval; extended on renewal.')
     expiry_tracker_ids = fields.One2many('sgc.broker.expiry.tracker', 'application_id', string='Expiry Monitor')
 
-    _email_state_idx = models.Index('(email, state)')
+    _one_open_per_email = models.UniqueIndex(
+        "(email) WHERE state != 'rejected'", 'An application for this email address is already in progress.')
 
     # ------------------------------------------------------------------
     # Computes
@@ -242,6 +248,11 @@ class SgcBrokerApplication(models.Model):
         for key in list(out):
             if isinstance(out[key], str):
                 out[key] = out[key].strip()
+                if CONTROL_CHARS_RE.search(out[key]):
+                    raise ValidationError(_('The field "%s" contains invalid characters.', key))
+                if len(out[key]) > MAX_LEN.get(key, DEFAULT_MAX_LEN):
+                    raise ValidationError(_('The field "%(field)s" is too long (maximum %(max)s characters).',
+                                            field=key, max=MAX_LEN.get(key, DEFAULT_MAX_LEN)))
         return out
 
     @api.constrains('trade_license_issue_date', 'trade_license_expiry')
@@ -263,10 +274,21 @@ class SgcBrokerApplication(models.Model):
         secret = self.env['ir.config_parameter'].sudo().get_param('database.secret') or ''
         return hmac.new(secret.encode(), ('%s:%s' % (self.id, code)).encode(), hashlib.sha256).hexdigest()
 
+    def _lock_row(self):
+        """Serialise concurrent requests on one application (code requests, guesses, uploads).
+
+        Odoo runs on REPEATABLE READ, so a plain row lock would not show us what the other request
+        just committed. Rewriting the row instead makes the second writer fail with a serialization
+        error, and Odoo transparently retries that request on a fresh snapshot."""
+        self.ensure_one()
+        self.env.cr.execute('UPDATE sgc_broker_application SET id = id WHERE id = %s', [self.id])
+        self.invalidate_recordset()
+
     def action_send_code(self):
         """Generate and email a fresh 6-digit code. Returns (status, wait_seconds)."""
         self.ensure_one()
         self = self.sudo()
+        self._lock_row()
         now = fields.Datetime.now()
         if self.email_verified:
             return 'verified', 0
@@ -296,6 +318,7 @@ class SgcBrokerApplication(models.Model):
         """Returns 'ok', 'bad', 'expired', 'locked' or 'none'."""
         self.ensure_one()
         self = self.sudo()
+        self._lock_row()
         if self.email_verified:
             return 'ok'
         if not self.code_hash:
@@ -632,15 +655,29 @@ class SgcBrokerApplication(models.Model):
         return [e.strip() for e in raw.replace(';', ',').split(',') if e.strip()]
 
     @api.model
+    def _cron_progress(self, processed=0, remaining=None):
+        """Commit progress inside a real cron run only (Odoo's own convention). Returns the seconds left
+        in the run, 0 meaning "stop, the scheduler will call us again"."""
+        if not self.env.context.get('cron_id'):
+            return float('inf')
+        return self.env['ir.cron']._commit_progress(processed, remaining=remaining)
+
+    @api.model
     def _cron_check_expiries(self):
         """Daily job. For the PRE_DAYS days before an expiry date it reminds every day; on the
         expiry date (first day of expiration) it sends the expired notice, then repeats every
-        REPEAT_DAYS days until the date is renewed."""
+        REPEAT_DAYS days until the date is renewed.
+
+        Works through the brokers in batches and commits as it goes, so a large backlog never hits the
+        cron time limit: the scheduler simply runs it again for what is left."""
         today = fields.Date.context_today(self)
         pre_days = self._param_int(PARAM_PRE_DAYS, DEFAULT_PRE_DAYS)
         repeat_days = self._param_int(PARAM_REPEAT_DAYS, DEFAULT_REPEAT_DAYS, minimum=1)
-        sent = 0
-        for app in self.search([('state', '=', 'approved')]):
+        apps = self.search([('state', '=', 'approved')], order='id')
+        if not self._cron_progress(remaining=len(apps)):
+            return True                                   # no time left in this run, continue next time
+        sent = pending = 0
+        for app in apps:
             try:
                 with self.env.cr.savepoint():
                     app._sync_expiry_trackers()
@@ -665,6 +702,15 @@ class SgcBrokerApplication(models.Model):
                             sent += 1
             except Exception:
                 _logger.exception('Expiry check failed for %s', app.display_name)
+            pending += 1
+            if pending >= CRON_COMMIT_EVERY:                # committing is costly: do it in chunks
+                if not self._cron_progress(pending):
+                    _logger.info('Broker expiry check out of time; the scheduler will continue.')
+                    pending = 0
+                    break
+                pending = 0
+        if pending:
+            self._cron_progress(pending)
         _logger.info('Broker expiry reminders sent: %s', sent)
         return True
 

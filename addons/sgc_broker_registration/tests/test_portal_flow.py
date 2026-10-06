@@ -1,4 +1,3 @@
-import base64
 import re
 from datetime import timedelta
 from unittest.mock import patch
@@ -6,13 +5,21 @@ from unittest.mock import patch
 from dateutil.relativedelta import relativedelta
 
 from odoo import fields
+from psycopg2 import IntegrityError
+
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tests import HttpCase, tagged
+from odoo.tools import mute_logger
 
 PDF = b'%PDF-1.4\n1 0 obj<<>>endobj\ntrailer<<>>\n%%EOF'
 PNG = b'\x89PNG\r\n\x1a\n' + b'\x00' * 32
 EXE = b'MZ\x90\x00' + b'\x00' * 32
 GOOD_IBAN = 'AE070331234567890123456'
+
+
+def base64_pdf():
+    import base64
+    return base64.b64encode(PDF)
 
 
 @tagged('post_install', '-at_install')
@@ -416,3 +423,120 @@ class TestBrokerPortalFlow(HttpCase):
         self.assertIn(b'Acme Brokers LLC', html)
         res = self.url_open('/broker/application/%s/agreement' % app.access_token)
         self.assertEqual(res.status_code, 200)
+
+    # -- hardening / abuse ------------------------------------------------
+    def test_control_characters_and_oversized_input_are_refused_not_500(self):
+        for over, msg in (({'full_name': 'Bad\x00Name'}, 'invalid characters'),
+                          ({'full_name': 'A' * 5000}, 'too long'),
+                          ({'street': 'B' * 5000}, 'too long'),
+                          ({'company_name': 'x\x07y'}, 'invalid characters')):
+            res = self._register(**over)
+            self.assertEqual(res.status_code, 200, over)
+            self.assertIn(msg, res.text)
+        self.assertFalse(self.Application.search([('email', '=', 'jane@acme.test')]))
+
+    def test_database_blocks_two_open_applications_for_one_email(self):
+        base = {'applicant_type': 'company', 'emirate': 'dubai', 'company_name': 'X', 'full_name': 'Y',
+                'email': 'dup@acme.test', 'phone': '+971501234567'}
+        first = self.Application.create(base)
+        with self.assertRaises(IntegrityError), mute_logger('odoo.sql_db'), self.cr.savepoint():
+            self.Application.create(base)
+        first.state = 'rejected'                      # after a rejection the applicant may re-apply
+        first.flush_recordset()
+        self.assertTrue(self.Application.create(base))
+
+    def test_document_count_caps(self):
+        from ..models import application_document as ad
+        app = self._verified_app()
+        trade = self.env.ref('sgc_broker_registration.doctype_trade_license')
+        Doc = self.env['sgc.broker.application.document']
+        vals = {'application_id': app.id, 'type_id': trade.id, 'filename': 'a.pdf', 'file': base64_pdf(),
+                'expiry_date': fields.Date.today() + timedelta(days=100)}
+        for _i in range(ad.MAX_DOCS_PER_TYPE):
+            Doc.create(vals)
+        with self.assertRaises(ValidationError):
+            Doc.create(vals)
+
+    def test_uploaded_filenames_are_reduced_to_a_safe_base_name(self):
+        app = self._verified_app()
+        trade = self.env.ref('sgc_broker_registration.doctype_goaml')
+        Doc = self.env['sgc.broker.application.document']
+        for raw, expected in (('../../etc/passwd.pdf', 'passwd.pdf'), ('C:\\evil\\scan.pdf', 'scan.pdf'),
+                              ('a<b>"c|.pdf', 'abc.pdf'), ('ok name.PDF', 'ok name.PDF'),
+                              (('x' * 400) + '.pdf', None)):
+            doc = Doc.create({'application_id': app.id, 'type_id': trade.id, 'filename': raw, 'file': base64_pdf()})
+            if expected:
+                self.assertEqual(doc.filename, expected)
+            else:
+                self.assertLessEqual(len(doc.filename), 150)
+                self.assertTrue(doc.filename.endswith('.pdf'), 'the extension survives shortening')
+            doc.unlink()
+
+    def test_output_is_escaped_on_portal_pages(self):
+        app = self._verified_app(full_name='<script>alert(1)</script>', company_name='<img src=x onerror=alert(2)>')
+        html = self.url_open('/broker/application/%s' % app.access_token).text
+        self.assertNotIn('<script>alert(1)</script>', html)
+        self.assertNotIn('<img src=x onerror=alert(2)>', html)
+        self.assertIn('&lt;script&gt;alert(1)&lt;/script&gt;', html)
+
+    def test_verify_serialises_through_row_lock_and_caps_guesses(self):
+        self._register()
+        app = self.Application.search([('email', '=', 'jane@acme.test')])
+        wrong = '000000' if self._last_code(app.email) != '000000' else '111111'
+        results = [app.verify_code(wrong) for _i in range(20)]
+        self.assertEqual(results.count('bad') + results.count('locked'), 20)
+        self.assertEqual(results.count('bad'), 4)
+        self.assertEqual(app.sudo().code_attempts, 5)
+
+    def test_expiry_cron_stops_when_out_of_time_and_resumes(self):
+        apps = self.Application
+        for n in range(3):
+            apps |= self._registered_app_for('batch%d@acme.test' % n)
+        for app in apps:
+            app.sudo().trade_license_expiry = fields.Date.today() - timedelta(days=1)
+        calls = []
+
+        def out_of_time(cron, processed=0, *, remaining=None, deactivate=False):
+            calls.append(processed)
+            return float('inf') if remaining is not None else 0
+
+        with patch.object(type(self.env['ir.cron']), '_commit_progress', out_of_time), \
+                patch('odoo.addons.sgc_broker_registration.models.broker_application.CRON_COMMIT_EVERY', 1):
+            self.Application.with_context(cron_id=1)._cron_check_expiries()
+        done_first = apps.sudo().expiry_tracker_ids.filtered(
+            lambda t: t.key == 'trade_license' and t.last_alert_date)
+        self.assertEqual(len(done_first), 1)
+        self.Application._cron_check_expiries()
+        done_all = apps.sudo().expiry_tracker_ids.filtered(lambda t: t.key == 'trade_license' and t.last_alert_date)
+        self.assertEqual(len(done_all), 3)
+
+    def _registered_app_for(self, email):
+        app = self._verified_app(email=email)
+        self._details(app)
+        self._upload_all_required(app)
+        self._submit(app)
+        app = app.with_user(self.officer)
+        app.document_ids.action_accept()
+        app.action_approve()
+        return app
+
+    def test_administrator_gets_manager_rights_on_install(self):
+        admin = self.env.ref('base.user_admin')
+        self.assertTrue(admin.has_group('sgc_broker_registration.group_broker_manager'))
+
+    def test_per_ip_rate_limit_is_enforced_and_configurable(self):
+        self.env['ir.config_parameter'].set_param('sgc_broker.max_registrations_per_ip_hour', '3')
+        outcomes = []
+        for n in range(5):
+            res = self._post('/broker/register/submit',
+                             {'applicant_type': 'company', 'emirate': 'dubai', 'company_name': 'C%d' % n,
+                              'full_name': 'N', 'email': 'ip%d@acme.test' % n, 'phone': '+971501234567'},
+                             '/broker/register')
+            outcomes.append('accepted' if self.Application.search([('email', '=', 'ip%d@acme.test' % n)]) else 'blocked')
+        self.assertEqual(outcomes, ['accepted'] * 3 + ['blocked'] * 2)
+        self.assertIn('Too many registrations', res.text)
+        self.env['ir.config_parameter'].set_param('sgc_broker.max_registrations_per_ip_hour', '100')
+        self._post('/broker/register/submit',
+                   {'applicant_type': 'company', 'emirate': 'dubai', 'company_name': 'Cx', 'full_name': 'N',
+                    'email': 'ip9@acme.test', 'phone': '+971501234567'}, '/broker/register')
+        self.assertTrue(self.Application.search([('email', '=', 'ip9@acme.test')]))

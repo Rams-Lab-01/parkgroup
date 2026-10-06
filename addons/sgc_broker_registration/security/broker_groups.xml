@@ -18,5 +18,13 @@
             <field name="privilege_id" ref="res_groups_privilege_broker_registration"/>
             <field name="implied_ids" eval="[(4, ref('group_broker_officer'))]"/>
         </record>
+
+        <!-- The administrator can use the app straight after installation -->
+        <record id="base.user_admin" model="res.users">
+            <field name="group_ids" eval="[(4, ref('group_broker_manager'))]"/>
+        </record>
+        <record id="base.user_root" model="res.users">
+            <field name="group_ids" eval="[(4, ref('group_broker_manager'))]"/>
+        </record>
     </data>
 </odoo>

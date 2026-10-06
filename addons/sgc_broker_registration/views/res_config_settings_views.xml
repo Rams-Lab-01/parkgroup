@@ -18,6 +18,7 @@
                 </group>
                 <group string="Portal">
                     <field name="sgc_broker_max_upload_mb"/>
+                    <field name="sgc_broker_max_registrations_per_ip_hour"/>
                 </group>
                 <div class="text-muted">
                     A daily job reminds the broker (email) and the compliance officers (Odoo notification and

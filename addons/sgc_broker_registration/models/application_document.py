@@ -1,4 +1,6 @@
 import base64
+import posixpath
+import re
 
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
@@ -7,6 +9,8 @@ ALLOWED_EXTENSIONS = {'pdf': (b'%PDF',), 'jpg': (b'\xff\xd8\xff',), 'jpeg': (b'\
                       'png': (b'\x89PNG\r\n\x1a\n',)}
 MAX_UPLOAD_MB_PARAM = 'sgc_broker.max_upload_mb'
 DEFAULT_MAX_MB = 10
+MAX_DOCS_PER_APPLICATION = 40
+MAX_DOCS_PER_TYPE = 5
 
 
 class SgcBrokerApplicationDocument(models.Model):
@@ -53,7 +57,25 @@ class SgcBrokerApplicationDocument(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
+            if vals.get('filename'):
+                # keep only a safe base name: no path components, control characters or odd lengths
+                name = posixpath.basename(vals['filename'].replace('\\', '/'))
+                name = re.sub(r'[\x00-\x1f\x7f<>:"|?*]', '', name)
+                stem, dot, ext = name.rpartition('.')
+                if dot and len(name) > 150:
+                    name = stem[:max(150 - len(ext) - 1, 1)] + '.' + ext     # shorten the name, keep the extension
+                vals['filename'] = name[:150] or 'document'
             self._validate_upload(vals.get('filename'), base64.b64decode(vals.get('file') or b''))
+            app_id, type_id = vals.get('application_id'), vals.get('type_id')
+            if app_id:
+                self.env['sgc.broker.application'].browse(app_id)._lock_row()   # serialise concurrent uploads
+                existing = self.sudo().search([('application_id', '=', app_id)])
+                if len(existing) >= MAX_DOCS_PER_APPLICATION:
+                    raise ValidationError(_('Too many documents on this application (maximum %s).',
+                                            MAX_DOCS_PER_APPLICATION))
+                if len(existing.filtered(lambda d: d.type_id.id == type_id)) >= MAX_DOCS_PER_TYPE:
+                    raise ValidationError(_('Too many files for this document type (maximum %s). '
+                                            'Remove one first.', MAX_DOCS_PER_TYPE))
         return super().create(vals_list)
 
     @api.constrains('issue_date', 'expiry_date')
