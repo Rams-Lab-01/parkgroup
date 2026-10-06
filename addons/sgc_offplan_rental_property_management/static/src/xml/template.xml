@@ -62,7 +62,7 @@
                                  t-on-keydown="onCardKey">
                                 <div class="sgc-kpi__header">
                                     <div class="sgc-kpi__label"><t t-esc="card.label"/></div>
-                                    <div class="sgc-kpi__icon" t-attf-class="sgc-kpi__icon--${card.tone}" t-raw="card.icon"/>
+                                    <div class="sgc-kpi__icon" t-attf-class="sgc-kpi__icon--{{card.tone}}" t-out="card.icon"/>
                                 </div>
                                 <div class="sgc-kpi__value"><t t-esc="card.value"/></div>
                                 <div class="sgc-kpi__sub"><t t-esc="card.sub"/></div>
@@ -84,7 +84,7 @@
                                  t-on-keydown="onCardKey">
                                 <div class="sgc-kpi__header">
                                     <div class="sgc-kpi__label"><t t-esc="card.label"/></div>
-                                    <div class="sgc-kpi__icon" t-attf-class="sgc-kpi__icon--${card.tone}" t-raw="card.icon"/>
+                                    <div class="sgc-kpi__icon" t-attf-class="sgc-kpi__icon--{{card.tone}}" t-out="card.icon"/>
                                 </div>
                                 <div class="sgc-kpi__value"><t t-esc="card.value"/></div>
                                 <div class="sgc-kpi__sub"><t t-esc="card.sub"/></div>
@@ -106,7 +106,7 @@
                                  t-on-keydown="onCardKey">
                                 <div class="sgc-kpi__header">
                                     <div class="sgc-kpi__label"><t t-esc="card.label"/></div>
-                                    <div class="sgc-kpi__icon" t-attf-class="sgc-kpi__icon--${card.tone}" t-raw="card.icon"/>
+                                    <div class="sgc-kpi__icon" t-attf-class="sgc-kpi__icon--{{card.tone}}" t-out="card.icon"/>
                                 </div>
                                 <div class="sgc-kpi__value"><t t-esc="card.value"/></div>
                                 <div class="sgc-kpi__sub"><t t-esc="card.sub"/></div>
