@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record id="active_contract_mail_template" model="mail.template">
+            <field name="name">Active Contract Mail Template</field>
+            <field name="model_id" ref="sgc_offplan_rental_property_management.model_tenancy_details" />
+            <field name="subject">Your Rent Contract is Active</field>
+            <field name="email_from">{{object.property_landlord_id.email}}</field>
+            <field name="partner_to">{{ object.tenancy_id.id }}</field>
+            <field name="body_html" type="html">
+                <table style="width:100%">
+                    <tr>
+                        <td> Dear Tenant <br />
+                            <h4>
+                                <strong>
+                                    <t t-out="object.tenancy_id.name" />
+                                </strong>
+                            </h4>
+                        </td>
+                    </tr>
+                </table>
+                <hr />
+                <p> We are pleased to inform you that your rent contract for the <strong>
+                        <t t-out="object.property_id.name" />
+                    </strong> is now
+                    active. We hope you are excited to move in and make it your new home. Please
+                    take a moment to review the contract and ensure that all the details are
+                    correct. If you have any questions or concerns, please do not hesitate to
+                    contact us. </p>
+                <p>
+                    Here is your contract information
+                </p>
+                <table style="width:100%;">
+                    <tr>
+                        <td colspan="2">
+                            <span style="font-size:20px;">
+                                <strong>
+                                    <t t-out="object.property_id.name" /> - <span
+                                        t-field="object.property_id.type" />
+                                </strong>
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span>
+                                <span>
+                                    <strong>
+                                        Rent :
+                                    </strong>
+                                    <span t-field="object.total_rent" />
+                                </span>
+                                <br />
+                                <t t-if="object.property_id.is_parent_property">
+                                    <spna>
+                                        <strong>
+                                            Parent Property :
+                                        </strong>
+                                        <t t-out="object.property_id.parent_property_id.name" />
+                                    </spna>
+                                    <br />
+                                </t>
+                                <span>
+                                    <strong>
+                                        Duration :
+                                    </strong>
+                                    <t t-out="object.duration_id.duration" />
+                                </span>
+                                <br />
+                                <span>
+                                    <strong>
+                                        Payment Term :
+                                    </strong>
+                                    <span t-field="object.payment_term" />
+                                </span>
+                                <br />
+                                <span>
+                                    <strong>Start Date :</strong>
+                                    <t t-out="object.start_date" />
+                                </span>
+                                <br />
+                                <span>
+                                    <strong>End Date :</strong>
+                                    <t t-out="object.end_date" />
+                                </span>
+                            </span>
+                        </td>
+                        <td>
+                            <span>
+                                <span>
+                                    <strong>
+                                        Address :
+                                    </strong>
+                                </span>
+                                <br />
+                                <span>
+                                    <span>
+                                        <t t-out="object.property_id.street" />
+                                        <br />
+                                        <t t-out="object.property_id.street2" />
+                                        <br />
+                                        <t t-out="object.property_id.city_id.name" />
+                                        <t t-out="object.property_id.state_id.name" />
+                                        <t t-out="object.property_id.zip" />
+                                        <br />
+                                        <t t-out="object.property_id.country_id.name" />
+                                    </span>
+                                </span>
+                            </span>
+                        </td>
+                    </tr>
+                </table>
+                <br />
+                <h6>
+                    Best regards
+                </h6>
+                <h5>
+                    <strong>
+                        <t t-out="object.property_landlord_id.name" />
+                    </strong>
+                </h5>
+                <hr />
+                <span>
+                    <h6>
+                        <t t-out="object.company_id.name" />
+                    </h6>
+                    <t t-out="object.company_id.phone" />
+                    <br />
+                    <t t-out="object.company_id.email" />
+                    <br />
+                    <t t-out="object.company_id.website" />
+                </span>
+            </field>
+            <field name="report_template_ids"
+                eval="[(4, ref('sgc_offplan_rental_property_management.tenancy_details_report_id'))]" />
+            <field name="auto_delete" eval="False" />
+        </record>
+    </odoo>

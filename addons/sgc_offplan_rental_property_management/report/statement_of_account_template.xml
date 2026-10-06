@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="statement_of_account_template">
+        <t t-call="web.html_container">
+          <t t-foreach="docs" t-as="o">
+            <t t-set="company" t-value="o.company_id or env.company"/>
+            <t t-set="fd" t-value="lambda d: d.strftime('%d %b %Y') if d else ' - '"/>
+            <t t-set="statement_property" t-value="o.tenancy_property_id or o.sold_property_id"/>
+            <t t-set="statement_contract" t-value="o.tenancy_id or o.sold_id"/>
+            <div class="o_pmg_doc article" t-att-data-oe-model="o._name" t-att-data-oe-id="o.id"><t t-call="sgc_offplan_rental_property_management.property_report_styles"/>
+                <t t-set="report_ref" t-value="o.name or ' - '"/>
+                <t t-set="report_date" t-value="fd(datetime.date.today())"/>
+                <t t-call="sgc_offplan_rental_property_management.property_report_letterhead"/>
+                <t t-set="report_title">Statement of Account</t>
+                <t t-set="report_subtitle">United Arab Emirates</t>
+                <t t-call="sgc_offplan_rental_property_management.property_report_title"/>
+
+                <div class="o_pmg_grid-3">
+                    <div class="o_pmg_card">
+                        <div class="o_pmg_card-label">Payment Status</div>
+                        <div class="o_pmg_card-value">
+                            <span t-attf-class="o_pmg_badge o_pmg_badge-#{'green' if o.payment_state == 'paid' else 'red' if o.payment_state == 'not_paid' else 'amber'}"
+                                  t-out="dict(o._fields['payment_state'].selection).get(o.payment_state, o.payment_state)"/>
+                        </div>
+                    </div>
+                    <div class="o_pmg_card">
+                        <div class="o_pmg_card-label">Total Outstanding</div>
+                        <div class="o_pmg_card-value"><span t-out="o.amount_residual" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/></div>
+                    </div>
+                    <div class="o_pmg_card">
+                        <div class="o_pmg_card-label">Contract Ref</div>
+                        <div class="o_pmg_card-value" t-out="statement_contract.display_name if statement_contract else ' - '"/>
+                    </div>
+                </div>
+
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">1</span>Customer</div>
+                    <div class="o_pmg_section-body">
+                        <table class="o_pmg_dl">
+                            <tr t-if="o.partner_id"><td class="o_pmg_dl-label">Customer</td><td class="o_pmg_dl-value" t-out="o.partner_id.name"/></tr>
+                            <tr t-if="o.partner_id and o.partner_id.email"><td class="o_pmg_dl-label">Email</td><td class="o_pmg_dl-value" t-out="o.partner_id.email"/></tr>
+                            <tr t-if="o.partner_id and o.partner_id.phone"><td class="o_pmg_dl-label">Phone</td><td class="o_pmg_dl-value" t-out="o.partner_id.phone"/></tr>
+                            <tr t-if="statement_property"><td class="o_pmg_dl-label">Property</td><td class="o_pmg_dl-value" t-out="statement_property.name"/></tr>
+                            <tr t-if="statement_property and statement_property.sale_price"><td class="o_pmg_dl-label">Sale Price</td><td class="o_pmg_dl-value"><span t-out="statement_property.sale_price" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/></td></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="o_pmg_section">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">2</span>Transaction History</div>
+                    <table class="o_pmg_table">
+                        <colgroup>
+                            <col style="width:14%;"/><col style="width:46%;"/><col style="width:20%;"/><col style="width:20%;"/>
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th style="text-align:right;">Debit</th>
+                                <th style="text-align:right;">Credit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="o.line_ids or []" t-as="line">
+                                <td t-out="fd(line.date)"/>
+                                <td t-out="line.name or ''"/>
+                                <td style="text-align:right;"><span t-if="line.debit" t-out="line.debit" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/></td>
+                                <td style="text-align:right;"><span t-if="line.credit" t-out="line.credit" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/></td>
+                            </tr>
+                            <tr t-if="not o.line_ids">
+                                <td colspan="4" style="text-align:center; color:#64748b;">No transactions recorded.</td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="2" style="text-align:right;">Total</th>
+                                <th style="text-align:right;"><span t-out="sum(o.line_ids.mapped('debit'))" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/></th>
+                                <th style="text-align:right;"><span t-out="sum(o.line_ids.mapped('credit'))" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <t t-set="report_name">Statement of Account</t>
+                <t t-set="report_footer_note">This is a computer-generated statement of account.</t>
+                <t t-call="sgc_offplan_rental_property_management.property_report_footer"/>
+            </div>
+          </t>
+        </t>
+    </template>
+</odoo>

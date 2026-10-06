@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Critical Audit Chain Verification Report  -  unified property-management layout -->
+    <!-- Shows hash chain integrity proof, event log, and verification result -->
+
+    <template id="report_critical_audit_verification_document">
+        <t t-call="web.html_container">
+            <t>
+                <div class="o_pmg_doc article" t-att-data-oe-model="docs[0]._name if docs else 'sgc.critical.audit.event'" t-att-data-oe-id="docs[0].id if docs else 0">
+                <t t-call="sgc_offplan_rental_property_management.property_report_styles"/>
+                <t t-set="company" t-value="env.company"/>
+                <t t-set="all_events" t-value="env['sgc.critical.audit.event'].search([('tenant_uuid','=',tenant_uuid),('company_id','=',company.id)], order='chain_no')"/>
+                <t t-set="tier_labels" t-value="{1: 'Tier 1  -  Reason Required', 2: 'Tier 2  -  Auto-Audited', 3: 'Tier 3  -  Operational'}"/>
+
+                <t t-set="report_ref" t-value="tenant_uuid"/>
+                <t t-set="report_ref_label">Tenant UUID:</t>
+                <t t-set="report_date" t-value="context_timestamp(datetime.datetime.now()).strftime('%d %b %Y %H:%M UTC')"/>
+                <t t-set="letterhead_tag">Critical Audit Chain Verification Report</t>
+                <t t-call="sgc_offplan_rental_property_management.property_report_letterhead"/>
+                <t t-set="report_title">Critical Audit Chain Verification</t>
+                <t t-set="report_subtitle">Hash-chained event log integrity proof  -  Append-only, fail-closed  -  <t t-out="len(all_events)"/> events</t>
+                <t t-call="sgc_offplan_rental_property_management.property_report_title"/>
+
+                <!-- Section 1: Verification Verdict -->
+                <div class="o_pmg_section">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">1</span>Chain Verification Result</div>
+                    <div class="o_pmg_section-body">
+                        <t t-if="verification.get('verdict') == 'broken'">
+                            <div class="o_pmg_verdict o_pmg_verdict-fail">
+                                <div>Hash chain BROKEN  -  integrity check FAILED</div>
+                                <div class="o_pmg_verdict-note">
+                                    <t t-if="verification.get('first_divergence')">
+                                        Divergence at chain #<t t-out="verification['first_divergence'].get('chain_no')"/>
+                                        (event ID: <t t-out="verification['first_divergence'].get('event_id')"/>)
+                                    </t>
+                                    <t t-if="verification.get('collisions')">
+                                         -  <t t-out="len(verification['collisions'])"/> collision(s) detected
+                                    </t>
+                                </div>
+                            </div>
+                        </t>
+                        <t t-elif="verification.get('verdict') == 'partial'">
+                            <div class="o_pmg_verdict o_pmg_verdict-ok">
+                                <div>Hash chain not disputed  -  <t t-out="verification.get('attested', 0)"/> of <t t-out="verification.get('events', 0)"/> events attested</div>
+                                <div class="o_pmg_verdict-note">
+                                    <t t-out="len(verification.get('unattestable', []))"/> event(s) predate canonical-payload
+                                    persistence (2026-09-15) and cannot be attested  -  chain #<t t-out="verification.get('unattestable_display')"/>.
+                                    Those payloads were hashed from Python values that the stored row does not
+                                    preserve, so the verifier cannot rebuild them byte-for-byte. No divergence was
+                                    found in any attestable event. This is a verifier-capability limit, not evidence
+                                    of tampering, and no chain row has been altered.
+                                    <div style="margin-top: 6px;">
+                                        <strong>Attestable epoch.</strong> Events 1-<t t-out="(verification.get('attestable_epoch_chain_no') or epoch_chain_no)"/> were written by a superseded writer whose payload serialisation cannot be reconstructed. They are retained and disclosed, and are excluded from attestation. Attestation is provable for events <t t-out="(verification.get('attestable_epoch_chain_no') or epoch_chain_no) + 1"/> onward. No row, hash or payload has been rewritten or re-baselined.
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                        <t t-else="">
+                            <div class="o_pmg_verdict o_pmg_verdict-ok">
+                                <div>Hash chain VERIFIED  -  all <t t-out="verification.get('events', 0)"/> events are intact</div>
+                                <div class="o_pmg_verdict-note">
+                                    No divergences detected. Chain integrity confirmed from genesis to latest event.
+                                </div>
+                            </div>
+                        </t>
+
+                        <div class="o_pmg_note-box" style="margin-top: 12px;">
+                            <strong>Last scheduled verification:</strong>
+                            <t t-if="last_verdict">
+                                <t t-out="last_verdict.run_at.strftime('%d %b %Y %H:%M:%S UTC') if last_verdict.run_at else 'never'"/>
+                                (verdict: <t t-out="last_verdict.verdict"/>, trigger: <t t-out="last_verdict.trigger"/>,
+                                alerts: <t t-out="'yes' if last_verdict.alert_fired else 'no'"/>).
+                                If this timestamp is stale, the scheduled verification has stopped running.
+                                <div t-if="last_verdict.outgoing_failures">
+                                    Outgoing mail failures at last run:
+                                    <t t-out="last_verdict.outgoing_failures"/>. The in-app alert receipt
+                                    is unaffected (it is an activity row); business email may be failing.
+                                </div>
+                            </t>
+                            <t t-else="">
+                                No scheduled verification has been recorded yet. Treat this report as unmonitored
+                                until one appears.
+                            </t>
+                        </div>
+
+                        <div class="o_pmg_alert" style="margin-top: 12px;">
+                            <strong>Coverage:</strong>
+                            <t t-out="coverage.get('wired', 0)"/> concrete models emit audit events;
+                            <t t-out="coverage.get('gap', 0)"/> further concrete models in this module do not.
+                            Changes to those models create no event, so they cannot be detected by this
+                            chain. <strong>Tier classification of guarded writes was corrected in 19.0.2.53.</strong> Events written before it may classify a governed write as tier 2, and their empty reason reflects that classification defect, not an absent gate. Those rows are retained, disclosed and never rewritten. Capture on governed writes is enforced from 19.0.2.49 and proven on reassignment; the remaining governed operations are pending. <em>Latent, not migrated:</em> tier is a varchar, so ordering and range comparisons on it are lexically unsafe. Coverage counts concrete models registered under this module, including
+                            core models this module only extends; the audit mixin, abstract report models and
+                            the audit verdict log are excluded.
+                            <div t-if="coverage.get('allowlisted')" style="margin-top: 6px;">
+                                <strong>Field-level attestation:</strong>
+                                <t t-foreach="coverage['allowlisted']" t-as="entry">
+                                    <span t-out="entry['model']"/> (<span t-out="', '.join(entry['fields'])"/>)<t t-if="not entry_last">; </t>
+                                </t>
+                                <span>Every other wired model attests all of its fields except ORM bookkeeping.
+                                    Redacted values are stored as <code>[REDACTED-FIELD]</code> and are attested
+                                    in that redacted form - attested, value redacted.</span>
+                            </div>
+                            <div t-if="coverage.get('ungated_unlink')" style="margin-top: 6px;">
+                                <strong>Deletion gate:</strong> deleting a record of
+                                <span t-out="', '.join(coverage['ungated_unlink'])"/>
+                                is captured as Tier 2 without requiring a reason: these are
+                                operational sub-records that users remove as part of ordinary
+                                editing and there is no delete-with-reason workflow in the UI.
+                                Every other wired model requires a registered reason before
+                                deletion.
+                            </div>
+                        </div>
+
+                        <div class="o_pmg_grid-4" style="margin-top: 12px;">
+                            <div><div class="o_pmg_kpi-card">
+                                <div class="o_pmg_kpi-label">Total Events</div>
+                                <div class="o_pmg_kpi-value" t-out="verification.get('events', 0)"/>
+                            </div></div>
+                            <div><div class="o_pmg_kpi-card">
+                                <div class="o_pmg_kpi-label">Last Chain #</div>
+                                <div class="o_pmg_kpi-value" t-out="verification.get('last_chain_no', 0)"/>
+                            </div></div>
+                            <div><div class="o_pmg_kpi-card">
+                                <div class="o_pmg_kpi-label">Divergences</div>
+                                <div class="o_pmg_kpi-value">
+                                    <t t-if="verification.get('first_divergence')">1+ found</t>
+                                    <t t-else="">None</t>
+                                </div>
+                            </div></div>
+                            <div><div class="o_pmg_kpi-card">
+                                <div class="o_pmg_kpi-label">Collisions</div>
+                                <div class="o_pmg_kpi-value" t-out="len(verification.get('collisions', []))"/>
+                            </div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Chain Summary -->
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">2</span>Chain Metadata</div>
+                    <div class="o_pmg_section-body">
+                        <table class="o_pmg_dl">
+                            <tr>
+                                <td class="o_pmg_dl-label">Tenant UUID</td>
+                                <td class="o_pmg_dl-value" style="font-family: 'Courier New', monospace; font-size: 9pt;" t-out="tenant_uuid"/>
+                            </tr>
+                            <tr>
+                                <td class="o_pmg_dl-label">Company</td>
+                                <td class="o_pmg_dl-value" t-out="company.name or ' - '"/>
+                            </tr>
+                            <tr>
+                                <td class="o_pmg_dl-label">Genesis Hash</td>
+                                <td class="o_pmg_dl-value o_pmg_hash">
+                                    0000000000000000000000000000000000000000000000000000000000000000
+                                </td>
+                            </tr>
+                            <tr t-if="all_events">
+                                <td class="o_pmg_dl-label">Latest Event Hash</td>
+                                <td class="o_pmg_dl-value o_pmg_hash" t-out="all_events[-1].row_hash[:64] + '...' if all_events[-1].row_hash else ' - '"/>
+                            </tr>
+                            <tr t-if="all_events">
+                                <td class="o_pmg_dl-label">Latest Event Timestamp</td>
+                                <td class="o_pmg_dl-value" t-out="all_events[-1].timestamp.strftime('%d %b %Y %H:%M:%S UTC') if all_events[-1].timestamp else ' - '"/>
+                            </tr>
+                            <tr t-if="all_events">
+                                <td class="o_pmg_dl-label">Latest Operation</td>
+                                <td class="o_pmg_dl-value" t-out="all_events[-1].operation_label or all_events[-1].operation or ' - '"/>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Section 3: Event Log -->
+                <div class="o_pmg_section" t-if="all_events">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">3</span>Event Log (<t t-out="len(all_events)"/> events)</div>
+                    <div class="o_pmg_section-body" style="padding: 0; overflow: hidden;">
+                        <table class="o_pmg_table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 40px;">#</th>
+                                    <th style="width: 100px;">Timestamp</th>
+                                    <th style="width: 50px;">Tier</th>
+                                    <th style="width: 120px;">Operation</th>
+                                    <th style="width: 80px;">User</th>
+                                    <th style="width: 80px;">Model</th>
+                                    <th style="width: 100px;">Prev Hash</th>
+                                    <th style="width: 100px;">Row Hash</th>
+                                    <th style="width: 60px;">Source</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="all_events[:200]" t-as="evt">
+                                    <tr>
+                                        <td style="font-weight: 600;" t-out="evt.chain_no"/>
+                                        <td t-out="evt.timestamp.strftime('%d/%m %H:%M') if evt.timestamp else ' - '"/>
+                                        <td>
+                                            <span t-if="evt.tier == 1" class="o_pmg_badge o_pmg_badge-amber">1</span>
+                                            <span t-elif="evt.tier == 2" class="o_pmg_badge o_pmg_badge-blue">2</span>
+                                            <span t-else="" class="o_pmg_badge o_pmg_badge-indigo"><t t-out="evt.tier"/></span>
+                                        </td>
+                                        <td t-out="evt.operation_label or evt.operation or ' - '"/>
+                                        <td t-out="evt.user_id.name or 'System'"/>
+                                        <td t-out="evt.model and evt.model.split('.')[-1] or ' - '"/>
+                                        <td class="o_pmg_hash" t-out="(evt.prev_hash[:12] + '...') if evt.prev_hash and evt.prev_hash != '0'*64 else ('genesis' if evt.prev_hash == '0'*64 else ' - ')"/>
+                                        <td class="o_pmg_hash" t-out="(evt.row_hash[:12] + '...') if evt.row_hash else ' - '"/>
+                                        <td style="font-size: 7.5pt; color: #64748b;" t-out="evt.source or ' - '"/>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                        <div t-if="len(all_events) > 200" style="padding: 10px 14px; font-size: 9pt; color: #64748b; text-align: center; border-top: 1px solid #e2e8f0;">
+                            Showing first 200 of <t t-out="len(all_events)"/> events. Use the audit viewer for full navigation.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 4: Tier Distribution -->
+                <div class="o_pmg_section o_pmg_keep" t-if="all_events">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">4</span>Tier Distribution</div>
+                    <div class="o_pmg_section-body">
+                        <div class="o_pmg_grid-3">
+                            <div><div class="o_pmg_kpi-card">
+                                <div class="o_pmg_kpi-label">Tier 1  -  Reason Required</div>
+                                <div class="o_pmg_kpi-value">
+                                    <t t-out="len([e for e in all_events if e.tier == 1])"/> events
+                                </div>
+                                <div class="o_pmg_kpi-sub">User-initiated critical changes requiring explicit reason</div>
+                            </div></div>
+                            <div><div class="o_pmg_kpi-card">
+                                <div class="o_pmg_kpi-label">Tier 2  -  Auto-Audited</div>
+                                <div class="o_pmg_kpi-value">
+                                    <t t-out="len([e for e in all_events if e.tier == 2])"/> events
+                                </div>
+                                <div class="o_pmg_kpi-sub">Automatic audit on money/commission/state operations</div>
+                            </div></div>
+                            <div><div class="o_pmg_kpi-card">
+                                <div class="o_pmg_kpi-label">Tier 3  -  Operational</div>
+                                <div class="o_pmg_kpi-value">
+                                    <t t-out="len([e for e in all_events if e.tier == 3])"/> events
+                                </div>
+                                <div class="o_pmg_kpi-sub">Low-risk operational events (portal sync, lead edits)</div>
+                            </div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <t t-set="report_name">Chain Verification Report</t>
+                <t t-set="report_footer_note">Chain integrity proof uses SHA-256 hash-chaining with append-only event storage and fail-closed redaction. Scheduled verification persists a verdict on every run and raises an alert only on the conditions listed in the attestable-epoch note.</t>
+                <t t-call="sgc_offplan_rental_property_management.property_report_footer"/>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_critical_audit_verification">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="docid">
+                <t t-call="sgc_offplan_rental_property_management.report_critical_audit_verification_document">
+                    <t t-set="docs" t-value="docid"/>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

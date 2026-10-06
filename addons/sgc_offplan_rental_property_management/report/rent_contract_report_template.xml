@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="rent_contract_report_template">
+        <t t-call="web.html_container">
+          <t t-foreach="docs" t-as="o">
+            <t t-set="company" t-value="o.company_id or env.company"/>
+            <t t-set="fd" t-value="lambda d: d.strftime('%d %b %Y') if d else ' - '"/>
+            <t t-set="mon" t-value="o.currency_id or o.company_id.currency_id"/>
+            <t t-call="sgc_offplan_rental_property_management.property_report_styles"/>
+            <div class="o_pmg_doc article" t-att-data-oe-model="o._name" t-att-data-oe-id="o.id"><t t-call="sgc_offplan_rental_property_management.property_report_styles"/>
+                <t t-set="report_ref" t-value="o.name or ' - '"/>
+                <t t-set="report_date" t-value="fd(datetime.date.today())"/>
+                <t t-call="sgc_offplan_rental_property_management.property_report_letterhead"/>
+                <t t-set="report_title">Tenancy Contract</t>
+                <t t-set="report_subtitle">Unified Residential Rental Contract  -  Ejari / RERA, Dubai, UAE</t>
+                <t t-call="sgc_offplan_rental_property_management.property_report_title"/>
+
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">1</span>Parties</div>
+                    <div class="o_pmg_section-body">
+                        <table class="o_pmg_dl">
+                            <tr t-if="o.landlord_id"><td class="o_pmg_dl-label">Landlord</td><td class="o_pmg_dl-value" t-out="o.landlord_id.name"/></tr>
+                            <tr><td class="o_pmg_dl-label">Tenant</td><td class="o_pmg_dl-value" t-out="o.tenant_id.name or ' - '"/></tr>
+                            <tr t-if="o.property_id.title_deed_number"><td class="o_pmg_dl-label">Landlord Title Deed Ref.</td><td class="o_pmg_dl-value" t-out="o.property_id.title_deed_number"/></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">2</span>Property Information</div>
+                    <div class="o_pmg_section-body">
+                        <table class="o_pmg_dl">
+                            <tr><td class="o_pmg_dl-label">Property</td><td class="o_pmg_dl-value" t-out="o.property_id.name or ' - '"/></tr>
+                            <tr t-if="o.property_id.address"><td class="o_pmg_dl-label">Address</td><td class="o_pmg_dl-value" t-out="o.property_id.address"/></tr>
+                            <tr t-if="o.property_id.makani_number"><td class="o_pmg_dl-label">Makani Number</td><td class="o_pmg_dl-value" t-out="o.property_id.makani_number"/></tr>
+                            <tr t-if="o.property_id.dewa_premises_number"><td class="o_pmg_dl-label">DEWA Premises Number</td><td class="o_pmg_dl-value" t-out="o.property_id.dewa_premises_number"/></tr>
+                            <tr t-if="o.property_id.property_type"><td class="o_pmg_dl-label">Type</td><td class="o_pmg_dl-value" t-out="dict(o.property_id._fields['property_type'].selection).get(o.property_id.property_type, o.property_id.property_type)"/></tr>
+                            <tr t-if="o.property_id.area"><td class="o_pmg_dl-label">Size</td><td class="o_pmg_dl-value" t-out="'{:,.0f} sq ft'.format(o.property_id.area)"/></tr>
+                            <tr t-if="o.furnished_status"><td class="o_pmg_dl-label">Furnishing Status</td><td class="o_pmg_dl-value" t-out="dict(o._fields['furnished_status'].selection).get(o.furnished_status, o.furnished_status)"/></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">3</span>Contract Term &amp; Rent</div>
+                    <div class="o_pmg_section-body">
+                        <table class="o_pmg_dl">
+                            <tr><td class="o_pmg_dl-label">Start Date</td><td class="o_pmg_dl-value" t-out="fd(o.start_date)"/></tr>
+                            <tr><td class="o_pmg_dl-label">End Date</td><td class="o_pmg_dl-value" t-out="fd(o.end_date)"/></tr>
+                            <tr><td class="o_pmg_dl-label">Duration</td><td class="o_pmg_dl-value" t-out="'%s month(s)' % o.duration_months"/></tr>
+                            <tr><td class="o_pmg_dl-label">Annual Rent</td><td class="o_pmg_dl-value"><span t-out="o.rent_amount" t-options="{'widget': 'monetary', 'display_currency': mon}"/></td></tr>
+                            <tr t-if="o.payment_frequency"><td class="o_pmg_dl-label">Payment Frequency</td><td class="o_pmg_dl-value" t-out="dict(o._fields['payment_frequency'].selection).get(o.payment_frequency, o.payment_frequency)"/></tr>
+                            <tr t-if="o.payment_cheque_count"><td class="o_pmg_dl-label">Number of Cheques</td><td class="o_pmg_dl-value" t-out="o.payment_cheque_count"/></tr>
+                            <tr><td class="o_pmg_dl-label">Total Contract Value</td><td class="o_pmg_dl-value"><span t-out="o.total_rent" t-options="{'widget': 'monetary', 'display_currency': mon}"/></td></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">4</span>Security Deposit</div>
+                    <div class="o_pmg_section-body">
+                        <table class="o_pmg_dl">
+                            <tr><td class="o_pmg_dl-label">Security Deposit</td><td class="o_pmg_dl-value"><span t-out="o.security_deposit" t-options="{'widget': 'monetary', 'display_currency': mon}"/></td></tr>
+                            <tr><td class="o_pmg_dl-label">Deposit Paid</td><td class="o_pmg_dl-value"><span class="o_pmg_badge o_pmg_badge-green" t-if="o.security_deposit_paid">Yes</span><span class="o_pmg_badge o_pmg_badge-red" t-if="not o.security_deposit_paid">No</span></td></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">5</span>Maintenance &amp; Renewal Terms</div>
+                    <div class="o_pmg_section-body">
+                        <table class="o_pmg_dl">
+                            <tr t-if="o.maintenance_responsibility"><td class="o_pmg_dl-label">Maintenance Responsibility</td><td class="o_pmg_dl-value" t-out="dict(o._fields['maintenance_responsibility'].selection).get(o.maintenance_responsibility, o.maintenance_responsibility)"/></tr>
+                            <tr><td class="o_pmg_dl-label">Renewal Requested</td><td class="o_pmg_dl-value" t-out="'Yes' if o.renewal_requested else 'No'"/></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">6</span>Registration</div>
+                    <div class="o_pmg_section-body">
+                        <table class="o_pmg_dl">
+                            <tr><td class="o_pmg_dl-label">Ejari Registration Number</td><td class="o_pmg_dl-value" t-out="o.ejari_registration_number or ' - '"/></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="o_pmg_section">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">7</span>RERA / Ejari Attestation</div>
+                    <div class="o_pmg_section-body">
+                        <p>This Tenancy Contract is concluded in the form prescribed by the Real Estate Regulatory Authority (RERA) of the Emirate of Dubai. The Landlord shall register this Contract with the Ejari system operated by the Dubai Land Department within 30 (thirty) days of execution. Until such registration, the Contract shall not be admissible as evidence before the Rental Dispute Settlement Centre (RDCSC). Ejari Registration No.: <strong t-out="o.ejari_registration_number or 'to be assigned upon registration'"/>.</p>
+                    </div>
+                </div>
+
+                <div class="o_pmg_section">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">8</span>Term, Renewal &amp; Rent Escalation Cap</div>
+                    <div class="o_pmg_section-body">
+                        <p>The Contract term commences on <strong t-out="fd(o.start_date)"/> and expires on <strong t-out="fd(o.end_date)"/> (a total of <strong t-out="o.duration_months"/> month(s)). Annual rent escalation, if any, shall not exceed 5% of the preceding year's rent, in line with RERA guidance. If the Landlord and Tenant continue to perform after the expiry date without a written extension, the Contract shall be deemed renewed for a period equal to the original term on the same terms, save for rent which may then be lawfully adjusted.</p>
+                    </div>
+                </div>
+
+                <div class="o_pmg_section">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">9</span>Security Deposit &amp; Trust Treatment</div>
+                    <div class="o_pmg_section-body">
+                        <p>The Tenant has paid a refundable security deposit of AED <strong t-out="'{:,.2f}'.format(o.security_deposit or 0.0)"/> (<span t-out="o.security_deposit" t-options="{'widget': 'monetary', 'display_currency': mon}"/>) which the Landlord shall hold in trust for the Tenant and not commingle with the Landlord's operating funds. The deposit shall be refunded, net of agreed deductions, within 14 (fourteen) days of vacation, accompanied by a written settlement statement. No portion of the deposit may be applied against the last rental instalment without the Landlord's written consent.</p>
+                    </div>
+                </div>
+
+                <div class="o_pmg_section">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">10</span>Utilities, Chiller &amp; DEWA / Empower / Cooling</div>
+                    <div class="o_pmg_section-body">
+                        <p>DEWA electricity and water, Empower district cooling (or other chilled-water supplier), and Internet/Telecom shall be transferred into the Tenant's name on the Commencement Date. Until transfer is completed, the Tenant's liability shall be limited to actual consumption re-billed at cost against copy invoices. Connection, reconnection and refundable deposits owed to the utility authorities remain the Landlord's responsibility unless re-billed under a separately signed Utilities-Transfer letter.</p>
+                    </div>
+                </div>
+
+                <div class="o_pmg_section">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">11</span>Maintenance Allocation</div>
+                    <div class="o_pmg_section-body">
+                        <p>The Landlord shall be responsible for major maintenance, structural defects, mechanical/electrical/plumbing (MEP) failures of central systems, and any defect rendering the Property uninhabitable. The Tenant shall be responsible for day-to-day maintenance, routine consumables (bulbs, filters, AC servicing filters), and any damage caused by the Tenant or his guests beyond fair wear and tear. Air-conditioning major overhaul (compressor, gas top-up beyond normal servicing) and water heater replacement remain the Landlord's cost.</p>
+                    </div>
+                </div>
+
+                <div class="o_pmg_section">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">12</span>Subletting, Assignment &amp; Short-Stay</div>
+                    <div class="o_pmg_section-body">
+                        <p>The Tenant shall not sublet, assign or otherwise part with possession of the Property, in whole or in part, without the prior written consent of the Landlord. Short-stay / holiday-home commercial use is strictly prohibited and is grounds for immediate termination. Any unauthorised subletting shall entitle the Landlord to terminate after 7 (seven) days' written notice.</p>
+                    </div>
+                </div>
+
+                <div class="o_pmg_section">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">13</span>Termination &amp; Notice</div>
+                    <div class="o_pmg_section-body">
+                        <p>Either Party may terminate this Contract for any reason by giving the other not less than 90 (ninety) days' written notice via registered email and Ejari, expiring at the end of the Contract year. Early termination by the Tenant within the first 12 months requires the Tenant to pay an early-termination fee equal to 1.5 months' rent; thereafter 30 days' notice is sufficient. The Landlord may terminate only for cause as defined by UAE Federal Decree-Law No. 33 of 2008 (Article 25 &amp; 26)  -  including non-payment of rent exceeding 30 days after notice, subletting in breach, or use of the Property for unlawful purposes.</p>
+                    </div>
+                </div>
+
+                <div class="o_pmg_section" t-if="o.furnished_status">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">14</span>Maintenance Service (AMC)  -  Optional</div>
+                    <div class="o_pmg_section-body">
+                        <p>Maintenance / Annual Maintenance Contract: <strong t-out="dict(o._fields['furnished_status'].selection).get(o.furnished_status, o.furnished_status)"/>. Where contracted, the Tenant shall provide reasonable access to the Property for scheduled preventive maintenance visits, with 24 hours' prior notice.</p>
+                    </div>
+                </div>
+
+                <div class="o_pmg_section">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">15</span>Insurance &amp; Force Majeure</div>
+                    <div class="o_pmg_section-body">
+                        <p>The Landlord warrants that the Building's structure and common areas are insured. The Tenant is advised to maintain content and personal-liability insurance covering the leased premises. Neither Party is liable for failure to perform caused by events beyond reasonable control  -  fire, flood, government order, pandemic, total or partial destruction of the Building, or utility-supplier outage  -  provided the affected Party gives prompt notice and acts diligently to mitigate.</p>
+                    </div>
+                </div>
+
+                <div class="o_pmg_section">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">16</span>Anti-Money Laundering &amp; KYC</div>
+                    <div class="o_pmg_section-body">
+                        <p>The Tenant warrants that the rental amounts, the security deposit, and all sums transferred under this Contract originate from legitimate sources and are not proceeds of crime. The Landlord, the broker, and any service provider are hereby authorised to perform KYC, sanctions screening, and source-of-funds verification under UAE Federal Decree-Law No. 20 of 2018 and the regulations issued by the Executive Office of Anti-Money Laundering and Counter-Terrorism Financing.</p>
+                    </div>
+                </div>
+
+                <div class="o_pmg_section">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">17</span>Dispute Resolution &amp; Governing Law</div>
+                    <div class="o_pmg_section-body">
+                        <p>This Contract is governed by the laws of the Emirate of Dubai, and the federal laws of the United Arab Emirates (notably UAE Federal Decree-Law No. 33 of 2008 as amended, and Law No. 26 of 2007 regulating relations between landlords and tenants in Dubai). The Parties shall first attempt amicable resolution; failing that, any dispute shall be referred to the Rental Dispute Settlement Centre (RDCSC) of the Dubai Land Department  -  whose decision is final and binding.</p>
+                    </div>
+                </div>
+
+                <div class="o_pmg_section">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">18</span>Notices &amp; Governing Language</div>
+                    <div class="o_pmg_section-body">
+                        <p>Notices shall be served by registered email and to the Ejari-registered addresses. Any translation of this Contract into a language other than Arabic is provided for reference only; in case of inconsistency the Arabic text shall prevail as required by DLD/RERA.</p>
+                    </div>
+                </div>
+
+                <div class="o_pmg_section" t-if="o.notes">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">19</span>Notes</div>
+                    <div class="o_pmg_section-body">
+                        <p style="white-space: pre-line;" t-out="o.notes"/>
+                    </div>
+                </div>
+
+                <t t-set="signature_slots" t-value="[
+                    {'label': 'Landlord Signature', 'name': o.landlord_id.name or ''},
+                    {'label': 'Tenant Signature', 'name': o.tenant_id.name or ''},
+                ]"/>
+                <t t-call="sgc_offplan_rental_property_management.property_report_signatures"/>
+                <t t-set="report_name">Tenancy Contract</t>
+                <t t-set="report_footer_note">This is a computer-generated document. Terms are binding upon signature and Ejari registration.</t>
+                <t t-call="sgc_offplan_rental_property_management.property_report_footer"/>
+            </div>
+          </t>
+        </t>
+    </template>
+</odoo>

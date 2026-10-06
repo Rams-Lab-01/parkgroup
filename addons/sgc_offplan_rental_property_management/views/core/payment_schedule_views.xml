@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Payment Schedule Tree View -->
+    <record id="payment_schedule_view_tree" model="ir.ui.view">
+        <field name="name">payment.schedule.tree</field>
+        <field name="model">payment.schedule</field>
+        <field name="arch" type="xml">
+            <list string="Payment Schedules">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="schedule_type"/>
+                <field name="total_percentage" string="Total %"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Payment Schedule Form View -->
+    <record id="payment_schedule_view_form" model="ir.ui.view">
+        <field name="name">payment.schedule.form</field>
+        <field name="model">payment.schedule</field>
+        <field name="arch" type="xml">
+            <form string="Payment Schedule">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button" options='{"terminology": "archive"}'/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Payment Schedule Name..."/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="schedule_type" widget="radio"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group>
+                            <field name="total_percentage" widget="percentage"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <field name="description" placeholder="Describe this payment schedule..."/>
+
+                    <notebook>
+                        <page string="Payment Lines">
+                            <field name="schedule_line_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name" required="1"/>
+                                    <field name="percentage" sum="total_percentage"/>
+                                    <field name="days_after" string="Days After"/>
+                                    <field name="installment_frequency"/>
+                                    <field name="number_of_installments" string="# of Installments" invisible="installment_frequency == 'one_time'"/>
+                                    <field name="note"/>
+                                </list>
+                            </field>
+                            <group>
+                                <group>
+                                    <div class="alert alert-info" role="alert">
+                                        <strong>How it works:</strong>
+                                        <ul>
+                                            <li>
+                                                <strong>Percentage:</strong> % of total contract amount</li>
+                                            <li>
+                                                <strong>Days After:</strong> Invoice due = Contract Start + Days</li>
+                                            <li>
+                                                <strong>Frequency:</strong> One-time or recurring (monthly/quarterly/etc.)</li>
+                                            <li>
+                                                <strong># of Installments:</strong> How many invoices to generate</li>
+                                        </ul>
+                                    </div>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Examples">
+                            <group>
+                                <div class="alert alert-success" role="alert">
+                                    <h4>Example 1: Sale Contract - "30% Booking + 70% Quarterly"</h4>
+                                    <ul>
+                                        <li>Line 1: "Booking Payment" | 30% | Day 0 | One Time | 1 installment</li>
+                                        <li>Line 2: "Quarterly Payments" | 70% | Day 30 | Quarterly | 4 installments</li>
+                                    </ul>
+                                    <p>
+                                        <strong>Result:</strong> 1 booking invoice + 4 quarterly invoices (Days 30, 120, 210, 300)</p>
+                                </div>
+                                <div class="alert alert-warning" role="alert">
+                                    <h4>Example 2: Rental - "2 Months Deposit + Monthly Rent"</h4>
+                                    <ul>
+                                        <li>Line 1: "Security Deposit" | 15.38% | Day 0 | One Time | 1 installment</li>
+                                        <li>Line 2: "Monthly Rent" | 84.62% | Day 0 | Monthly | 11 installments</li>
+                                    </ul>
+                                    <p>
+                                        <strong>Result:</strong> 1 deposit + 11 monthly rent invoices (Days 0, 30, 60, 90...)</p>
+                                </div>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Payment Schedule Action -->
+    <record id="action_payment_schedule" model="ir.actions.act_window">
+        <field name="name">Payment Schedules</field>
+        <field name="res_model">payment.schedule</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Payment Schedule!
+            </p>
+            <p>
+                Payment schedules define when and how much customers pay.
+                Set percentages and days after contract to match invoices with your offers.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem id="menu_payment_schedule" name="Payment Schedules" parent="sgc_offplan_rental_property_management.main_menu_rental_management" action="action_payment_schedule" sequence="3"/>
+</odoo>

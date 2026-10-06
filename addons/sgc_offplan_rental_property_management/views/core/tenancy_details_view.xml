@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ======================================================
+         TENANCY DETAILS — List View
+    ====================================================== -->
+    <record id="tenancy_details_list_view" model="ir.ui.view">
+        <field name="name">tenancy.details.list</field>
+        <field name="model">tenancy.details</field>
+        <field name="arch" type="xml">
+            <list string="Tenancies" decoration-muted="state == 'cancelled'" decoration-success="state == 'active'">
+                <field name="name"/>
+                <field name="property_id"/>
+                <field name="tenant_id"/>
+                <field name="landlord_id"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="rent_amount" widget="monetary" sum="Total"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-success="state == 'active'"
+                       decoration-warning="state == 'expired'"
+                       decoration-danger="state == 'cancelled'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ======================================================
+         TENANCY DETAILS — Form View
+    ====================================================== -->
+    <record id="tenancy_details_form_view" model="ir.ui.view">
+        <field name="name">tenancy.details.form</field>
+        <field name="model">tenancy.details</field>
+        <field name="arch" type="xml">
+            <form string="Tenancy">
+                <header>
+                    <button name="action_activate" string="Activate" type="object"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_expire" string="Mark Expired" type="object"
+                            invisible="state != 'active'"/>
+                    <button name="action_cancel" string="Cancel" type="object"
+                            class="btn-danger" invisible="state in ['expired', 'cancelled']"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,expired"/>
+                    <button name="%(action_report_rent_contract)d" type="action" string="Print Tenancy Contract"
+                            icon="fa-print"
+                            invisible="not tenancy_id"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Cancelled"
+                            bg_color="text-bg-danger" invisible="state != 'cancelled'"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. T/2026/00001"/></h1>
+                    </div>
+                    <group>
+                        <group string="Tenancy Details">
+                            <field name="property_id"/>
+                            <field name="tenant_id"/>
+                            <field name="landlord_id"/>
+                            <field name="property_landlord_id"/>
+                            <field name="broker_id"/>
+                            <field name="property_type"/>
+                            <field name="type"/>
+                        </group>
+                        <group string="Dates &amp; Financials">
+                            <field name="currency_id" invisible="1"/>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="month"/>
+                            <field name="rent_amount" widget="monetary"/>
+                            <field name="total_rent" widget="monetary"/>
+                            <field name="duration_id"/>
+                            <field name="is_extra_service"/>
+                        </group>
+                    </group>
+                    <group groups="base.group_multi_company">
+                        <field name="company_id"/>
+                    </group>
+                    <notebook>
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Additional notes..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ======================================================
+         TENANCY DETAILS — Search View
+    ====================================================== -->
+    <record id="tenancy_details_search_view" model="ir.ui.view">
+        <field name="name">tenancy.details.search</field>
+        <field name="model">tenancy.details</field>
+        <field name="arch" type="xml">
+            <search string="Search Tenancies">
+                <field name="name" string="Tenancy Reference"/>
+                <field name="property_id"/>
+                <field name="tenant_id"/>
+                <field name="landlord_id"/>
+                <filter name="filter_draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                <filter name="filter_active" string="Active" domain="[('state', '=', 'active')]"/>
+                <filter name="filter_expired" string="Expired" domain="[('state', '=', 'expired')]"/>
+                <filter name="filter_cancelled" string="Cancelled" domain="[('state', '=', 'cancelled')]"/>
+                <separator/>
+                <filter name="group_by_state" string="Status" context="{'group_by': 'state'}"/>
+                <filter name="group_by_property" string="Property" context="{'group_by': 'property_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ======================================================
+         TENANCY DETAILS — Action
+    ====================================================== -->
+    <record id="tenancy_details_action" model="ir.actions.act_window">
+        <field name="name">Tenancies</field>
+        <field name="res_model">tenancy.details</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="tenancy_details_search_view"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Tenancy
+            </p>
+        </field>
+    </record>
+
+</odoo>

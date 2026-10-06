@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record id="maintenance_product_inherit_form_view" model="ir.ui.view">
+            <field name="name">maintenance.product.inherit.form.view</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_only_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//label[@for='purchase_ok']" position="after">
+                    <span class="d-inline-block">
+                        <field name="is_maintenance"/>
+                        <label for="is_maintenance"/>
+                    </span>
+                </xpath>
+            </field>
+        </record>
+    </odoo>

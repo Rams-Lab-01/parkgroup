@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Report actions for the 4 new reports added to fill menu gaps -->
+
+    <!-- 1. RERA Form A Report -->
+    <record id="action_report_rera_form_a" model="ir.actions.report">
+        <field name="name">RERA Form A</field>
+        <field name="model">rera.form.a</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">sgc_offplan_rental_property_management.report_rera_form_a_document</field>
+        <field name="report_file">sgc_offplan_rental_property_management.report_rera_form_a_document</field>
+        <field name="binding_model_id" ref="model_rera_form_a"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="sgc_offplan_rental_property_management.paperformat_property_report"/>
+        <field name="print_report_name">'RERA_Form_A_%s' % (object.name or '').replace('/', '_')</field>
+    </record>
+
+    <!-- 2. Critical Audit Chain Verification Report -->
+    <record id="action_report_critical_audit_verification" model="ir.actions.report">
+        <field name="name">Chain Verification Report</field>
+        <field name="model">sgc.critical.audit.event</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">sgc_offplan_rental_property_management.report_critical_audit_verification_document</field>
+        <field name="report_file">sgc_offplan_rental_property_management.report_critical_audit_verification_document</field>
+        <field name="binding_model_id" ref="model_sgc_critical_audit_event"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="sgc_offplan_rental_property_management.paperformat_property_report"/>
+        <field name="print_report_name">'Audit_Chain_Verification_%s' % (object.tenant_uuid or 'unknown')[:8]</field>
+    </record>
+
+    <!-- 3. Project Summary Report -->
+    <record id="action_report_project_summary" model="ir.actions.report">
+        <field name="name">Project Summary</field>
+        <field name="model">property.project</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">sgc_offplan_rental_property_management.report_project_summary_document</field>
+        <field name="report_file">sgc_offplan_rental_property_management.report_project_summary_document</field>
+        <field name="binding_model_id" ref="model_property_project"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="sgc_offplan_rental_property_management.paperformat_property_report"/>
+        <field name="print_report_name">'Project_Summary_%s' % (object.name or '').replace('/', '_')</field>
+    </record>
+
+    <!-- 4. Portfolio Statistics Report -->
+    <record id="action_report_portfolio_statistics" model="ir.actions.report">
+        <field name="name">Portfolio Statistics</field>
+        <field name="model">property.details</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">sgc_offplan_rental_property_management.report_portfolio_statistics_document</field>
+        <field name="report_file">sgc_offplan_rental_property_management.report_portfolio_statistics_document</field>
+        <field name="binding_model_id" ref="model_property_details"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="sgc_offplan_rental_property_management.paperformat_property_report"/>
+        <field name="print_report_name">'Portfolio_Statistics_%s' % (object.name or '').replace('/', '_')</field>
+    </record>
+</odoo>

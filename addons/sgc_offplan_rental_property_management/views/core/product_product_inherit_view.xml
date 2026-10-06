@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record id="product_product_form_inherit_view" model="ir.ui.view">
+            <field name="name">product.product.inherit.form.view</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view" />
+            <field name="priority" eval="8" />
+            <field name="arch" type="xml">
+                <xpath expr="//label[@for='purchase_ok']" position="after">
+                    <span class="d-inline-block">
+                        <field name="is_extra_service_product" />
+                        <label for="is_extra_service_product" />
+                    </span>
+                </xpath>
+            </field>
+        </record>
+        <record id="product_extra_service_action" model="ir.actions.act_window">
+            <field name="name">Utility Services</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.product</field>
+            <field name="view_mode">list,form,kanban,activity</field>
+            <field name="domain">[('is_extra_service_product','=',True)]</field>
+            <field name="context">{'default_is_extra_service_product':True}</field>
+        </record>
+    </odoo>

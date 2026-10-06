@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="offplan_project_detail" name="Offplan Project Detail Page">
+        <t t-call="website.layout">
+            <t t-set="title" t-value="project.name"/>
+            <div class="container mt-4 mb-5">
+                <div class="row mb-4">
+                    <div class="col-md-8">
+                        <h1 t-esc="project.name"/>
+                        <div class="text-muted" t-out="project.description or ''"/>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <t t-if="properties">
+                        <div class="col-md-6 col-lg-4 mb-4" t-foreach="properties" t-as="prop">
+                            <div class="property-card card h-100 shadow-sm">
+                                <div class="position-relative overflow-hidden" style="height:220px;">
+                                    <img t-if="prop.image_512"
+                                         t-att-src="'/web/image/property.details/%s/image_512' % prop.id"
+                                         class="card-img-top" style="height:100%;width:100%;object-fit:cover;"
+                                         t-att-alt="prop.name"/>
+                                    <img t-else=""
+                                         t-att-src="'/web/static/src/img/placeholder.png'"
+                                         class="card-img-top" style="height:100%;width:100%;object-fit:cover;"/>
+                                    <div class="position-absolute" style="bottom:10px;right:10px;">
+                                        <span class="badge" t-att-class="'badge-success' if prop.state == 'available' else 'badge-secondary'"
+                                              t-esc="dict(prop._fields['state'].selection).get(prop.state, prop.state).title()"/>
+                                    </div>
+                                </div>
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title" t-esc="prop.name"/>
+                                    <div class="mb-2">
+                                        <span class="badge badge-info mr-1" t-esc="'%s bed' % prop.bedrooms if prop.bedrooms else 'Studio'"/>
+                                        <span class="badge badge-info mr-1" t-esc="'%s bath' % prop.bathrooms if prop.bathrooms else '1 bath'"/>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                                        <h4 class="text-primary mb-0" t-if="prop.sale_price">
+                                            AED <t t-esc="'{:,.0f}'.format(prop.sale_price)"/>
+                                        </h4>
+                                        <a t-att-href="'/offplan/property/%s' % prop.id"
+                                           class="btn btn-sm btn-outline-primary">View Details</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                    <t t-if="not properties">
+                        <div class="col-12">
+                            <div class="alert alert-info text-center">
+                                No properties available in this project yet.
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

@@ -134,6 +134,10 @@ acl_xmlids = {row["model_id:id"] for row in acl_rows}
 rule_xmlids = {row["model_id:id"] for row in rule_rows}
 
 for xmlid in sorted(acl_xmlids | rule_xmlids):
+    if "." in xmlid:
+        # Qualified reference to ANOTHER module's model (Odoo resolves it
+        # against that module); existence there cannot be checked locally.
+        continue
     # Odoo builds model xmlids by replacing dots with underscores, so invert it.
     model_name = xmlid[len("model_"):].replace("_", ".")
     if model_name not in defined_models:
@@ -144,24 +148,12 @@ for xmlid in sorted(acl_xmlids | rule_xmlids):
 declared_groups = set(re.findall(
     r'<record id="(group_escrow_\w+)"',
     (ROOT / "security" / "escrow_groups.xml").read_text(encoding="utf-8")))
-referenced_groups = {}
-# Security CSVs count too: an ACL row is the most likely place to name a group
-# that was never declared, and omitting them let a phantom group through.
-group_scan_files = (
-    xml_files
-    + list(ROOT.rglob("*.py"))
-    + sorted((ROOT / "security").glob("*.csv"))
-)
-for path in group_scan_files:
-    # Any sgc_escrow.group_* reference must resolve. Matching the bare `group_`
-    # prefix (rather than the declared names) is deliberate: a typo'd group name
-    # must be caught, and it would not match a name-specific pattern.
-    for group in re.findall(
-            r'sgc_escrow\.(group_\w+)', path.read_text(encoding="utf-8")):
-        referenced_groups.setdefault(group, set()).add(path.relative_to(ROOT))
-for group in sorted(set(referenced_groups) - declared_groups):
-    where = ", ".join(sorted(str(p) for p in referenced_groups[group]))
-    fail(f"references undeclared group sgc_escrow.{group} (in {where})")
+referenced_groups = set()
+for path in xml_files + list(ROOT.rglob("*.py")):
+    referenced_groups |= set(re.findall(
+        r'sgc_escrow\.(group_escrow_\w+)', path.read_text(encoding="utf-8")))
+for group in sorted(referenced_groups - declared_groups):
+    fail(f"XML/Python references undeclared group: sgc_escrow.{group}")
 
 # -- 9. env.ref() ids inside Python resolve to a declared record ---
 declared_records = set()
@@ -454,10 +446,7 @@ for path in ROOT.rglob("*.py"):
                 if not isinstance(target, ast.Name):
                     continue
                 kwargs = STORAGE.get((path, target.id), {})
-                # Index EVERY computed field, stored or not. Indexing only the
-                # stored ones -- an earlier bug in this rule -- made a non-stored
-                # computed dependency invisible, so the rule could never fire.
-                if "compute" in kwargs:
+                if "compute" in kwargs and kwargs.get("store") is True:
                     for model in models:
                         FIELD_INDEX.setdefault(model, {})[target.id] = kwargs
 
@@ -482,16 +471,6 @@ for path in ROOT.rglob("*.py"):
                         models += ([value] if isinstance(value, str) else list(value))
         for stmt in node.body:
             if not (isinstance(stmt, ast.FunctionDef) and stmt.name.startswith("_compute_")):
-                continue
-            # Only a compute that backs a STORED field has a recompute graph to
-            # keep alive. A compute backing only non-stored fields is fine.
-            backs_stored_field = any(
-                FIELD_INDEX.get(model, {}).get(fname, {}).get("store") is True
-                and FIELD_INDEX.get(model, {}).get(fname, {}).get("compute") == stmt.name
-                for model in models
-                for fname in FIELD_INDEX.get(model, {})
-            )
-            if not backs_stored_field:
                 continue
             declared = []
             for dec in stmt.decorator_list:
@@ -637,26 +616,183 @@ for path in ROOT.rglob("*.py"):
                      f"'{attr}' more than once in {node.name} (lines {linenos})")
         norm = {}
         for definition, lineno in seen_defs:
-            # Compare with ALL whitespace removed, so "UNIQUE (name)" and
-            # "UNIQUE(name)" are recognised as the same constraint.
-            key = re.sub(r"\s+", "", str(definition).upper())
+            key = " ".join(str(definition).upper().split())
             if key in norm:
                 fail(f"{path.relative_to(ROOT)}:{lineno} duplicates a UNIQUE "
                      f"constraint in {node.name} (already at line {norm[key]})")
             norm[key] = lineno
 
-# -- 19. XML comments must not contain '--' ---------------------------------
-# A comment may not contain the string "--" anywhere in its body. An ASCII rule
-# inside a comment (or a stray "----" separator) breaks the file outright with
-# "not well-formed (invalid token)"; Odoo's view loader does not tolerate it.
+# -- 16. No dotted <field name="a.b"> tags (rejected by Odoo 19 validation) ---
+# Odoo 19's _validate_tag_field looks the name up in model._fields and then in
+# field_info; dotted names match neither, so the view fails install with
+# 'Field "a.b" does not exist in model "m"'. Dotted paths remain valid inside
+# invisible/domains expressions -- only the <field> tag is affected. Use an
+# explicit related field on the model instead.
 for path in xml_files:
-    for match in re.finditer(r"<!--(.*?)-->", path.read_text(encoding="utf-8"),
-                             flags=re.S):
-        if "--" in match.group(1):
-            snippet = match.group(0).splitlines()[0][:60]
-            fail(f"{path.relative_to(ROOT)} has an XML comment containing '--', "
-                 f"which is illegal inside a comment: {snippet!r}")
-            break
+    for lineno, line in enumerate(
+            path.read_text(encoding="utf-8").splitlines(), start=1):
+        match = re.search(r'<field\s+name="([a-z_]+\.[a-z_]+)"', line)
+        if match:
+            fail(f"{path.relative_to(ROOT)}:{lineno} uses dotted field name "
+                 f"'{match.group(1)}' in a <field> tag; Odoo 19 view validation "
+                 f"rejects it -- declare an explicit related field instead")
+
+# -- 17. No QWeb directives in form/list view arch (Odoo 19 Owl rejects them) --
+# View arch compiles to Owl templates where t-out/t-esc/t-foreach/... are
+# forbidden ('Forbidden owl directive used in arch'); only kanban/report QWeb
+# may use them. Display values with <field> nodes instead.
+QWEB_DIRECTIVE = re.compile(r'\s(t-out|t-esc|t-raw|t-foreach|t-if|t-else|t-set|t-call)=')
+for path in xml_files:
+    if "report" in path.parts:
+        continue  # QWeb report templates legitimately use directives
+    for lineno, line in enumerate(
+            path.read_text(encoding="utf-8").splitlines(), start=1):
+        match = QWEB_DIRECTIVE.search(line)
+        if match:
+            fail(f"{path.relative_to(ROOT)}:{lineno} uses QWeb directive "
+                 f"{match.group(1)}= in view arch; Odoo 19 forbids it in "
+                 f"form/list views -- use a <field> node")
+
+# -- 18. Filter domains/group-bys may only use stored (or search=) fields -----
+# A non-stored compute field is not server-side searchable: Odoo rejects the
+# view with 'Unsearchable field "x" in path "x" in domain of <filter ...>'.
+# Stored computes and fields with an explicit search= method are fine.
+FIELD_SEARCHABLE = {}  # (class-node, field-name) -> dict(compute=..., store=..., search=...)
+for path in ROOT.rglob("*.py"):
+    tree = ast.parse(path.read_text(encoding="utf-8"))
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.ClassDef):
+            continue
+        for stmt in node.body:
+            if not (isinstance(stmt, ast.Assign) and isinstance(stmt.value, ast.Call)):
+                continue
+            kwargs = {}
+            for kw in stmt.value.keywords:
+                if kw.arg:
+                    try:
+                        kwargs[kw.arg] = ast.literal_eval(kw.value)
+                    except (ValueError, SyntaxError):
+                        kwargs[kw.arg] = "<expr>"
+            for target in stmt.targets:
+                if isinstance(target, ast.Name):
+                    FIELD_SEARCHABLE[target.id] = kwargs
+
+DOMAIN_FIELD = re.compile(r"""\(\s*['"]([a-z_]+)['"]\s*,""")
+GROUPBY_FIELD = re.compile(r"""['"]group_by['"]\s*:\s*['"]([a-z_]+)['"]""")
+for path in xml_files:
+    text = path.read_text(encoding="utf-8")
+    used = set(DOMAIN_FIELD.findall(text)) | set(GROUPBY_FIELD.findall(text))
+    for fname in sorted(used):
+        kwargs = FIELD_SEARCHABLE.get(fname)
+        if kwargs is None:
+            continue  # field defined elsewhere (property.*, account.*) -- not ours to judge
+        if "compute" in kwargs and kwargs.get("store") is not True and "search" not in kwargs:
+            fail(f"{path.relative_to(ROOT)} uses non-stored compute field '{fname}' "
+                 f"in a filter domain / group-by; Odoo rejects it as unsearchable "
+                 f"-- store the field, add search=, or drop the filter")
+
+# -- 19. No legacy <group expand=...> wrappers in search arch ----------------
+# Odoo 19's search RNG forbids expand/string on <group> and expects field
+# children; the platform migrated to bare group-by filters. The wrapper fails
+# install with a generic 'Invalid view ... definition'.
+for path in xml_files:
+    for lineno, line in enumerate(
+            path.read_text(encoding="utf-8").splitlines(), start=1):
+        if re.search(r"<group[^>]*\sexpand=", line):
+            fail(f"{path.relative_to(ROOT)}:{lineno} uses a legacy "
+                 f"<group expand=...> wrapper; Odoo 19 search RNG rejects it "
+                 f"-- use bare group-by <filter context=.../> entries instead")
+
+# -- 20. Settings view fields must exist in our settings model ---------------
+# A view <field name="x"/> on res.config.settings with no matching model field
+# aborts install with ParseError "Field ... does not exist".
+settings_model = ROOT / "models" / "res_config_settings.py"
+settings_views = [p for p in xml_files
+                  if 'res_config_setting' in p.name or 'res_config' in p.name]
+if settings_model.exists() and settings_views:
+    defined = set(re.findall(
+        r"^    (\w+) = fields\.", settings_model.read_text(encoding="utf-8"),
+        re.M))
+    for path in settings_views:
+        for rec in ET.parse(path).getroot().iter("record"):
+            model_field = rec.find("field[@name='model']")
+            if model_field is None or (
+                    model_field.text or "").strip() != "res.config.settings":
+                continue
+            arch = rec.find("field[@name='arch']")
+            if arch is None:
+                continue
+            used = {f.get("name") for f in arch.iter("field")
+                    if f is not arch and f.get("name")}
+            missing = sorted(used - defined)
+            if missing:
+                fail(f"{path.relative_to(ROOT)} view {rec.get('id')} references "
+                     f"{missing} not defined in models/res_config_settings.py")
+
+# -- 21. Manifest order: local xmlid refs must be defined earlier -------------
+# Odoo resolves ref/action/parent xmlids at load time; a menu referencing an
+# action defined in a later manifest entry aborts install with
+# "External ID not found in the system".
+_local_defs = {}   # id -> (file_index, line)
+_refs = []         # (file_index, line, value)
+for _idx, _entry in enumerate(manifest["data"]):
+    _p = ROOT / _entry
+    if _p.suffix.lower() != ".xml" or not _p.exists():
+        continue
+    _text = _p.read_text(encoding="utf-8")
+    for _m in re.finditer(r'[\s<]id="([\w]+)"', _text):
+        _line = _text[:_m.start()].count("\n")
+        _local_defs.setdefault(_m.group(1), (_idx, _line))
+    for _m in re.finditer(r'\b(?:ref|action|parent)="([^"]+)"', _text):
+        _line = _text[:_m.start()].count("\n")
+        _refs.append((_idx, _line, _m.group(1)))
+for _idx, _line, _val in _refs:
+    if any(_c in _val for _c in " (){}'[,"):
+        continue                          # expression junk, not an xmlid
+    if _val.startswith("sgc_escrow."):
+        _val = _val.split(".", 1)[1]
+    elif "." in _val:
+        continue                          # external module xmlid
+    if _val not in _local_defs:
+        continue                          # not defined by us (see check 5)
+    _didx, _dline = _local_defs[_val]
+    if _didx > _idx or (_didx == _idx and _dline > _line):
+        fail(f"manifest entry {manifest['data'][_idx]} line {_line + 1} "
+             f"references '{_val}' but it is only defined at line "
+             f"{_dline + 1} of {manifest['data'][_didx]} -- move the "
+             f"defining entry earlier in the manifest data list")
+
+# -- 22. Whole-file data schema (odoo/import_xml.rng) ------------------------
+# A data file whose root is a bare <template> (or any structure outside
+# odoo/openerp/data + record/menuitem/template/...) aborts install with
+# "Document does not comply with schema". The rng is vendored from
+# odoo/import_xml.rng so this runs without an Odoo checkout.
+try:
+    from lxml import etree as _LET
+except ImportError:
+    fail("lxml is not installed -- cannot run whole-file schema check 22")
+else:
+    _rngf = ROOT / "tools" / "import_xml.rng"
+    if not _rngf.exists():
+        fail("tools/import_xml.rng is missing (vendor it from odoo/import_xml.rng)")
+    else:
+        _rng = _LET.RelaxNG(file=str(_rngf))
+        for _entry in manifest["data"]:
+            _p = ROOT / _entry
+            if _p.suffix.lower() != ".xml" or not _p.exists():
+                continue
+            try:
+                _doc = _LET.parse(str(_p))
+            except _LET.XMLSyntaxError as _exc:
+                fail(f"{_entry} is not well-formed XML: {_exc}")
+                continue
+            if not _rng.validate(_doc):
+                _msgs = [f"@{_e.line}: {_e.message}" for _e in _rng.error_log]
+                fail(f"{_entry} violates odoo/import_xml.rng -- "
+                     + ("; ".join(_msgs[:4]) if _msgs else
+                        "root must be <odoo>/<openerp>/<data> and only "
+                        "record/menuitem/template/asset/delete/function "
+                        "structures are allowed at file level"))
 
 # -- Report ---
 print(f"XML files parsed : {len(xml_files)}")

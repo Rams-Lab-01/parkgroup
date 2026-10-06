@@ -1,0 +1,720 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_property_brochure_luxury">
+        <t t-call="web.html_container">
+            <!-- web.html_container wraps the content in Bootstrap's fixed-
+                 max-width .container class unless full_width is set, in
+                 which case it uses .container-fluid instead. Every page
+                 here is explicitly sized to 210mm/297mm for full-bleed A4,
+                 so without this the .container max-width silently clipped
+                 the right edge of every page. -->
+            <t t-set="full_width" t-value="True"/>
+            <t t-set="base_url" t-value="docs.env['ir.config_parameter'].sudo().get_param('web.base.url')"/>
+            <t t-foreach="docs" t-as="property">
+                <div class="article" t-att-data-oe-model="property._name" t-att-data-oe-id="property.id">
+                <t t-set="currency" t-value="property.company_id.currency_id"/>
+                <t t-set="currency_symbol" t-value="currency.symbol or 'AED'"/>
+                <t t-set="region" t-value="property.region_id.name or ''"/>
+                <t t-set="project" t-value="property.project_id.name or ''"/>
+                <t t-set="sub_project" t-value="property.sub_project_id.name or ''"/>
+                <t t-set="amenities" t-value="property.amenity_ids"/>
+                <t t-set="nearby" t-value="property.connectivity_ids"/>
+                <t t-set="property_type_display" t-value="dict(property._fields['property_type'].selection).get(property.property_type, property.property_type)"/>
+                <t t-set="sale_lease_display" t-value="dict(property._fields['sale_lease'].selection).get(property.sale_lease, property.sale_lease)"/>
+                <t t-set="hero" t-value="cover_hero_for(property)"/>
+                <t t-set="plan" t-value="floorplan_for(property)"/>
+                <t t-set="plates" t-value="photo_plates_for(property)"/>
+                <t t-set="gpages" t-value="gallery_layout_for(plates)"/>
+                <t t-set="facts" t-value="facts_for(property)"/>
+                <t t-set="last_section" t-value="'gallery' if gpages else ('plan' if plan else 'residence')"/>
+                <t t-set="gallery_start" t-value="4 if plan else 3"/>
+
+                <meta charset="utf-8"/>
+                <!-- ============================================================
+                     LUXURY BROCHURE  -  CLEAN EDITION
+                     Full-bleed A4 portrait, designed for wkhtmltopdf/QtWebKit.
+                     NO CSS Grid, NO Flexbox, NO SVG backgrounds, NO overlaid
+                     translucent layers.  Images are always displayed at their
+                     native aspect ratio - never cropped, never stretched.
+                     ============================================================ -->
+                <style>
+                    @page {
+                        size: A4 portrait;
+                        margin: 0;
+                    }
+                    * { box-sizing: border-box; margin: 0; padding: 0; }
+                    body {
+                        font-family: 'Georgia', 'Times New Roman', serif;
+                        color: #e8dcc8;
+                        background: #0e1c30;
+                    }
+
+                    /* ── PAGE SHELL ── */
+                    .lux-page {
+                        width: 210mm;
+                        height: 297mm;
+                        position: relative;
+                        background: #0e1c30;
+                        page-break-after: always;
+                        overflow: hidden;
+                    }
+                    .edge-rail {
+                        position: absolute;
+                        top: 0;
+                        width: 20px;
+                        height: 100%;
+                        background-repeat: repeat-y;
+                        background-size: 20px auto;
+                        z-index: 10;
+                    }
+                    .edge-rail-left { left: 0; }
+                    .edge-rail-right { right: 0; }
+
+                    /* ── COVER ── */
+                    .cv-head {
+                        padding: 13mm 16mm 5mm 16mm;
+                        text-align: center;
+                    }
+                    .cv-monogram img { width: 34px; height: 34px; display: inline-block; }
+                    .cv-company {
+                        font-family: Arial, sans-serif;
+                        font-size: 8.5px;
+                        letter-spacing: 4px;
+                        text-transform: uppercase;
+                        color: #c9a961;
+                        margin-top: 5px;
+                    }
+                    .cv-rule {
+                        width: 42mm;
+                        height: 1px;
+                        background: #c9a961;
+                        margin: 7px auto 0 auto;
+                    }
+                    .cv-hero {
+                        border-top: 1px solid #c9a961;
+                        border-bottom: 1px solid #c9a961;
+                        font-size: 0;
+                    }
+                    .cv-hero-wide img { width: 210mm; height: auto; display: block; }
+                    .cv-hero-tall { text-align: center; background: #0b1626; }
+                    .cv-hero-tall img { height: 128mm; width: auto; display: inline-block; }
+                    .cv-hero-empty { width: 210mm; height: 96mm; background: #11223a; }
+
+                    .cv-body { padding: 9mm 17mm 0 17mm; }
+                    .cv-label {
+                        font-family: Arial, sans-serif;
+                        font-size: 8.5px;
+                        letter-spacing: 3px;
+                        text-transform: uppercase;
+                        color: #c9a961;
+                        text-align: center;
+                    }
+                    .cv-title {
+                        font-family: Georgia, serif;
+                        font-size: 26px;
+                        line-height: 1.25;
+                        font-weight: 400;
+                        color: #f0e9da;
+                        text-align: center;
+                        margin-top: 5mm;
+                    }
+                    .cv-sub {
+                        font-family: Arial, sans-serif;
+                        font-size: 9.5px;
+                        letter-spacing: 1.5px;
+                        color: #b9b2a2;
+                        text-align: center;
+                        margin-top: 3mm;
+                        text-transform: uppercase;
+                    }
+                    .cv-tag {
+                        font-family: Georgia, serif;
+                        font-style: italic;
+                        font-size: 12.5px;
+                        color: #d9c08a;
+                        text-align: center;
+                        margin-top: 4mm;
+                    }
+                    .cv-stats {
+                        width: 100%;
+                        margin-top: 7mm;
+                        border-top: 1px solid #2b3d5c;
+                        border-bottom: 1px solid #2b3d5c;
+                    }
+                    .cv-stats td {
+                        text-align: center;
+                        padding: 4mm 2mm;
+                        border-left: 1px solid #2b3d5c;
+                        vertical-align: middle;
+                    }
+                    .cv-stats td:first-child { border-left: none; }
+                    .cv-stat-label {
+                        font-family: Arial, sans-serif;
+                        font-size: 7.5px;
+                        letter-spacing: 2px;
+                        text-transform: uppercase;
+                        color: #c9a961;
+                        margin-bottom: 3px;
+                    }
+                    .cv-stat-value {
+                        font-family: Georgia, serif;
+                        font-size: 15px;
+                        color: #f0e9da;
+                        white-space: nowrap;
+                    }
+                    .cv-stat-value.is-gold { color: #d9c08a; }
+
+                    .cv-foot {
+                        position: absolute;
+                        bottom: 0;
+                        left: 0;
+                        right: 0;
+                        padding: 0 17mm 8mm 17mm;
+                        text-align: center;
+                    }
+                    .cv-foot-rule {
+                        width: 100%;
+                        height: 1px;
+                        background: #2b3d5c;
+                        margin-bottom: 5mm;
+                    }
+                    .cv-contact {
+                        font-family: Arial, sans-serif;
+                        font-size: 9.5px;
+                        letter-spacing: 1px;
+                        color: #cfc8b8;
+                    }
+                    .cv-bottom {
+                        width: 100%;
+                        margin-top: 5mm;
+                    }
+                    .cv-bottom td { vertical-align: middle; }
+                    .cv-presented {
+                        text-align: left;
+                        font-family: Arial, sans-serif;
+                        font-size: 7.5px;
+                        letter-spacing: 2px;
+                        text-transform: uppercase;
+                        color: #9aa2b1;
+                        line-height: 1.7;
+                    }
+                    .cv-presented strong {
+                        font-size: 9px;
+                        letter-spacing: 1.6px;
+                        color: #d9c08a;
+                        font-weight: 400;
+                    }
+                    .cv-qr { text-align: right; }
+                    .cv-qr img {
+                        width: 64px;
+                        height: 64px;
+                        background: #ffffff;
+                        padding: 3px;
+                        display: inline-block;
+                    }
+                    .cv-qr-cap {
+                        font-family: Arial, sans-serif;
+                        font-size: 7px;
+                        letter-spacing: 2px;
+                        text-transform: uppercase;
+                        color: #c9a961;
+                        margin-top: 3px;
+                    }
+                    .cv-disclaimer {
+                        font-family: Arial, sans-serif;
+                        font-size: 6.8px;
+                        letter-spacing: 0.4px;
+                        color: #7f8899;
+                        margin-top: 5mm;
+                    }
+
+                    /* ── CONTENT PAGES ── */
+                    .pg-pad { padding: 12mm 15mm 10mm 15mm; }
+                    .pg-head { width: 100%; }
+                    .pg-head td { vertical-align: bottom; }
+                    .pg-head-left {
+                        font-family: Arial, sans-serif;
+                        font-size: 8px;
+                        letter-spacing: 3px;
+                        text-transform: uppercase;
+                        color: #c9a961;
+                        text-align: left;
+                    }
+                    .pg-head-right {
+                        font-family: Arial, sans-serif;
+                        font-size: 8px;
+                        letter-spacing: 2px;
+                        text-transform: uppercase;
+                        color: #8f97a6;
+                        text-align: right;
+                    }
+                    .pg-head-rule {
+                        width: 100%;
+                        height: 1px;
+                        background: #c9a961;
+                        margin-top: 2.5mm;
+                        margin-bottom: 7mm;
+                    }
+                    .section-headline {
+                        font-family: Georgia, serif;
+                        font-style: italic;
+                        font-size: 19px;
+                        color: #d9c08a;
+                        text-align: center;
+                        margin-bottom: 6mm;
+                    }
+                    .story {
+                        max-width: 154mm;
+                        margin: 0 auto;
+                        font-size: 10.5px;
+                        line-height: 1.8;
+                        color: #ded7c7;
+                        text-align: left;
+                    }
+
+                    /* ── FEATURES / NEARBY ── */
+                    .subhead {
+                        font-family: Arial, sans-serif;
+                        font-size: 8px;
+                        letter-spacing: 3px;
+                        text-transform: uppercase;
+                        color: #c9a961;
+                        text-align: center;
+                        margin: 8mm 0 4mm 0;
+                    }
+                    .features {
+                        width: 100%;
+                        border-collapse: collapse;
+                    }
+                    .features td {
+                        width: 50%;
+                        padding: 2.6mm 4mm;
+                        font-family: Arial, sans-serif;
+                        font-size: 9.5px;
+                        color: #ded7c7;
+                        border-bottom: 1px solid #22334d;
+                        vertical-align: middle;
+                    }
+                    .features .diamond {
+                        color: #c9a961;
+                        font-size: 7px;
+                        margin-right: 7px;
+                    }
+                    .nearby {
+                        width: 100%;
+                        border-collapse: collapse;
+                    }
+                    .nearby td {
+                        padding: 2.6mm 3mm;
+                        border-bottom: 1px solid #22334d;
+                        vertical-align: middle;
+                        font-family: Arial, sans-serif;
+                        font-size: 9.5px;
+                        color: #ded7c7;
+                    }
+                    .nearby .ic { width: 9mm; }
+                    .nearby .ic img { width: 15px; height: 15px; display: inline-block; }
+
+                    /* ── FACTS ── */
+                    .facts {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-top: 8mm;
+                    }
+                    .facts td {
+                        width: 50%;
+                        padding: 3.2mm 4mm;
+                        border-bottom: 1px solid #22334d;
+                        vertical-align: top;
+                    }
+                    .fact-label {
+                        font-family: Arial, sans-serif;
+                        font-size: 7.5px;
+                        letter-spacing: 2px;
+                        text-transform: uppercase;
+                        color: #c9a961;
+                        margin-bottom: 2px;
+                    }
+                    .fact-value {
+                        font-family: Georgia, serif;
+                        font-size: 12.5px;
+                        color: #f0e9da;
+                    }
+
+                    /* ── PLAN PAGE ── */
+                    .plan-wrap { text-align: center; }
+                    .plan-mat {
+                        display: inline-block;
+                        background: #f7f2e8;
+                        border: 1px solid #c9a961;
+                        padding: 5mm;
+                        width: 178mm;
+                    }
+                    .plan-mat img { display: block; margin: 0 auto; }
+                    .plan-caption {
+                        font-family: Arial, sans-serif;
+                        font-size: 8px;
+                        letter-spacing: 2.5px;
+                        text-transform: uppercase;
+                        color: #c9a961;
+                        text-align: center;
+                        margin-top: 4mm;
+                    }
+
+                    /* ── GALLERY ── */
+                    .gal-plate {
+                        border: 1px solid #c9a961;
+                        padding: 4mm;
+                        margin-bottom: 3mm;
+                    }
+                    .gal-plate img { width: 100%; height: auto; display: block; }
+                    .gal-cap {
+                        font-family: Arial, sans-serif;
+                        font-size: 7.5px;
+                        letter-spacing: 2px;
+                        text-transform: uppercase;
+                        color: #8f97a6;
+                        text-align: center;
+                        margin: 2mm 0 6mm 0;
+                    }
+
+                    /* ── FOOTER (last page) ── */
+                    .pg-foot {
+                        position: absolute;
+                        bottom: 0;
+                        left: 15mm;
+                        right: 15mm;
+                        padding-bottom: 8mm;
+                        text-align: center;
+                    }
+                    .pg-foot-rule {
+                        width: 100%;
+                        height: 1px;
+                        background: #2b3d5c;
+                        margin-bottom: 4.5mm;
+                    }
+                    .foot-cta {
+                        font-family: Georgia, serif;
+                        font-style: italic;
+                        font-size: 12.5px;
+                        color: #d9c08a;
+                    }
+                    .foot-contact {
+                        font-family: Arial, sans-serif;
+                        font-size: 9px;
+                        letter-spacing: 1px;
+                        color: #cfc8b8;
+                        margin-top: 3mm;
+                    }
+                    .foot-qr { margin-top: 4mm; }
+                    .foot-qr img {
+                        width: 62px;
+                        height: 62px;
+                        background: #ffffff;
+                        padding: 3px;
+                        display: inline-block;
+                    }
+                    .foot-qr-cap {
+                        font-family: Arial, sans-serif;
+                        font-size: 7px;
+                        letter-spacing: 2px;
+                        text-transform: uppercase;
+                        color: #c9a961;
+                        margin-top: 2.5px;
+                    }
+                    .powered {
+                        font-family: Arial, sans-serif;
+                        font-size: 6.8px;
+                        letter-spacing: 1.6px;
+                        text-transform: uppercase;
+                        color: #7f8899;
+                        margin-top: 4mm;
+                    }
+                    .pg-pad.has-foot { padding-bottom: 68mm; }
+                    .page-end { position: absolute; bottom: 30mm; left: 0; right: 0; text-align: center; }
+                    .page-end-rule { width: 28mm; height: 1px; background: #2b3d5c; margin: 0 auto 3mm auto; }
+                    .page-end .d { color: #c9a961; font-size: 7px; }
+                </style>
+
+                <!-- ══════════════════════════════════════════════════════
+                     PAGE 1: COVER  -  photo in a clean band, no overlays
+                     ══════════════════════════════════════════════════════ -->
+                <div class="lux-page">
+                    <div class="edge-rail edge-rail-left" t-attf-style="background-image:url('#{diamond_border_uri}')"></div>
+                    <div class="edge-rail edge-rail-right" t-attf-style="background-image:url('#{diamond_border_uri}')"></div>
+
+                    <div class="cv-head">
+                        <div class="cv-monogram"><img t-att-src="monogram_uri" alt=""/></div>
+                        <div class="cv-company"><t t-out="property.company_id.name or ''"/></div>
+                        <div class="cv-rule"></div>
+                    </div>
+
+                    <t t-if="hero">
+                        <div t-attf-class="cv-hero #{'cv-hero-wide' if hero.get('wide') else 'cv-hero-tall'}">
+                            <img t-att-src="hero.get('uri')" alt=""/>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <div class="cv-hero">
+                            <div class="cv-hero-empty"></div>
+                        </div>
+                    </t>
+
+                    <div class="cv-body">
+                        <div class="cv-label"><t t-out="brochure_label_for(property)"/></div>
+                        <h1 class="cv-title"><t t-out="property.name or 'Iconic Residence'"/></h1>
+                        <div class="cv-sub">
+                            <t t-if="property_type_display" t-out="property_type_display"/>
+                            <t t-if="project"> &#183; <t t-out="project"/></t>
+                            <t t-if="region"> &#183; <t t-out="region"/></t>
+                        </div>
+                        <div class="cv-tag">An Address Reserved for the Few</div>
+
+                        <table class="cv-stats">
+                            <tr>
+                                <td t-if="property.bedrooms">
+                                    <div class="cv-stat-label">Bedrooms</div>
+                                    <div class="cv-stat-value" t-out="property.bedrooms"/>
+                                </td>
+                                <td t-if="property.bathrooms">
+                                    <div class="cv-stat-label">Bathrooms</div>
+                                    <div class="cv-stat-value" t-out="property.bathrooms"/>
+                                </td>
+                                <td t-if="property.area">
+                                    <div class="cv-stat-label">Area</div>
+                                    <div class="cv-stat-value"><t t-out="'{:,.0f}'.format(property.area)"/> sq ft</div>
+                                </td>
+                                <td t-if="property.sale_price or property.rent_price">
+                                    <div class="cv-stat-label">Price</div>
+                                    <div class="cv-stat-value is-gold">
+                                        <t t-if="property.sale_price">
+                                            <t t-out="currency_symbol"/> <t t-out="'{:,.0f}'.format(property.sale_price)"/>
+                                        </t>
+                                        <t t-elif="property.rent_price">
+                                            <t t-out="currency_symbol"/> <t t-out="'{:,.0f}'.format(property.rent_price)"/>/yr
+                                        </t>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="cv-stat-label">Ref</div>
+                                    <div class="cv-stat-value" t-out="property.property_code or property.id"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="cv-foot">
+                        <div class="cv-foot-rule"></div>
+                        <div class="cv-contact">
+                            <t t-if="property.company_id.phone" t-out="property.company_id.phone"/>
+                            <t t-if="property.company_id.phone and (property.company_id.email or property.company_id.website)"> &#183; </t>
+                            <t t-if="property.company_id.email" t-out="property.company_id.email"/>
+                            <t t-if="property.company_id.email and property.company_id.website"> &#183; </t>
+                            <t t-if="property.company_id.website" t-out="property.company_id.website"/>
+                        </div>
+                        <table class="cv-bottom">
+                            <tr>
+                                <td class="cv-presented">
+                                    Presented by<br/>
+                                    <strong t-out="property.company_id.name or ''"/>
+                                </td>
+                                <td class="cv-qr">
+                                    <img t-att-src="'%s/report/barcode/?barcode_type=QR&amp;value=%s&amp;width=180&amp;height=180' % (base_url, quote_plus(qr_url_for(property)))" alt="QR"/>
+                                    <div class="cv-qr-cap">Scan to Enquire</div>
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="cv-disclaimer">
+                            This brochure is intended for informational purposes only. All details are believed correct but not guaranteed.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ══════════════════════════════════════════════════════
+                     PAGE 2: THE RESIDENCE
+                     ══════════════════════════════════════════════════════ -->
+                <div class="lux-page">
+                    <div class="edge-rail edge-rail-left" t-attf-style="background-image:url('#{diamond_border_uri}')"></div>
+                    <div class="edge-rail edge-rail-right" t-attf-style="background-image:url('#{diamond_border_uri}')"></div>
+                    <div t-attf-class="pg-pad #{'has-foot' if last_section == 'residence' else ''}" style="padding-top: 22mm;">
+                        <t t-set="hdr_left">The Residence &#9670; Page 02</t>
+                        <t t-call="sgc_offplan_rental_property_management.lux_page_header"/>
+
+                        <div class="section-headline">A Symphony of Light, Space &amp; Craftsmanship</div>
+
+                        <t t-set="story" t-value="story_excerpt_for(property)"/>
+                        <t t-if="story">
+                            <div class="story"><t t-out="story"/></div>
+                        </t>
+
+                        <t t-if="amenities">
+                            <div class="subhead">Residence Features</div>
+                            <table class="features">
+                                <t t-foreach="range(0, len(amenities), 2)" t-as="i">
+                                    <tr>
+                                        <td>
+                                            <span class="diamond">&#9670;</span><t t-out="amenities[i].title"/>
+                                        </td>
+                                        <td t-if="i + 1 &lt; len(amenities)">
+                                            <span class="diamond">&#9670;</span><t t-out="amenities[i + 1].title"/>
+                                        </td>
+                                        <td t-else=""/>
+                                    </tr>
+                                </t>
+                            </table>
+                        </t>
+
+                        <t t-if="facts">
+                            <div class="subhead">At a Glance</div>
+                            <div style="max-width:158mm;margin:0 auto;">
+                            <table class="facts">
+                                <t t-foreach="range(0, len(facts), 2)" t-as="i">
+                                    <tr>
+                                        <td>
+                                            <div class="fact-label" t-out="facts[i]['label']"/>
+                                            <div class="fact-value" t-out="facts[i]['value']"/>
+                                        </td>
+                                        <td t-if="i + 1 &lt; len(facts)">
+                                            <div class="fact-label" t-out="facts[i + 1]['label']"/>
+                                            <div class="fact-value" t-out="facts[i + 1]['value']"/>
+                                        </td>
+                                        <td t-else=""/>
+                                    </tr>
+                                </t>
+                            </table>
+                            </div>
+                        </t>
+
+                        <t t-if="nearby">
+                            <div class="subhead">Lifestyle &amp; Location</div>
+                            <table class="nearby">
+                                <t t-foreach="nearby" t-as="n">
+                                    <tr>
+                                        <td class="ic">
+                                            <img t-att-src="'%s%s' % (base_url, n.icon_url)" t-att-alt="n.name"/>
+                                        </td>
+                                        <td t-out="n.name"/>
+                                    </tr>
+                                </t>
+                            </table>
+                        </t>
+                    </div>
+
+                    <div class="page-end"><div class="page-end-rule"></div><span class="d">&#9670;</span></div>
+                    <t t-if="last_section == 'residence'">
+                        <t t-call="sgc_offplan_rental_property_management.lux_page_footer"/>
+                    </t>
+                </div>
+
+                <!-- ══════════════════════════════════════════════════════
+                     PAGE 3: THE PLAN  -  the floorplan, whole and uncropped
+                     ══════════════════════════════════════════════════════ -->
+                <t t-if="plan">
+                    <div class="lux-page">
+                        <div class="edge-rail edge-rail-left" t-attf-style="background-image:url('#{diamond_border_uri}')"></div>
+                        <div class="edge-rail edge-rail-right" t-attf-style="background-image:url('#{diamond_border_uri}')"></div>
+                        <div t-attf-class="pg-pad #{'has-foot' if last_section == 'plan' else ''}">
+                            <t t-set="hdr_left">The Plan &#9670; Page 03</t>
+                            <t t-call="sgc_offplan_rental_property_management.lux_page_header"/>
+
+                            <div class="section-headline">The Floor Plan</div>
+
+                            <div class="plan-wrap">
+                                <div class="plan-mat">
+                                    <img t-att-src="plan['uri']" t-attf-style="#{'height:158mm;width:auto;' if plan.get('by_height') else 'width:100%;height:auto;'}" alt="Floor Plan"/>
+                                </div>
+                                <div class="plan-caption">Floor Plan &#9670; <t t-out="plan['caption']"/></div>
+                            </div>
+                        </div>
+
+                        <t t-if="last_section == 'plan'">
+                            <t t-call="sgc_offplan_rental_property_management.lux_page_footer"/>
+                        </t>
+                    </div>
+                </t>
+
+                <!-- ══════════════════════════════════════════════════════
+                     PAGE 4+: THE GALLERY  -  native-aspect plates
+                     ══════════════════════════════════════════════════════ -->
+                <t t-foreach="gpages" t-as="page_plates">
+                    <div class="lux-page">
+                        <div class="edge-rail edge-rail-left" t-attf-style="background-image:url('#{diamond_border_uri}')"></div>
+                        <div class="edge-rail edge-rail-right" t-attf-style="background-image:url('#{diamond_border_uri}')"></div>
+                        <div t-attf-class="pg-pad #{'has-foot' if (last_section == 'gallery' and page_plates_index == len(gpages) - 1) else ''}">
+                            <t t-set="hdr_left" t-value="'The Gallery &#9670; Page %02d' % (gallery_start + page_plates_index)"/>
+                            <t t-call="sgc_offplan_rental_property_management.lux_page_header"/>
+
+                            <div class="section-headline">A Visual Journey</div>
+
+                            <t t-foreach="page_plates" t-as="plate">
+                                <div class="gal-plate">
+                                    <img t-att-src="plate['uri']" t-att-alt="plate['caption'] or 'Gallery Image'"/>
+                                </div>
+                                <div class="gal-cap" t-if="plate['caption']">
+                                    <t t-out="plate['caption']"/>
+                                </div>
+                            </t>
+                        </div>
+
+                        <t t-if="last_section == 'gallery' and page_plates_index == len(gpages) - 1">
+                            <t t-call="sgc_offplan_rental_property_management.lux_page_footer"/>
+                        </t>
+                    </div>
+                </t>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- Running header used by every content page -->
+    <template id="lux_page_header">
+        <table class="pg-head">
+            <tr>
+                <td class="pg-head-left" t-out="hdr_left"/>
+                <td class="pg-head-right" t-out="property.company_id.name or ''"/>
+            </tr>
+        </table>
+        <div class="pg-head-rule"></div>
+    </template>
+
+    <!-- Footer used on the last rendered page -->
+    <template id="lux_page_footer">
+        <div class="pg-foot">
+            <div class="pg-foot-rule"></div>
+            <div class="foot-cta">Private Viewing by Appointment</div>
+            <div class="foot-contact">
+                <t t-if="property.company_id.phone" t-out="property.company_id.phone"/>
+                <t t-if="property.company_id.phone and (property.company_id.email or property.company_id.website)"> &#183; </t>
+                <t t-if="property.company_id.email" t-out="property.company_id.email"/>
+                <t t-if="property.company_id.email and property.company_id.website"> &#183; </t>
+                <t t-if="property.company_id.website" t-out="property.company_id.website"/>
+            </div>
+            <div class="foot-qr">
+                <img t-if="property.trakheesi_qr_code"
+                     t-att-src="trakheesi_qr_uri(property.trakheesi_qr_code)"
+                     alt="Trakheesi QR"/>
+                <img t-else=""
+                     t-att-src="'%s/report/barcode/?barcode_type=QR&amp;value=%s&amp;width=160&amp;height=160' % (base_url, quote_plus(qr_url_for(property)))" alt="QR"/>
+                <div class="foot-qr-cap">
+                    <t t-if="property.trakheesi_qr_code">Scan to verify &#183; Trakheesi / DLD</t>
+                    <t t-else="">Scan to Enquire</t>
+                </div>
+            </div>
+            <div class="powered">Powered by SGC TECH AI</div>
+        </div>
+    </template>
+
+    <!-- Report action -->
+    <record id="action_report_property_brochure_luxury" model="ir.actions.report">
+        <field name="name">Luxury Property Brochure</field>
+        <field name="model">property.details</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">sgc_offplan_rental_property_management.report_property_brochure_luxury</field>
+        <field name="report_file">sgc_offplan_rental_property_management.report_property_brochure_luxury</field>
+        <field name="binding_model_id" ref="model_property_details"/>
+        <field name="binding_type">report</field>
+        <field name="binding_view_types">form</field>
+        <field name="paperformat_id" ref="sgc_offplan_rental_property_management.paperformat_luxury_brochure"/>
+    </record>
+
+</odoo>

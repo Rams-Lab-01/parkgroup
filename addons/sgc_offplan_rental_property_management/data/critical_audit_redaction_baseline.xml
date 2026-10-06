@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Critical-Change Audit (Rev 3 design §11) — redaction baseline anchor.
+
+        Truth split [C6]: the RUNTIME redaction baseline lives in
+        models/core/redaction_policy.py (_BASELINE + POLICY_VERSION) and the
+        per-company overrides in sgc.critical.audit.redaction.override.  The
+        Markdown policy document is human documentation ONLY.
+
+        This data file therefore creates no override rows (there are no
+        per-company deviations at install time) and no duplicate of the
+        baseline.  It records a small install-time provenance anchor so the
+        installed baseline version can be read from the registry and verified
+        against the Python POLICY_VERSION during deployment checks.
+
+        noupdate=1: this anchor is fixed at the installing policy version and
+        is never overwritten by later upgrades (matches the noupdate=1 on the
+        security + policy data files, design §13).
+    -->
+    <data noupdate="1">
+        <record id="audit_redaction_baseline_meta" model="ir.config_parameter">
+            <field name="key">sgc_offplan_rental_property_management.audit_policy_baseline_meta</field>
+            <field name="value">{"policy_version": 1, "schema_version": 2, "source": "models/core/redaction_policy.py"}</field>
+        </record>
+    </data>
+</odoo>

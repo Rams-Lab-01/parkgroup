@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Critical-Change Audit (Rev 3 design §9) — menus.
+        "Critical Audit" root sits under the Property Management root
+        (sequence 7, between Statistics=5 and Projects=10) and exposes the
+        read-only audit trail to the sgc_audit_viewer_group (and, implicitly,
+        sgc_audit_admin_group which implies it).  Menus are read-only by
+        construction: the underlying ir.model.access rows grant no
+        create/write/unlink (P0-2, §5.1).
+    -->
+    <menuitem
+        id="menu_critical_audit_root"
+        name="Critical Audit"
+        parent="sgc_offplan_rental_property_management.main_menu_rental_management"
+        sequence="7"
+        groups="sgc_offplan_rental_property_management.sgc_audit_viewer_group">
+
+        <menuitem
+            id="menu_critical_audit_recent"
+            name="Recent Critical Changes"
+            action="action_critical_audit_events"
+            sequence="1"
+            groups="sgc_offplan_rental_property_management.sgc_audit_viewer_group"/>
+
+        <menuitem
+            id="menu_critical_audit_tier1"
+            name="Tier 1 — Reason Required"
+            action="action_critical_audit_tier1"
+            sequence="2"
+            groups="sgc_offplan_rental_property_management.sgc_audit_viewer_group"/>
+
+        <menuitem
+            id="menu_critical_audit_by_model"
+            name="By Model"
+            action="action_critical_audit_by_model"
+            sequence="3"
+            groups="sgc_offplan_rental_property_management.sgc_audit_viewer_group"/>
+
+        <menuitem
+            id="menu_critical_audit_by_user"
+            name="By User"
+            action="action_critical_audit_by_user"
+            sequence="4"
+            groups="sgc_offplan_rental_property_management.sgc_audit_viewer_group"/>
+
+        <menuitem
+            id="menu_critical_audit_by_operation"
+            name="By Operation"
+            action="action_critical_audit_by_operation"
+            sequence="5"
+            groups="sgc_offplan_rental_property_management.sgc_audit_viewer_group"/>
+    </menuitem>
+</odoo>

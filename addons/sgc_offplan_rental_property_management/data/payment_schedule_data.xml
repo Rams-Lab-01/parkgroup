@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+        <!-- Sale Contract Schedules -->
+
+        <!-- Schedule 1: 30% Booking + 70% Quarterly (4 payments) -->
+        <record id="payment_schedule_sale_30_70_quarterly" model="payment.schedule">
+            <field name="name">30% Booking + 70% Quarterly</field>
+            <field name="description">30% booking payment upfront, remaining 70% split into 4 quarterly payments</field>
+            <field name="schedule_type">sale</field>
+            <field name="sequence">10</field>
+        </record>
+
+        <record id="payment_schedule_sale_30_70_quarterly_line1" model="payment.schedule.line">
+            <field name="schedule_id" ref="payment_schedule_sale_30_70_quarterly"/>
+            <field name="name">Booking Payment</field>
+            <field name="sequence">10</field>
+            <field name="percentage">30.00</field>
+            <field name="days_after">0</field>
+            <field name="installment_frequency">one_time</field>
+            <field name="number_of_installments">1</field>
+        </record>
+
+        <record id="payment_schedule_sale_30_70_quarterly_line2" model="payment.schedule.line">
+            <field name="schedule_id" ref="payment_schedule_sale_30_70_quarterly"/>
+            <field name="name">Quarterly Payments</field>
+            <field name="sequence">20</field>
+            <field name="percentage">70.00</field>
+            <field name="days_after">30</field>
+            <field name="installment_frequency">quarterly</field>
+            <field name="number_of_installments">4</field>
+        </record>
+
+        <!-- Schedule 2: 20% Booking + 80% Monthly (12 payments) -->
+        <record id="payment_schedule_sale_20_80_monthly" model="payment.schedule">
+            <field name="name">20% Booking + 80% Monthly</field>
+            <field name="description">20% booking payment, remaining 80% split into 12 monthly payments</field>
+            <field name="schedule_type">sale</field>
+            <field name="sequence">20</field>
+        </record>
+
+        <record id="payment_schedule_sale_20_80_monthly_line1" model="payment.schedule.line">
+            <field name="schedule_id" ref="payment_schedule_sale_20_80_monthly"/>
+            <field name="name">Booking Payment</field>
+            <field name="sequence">10</field>
+            <field name="percentage">20.00</field>
+            <field name="days_after">0</field>
+            <field name="installment_frequency">one_time</field>
+            <field name="number_of_installments">1</field>
+        </record>
+
+        <record id="payment_schedule_sale_20_80_monthly_line2" model="payment.schedule.line">
+            <field name="schedule_id" ref="payment_schedule_sale_20_80_monthly"/>
+            <field name="name">Monthly Installments</field>
+            <field name="sequence">20</field>
+            <field name="percentage">80.00</field>
+            <field name="days_after">30</field>
+            <field name="installment_frequency">monthly</field>
+            <field name="number_of_installments">12</field>
+        </record>
+
+        <!-- Schedule 3: 50-50 Bi-Annual -->
+        <record id="payment_schedule_sale_50_50_biannual" model="payment.schedule">
+            <field name="name">50-50 Bi-Annual</field>
+            <field name="description">50% upfront, 50% after 6 months</field>
+            <field name="schedule_type">sale</field>
+            <field name="sequence">30</field>
+        </record>
+
+        <record id="payment_schedule_sale_50_50_biannual_line1" model="payment.schedule.line">
+            <field name="schedule_id" ref="payment_schedule_sale_50_50_biannual"/>
+            <field name="name">First Payment</field>
+            <field name="sequence">10</field>
+            <field name="percentage">50.00</field>
+            <field name="days_after">0</field>
+            <field name="installment_frequency">one_time</field>
+            <field name="number_of_installments">1</field>
+        </record>
+
+        <record id="payment_schedule_sale_50_50_biannual_line2" model="payment.schedule.line">
+            <field name="schedule_id" ref="payment_schedule_sale_50_50_biannual"/>
+            <field name="name">Second Payment (6 months)</field>
+            <field name="sequence">20</field>
+            <field name="percentage">50.00</field>
+            <field name="days_after">180</field>
+            <field name="installment_frequency">one_time</field>
+            <field name="number_of_installments">1</field>
+        </record>
+
+        <!-- Rental Contract Schedules -->
+
+        <!-- Schedule 4: Standard Rental - 2 Months Deposit + 12 Monthly -->
+        <record id="payment_schedule_rental_2month_deposit_monthly" model="payment.schedule">
+            <field name="name">2 Months Deposit + 12 Monthly Rent</field>
+            <field name="description">Security deposit (2 months) plus 12 monthly rent payments</field>
+            <field name="schedule_type">rental</field>
+            <field name="sequence">10</field>
+        </record>
+
+        <record id="payment_schedule_rental_2month_deposit_monthly_line1" model="payment.schedule.line">
+            <field name="schedule_id" ref="payment_schedule_rental_2month_deposit_monthly"/>
+            <field name="name">Security Deposit (2 Months)</field>
+            <field name="sequence">10</field>
+            <field name="percentage">14.29</field>
+            <field name="days_after">0</field>
+            <field name="installment_frequency">one_time</field>
+            <field name="number_of_installments">1</field>
+            <field name="note">Refundable security deposit</field>
+        </record>
+
+        <record id="payment_schedule_rental_2month_deposit_monthly_line2" model="payment.schedule.line">
+            <field name="schedule_id" ref="payment_schedule_rental_2month_deposit_monthly"/>
+            <field name="name">Monthly Rent</field>
+            <field name="sequence">20</field>
+            <field name="percentage">85.71</field>
+            <field name="days_after">0</field>
+            <field name="installment_frequency">monthly</field>
+            <field name="number_of_installments">12</field>
+        </record>
+
+        <!-- Schedule 5: Quarterly Rental -->
+        <record id="payment_schedule_rental_quarterly" model="payment.schedule">
+            <field name="name">Quarterly Rental Payments</field>
+            <field name="description">4 quarterly payments throughout the year</field>
+            <field name="schedule_type">rental</field>
+            <field name="sequence">20</field>
+        </record>
+
+        <record id="payment_schedule_rental_quarterly_line1" model="payment.schedule.line">
+            <field name="schedule_id" ref="payment_schedule_rental_quarterly"/>
+            <field name="name">Quarterly Rent</field>
+            <field name="sequence">10</field>
+            <field name="percentage">100.00</field>
+            <field name="days_after">0</field>
+            <field name="installment_frequency">quarterly</field>
+            <field name="number_of_installments">4</field>
+        </record>
+
+        <!-- Schedule 6: Annual Rental -->
+        <record id="payment_schedule_rental_annual" model="payment.schedule">
+            <field name="name">Annual Rental Payment</field>
+            <field name="description">Full year rent paid upfront</field>
+            <field name="schedule_type">rental</field>
+            <field name="sequence">30</field>
+        </record>
+
+        <record id="payment_schedule_rental_annual_line1" model="payment.schedule.line">
+            <field name="schedule_id" ref="payment_schedule_rental_annual"/>
+            <field name="name">Annual Rent</field>
+            <field name="sequence">10</field>
+            <field name="percentage">100.00</field>
+            <field name="days_after">0</field>
+            <field name="installment_frequency">one_time</field>
+            <field name="number_of_installments">1</field>
+        </record>
+
+    </odoo>

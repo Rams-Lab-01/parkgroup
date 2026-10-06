@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record id="user_type_inherit_view" model="ir.ui.view">
+            <field name="name">user.type.inherit.view</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//sheet/group/group/span[@name='address_name']" position="before">
+                    <field name="user_type" widget="radio" options="{'horizontal': true}" />
+                    <field name="is_tenancy" invisible="user_type != 'customer'" />
+                    <field name="is_sold_customer" invisible="user_type != 'customer'" />
+                </xpath>
+                <xpath expr="//field[@name='vat']" position="after">
+                    <field name="brokerage_company_id" invisible="1" />
+                    <field name="currency_id" invisible="1" />
+                    <field name="currency_id" invisible="1" />
+                </xpath>
+                <xpath expr="//notebook/page[@name='contact_addresses']" position="before">
+                    <page string="Rent Contract" invisible="user_type != 'broker'">
+                        <field name="tenancy_ids">
+                            <list>
+                                <field name="tenancy_seq" />
+                                <field name="tenancy_id" />
+                                <field name="property_type" />
+                                <field name="property_id" />
+                                <field name="property_landlord_id" />
+                                <field name="duration_id" />
+                                <field name="total_rent" sum="Total" />
+                                <field name="broker_invoice_id" readonly="1" />
+                            </list>
+                        </field>
+                    </page>
+                    <page string="Sale Contract" invisible="user_type != 'broker'">
+                        <field name="property_sold_ids">
+                            <list>
+                                <field name="sold_seq" />
+                                <field name="date" />
+                                <field name="customer_id" />
+                                <field name="property_id" />
+                                <field name="sale_price" sum="Total" />
+                                <field name="total_commission" widget="monetary" sum="Total" />
+                            </list>
+                        </field>
+                    </page>
+                </xpath>
+                <div class="oe_button_box" name="button_box">
+                    <button class="oe_stat_button" type="object" name="action_properties"
+                        invisible="user_type != 'landlord'"
+                        icon="fa-picture-o">
+                        <field name="properties_count" string='Properties' widget="statinfo" />
+                    </button>
+                </div>
+            </field>
+        </record>
+        <record id="landlord_details_action" model="ir.actions.act_window">
+            <field name="name">LandLords</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner</field>
+            <field name="domain">[('user_type','=','landlord')]</field>
+            <field name="context">{'default_user_type':'landlord'}</field>
+            <field name="view_mode">kanban,list,form,activity</field>
+        </record>
+
+        <record id="customer_details_action" model="ir.actions.act_window">
+            <field name="name">Customers</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner</field>
+            <field name="domain">[('user_type','=','customer')]</field>
+            <field name="context">{'default_user_type':'customer'}</field>
+            <field name="view_mode">kanban,list,form,activity</field>
+        </record>
+
+        <record id="broker_details_action" model="ir.actions.act_window">
+            <field name="name">Brokers</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner</field>
+            <field name="domain">[('user_type','=','broker')]</field>
+            <field name="context">{'default_user_type':'broker'}</field>
+            <field name="view_mode">kanban,list,form,activity</field>
+        </record>
+    </odoo>

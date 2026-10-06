@@ -1,0 +1,242 @@
+// SGC Property Management — Modern Dashboard & UI Styles
+// ============================================================
+
+// ── Color Palette (consistent with SGC brand) ────────────────
+$dashboard-bg: #f8f9fc !default;
+$primary: #5d87ff !default;
+$success: #04c27a !default;
+$warning: #ffae1f !default;
+$danger: #fa896a !default;
+$info: #4abeff !default;
+$dark-text: #2b3547 !default;
+$card-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+$card-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.10);
+
+// ── Global Overrides ──────────────────────────────────────────
+.o_action_manager {
+    overflow: auto !important;
+}
+
+// ── Dashboard Cards ───────────────────────────────────────────
+.o_dashboard {
+    background: $dashboard-bg !important;
+
+    .p-32 {
+        padding: 32px !important;
+    }
+}
+
+// ── Stat Card Color Backgrounds ──────────────────────────────
+$stat-bg-colors: (
+    "purple-bg": (#ecf2ff, $primary),
+    "warn-bg":   (#fef5e5, $warning),
+    "info-bg":   (#e8f7ff, $info),
+    "danger-bg": (#fdede8, $danger),
+    "success-bg":(#e6fffa, $success),
+    "active-bg": (#d6ffe9, $success),
+    "terminate-bg": (#ffe9eb, $danger),
+    "all-bg":    (#d7f2ff, $info),
+);
+
+@each $class, $colors in $stat-bg-colors {
+    .#{$class} {
+        background-color: nth($colors, 1) !important;
+        color: nth($colors, 2) !important;
+    }
+}
+
+// ── Dashboard Card Styles ────────────────────────────────────
+.tk_rental_dash {
+    background: $dashboard-bg !important;
+
+    .tk-charts {
+        width: 100%;
+        height: 90vh;
+    }
+
+    .tk-os-chart {
+        width: 100%;
+        height: 50vh;
+    }
+
+    .tk-primary, .tk-center-primary {
+        color: $dark-text !important;
+        font-family: inherit;
+    }
+
+    .tk-center-primary {
+        text-align: center;
+    }
+
+    .border-primary {
+        color: #8eafcf !important;
+    }
+
+    // ── Card Common Styles ──────────────────────────────────────
+    .card, .card-graph {
+        border: 0 !important;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+        .tk-card-body {
+            text-align: center;
+            .tk-st-1 { margin-top: 8px; font-size: 15px; }
+            .tk-st-2 { font-weight: 500; font-size: 22px; }
+        }
+    }
+
+    .card:hover {
+        transform: translateY(-3px) scale(1.003) translateZ(0);
+        box-shadow: $card-shadow-hover;
+        cursor: pointer;
+    }
+}
+
+// ── Portal Dashboard Cards ────────────────────────────────────
+.portal-dashboard-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 0;
+    box-shadow: $card-shadow;
+
+    &:hover {
+        transform: translateY(-3px);
+        box-shadow: $card-shadow-hover;
+    }
+
+    .card-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+    }
+}
+
+// ── Property Cards (Portal & Website) ─────────────────────────
+.property-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: $card-shadow-hover;
+    }
+
+    .property-image {
+        height: 220px;
+        object-fit: cover;
+        width: 100%;
+    }
+}
+
+// ── Badge Enhancements ────────────────────────────────────────
+.badge {
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    padding: 0.35em 0.65em;
+}
+
+// ── Stat Button Enhancement ───────────────────────────────────
+.oe_stat_button {
+    transition: background-color 0.15s ease;
+}
+
+// ── Kanban Card ──────────────────────────────────────────────
+.oe_kanban_card {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: $card-shadow-hover;
+    }
+}
+
+// ── Map Popup ────────────────────────────────────────────────
+.leaflet-popup-content {
+    margin: 0 !important;
+    width: 255px !important;
+}
+
+.leaflet-popup-content-wrapper {
+    border-radius: 4px !important;
+}
+
+// ── Property Image Sizing ─────────────────────────────────────
+.prop-img {
+    width: 6.375rem;
+    height: 10.925rem;
+    padding-right: 7px;
+    object-fit: cover;
+}
+
+.prop-btn {
+    margin-left: 4px;
+    font-size: 0.9rem !important;
+    padding: 0.2rem 0.4rem;
+}
+
+// ── Gallery Thumbnail Active State ────────────────────────────
+.thumb-img.active-thumb,
+.thumb-img:hover {
+    outline: 3px solid $primary;
+    outline-offset: 2px;
+    cursor: pointer;
+}
+
+// ── Filter Section ────────────────────────────────────────────
+.filter-section {
+    background: #fff;
+    border-radius: 8px;
+}
+
+// ── Responsive Adjustments ────────────────────────────────────
+@include media-breakpoint-down(sm) {
+    .tk_rental_dash .tk-charts { height: 60vh; }
+    .tk_rental_dash .tk-os-chart { height: 30vh; }
+    .remove_colon { display: none !important; }
+}
+
+// ── Carousel Image ────────────────────────────────────────────
+.main-carousel-img {
+    width: 100%;
+    max-height: 500px;
+    object-fit: cover;
+}
+
+.carousel-item {
+    transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+// ── Table Enhancements ────────────────────────────────────────
+.table th {
+    border-top: 0;
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #6c757d;
+}
+
+// ── Search Box ────────────────────────────────────────────────
+.search-box .input-group-append .btn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+// ── Odoo Frontend Specific ───────────────────────────────────
+.o_website_modal {
+    .modal-header {
+        background: $primary;
+        color: #fff;
+        border-bottom: 0;
+        .close { color: #fff; opacity: 0.8; }
+    }
+}
+
+// ── Activity / Chatter ───────────────────────────────────────
+.o_chatter {
+    .o_mail_thread {
+        .o_thread_message {
+            border-radius: 8px;
+        }
+    }
+}

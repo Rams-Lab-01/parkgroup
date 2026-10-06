@@ -1,0 +1,521 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_landlord_portfolio" name="Portal Landlord Portfolio">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs" t-value="[
+                {'name': 'My Account', 'slug': '/my'},
+                {'name': 'My Properties', 'slug': '/my/portfolio'},
+            ]"/>
+            <div class="container">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h1>My Properties</h1>
+                        <p class="text-muted">Portfolio overview, occupancy and income.</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <h6 class="text-muted">Total Properties</h6>
+                                <h5 t-esc="property_count"/>
+                                <a href="/my/portfolio/properties" class="small">View properties</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <h6 class="text-muted">Active Leases</h6>
+                                <h5 t-esc="active_lease_count"/>
+                                <a href="/my/portfolio/tenants" class="small">View tenants</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <h6 class="text-muted">Pending Maintenance</h6>
+                                <h5 t-esc="pending_maintenance"/>
+                                <a href="/my/portfolio/maintenance" class="small">Review queue</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <h6 class="text-muted">Income (Month-to-Date)</h6>
+                                <h5 t-esc="'AED %s' % '{:,.2f}'.format(income_mtd)"/>
+                                <a href="/my/portfolio/income" class="small">View income</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h5>Occupancy</h5>
+                                <table class="table table-sm mb-0">
+                                    <tbody>
+                                        <tr>
+                                            <td>Available</td>
+                                            <td class="text-end" t-esc="occupancy.get('available', 0)"/>
+                                        </tr>
+                                        <tr>
+                                            <td>Sold</td>
+                                            <td class="text-end" t-esc="occupancy.get('sold', 0)"/>
+                                        </tr>
+                                        <tr>
+                                            <td>Rented</td>
+                                            <td class="text-end" t-esc="occupancy.get('rented', 0)"/>
+                                        </tr>
+                                        <tr>
+                                            <td>Under Maintenance</td>
+                                            <td class="text-end" t-esc="occupancy.get('maintenance', 0)"/>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h5>Quick Links</h5>
+                                <a href="/my/portfolio/properties" class="btn btn-outline-primary btn-sm mb-2 me-2">Properties</a>
+                                <a href="/my/portfolio/tenants" class="btn btn-outline-primary btn-sm mb-2 me-2">Tenants</a>
+                                <a href="/my/portfolio/income" class="btn btn-outline-primary btn-sm mb-2 me-2">Income</a>
+                                <a href="/my/portfolio/statement" class="btn btn-outline-primary btn-sm mb-2 me-2">Statement</a>
+                                <a href="/my/portfolio/maintenance" class="btn btn-outline-primary btn-sm mb-2 me-2">Maintenance</a>
+                                <a href="/my/portfolio/documents" class="btn btn-outline-primary btn-sm mb-2">Documents</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_landlord_properties" name="Portal Landlord Properties">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs" t-value="[
+                {'name': 'My Account', 'slug': '/my'},
+                {'name': 'My Properties', 'slug': '/my/portfolio'},
+                {'name': 'Properties', 'slug': '/my/portfolio/properties'},
+            ]"/>
+            <div class="container">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h1>My Properties</h1>
+                    </div>
+                </div>
+                <t t-if="properties">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Reference</th>
+                                <th>Name</th>
+                                <th>City</th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="properties" t-as="prop">
+                                <td t-esc="prop.property_code or ''"/>
+                                <td t-esc="prop.name"/>
+                                <td t-esc="prop.city or ''"/>
+                                <td><span class="badge badge-info" t-esc="dict(prop._fields['state'].selection).get(prop.state, prop.state)"/></td>
+                                <td>
+                                    <a t-att-href="'/my/property/%s' % prop.id"
+                                       class="btn btn-sm btn-outline-primary">View</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+                <t t-if="not properties">
+                    <div class="alert alert-info">You do not have any properties associated with your account.</div>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_landlord_tenants" name="Portal Landlord Tenants">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs" t-value="[
+                {'name': 'My Account', 'slug': '/my'},
+                {'name': 'My Properties', 'slug': '/my/portfolio'},
+                {'name': 'Tenants', 'slug': '/my/portfolio/tenants'},
+            ]"/>
+            <div class="container">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h1>Tenants</h1>
+                        <p class="text-muted">Active tenants across your properties.</p>
+                    </div>
+                </div>
+                <t t-if="grouped">
+                    <div t-foreach="grouped" t-as="g" class="card mb-4 shadow-sm">
+                        <div class="card-body">
+                            <h5>
+                                <a t-att-href="'/my/property/%s' % g['property'].id" t-esc="g['property'].name"/>
+                            </h5>
+                            <table class="table table-sm mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Tenant</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Lease End</th>
+                                        <th>Rent</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="g['leases']" t-as="lease">
+                                        <td t-esc="lease['tenant'].name or ''"/>
+                                        <td t-esc="lease['tenant'].email or ''"/>
+                                        <td t-esc="lease['tenant'].phone or ''"/>
+                                        <td t-esc="lease['end_date'] or ''"/>
+                                        <td t-esc="'AED %s' % '{:,.2f}'.format(lease['rent'] or 0)"/>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </t>
+                <t t-if="not grouped">
+                    <div class="alert alert-info">No active tenants on your properties.</div>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_landlord_income" name="Portal Landlord Income">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs" t-value="[
+                {'name': 'My Account', 'slug': '/my'},
+                {'name': 'My Properties', 'slug': '/my/portfolio'},
+                {'name': 'Income', 'slug': '/my/portfolio/income'},
+            ]"/>
+            <div class="container">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h1>Income &amp; Expenses</h1>
+                        <p class="text-muted">
+                            Period:
+                            <span t-esc="date_from"/>
+                            to
+                            <span t-esc="date_to"/>
+                        </p>
+                        <form method="GET" action="/my/portfolio/income" class="form-inline">
+                            <label class="mr-2">From</label>
+                            <input type="date" name="date_from" class="form-control mr-2" t-att-value="date_from"/>
+                            <label class="mr-2">To</label>
+                            <input type="date" name="date_to" class="form-control mr-2" t-att-value="date_to"/>
+                            <button type="submit" class="btn btn-primary">Filter</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h6 class="text-muted">Income</h6>
+                                <h5 t-esc="'AED %s' % '{:,.2f}'.format(total_income)"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h6 class="text-muted">Expenses</h6>
+                                <h5 t-esc="'AED %s' % '{:,.2f}'.format(total_expense)"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h6 class="text-muted">Net</h6>
+                                <h5 t-esc="'AED %s' % '{:,.2f}'.format(net)"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Paid Invoices</h4>
+                        <t t-if="income_invoices">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr><th>Number</th><th>Date</th><th>Property</th><th class="text-end">Amount</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="income_invoices" t-as="inv">
+                                        <td t-esc="inv.name or ''"/>
+                                        <td t-esc="inv.invoice_date or ''"/>
+                                        <td t-esc="(inv.tenancy_property_id and inv.tenancy_property_id.name) or (inv.sold_property_id and inv.sold_property_id.name) or ''"/>
+                                        <td class="text-end" t-esc="'AED %s' % '{:,.2f}'.format(inv.amount_total)"/>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </t>
+                        <t t-if="not income_invoices">
+                            <div class="alert alert-info">No paid invoices in this period.</div>
+                        </t>
+                    </div>
+                    <div class="col-md-6">
+                        <h4>Maintenance Expenses</h4>
+                        <t t-if="expense_bills">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr><th>Number</th><th>Date</th><th>Vendor</th><th class="text-end">Amount</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="expense_bills" t-as="bill">
+                                        <td t-esc="bill.name or ''"/>
+                                        <td t-esc="bill.invoice_date or ''"/>
+                                        <td t-esc="bill.partner_id.name or ''"/>
+                                        <td class="text-end" t-esc="'AED %s' % '{:,.2f}'.format(bill.amount_total)"/>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </t>
+                        <t t-if="not expense_bills">
+                            <div class="alert alert-info">No maintenance expenses in this period.</div>
+                        </t>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_landlord_statement" name="Portal Landlord Statement">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs" t-value="[
+                {'name': 'My Account', 'slug': '/my'},
+                {'name': 'My Properties', 'slug': '/my/portfolio'},
+                {'name': 'Statement', 'slug': '/my/portfolio/statement'},
+            ]"/>
+            <div class="container">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h1>Owner Statement</h1>
+                        <p class="text-muted">
+                            Period:
+                            <span t-esc="date_from"/>
+                            to
+                            <span t-esc="date_to"/>
+                        </p>
+                        <form method="GET" action="/my/portfolio/statement" class="form-inline mb-2">
+                            <label class="mr-2">From</label>
+                            <input type="date" name="date_from" class="form-control mr-2" t-att-value="date_from"/>
+                            <label class="mr-2">To</label>
+                            <input type="date" name="date_to" class="form-control mr-2" t-att-value="date_to"/>
+                            <button type="submit" class="btn btn-primary">Filter</button>
+                        </form>
+                        <a t-att-href="'/my/portfolio/statement/xls?date_from=%s&amp;date_to=%s' % (date_from, date_to)"
+                           class="btn btn-outline-secondary">Export XLS</a>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h6 class="text-muted">Invoiced</h6>
+                                <h5 t-esc="'AED %s' % '{:,.2f}'.format(total_invoiced)"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h6 class="text-muted">Paid</h6>
+                                <h5 t-esc="'AED %s' % '{:,.2f}'.format(total_paid)"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h6 class="text-muted">Outstanding</h6>
+                                <h5 t-esc="'AED %s' % '{:,.2f}'.format(total_outstanding)"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h4>Invoices</h4>
+                        <t t-if="invoices">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Number</th>
+                                        <th>Date</th>
+                                        <th>Property</th>
+                                        <th>State</th>
+                                        <th class="text-end">Amount</th>
+                                        <th class="text-end">Residual</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="invoices" t-as="inv">
+                                        <td t-esc="inv.name or ''"/>
+                                        <td t-esc="inv.invoice_date or ''"/>
+                                        <td t-esc="(inv.tenancy_property_id and inv.tenancy_property_id.name) or (inv.sold_property_id and inv.sold_property_id.name) or ''"/>
+                                        <td><span class="badge badge-info" t-esc="inv.payment_state"/></td>
+                                        <td class="text-end" t-esc="'AED %s' % '{:,.2f}'.format(inv.amount_total)"/>
+                                        <td class="text-end" t-esc="'AED %s' % '{:,.2f}'.format(inv.amount_residual)"/>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </t>
+                        <t t-if="not invoices">
+                            <div class="alert alert-info">No invoices for this period.</div>
+                        </t>
+                    </div>
+                </div>
+                <div class="card shadow-sm mt-4">
+                    <div class="card-body">
+                        <h4>Tenancies</h4>
+                        <t t-if="tenancies">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr><th>Reference</th><th>Property</th><th>Tenant</th><th>End</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="tenancies" t-as="t">
+                                        <td t-esc="t.name"/>
+                                        <td t-esc="t.property_id.name or ''"/>
+                                        <td t-esc="t.tenant_id.name or ''"/>
+                                        <td t-esc="t.end_date or ''"/>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </t>
+                        <t t-if="not tenancies">
+                            <div class="alert alert-info">No tenancies on record.</div>
+                        </t>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_landlord_maintenance" name="Portal Landlord Maintenance">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs" t-value="[
+                {'name': 'My Account', 'slug': '/my'},
+                {'name': 'My Properties', 'slug': '/my/portfolio'},
+                {'name': 'Maintenance', 'slug': '/my/portfolio/maintenance'},
+            ]"/>
+            <div class="container">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h1>Maintenance Approval Queue</h1>
+                        <p class="text-muted">Pending requests appear first.</p>
+                    </div>
+                </div>
+                <t t-if="maintenance_requests">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Property</th>
+                                <th>Tenant</th>
+                                <th>Status</th>
+                                <th>Approval</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="maintenance_requests" t-as="m">
+                                <td t-esc="m.name or ''"/>
+                                <td t-esc="m.property_id.name or ''"/>
+                                <td t-esc="m.tenant_id.name or ''"/>
+                                <td>
+                                    <t t-if="m.stage_id">
+                                        <span class="badge badge-info" t-esc="m.stage_id.name"/>
+                                    </t>
+                                </td>
+                                <td>
+                                    <span class="badge"
+                                          t-att-class="'badge-warning' if m.landlord_approval_state == 'pending' else ('badge-success' if m.landlord_approval_state == 'approved' else 'badge-danger')"
+                                          t-esc="dict(approval_states).get(m.landlord_approval_state, m.landlord_approval_state)"/>
+                                </td>
+                                <td>
+                                    <t t-if="m.landlord_approval_state == 'pending'">
+                                        <form method="POST"
+                                              t-att-action="'/my/portfolio/maintenance/%s/approve' % m.id"
+                                              class="d-inline">
+                                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                            <button type="submit" class="btn btn-sm btn-success">Approve</button>
+                                        </form>
+                                        <form method="POST"
+                                              t-att-action="'/my/portfolio/maintenance/%s/reject' % m.id"
+                                              class="d-inline">
+                                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                            <input type="text" name="reason" class="form-control form-control-sm d-inline-block mr-1"
+                                                   placeholder="Reason" style="width: 160px;"/>
+                                            <button type="submit" class="btn btn-sm btn-danger">Reject</button>
+                                        </form>
+                                    </t>
+                                    <t t-if="m.landlord_approval_state != 'pending'">
+                                        <span class="text-muted small">No actions</span>
+                                    </t>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+                <t t-if="not maintenance_requests">
+                    <div class="alert alert-info">No maintenance requests for your properties.</div>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_landlord_documents" name="Portal Landlord Documents">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs" t-value="[
+                {'name': 'My Account', 'slug': '/my'},
+                {'name': 'My Properties', 'slug': '/my/portfolio'},
+                {'name': 'Documents', 'slug': '/my/portfolio/documents'},
+            ]"/>
+            <div class="container">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h1>Documents</h1>
+                        <p class="text-muted">Portal-visible documents across your properties.</p>
+                    </div>
+                </div>
+                <t t-if="documents">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr><th>File</th><th>Property</th><th>Category</th><th>Status</th><th></th></tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="documents" t-as="doc">
+                                <td t-esc="doc.file_name or 'Document'"/>
+                                <td t-esc="doc.property_id.name or ''"/>
+                                <td t-esc="dict(doc_categories).get(doc.doc_category, doc.doc_category)"/>
+                                <td><span class="badge badge-info" t-esc="dict(doc._fields['approval_state'].selection).get(doc.approval_state, doc.approval_state)"/></td>
+                                <td>
+                                    <a t-if="doc.document"
+                                       t-att-href="'/web/content/property.documents/%s/document?download=true' % doc.id"
+                                       class="btn btn-sm btn-outline-primary">Download</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+                <t t-if="not documents">
+                    <div class="alert alert-info">No documents available for your properties.</div>
+                </t>
+            </div>
+        </t>
+    </template>
+</odoo>

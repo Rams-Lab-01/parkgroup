@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="portal_connector_tree" model="ir.ui.view">
+        <field name="name">portal.connector.tree</field>
+        <field name="model">portal.connector</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="company_id"/>
+                <field name="sync_frequency"/>
+                <field name="last_sync_date"/>
+                <field name="last_sync_status"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="portal_connector_form" model="ir.ui.view">
+        <field name="name">portal.connector.form</field>
+        <field name="model">portal.connector</field>
+        <field name="arch" type="xml">
+            <form string="Portal Connector">
+                <header>
+                    <button name="action_test_rapidapi_connection" type="object"
+                            string="Test RapidAPI Connection" class="btn-secondary"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="company_id"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="sync_frequency"/>
+                            <field name="xml_feed_token" password="True"/>
+                            <field name="xml_feed_url" readonly="1"/>
+                            <field name="api_endpoint" placeholder="e.g. uae-real-estate3.p.rapidapi.com"/>
+                            <field name="api_key" password="True"/>
+                            <field name="api_secret" password="True"/>
+                        </group>
+                    </group>
+                    <group string="Inbound Feed (Bayut / Dubizzle XML ingestion)">
+                        <group>
+                            <field name="inbound_feed_url" placeholder="https://partner.bayut.com/feed.xml or file:///path/to/feed.xml"/>
+                            <field name="inbound_feed_username"/>
+                            <field name="inbound_feed_password" password="True"/>
+                        </group>
+                        <group>
+                            <field name="last_sync_date" readonly="1"/>
+                            <field name="last_sync_status" readonly="1" widget="badge"/>
+                            <field name="last_sync_message" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Listings">
+                            <field name="listing_line_ids">
+                                <list editable="bottom">
+                                    <field name="property_id"/>
+                                    <field name="status"/>
+                                    <field name="external_id"/>
+                                    <field name="last_sync"/>
+                                    <field name="last_error"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Logs">
+                            <field name="log_ids">
+                                <list>
+                                    <field name="started_at"/>
+                                    <field name="finished_at"/>
+                                    <field name="status"/>
+                                    <field name="message"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="portal_connector_search" model="ir.ui.view">
+        <field name="name">portal.connector.search</field>
+        <field name="model">portal.connector</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <filter name="filter_active" string="Active" domain="[('active', '=', True)]"/>
+                <filter name="filter_inactive" string="Archived" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+</odoo>

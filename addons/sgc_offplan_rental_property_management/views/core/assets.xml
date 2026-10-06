@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="action_property_dashboard" model="ir.actions.client">
+        <field name="name">Property Management</field>
+        <field name="tag">property_dashboard</field>
+    </record>
+     <record id="action_property_availability" model="ir.actions.client">
+        <field name="name">Property Availability</field>
+        <field name="tag">property_availability</field>
+    </record>
+</odoo>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Record Payment Wizard -->
+    <record id="sale_record_payment_wizard_form" model="ir.ui.view">
+        <field name="name">sale.record.payment.wizard.form</field>
+        <field name="model">sale.record.payment.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Record Payment">
+                <field name="booking_id" invisible="1"/>
+                <field name="currency_id" invisible="1"/>
+                <group>
+                    <field name="payment_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                    <field name="payment_date"/>
+                </group>
+                <footer>
+                    <button string="Record Payment" type="object" name="action_record"
+                            class="btn btn-primary"/>
+                    <button string="Cancel" special="cancel" class="btn btn-outline-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Confirm Sale Warning Wizard (Permissive Mode) -->
+    <record id="sale_confirm_warning_wizard_form" model="ir.ui.view">
+        <field name="name">sale.confirm.warning.wizard.form</field>
+        <field name="model">sale.confirm.warning.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Confirm Sale Without Payment">
+                <field name="booking_id" invisible="1"/>
+                <div class="alert alert-warning" role="alert">
+                    <p>No payment has been recorded for this booking. Proceeding without payment is allowed in permissive mode, but must be acknowledged.</p>
+                </div>
+                <field name="warning_message" invisible="1"/>
+                <group>
+                    <field name="acknowledgement_text" placeholder="I acknowledge that I am confirming this sale without recorded payment..."/>
+                </group>
+                <footer>
+                    <button string="Confirm Anyway" type="object" name="action_confirm_with_acknowledgement"
+                            class="btn btn-warning"/>
+                    <button string="Cancel" special="cancel" class="btn btn-outline-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

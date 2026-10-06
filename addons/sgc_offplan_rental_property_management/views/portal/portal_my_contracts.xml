@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_contracts" name="Portal My Contracts">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs" t-value="[
+                {'name': 'My Account', 'slug': '/my'},
+                {'name': 'Contracts', 'slug': '/my/contracts'},
+            ]"/>
+            <div class="container">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h1>My Contracts</h1>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card mb-4">
+                            <div class="card-header"><h4 class="mb-0">Sale Contracts</h4></div>
+                            <div class="card-body">
+                                <t t-if="sale_contracts">
+                                    <table class="table table-hover">
+                                        <thead><tr><th>Reference</th><th>Property</th><th>Amount</th><th>Status</th><th></th></tr></thead>
+                                        <tbody>
+                                            <tr t-foreach="sale_contracts" t-as="c">
+                                                <td t-esc="c.name"/>
+                                                <td t-esc="c.property_id.name"/>
+                                                <td t-esc="'%s %.0f' % (c.currency_id.symbol or 'AED', c.sale_price)"/>
+                                                <td><span class="badge badge-info" t-esc="c.state"/></td>
+                                                <td><a t-att-href="'/my/contract/sale/%s' % c.id" class="btn btn-sm btn-primary">View</a></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </t>
+                                <t t-if="not sale_contracts"><p class="text-muted">No sale contracts.</p></t>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card mb-4">
+                            <div class="card-header"><h4 class="mb-0">Rent Contracts</h4></div>
+                            <div class="card-body">
+                                <t t-if="rent_contracts">
+                                    <table class="table table-hover">
+                                        <thead><tr><th>Reference</th><th>Property</th><th>Rent</th><th>Status</th><th></th></tr></thead>
+                                        <tbody>
+                                            <tr t-foreach="rent_contracts" t-as="c">
+                                                <td t-esc="c.name"/>
+                                                <td t-esc="c.property_id.name"/>
+                                                <td t-esc="'%s %.0f' % (c.currency_id.symbol or 'AED', c.rent_amount)"/>
+                                                <td><span class="badge badge-info" t-esc="c.state"/></td>
+                                                <td><a t-att-href="'/my/contract/rent/%s' % c.id" class="btn btn-sm btn-primary">View</a></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </t>
+                                <t t-if="not rent_contracts"><p class="text-muted">No rent contracts.</p></t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_my_contract_detail" name="Portal My Contract Detail">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs" t-value="[
+                {'name': 'My Account', 'slug': '/my'},
+                {'name': 'Contracts', 'slug': '/my/contracts'},
+                {'name': contract.name, 'slug': '/my/contract/%s/%s' % (model, contract.id)},
+            ]"/>
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <h1>Contract: <span t-esc="contract.name"/></h1>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h4>Details</h4>
+                                <table class="table table-sm">
+                                    <tr><td><strong>Property</strong></td><td t-esc="contract.property_id.name"/></tr>
+                                    <tr><td><strong>Status</strong></td><td><span class="badge badge-info" t-esc="contract.state"/></td></tr>
+                                    <tr t-if="model == 'sale'">
+                                        <td><strong>Sale Price</strong></td>
+                                        <td t-esc="'%s %.0f' % (contract.currency_id.symbol or 'AED', contract.sale_price)"/>
+                                    </tr>
+                                    <tr t-if="model == 'rent'">
+                                        <td><strong>Rent Amount</strong></td>
+                                        <td t-esc="'%s %.0f' % (contract.currency_id.symbol or 'AED', contract.rent_amount)"/>
+                                    </tr>
+                                    <tr t-if="model == 'sale' and contract.contract_date">
+                                        <td><strong>Contract Date</strong></td>
+                                        <td t-esc="contract.contract_date"/>
+                                    </tr>
+                                    <tr t-if="model == 'rent' and contract.start_date">
+                                        <td><strong>Start Date</strong></td>
+                                        <td t-esc="contract.start_date"/>
+                                    </tr>
+                                    <tr t-if="model == 'rent' and contract.end_date">
+                                        <td><strong>End Date</strong></td>
+                                        <td t-esc="contract.end_date"/>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <t t-if="model == 'sale' and contract.installment_ids">
+                        <div class="col-md-6">
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <h4>Installments</h4>
+                                    <table class="table table-sm">
+                                        <thead><tr><th>#</th><th>Description</th><th>Due Date</th><th>Amount</th><th>Status</th></tr></thead>
+                                        <tbody>
+                                            <tr t-foreach="contract.installment_ids" t-as="inst">
+                                                <td t-esc="inst.sequence"/>
+                                                <td t-esc="inst.name"/>
+                                                <td t-esc="inst.due_date"/>
+                                                <td t-esc="'AED %s' % '{:,.2f}'.format(inst.amount)"/>
+                                                <td><span class="badge" t-att-class="'badge-success' if inst.state == 'paid' else 'badge-warning'" t-esc="inst.state"/></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

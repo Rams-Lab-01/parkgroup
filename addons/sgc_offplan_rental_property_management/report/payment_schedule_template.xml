@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="payment_schedule_report_template">
+        <t t-call="web.html_container">
+          <t t-foreach="docs" t-as="o">
+            <t t-set="company" t-value="o.company_id or env.company"/>
+            <t t-call="sgc_offplan_rental_property_management.property_report_styles"/>
+            <div class="o_pmg_doc article" t-att-data-oe-model="o._name" t-att-data-oe-id="o.id"><t t-call="sgc_offplan_rental_property_management.property_report_styles"/>
+                <t t-set="report_ref" t-value="o.name or ' - '"/>
+                <t t-set="report_date" t-value="context_timestamp(datetime.datetime.now()).strftime('%d %b %Y')"/>
+                <t t-call="sgc_offplan_rental_property_management.property_report_letterhead"/>
+                <t t-set="report_title">Payment Schedule</t>
+                <t t-set="report_subtitle" t-value="'Type: %s' % dict(o._fields['schedule_type'].selection).get(o.schedule_type, o.schedule_type)"/>
+                <t t-call="sgc_offplan_rental_property_management.property_report_title"/>
+
+                <div class="o_pmg_section">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">1</span>Schedule Lines</div>
+                    <table class="o_pmg_table">
+                        <colgroup>
+                            <col style="width:6%;"/><col style="width:34%;"/><col style="width:12%;"/>
+                            <col style="width:18%;"/><col style="width:16%;"/><col style="width:14%;"/>
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Description</th>
+                                <th>Percentage</th>
+                                <th>Days After Contract</th>
+                                <th>Frequency</th>
+                                <th>Installments</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="o.schedule_line_ids" t-as="line">
+                                <td t-out="line.sequence"/>
+                                <td t-out="line.name or ''"/>
+                                <td t-out="str(line.percentage) + ' %'"/>
+                                <td t-out="line.days_after"/>
+                                <td t-out="dict(line._fields['installment_frequency'].selection).get(line.installment_frequency, line.installment_frequency)"/>
+                                <td t-out="line.number_of_installments"/>
+                            </tr>
+                            <tr t-if="not o.schedule_line_ids">
+                                <td colspan="6" style="text-align:center; color:#64748b;">No schedule lines defined.</td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="2" style="text-align:right;">Total</th>
+                                <th t-out="str(o.total_percentage) + ' %'"/>
+                                <th colspan="3"/>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <t t-set="report_name">Payment Schedule</t>
+                <t t-set="report_footer_note">This is a computer-generated payment schedule.</t>
+                <t t-call="sgc_offplan_rental_property_management.property_report_footer"/>
+            </div>
+          </t>
+        </t>
+    </template>
+</odoo>

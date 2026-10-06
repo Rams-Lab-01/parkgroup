@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="xml_feed_config_tree" model="ir.ui.view">
+        <field name="name">xml.feed.config.tree</field>
+        <field name="model">xml.feed.config</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="portal_id"/>
+                <field name="version"/>
+                <field name="enabled"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="xml_feed_config_form" model="ir.ui.view">
+        <field name="name">xml.feed.config.form</field>
+        <field name="model">xml.feed.config</field>
+        <field name="arch" type="xml">
+            <form string="XML Feed Configuration">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="portal_id"/>
+                        <field name="version"/>
+                        <field name="enabled"/>
+                    </group>
+                    <field name="notes"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

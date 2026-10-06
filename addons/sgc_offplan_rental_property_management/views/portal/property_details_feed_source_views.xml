@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="property_details_view_feed_source_ribbon" model="ir.ui.view">
+        <field name="name">property.details.form.feed.source.ribbon</field>
+        <field name="model">property.details</field>
+        <field name="inherit_id" ref="sgc_offplan_rental_property_management.property_details_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//widget[@name='web_ribbon']" position="after">
+                <widget name="web_ribbon" title="From Feed"
+                        bg_color="text-bg-info"
+                        invisible="not is_feed_sourced"
+                        help="This property was created or last updated from an inbound XML feed."/>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button class="oe_stat_button" type="object"
+                        name="action_open_portal_lines"
+                        icon="fa-rss"
+                        invisible="not is_feed_sourced">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text text-muted">Feed Source</span>
+                        <span class="o_stat_text">
+                            <field name="feed_source_label" readonly="1"/>
+                        </span>
+                    </div>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="property_details_view_tree_feed_source" model="ir.ui.view">
+        <field name="name">property.details.tree.feed.source</field>
+        <field name="model">property.details</field>
+        <field name="inherit_id" ref="sgc_offplan_rental_property_management.property_details_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='state']" position="before">
+                <field name="is_feed_sourced" widget="boolean_toggle"
+                       optional="show"
+                       string="Feed"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="property_details_view_search_feed_source" model="ir.ui.view">
+        <field name="name">property.details.search.feed.source</field>
+        <field name="model">property.details</field>
+        <field name="inherit_id" ref="sgc_offplan_rental_property_management.property_details_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='filter_for_rent']" position="after">
+                <separator/>
+                <filter name="filter_feed_sourced" string="Feed Sourced"
+                        domain="[('is_feed_sourced', '=', True)]"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

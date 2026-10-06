@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2026 SGC TECH AI
+    Sales & Purchase Agreement (SPA)  -  professional legal contract template.
+    Unified property-management layout (shared property_report_common system).
+
+    Bound both to:
+      - property.vendor (booking record with sale_contract_id link)
+      - sale.contract    (direct binding via the contract form Print menu)
+
+    Render-time guards:
+      - missing docs (deleted record): stub page so report never 500s
+      - missing related records: every many2one access is `t-if`-guarded
+-->
+<odoo>
+
+    <!-- Shared document body. Two thin wrappers below give each report action a
+         UNIQUE report_name, so Odoo's report resolution (first action matched by
+         report_name) always browses the correct model (property.vendor vs
+         sale.contract). Sharing one report_name silently rendered a blank page
+         when printing from sale.contract. -->
+    <template id="sales_purchase_agreement_document">
+            <t t-foreach="docs" t-as="o">
+            <!-- Guard against stale docids (a vendor/contract may have been deleted
+                 after the report was first invoked). Without this guard, accessing
+                 `o._name` raises MissingError and the user gets a 500. -->
+            <t t-if="o and o.exists() and o.id">
+            <t t-set="is_direct_contract" t-value="o._name == 'sale.contract'"/>
+            <t t-set="contract" t-value="o if is_direct_contract else o.sale_contract_id"/>
+            <t t-set="seller_partner" t-value="o.seller_id if is_direct_contract else o.vendor_id"/>
+            <t t-set="buyer_partner" t-value="o.buyer_id if is_direct_contract else o.customer_id"/>
+            <t t-set="agreement_ref" t-value="o.name if is_direct_contract else (o.sold_seq or o.name)"/>
+            <t t-set="agreement_date" t-value="o.contract_date if is_direct_contract else (o.date or o.contract_date)"/>
+
+            <div class="o_pmg_doc article" t-att-data-oe-model="o._name" t-att-data-oe-id="o.id">
+                <t t-call="sgc_offplan_rental_property_management.property_report_styles"/>
+                <t t-set="company" t-value="o.company_id or env.company"/>
+                <t t-set="report_ref" t-value="agreement_ref or ' - '"/>
+                <t t-set="report_ref_label">Agreement No:</t>
+                <t t-set="report_date" t-value="agreement_date.strftime('%d %b %Y') if agreement_date else ' - '"/>
+                <t t-set="letterhead_tag">Real Estate  -  Property Management Suite</t>
+                <t t-call="sgc_offplan_rental_property_management.property_report_letterhead"/>
+                <t t-set="report_title">SALES &amp; PURCHASE AGREEMENT</t>
+                <t t-set="report_subtitle">Agreement No: <t t-out="agreement_ref or ' - '"/>  -  Date: <t t-out="agreement_date.strftime('%d %b %Y') if agreement_date else ' - '"/></t>
+                <t t-call="sgc_offplan_rental_property_management.property_report_title"/>
+
+                <!-- Section 1: Parties -->
+                <div class="o_pmg_section o_pmg_keep" t-if="seller_partner or buyer_partner">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">1</span>Parties</div>
+                    <div class="o_pmg_section-body">
+                        <div class="o_pmg_grid-2">
+                            <div t-if="seller_partner"><div class="o_pmg_card">
+                                <div class="o_pmg_card-label">Seller</div>
+                                <div class="o_pmg_card-value" t-out="seller_partner.name or ' - '"/>
+                                <div t-if="seller_partner.vat" style="font-size: 8.5pt; color: #475569; margin-top: 2px;"><strong>TRN:</strong> <t t-out="seller_partner.vat"/></div>
+                                <div t-if="seller_partner.phone" style="font-size: 8.5pt; color: #475569; margin-top: 2px;"><strong>Tel:</strong> <t t-out="seller_partner.phone"/></div>
+                                <div t-if="seller_partner.email" style="font-size: 8.5pt; color: #475569; margin-top: 2px;"><strong>Email:</strong> <t t-out="seller_partner.email"/></div>
+                            </div></div>
+                            <div t-if="buyer_partner"><div class="o_pmg_card">
+                                <div class="o_pmg_card-label">Buyer</div>
+                                <div class="o_pmg_card-value" t-out="buyer_partner.name or ' - '"/>
+                                <div t-if="buyer_partner.vat" style="font-size: 8.5pt; color: #475569; margin-top: 2px;"><strong>TRN:</strong> <t t-out="buyer_partner.vat"/></div>
+                                <div t-if="buyer_partner.phone" style="font-size: 8.5pt; color: #475569; margin-top: 2px;"><strong>Tel:</strong> <t t-out="buyer_partner.phone"/></div>
+                                <div t-if="buyer_partner.email" style="font-size: 8.5pt; color: #475569; margin-top: 2px;"><strong>Email:</strong> <t t-out="buyer_partner.email"/></div>
+                            </div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Property -->
+                <div class="o_pmg_section o_pmg_keep" t-if="o.property_id">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">2</span>Property</div>
+                    <div class="o_pmg_section-body">
+                        <table class="o_pmg_dl">
+                            <tr>
+                                <td class="o_pmg_dl-label">Property</td>
+                                <td class="o_pmg_dl-value"><strong t-out="o.property_id.name or ' - '"/></td>
+                            </tr>
+                            <tr t-if="o.property_id.property_type">
+                                <td class="o_pmg_dl-label">Type</td>
+                                <td class="o_pmg_dl-value" t-out="o.property_id.property_type"/>
+                            </tr>
+                            <tr t-if="o.property_id.city">
+                                <td class="o_pmg_dl-label">City</td>
+                                <td class="o_pmg_dl-value" t-out="o.property_id.city"/>
+                            </tr>
+                            <tr t-if="o.property_id.area">
+                                <td class="o_pmg_dl-label">Area</td>
+                                <td class="o_pmg_dl-value"><span t-out="'{:,.0f} sqft'.format(o.property_id.area)"/></td>
+                            </tr>
+                            <tr t-if="o.property_id.title_deed_number">
+                                <td class="o_pmg_dl-label">Title Deed No.</td>
+                                <td class="o_pmg_dl-value" t-out="o.property_id.title_deed_number"/>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Section 3: Commission Distribution -->
+                <div class="o_pmg_section" t-if="o.commission_line_ids or contract.commission_line_ids">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">3</span>Commission Distribution</div>
+                    <div class="o_pmg_section-body" style="padding: 0; overflow: hidden;">
+                        <table class="o_pmg_table">
+                            <thead>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Role</th>
+                                    <th>Beneficiary</th>
+                                    <th class="text-right">Rate</th>
+                                    <th class="text-right">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="display_lines" t-value="o.commission_line_ids or contract.commission_line_ids"/>
+                                <t t-foreach="display_lines" t-as="line">
+                                    <tr>
+                                        <td t-out="dict(line._fields['category'].selection).get(line.category, line.category)"/>
+                                        <td t-out="line.get_role_label()"/>
+                                        <td t-out="line.partner_id.name if line.partner_id else ' - '"/>
+                                        <td class="text-right">
+                                            <t t-if="line.commission_percentage and line.commission_percentage &gt; 0">
+                                                <span t-out="str(line.commission_percentage) + '%'"/>
+                                            </t>
+                                            <t t-else=""> - </t>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-out="line.commission_amount"
+                                                  t-options="{'widget': 'monetary', 'display_currency': o.currency_id or o.company_id.currency_id}"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="4" class="text-right">Total Commission</td>
+                                    <td class="text-right">
+                                        <t t-if="not o.commission_line_ids and contract and contract.commission_line_ids">
+                                            <span t-out="contract.commission_total_amount or 0.0"
+                                                  t-options="{'widget': 'monetary', 'display_currency': o.currency_id or o.company_id.currency_id}"/>
+                                        </t>
+                                        <t t-elif="'total_commission' in o._fields">
+                                            <span t-out="o.total_commission or 0.0"
+                                                  t-options="{'widget': 'monetary', 'display_currency': o.currency_id or o.company_id.currency_id}"/>
+                                        </t>
+                                        <t t-elif="contract and 'commission_total_amount' in contract._fields">
+                                            <span t-out="contract.commission_total_amount or 0.0"
+                                                  t-options="{'widget': 'monetary', 'display_currency': o.currency_id or o.company_id.currency_id}"/>
+                                        </t>
+                                        <t t-else="">
+                                            <span t-out="0.0"
+                                                  t-options="{'widget': 'monetary', 'display_currency': o.currency_id or o.company_id.currency_id}"/>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Section 4: Purchase Price & Payment Terms -->
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">4</span>Purchase Price &amp; Payment Terms</div>
+                    <div class="o_pmg_section-body">
+                        <table class="o_pmg_dl">
+                            <tr>
+                                <td class="o_pmg_dl-label">Purchase Price</td>
+                                <td class="o_pmg_dl-value">
+                                    <strong t-out="o.sale_price"
+                                           t-options="{'widget': 'monetary', 'display_currency': o.currency_id or o.company_id.currency_id}"/>
+                                </td>
+                            </tr>
+                            <tr t-if="o.property_id.registration_fee or o.property_id.registration_fee_percentage">
+                                <td class="o_pmg_dl-label">Registration Fee</td>
+                                <td class="o_pmg_dl-value">
+                                    <t t-if="o.property_id.registration_fee">
+                                        <span t-out="o.property_id.registration_fee"
+                                              t-options="{'widget': 'monetary', 'display_currency': o.currency_id or o.company_id.currency_id}"/>
+                                    </t>
+                                    <t t-else="">
+                                        <span t-out="'{}% of purchase price'.format(o.property_id.registration_fee_percentage)"/>
+                                    </t>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Section 5: Title Deed & Oqood (DLD) -->
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">5</span>Title Deed &amp; Oqood Registration (DLD)</div>
+                    <div class="o_pmg_section-body">
+                        <p class="o_pmg_clause">
+                            The Property is held under Title Deed No.
+                            <strong t-out="o.property_id.title_deed_number or ' - '"/>
+                            issued by the Dubai Land Department (DLD). Upon completion of this Agreement the Parties shall procure
+                            registration of the transfer with the DLD through Trakhees/Ejar-certified registration channels and shall
+                            pay the applicable DLD registration fee (currently 4% of the Purchase Price for the primary market, or as
+                            otherwise prescribed by DLD from time to time), together with the AED 580 DLD issuance fee and AED 2,000
+                            Trustee fee, in the proportions required by RERA/DLD. Where the Property is an off-plan unit, this
+                            Agreement shall be converted to Oqood registration and the corresponding Oqood fee shall be borne by the
+                            Buyer.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Section 6: Handover -->
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">6</span>Handover, Title Transfer &amp; Snagging</div>
+                    <div class="o_pmg_section-body">
+                        <p class="o_pmg_clause">
+                            The Seller shall handover physical possession of the Property to the Buyer on
+                            <strong t-out="contract and contract.handover_date and contract.handover_date.strftime('%d %b %Y') or 'the date agreed in Schedule A'"/>,
+                            free of encumbrances, together with all original title instruments, NOCs, and the transfer forms required
+                            for registration. A joint Pre-Handover Inspection shall be carried out no later than 14 (fourteen) days
+                            before the Handover Date. Any defect identified during such inspection shall form the Snagging List; the
+                            Seller shall rectify all snagging items within 60 (sixty) days of Handover at no cost to the Buyer. Title
+                            Transfer shall be completed at DLD no later than 30 (thirty) days after the Handover Date, and the
+                            Seller shall execute all documents necessary thereto.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Section 7: Payment Schedule (rendered whenever a payment
+                     schedule is selected on the contract form OR installments
+                     have been generated; projected from the selected schedule
+                     otherwise, mirroring action_generate_installments). -->
+                <t t-set="spa_plan" t-value="contract._report_payment_plan_lines() if contract else []"/>
+                <t t-set="spa_total_amount" t-value="0"/>
+                <t t-set="spa_purchase_price" t-value="contract.sale_price if contract else 0"/>
+                <t t-set="spa_plan_projected" t-value="True if spa_plan and spa_plan[0].get('state') == 'projected' else False"/>
+                <div class="o_pmg_section" t-if="spa_plan">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">7</span>Payment Schedule Summary</div>
+                    <div class="o_pmg_section-body" style="padding: 0; overflow: hidden;">
+                        <table class="o_pmg_table">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" style="width:6%;">#</th>
+                                    <th style="width:46%;">Milestone</th>
+                                    <th class="text-right" style="width:10%;">%</th>
+                                    <th class="text-right" style="width:20%;">Amount (AED)</th>
+                                    <th class="text-center" style="width:18%;">Due Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="spa_plan" t-as="line">
+                                    <tr>
+                                        <td class="text-center" t-out="line.get('sequence')"/>
+                                        <td t-out="line.get('name') or ''"/>
+                                        <td class="text-right">
+                                            <span t-if="line.get('percentage')"
+                                                  t-out="('%.2f' % line.get('percentage')) + '%'"/>
+                                            <span t-if="not line.get('percentage')"> - </span>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-out="line.get('amount')"
+                                                  t-options="{'widget': 'monetary', 'display_currency': o.currency_id or o.company_id.currency_id}"/>
+                                        </td>
+                                        <td class="text-center" t-out="line.get('due_date') and line.get('due_date').strftime('%d %b %Y') or ' - '"/>
+                                    </tr>
+                                    <t t-set="spa_total_amount" t-value="spa_total_amount + (line.get('amount') or 0.0)"/>
+                                </t>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" class="text-right">Total Scheduled</td>
+                                    <td class="text-right">
+                                        <span t-out="spa_total_amount"
+                                              t-options="{'widget': 'monetary', 'display_currency': o.currency_id or o.company_id.currency_id}"/>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="text-right">Purchase Price (Reference)</td>
+                                    <td class="text-right">
+                                        <span t-out="spa_purchase_price"
+                                              t-options="{'widget': 'monetary', 'display_currency': o.currency_id or o.company_id.currency_id}"/>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <p class="o_pmg_clause" style="margin: 8px 12px 10px;">
+                            <t t-if="spa_plan_projected">
+                                <em>Indicative payment plan based on the selected payment schedule
+                                (<strong t-out="contract.payment_schedule_id.name"/>).</em>
+                                The definitive installment schedule will be generated from this Agreement and
+                                supersedes this projection. This Schedule is illustrative of the Buyer's payment
+                                obligations under this Agreement and forms an integral part thereof.
+                            </t>
+                            <t t-else="">
+                                <em>Example interpretation:</em>
+                                a down-payment of
+                                <strong t-out="('%.2f' % spa_plan[0].get('percentage')) + '%' if spa_plan[0].get('percentage') else ' - '"/>
+                                followed by up to <strong t-out="len(spa_plan)-1"/> instalments totalling
+                                <strong t-out="spa_total_amount"
+                                        t-options="{'widget': 'monetary', 'display_currency': o.currency_id or o.company_id.currency_id}"/>,
+                                as detailed in the table above. This Schedule is illustrative of the Buyer's payment obligations under
+                                this Agreement and forms an integral part thereof.
+                            </t>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Section 8: AED Denomination -->
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">8</span>AED Denomination &amp; Payment Mechanism</div>
+                    <div class="o_pmg_section-body">
+                        <p class="o_pmg_clause">
+                            All amounts under this Agreement are denominated in UAE Dirhams (AED). Payments shall be made by
+                            manager's cheque or wire transfer to the Seller's nominated UAE-resident bank account. Any
+                            cross-border transfer shall be processed through an UAE-licensed exchange and shall comply with the
+                            anti-money laundering regulations issued by the Central Bank of the UAE and the Financial Action
+                            Task Force (FATF).
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Section 9: Brokerage Disclosure -->
+                <div class="o_pmg_section o_pmg_keep" t-if="'broker_id' in o._fields and o.broker_id">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">9</span>Brokerage Disclosure</div>
+                    <div class="o_pmg_section-body">
+                        <p class="o_pmg_clause">
+                            The Parties acknowledge that this transaction was facilitated by
+                            <strong t-out="o.broker_id.name"/>. Brokerage commission, if any, shall be paid outside the closing
+                            balance pursuant to the standalone Brokerage Agreement and shall be borne by the Seller as agreed
+                            between Seller and Broker.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Section 10: Service Charges -->
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">10</span>Handover Payment, Service Charges &amp; Title Transfer</div>
+                    <div class="o_pmg_section-body">
+                        <p class="o_pmg_clause">
+                            The Buyer undertakes to pay all annual service charges (chiller fees, district cooling, building
+                            management, sinking-fund contributions) to the owner-association/community-management company as
+                            and when due from the Handover Date onward. Service charges accrued before Handover remain the
+                            obligation of the Seller. Pre-handover unpaid developer service charges, if any, are to be
+                            settled by the Seller from the final tranche of the Purchase Price.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Section 11: Mortgagee / NOC -->
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">11</span>Mortgagee / NOC</div>
+                    <div class="o_pmg_section-body">
+                        <p class="o_pmg_clause">
+                            If the Seller's title is encumbered by any prior mortgage or charge, the Seller shall obtain and
+                            deliver to the Buyer a No-Objection Certificate (NOC) from the existing mortgagee prior to or at
+                            DLD registration. All pre-closing mortgage cancellation fees, if any, shall be the Seller's
+                            cost. Until registration of the Buyer as registered owner, the Buyer shall not be liable for
+                            any mortgage instalment, and the Seller remains responsible for any default.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Section 12: AML / KYC -->
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">12</span>Buyer's Representations &amp; AML/KYC</div>
+                    <div class="o_pmg_section-body">
+                        <p class="o_pmg_clause">
+                            The Buyer represents that the funds used for this Purchase Price are not proceeds of crime, that
+                            the Buyer is the beneficial owner of such funds, and that the Buyer is not subject to any UN,
+                            UAE, or GCC sanctions lists. The Buyer consents to and authorizes the Seller, the Broker, the
+                            escrow agent, the relevant bank, DLD and RERA to conduct such KYC, sanctions screening and
+                            source-of-funds verification as may be required under UAE Federal Decree-Law No. 20 of 2018 on
+                            Anti-Money Laundering and its implementing regulations.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Section 13: Seller Warranties -->
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">13</span>Seller's Representations &amp; Warranties</div>
+                    <div class="o_pmg_section-body">
+                        <p class="o_pmg_clause">
+                            The Seller represents and warrants that: (i) it is the sole legal and beneficial owner of the
+                            Property with full right and power to sell and transfer; (ii) the Property is free from
+                            encumbrances, liens, claims and third-party rights except as expressly disclosed in writing;
+                            (iii) there are no pending litigation, arbitration or insolvency proceedings affecting the
+                            Property; (iv) all community-managed service charges and DLD-related dues up to the Transfer
+                            Date have been paid in full; and (v) no misrepresentation has been made regarding the
+                            Property's size, location, view, or amenities. These warranties survive execution of this
+                            Agreement.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Section 14: Force Majeure -->
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">14</span>Force Majeure</div>
+                    <div class="o_pmg_section-body">
+                        <p class="o_pmg_clause">
+                            Neither Party shall be liable for delay or failure in performance caused by events beyond
+                            reasonable control, including without limitation acts of God, government orders, pandemic,
+                            war, civil unrest, regulatory shutdown of DLD/Ejar, utility outage affecting the Building, or
+                            labour dispute. Obligations relating to monetary payments are not excused by force majeure.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Section 15: Default & Termination -->
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">15</span>Default &amp; Termination</div>
+                    <div class="o_pmg_section-body">
+                        <p class="o_pmg_clause">
+                            If the Buyer fails to pay any instalment within 30 (thirty) days of its due date the Seller may,
+                            after written notice and a 30-day cure period, terminate this Agreement and forfeit 10% of the
+                            Purchase Price as liquidated damages (the DLD will also reflect the forfeiture in the
+                            Oqood/Ejari record). If the Seller defaults in handover or title transfer, the Buyer may, after
+                            written notice and a 60-day cure period, claim specific performance and damages.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Section 16: Dispute Resolution -->
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">16</span>Dispute Resolution &amp; Governing Law</div>
+                    <div class="o_pmg_section-body">
+                        <p class="o_pmg_clause">
+                            This Agreement is governed by the laws of the Emirate of Dubai, and the federal laws of the
+                            United Arab Emirates as applied in Dubai. Any dispute, controversy or claim arising out of
+                            this Agreement shall be referred to the Dubai Rental Dispute Settlement Centre or, failing
+                            resolution, to the Dubai Court of First Instance  -  whose decision is final and binding.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Section 17: Entire Agreement -->
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">17</span>Entire Agreement, Severability, Notices, Governing Language</div>
+                    <div class="o_pmg_section-body">
+                        <p class="o_pmg_clause">
+                            This Agreement, together with its Schedules, constitutes the entire agreement between the
+                            Parties and supersedes any prior negotiation or representation. Inconsistencies between the
+                            Arabic and English texts shall be resolved in favour of the Arabic version as required by DLD.
+                            Notices shall be served by registered mail to the parties' addresses as recorded in DLD. If
+                            any clause is held unenforceable the remainder of the Agreement shall remain in full force.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Section 18: Floor Plan -->
+                <t t-set="spa_fp" t-value="o.property_id._report_floor_plan_data() if o.property_id else {}"/>
+                <div class="o_pmg_section" t-if="spa_fp.get('has')">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">18</span>Floor Plan</div>
+                    <div class="o_pmg_section-body">
+                        <table class="o_pmg_dl">
+                            <tr><td class="o_pmg_dl-label">Property</td><td class="o_pmg_dl-value" t-out="o.property_id.name or ' - '"/></tr>
+                            <tr t-if="spa_fp.get('source')"><td class="o_pmg_dl-label">Source</td><td class="o_pmg_dl-value" t-out="spa_fp.get('source')"/></tr>
+                        </table>
+                        <t t-if="spa_fp.get('kind') == 'image'">
+                            <img t-foreach="spa_fp.get('pages')" t-as="page" class="o_pmg_floorplan"
+                                 t-att-src="'data:' + page.get('mime') + ';base64,' + page.get('b64')"
+                                 t-att-alt="page.get('filename')"/>
+                        </t>
+                        <p class="o_pmg_clause" style="margin-top: 8px;" t-if="spa_fp.get('kind') == 'pdf'">
+                            The floor plan of the property is a PDF document; it is attached to this Agreement
+                            on the pages appended at the end of this file.
+                        </p>
+                    </div>
+                </div>
+
+                <t t-set="signature_slots" t-value="[
+                    {'label': 'Seller', 'name': seller_partner and seller_partner.name or ' - ', 'lines': ['Date: ____________________']},
+                    {'label': 'Buyer', 'name': buyer_partner and buyer_partner.name or ' - ', 'lines': ['Date: ____________________']},
+                ]"/>
+                <t t-call="sgc_offplan_rental_property_management.property_report_signatures"/>
+
+                <t t-set="report_name">Sales Purchase Agreement</t>
+                <t t-set="report_footer_note">Computer-generated document. Terms are binding upon signature.</t>
+                <t t-call="sgc_offplan_rental_property_management.property_report_footer"/>
+            </div>
+            </t>
+            </t>
+    </template>
+
+    <template id="sales_purchase_agreement_template">
+        <t t-call="web.html_container">
+            <t t-call="sgc_offplan_rental_property_management.sales_purchase_agreement_document"/>
+        </t>
+    </template>
+
+    <template id="sales_purchase_agreement_contract_template">
+        <t t-call="web.html_container">
+            <t t-call="sgc_offplan_rental_property_management.sales_purchase_agreement_document"/>
+        </t>
+    </template>
+</odoo>

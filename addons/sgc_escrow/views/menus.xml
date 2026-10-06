@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--Copyright (C) 2026 SGC TECH AI (https://sgctech.ai)
- Part of SGC Odoo Suite. See LICENSE file for full copyright and licensing details.
+<!--
+    Copyright (C) 2026 SGC TECH AI (https://sgctech.ai)
+    Part of SGC Odoo Suite. See LICENSE file for full copyright and licensing details.
 
- Escrow menus. Two entry points on purpose:
- - "Escrow" under the Property Management root, for the property team;
- - "Escrow" under Accounting/Invoicing, for finance.
- Both point at the same records, so nobody has to know which door to use.-->
+    Escrow menus. Two entry points on purpose:
+      - "Escrow" under the Property Management root, for the property team;
+      - "Escrow" under Accounting/Invoicing, for finance.
+    Both point at the same records, so nobody has to know which door to use.
+-->
 <odoo>
 
-    <!--Under Property Management-->
+    <!-- == Under Property Management == -->
     <menuitem id="menu_escroot_property"
               name="Escrow"
               parent="sgc_offplan_rental_property_management.main_menu_rental_management"
@@ -43,7 +45,7 @@
               sequence="90"
               groups="sgc_escrow.group_escrow_manager"/>
 
-    <!--Under Accounting-->
+    <!-- == Under Accounting == -->
     <menuitem id="menu_escroot_accounting"
               name="Escrow"
               parent="account.menu_finance"

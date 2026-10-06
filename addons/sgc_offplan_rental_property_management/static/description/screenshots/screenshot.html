@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SGC - SGC - Rental Management - Odoo 19 Screenshot</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: #e8e4df;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+/* Browser frame */
+.browser {
+  width: 1280px;
+  max-width: 100%;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+}
+
+/* Chrome bar */
+.chrome {
+  background: #f0eeeb;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid #ddd;
+}
+.chrome-dots {
+  display: flex; gap: 6px;
+}
+.chrome-dot {
+  width: 12px; height: 12px; border-radius: 50%;
+}
+.chrome-dot:nth-child(1) { background: #ff5f57; }
+.chrome-dot:nth-child(2) { background: #ffbd2e; }
+.chrome-dot:nth-child(3) { background: #28c840; }
+.chrome-url {
+  flex: 1;
+  background: #fff;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  color: #555;
+  border: 1px solid #ddd;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Odoo top bar */
+.odoo-topbar {
+  background: #011a38;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  height: 48px;
+  gap: 16px;
+}
+.odoo-topbar .logo {
+  display: flex; align-items: center; gap: 8px;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+.odoo-topbar .logo span { color: #d4a853; }
+.odoo-topbar .search {
+  flex: 1; max-width: 360px;
+  background: rgba(255,255,255,0.1);
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 0.8rem;
+}
+.odoo-topbar .search::placeholder { color: rgba(255,255,255,0.4); }
+.odoo-topbar .user {
+  display: flex; align-items: center; gap: 8px;
+  color: rgba(255,255,255,0.7);
+  font-size: 0.8rem;
+  margin-left: auto;
+}
+.odoo-topbar .avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: #d4a853; display: flex; align-items: center; justify-content: center;
+  color: #011a38; font-weight: 700; font-size: 0.7rem;
+}
+
+/* Module header bar */
+.module-header {
+  background: #fff;
+  padding: 16px 24px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.module-header-left {
+  display: flex; align-items: center; gap: 12px;
+}
+.module-header h1 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #011a38;
+}
+.module-header .app-badge {
+  background: #e8eef8;
+  color: #011a38;
+  padding: 2px 10px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+.module-header .version {
+  color: #888;
+  font-size: 0.75rem;
+}
+.module-actions {
+  display: flex; gap: 8px;
+}
+.module-actions .btn {
+  padding: 6px 16px;
+  border-radius: 6px;
+  border: none;
+  font-size: 0.8rem;
+  cursor: default;
+}
+.module-actions .btn-primary {
+  background: #d4a853;
+  color: #011a38;
+  font-weight: 600;
+}
+.module-actions .btn-secondary {
+  background: #f0eeeb;
+  color: #555;
+}
+.module-actions .btn-create {
+  background: #011a38;
+  color: #fff;
+  font-weight: 600;
+}
+
+/* Sidebar + Content layout */
+.main-layout {
+  display: flex;
+  min-height: 520px;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 200px;
+  background: #faf8f6;
+  border-right: 1px solid #eee;
+  padding: 12px 0;
+  flex-shrink: 0;
+}
+.sidebar-item {
+  padding: 8px 20px;
+  font-size: 0.85rem;
+  color: #555;
+  cursor: default;
+  border-left: 3px solid transparent;
+}
+.sidebar-item.active {
+  color: #011a38;
+  font-weight: 600;
+  border-left-color: #d4a853;
+  background: rgba(212,168,83,0.08);
+}
+.sidebar-item:hover { background: #f0eeeb; }
+.sidebar-divider {
+  height: 1px; background: #eee; margin: 8px 16px;
+}
+
+/* Content area */
+.content {
+  flex: 1;
+  padding: 20px 24px;
+  background: #fff;
+}
+
+/* Dashboard cards */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+.stat-card {
+  background: #faf8f6;
+  border-radius: 10px;
+  padding: 16px;
+}
+.stat-card .label {
+  font-size: 0.75rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+.stat-card .value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #011a38;
+}
+.stat-card .trend {
+  font-size: 0.75rem;
+  margin-top: 4px;
+}
+.stat-card .trend.up { color: #2a7a3a; }
+.stat-card .trend.down { color: #b85a20; }
+
+/* Data table */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+}
+.data-table th {
+  text-align: left;
+  padding: 8px 12px;
+  font-size: 0.75rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid #eee;
+}
+.data-table td {
+  padding: 10px 12px;
+  font-size: 0.85rem;
+  border-bottom: 1px solid #f0eeeb;
+  color: #444;
+}
+.data-table tr:hover td { background: #faf8f6; }
+.status {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.status.draft { background: #fef0e8; color: #b85a20; }
+.status.done { background: #e8f0e8; color: #2a7a3a; }
+.status.progress { background: #fef8e0; color: #9a7a20; }
+
+/* Features section */
+.features-section {
+  margin-top: 16px;
+  background: #faf8f6;
+  border-radius: 10px;
+  padding: 16px;
+}
+.features-section h3 {
+  font-size: 0.85rem;
+  color: #011a38;
+  margin-bottom: 10px;
+}
+.feature-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  padding: 4px 12px 4px 8px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  color: #555;
+  margin: 3px;
+  border: 1px solid #eee;
+}
+.feature-item .check { color: #2a7a3a; font-weight: 700; }
+
+/* Price badge */
+.price-badge {
+  display: inline-flex;
+  align-items: center;
+  background: #d4a853;
+  color: #011a38;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+/* Loading placeholder animation */
+@keyframes shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+}
+.shimmer {
+  background: linear-gradient(90deg, #f0eeeb 25%, #e8e4df 50%, #f0eeeb 75%);
+  background-size: 200px 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Footer watermark */
+.watermark {
+  text-align: center;
+  padding: 8px;
+  font-size: 0.65rem;
+  color: rgba(0,0,0,0.15);
+  border-top: 1px solid #f0eeeb;
+  background: #faf8f6;
+  letter-spacing: 1px;
+}
+</style>
+</head>
+<body>
+
+<div class="browser">
+  <!-- Chrome bar -->
+  <div class="chrome">
+    <div class="chrome-dots">
+      <div class="chrome-dot"></div>
+      <div class="chrome-dot"></div>
+      <div class="chrome-dot"></div>
+    </div>
+    <div class="chrome-url">https://sgctech.ai/odoo19/&#x2714; SGC - Rental Management</div>
+  </div>
+
+  <!-- Odoo Top Bar -->
+  <div class="odoo-topbar">
+    <div class="logo">
+      <svg width="22" height="22" viewBox="0 0 192 192"><circle cx="96" cy="96" r="88" fill="none" stroke="#d4a853" stroke-width="6"/><text x="96" y="116" text-anchor="middle" fill="#d4a853" font-size="72" font-weight="800" font-family="sans-serif">S</text></svg>
+      <span>SGC</span> TECH AI
+    </div>
+    <input class="search" placeholder="Search..." readonly>
+    <div class="user">
+      <span>Administrator</span>
+      <div class="avatar">A</div>
+    </div>
+  </div>
+
+  <!-- Module Header -->
+  <div class="module-header">
+    <div class="module-header-left">
+      <h1>SGC - Rental Management</h1>
+      <span class="app-badge">App</span>
+      <span class="version">v19.0</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div class="price-badge">$75</div>
+      <div class="module-actions">
+        <button class="btn btn-secondary">Filter</button>
+        <button class="btn btn-create">+ New</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Layout -->
+  <div class="main-layout">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-item active">Rental Management</div>
+      <div class="sidebar-item">Dashboard</div>
+      <div class="sidebar-item">All Records</div>
+      <div class="sidebar-item">Reports</div>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-item">Configuration</div>
+      <div class="sidebar-item">Settings</div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+      <!-- Stats -->
+      <div class="dashboard-grid">
+        <div class="stat-card">
+          <div class="label">Total Records</div>
+          <div class="value">284</div>
+          <div class="trend up">&#9650; +12% this month</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Active</div>
+          <div class="value">142</div>
+          <div class="trend up">&#9650; +8%</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Pending</div>
+          <div class="value">31</div>
+          <div class="trend down">&#9660; -3%</div>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <table class="data-table">
+        <tr>
+          <th>Name</th>
+          <th>Status</th>
+          <th>Created</th>
+          <th>Assigned To</th>
+        </tr>
+        <tr>
+          <td>Record #001</td>
+          <td><span class="status done">Completed</span></td>
+          <td>2026-06-15</td>
+          <td>John Doe</td>
+        </tr>
+        <tr>
+          <td>Record #002</td>
+          <td><span class="status progress">In Progress</span></td>
+          <td>2026-06-14</td>
+          <td>Jane Smith</td>
+        </tr>
+        <tr>
+          <td>Record #003</td>
+          <td><span class="status draft">Draft</span></td>
+          <td>2026-06-13</td>
+          <td>Sarah Lee</td>
+        </tr>
+        <tr>
+          <td>Record #004</td>
+          <td><span class="status done">Completed</span></td>
+          <td>2026-06-12</td>
+          <td>Mike Brown</td>
+        </tr>
+      </table>
+
+      <!-- Features -->
+      <div class="features-section">
+        <h3>Key Features</h3>
+        <div>
+      <div class="feature-item"><span class="check">&#10003;</span><span>Property Sale & Rental Management</span></div>
+      <div class="feature-item"><span class="check">&#10003;</span><span>Lease Contract Management</span></div>
+      <div class="feature-item"><span class="check">&#10003;</span><span>Landlord & Tenant Database</span></div>
+      <div class="feature-item"><span class="check">&#10003;</span><span>Maintenance Requests & Staff Assignment</span></div>
+      <div class="feature-item"><span class="check">&#10003;</span><span>Recurring Invoices (Monthly/Quarterly)</span></div>
+      <div class="feature-item"><span class="check">&#10003;</span><span>Flexible Payment Plans</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="watermark">SGC TECH AI &bull; Odoo 19.0 &bull; SGC - Rental Management</div>
+</div>
+
+</body>
+</html>

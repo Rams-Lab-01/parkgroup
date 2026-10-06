@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <!-- ============================================================ -->
+        <!-- REPORT ACTIONS - MUST LOAD BEFORE VIEWS THAT REFERENCE THEM  -->
+        <!-- ============================================================ -->
+
+        <!-- Sales Offer Report Action (Client Proposal/Quotation) -->
+        <record id="action_report_sales_offer" model="ir.actions.report">
+            <field name="name">Sales Offer</field>
+            <field name="model">property.vendor</field>
+            <field name="report_type">qweb-pdf</field>
+<field name="report_name">sgc_offplan_rental_property_management.sales_offer_template</field>
+<field name="report_file">sgc_offplan_rental_property_management.sales_offer_template</field>
+            <field name="binding_model_id" ref="model_property_vendor"/>
+            <field name="binding_type">report</field>
+            <field name="print_report_name">'Sales Offer - %s' % (object.name or object.sold_seq)</field>
+            <field name="paperformat_id" ref="sgc_offplan_rental_property_management.paperformat_property_report"/>
+        </record>
+
+        <!-- Sales Offer Report Action for Property Details (Initial Client Proposal) -->
+        <record id="action_report_sales_offer_property" model="ir.actions.report">
+            <field name="name">Sales Offer</field>
+            <field name="model">property.details</field>
+            <field name="report_type">qweb-pdf</field>
+<field name="report_name">sgc_offplan_rental_property_management.sales_offer_property_template</field>
+<field name="report_file">sgc_offplan_rental_property_management.sales_offer_property_template</field>
+            <field name="binding_model_id" ref="model_property_details"/>
+            <field name="binding_type">report</field>
+            <field name="print_report_name">'Sales Offer - %s' % (object.name or object.property_seq)</field>
+            <field name="paperformat_id" ref="sgc_offplan_rental_property_management.paperformat_property_report"/>
+        </record>
+
+        <!-- Sales Purchase Agreement Report Action (Formal Legal Contract) -->
+        <record id="action_report_sales_purchase_agreement" model="ir.actions.report">
+            <field name="name">Sales Purchase Agreement</field>
+            <field name="model">property.vendor</field>
+            <field name="report_type">qweb-pdf</field>
+<field name="report_name">sgc_offplan_rental_property_management.sales_purchase_agreement_template</field>
+<field name="report_file">sgc_offplan_rental_property_management.sales_purchase_agreement_template</field>
+            <field name="binding_model_id" ref="model_property_vendor"/>
+            <field name="binding_type">report</field>
+            <field name="print_report_name">'Sales Purchase Agreement - %s' % (object.sold_seq)</field>
+            <field name="paperformat_id" ref="sgc_offplan_rental_property_management.paperformat_property_report"/>
+        </record>
+
+        <!-- Sales Purchase Agreement Report Action, bound directly to sale.contract
+             (the formal contract record). Renders the same template, guarded to work
+             whether it is printed from property.vendor or from sale.contract, and
+             whether or not the contract has any installments generated yet. -->
+        <record id="action_report_sales_purchase_agreement_contract" model="ir.actions.report">
+            <field name="name">Sales Purchase Agreement</field>
+            <field name="model">sale.contract</field>
+            <field name="report_type">qweb-pdf</field>
+<field name="report_name">sgc_offplan_rental_property_management.sales_purchase_agreement_contract_template</field>
+<field name="report_file">sgc_offplan_rental_property_management.sales_purchase_agreement_contract_template</field>
+            <field name="binding_model_id" ref="model_sale_contract"/>
+            <field name="binding_type">report</field>
+            <field name="print_report_name">'Sales Purchase Agreement - %s' % (object.name)</field>
+            <field name="paperformat_id" ref="sgc_offplan_rental_property_management.paperformat_property_report"/>
+        </record>
+
+        <!-- Statement of Account Report Action (re-bound: template now references real
+             account.move fields; see report/statement_of_account_template.xml) -->
+        <record id="action_report_statement_of_account" model="ir.actions.report">
+            <field name="name">Statement of Account</field>
+            <field name="model">account.move</field>
+            <field name="report_type">qweb-pdf</field>
+<field name="report_name">sgc_offplan_rental_property_management.statement_of_account_template</field>
+<field name="report_file">sgc_offplan_rental_property_management.statement_of_account_template</field>
+            <field name="binding_model_id" ref="account.model_account_move"/>
+            <field name="binding_type">report</field>
+            <field name="print_report_name">'Statement - %s' % (object.name)</field>
+            <field name="paperformat_id" ref="sgc_offplan_rental_property_management.paperformat_property_report"/>
+        </record>
+
+        <!-- Payment Schedule Report Action -->
+        <record id="action_report_payment_schedule" model="ir.actions.report">
+            <field name="name">Payment Schedule</field>
+            <field name="model">payment.schedule</field>
+            <field name="report_type">qweb-pdf</field>
+<field name="report_name">sgc_offplan_rental_property_management.payment_schedule_report_template</field>
+<field name="report_file">sgc_offplan_rental_property_management.payment_schedule_report_template</field>
+            <field name="binding_model_id" ref="model_payment_schedule"/>
+            <field name="binding_type">report</field>
+            <field name="print_report_name">'Payment Schedule - %s' % (object.name)</field>
+            <field name="paperformat_id" ref="sgc_offplan_rental_property_management.paperformat_property_report"/>
+        </record>
+
+        <!-- Tenancy Contract Report Action (Ejari-style) -->
+        <record id="action_report_rent_contract" model="ir.actions.report">
+            <field name="name">Tenancy Contract</field>
+            <field name="model">rent.contract</field>
+            <field name="report_type">qweb-pdf</field>
+<field name="report_name">sgc_offplan_rental_property_management.rent_contract_report_template</field>
+<field name="report_file">sgc_offplan_rental_property_management.rent_contract_report_template</field>
+            <field name="binding_model_id" ref="model_rent_contract"/>
+            <field name="binding_type">report</field>
+            <field name="print_report_name">'Tenancy Contract - %s' % (object.name)</field>
+            <field name="paperformat_id" ref="sgc_offplan_rental_property_management.paperformat_property_report"/>
+        </record>
+
+        <!-- Maintenance / AMC Contract Report Action -->
+        <record id="action_report_maintenance_contract" model="ir.actions.report">
+            <field name="name">Maintenance Contract</field>
+            <field name="model">maintenance.request</field>
+            <field name="report_type">qweb-pdf</field>
+<field name="report_name">sgc_offplan_rental_property_management.maintenance_contract_report_template</field>
+<field name="report_file">sgc_offplan_rental_property_management.maintenance_contract_report_template</field>
+            <field name="binding_model_id" ref="maintenance.model_maintenance_request"/>
+            <field name="binding_type">report</field>
+            <field name="print_report_name">'Maintenance Contract - %s' % (object.name)</field>
+            <field name="paperformat_id" ref="sgc_offplan_rental_property_management.paperformat_property_report"/>
+        </record>
+
+        <!-- Booking Agreement Report Action (Printable Client Document) -->
+        <record id="action_report_booking_agreement" model="ir.actions.report">
+            <field name="name">Booking Agreement</field>
+            <field name="model">property.vendor</field>
+            <field name="report_type">qweb-pdf</field>
+<field name="report_name">sgc_offplan_rental_property_management.booking_agreement_template</field>
+<field name="report_file">sgc_offplan_rental_property_management.booking_agreement_template</field>
+            <field name="binding_model_id" ref="model_property_vendor"/>
+            <field name="binding_type">report</field>
+            <field name="print_report_name">'Booking Agreement - %s' % (object.name or object.sold_seq)</field>
+            <field name="paperformat_id" ref="sgc_offplan_rental_property_management.paperformat_property_report"/>
+        </record>
+
+    </odoo>

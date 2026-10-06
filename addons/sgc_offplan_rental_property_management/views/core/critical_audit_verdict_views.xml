@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Critical-Change Audit (Rev 3 design 9) - the verification VERDICT.
+
+        WHY THIS FILE EXISTS AT ALL
+        sgc.critical.audit.verdict had NO view of any kind. It was reachable only
+        because the model carries mail.thread, so its rows surface as
+        mail.activity targets. Opening one from Activity > My Activities asks the
+        client for a form view of a model that has none, Odoo synthesises an
+        effectively empty arch (get_views returned a 1-byte body), and the user
+        got a blank page: no sheet, no fields, and no chatter.
+
+        The model DOES inherit mail.thread + mail.activity.mixin, so
+        message_follower_ids / message_ids / activity_ids all exist on the table.
+        The chatter was never missing from the model; it was missing from a view
+        that did not exist.
+
+        READ-ONLY BY CONSTRUCTION
+        ir.model.access for this model grants perm_read only; create/write/unlink
+        are false for every group (see security/critical_audit_security.xml). The
+        form is therefore create="false" edit="false" delete="false". A verdict is
+        an append-only audit artefact; rewriting one would invalidate the audit it
+        is part of, so there is deliberately no write path here.
+    -->
+
+    <record id="critical_audit_verdict_list" model="ir.ui.view">
+        <field name="name">sgc.critical.audit.verdict.list</field>
+        <field name="model">sgc.critical.audit.verdict</field>
+        <field name="arch" type="xml">
+            <list string="Critical Audit Verdicts"
+                  create="false" delete="false" edit="false"
+                  decoration-danger="verdict == 'broken' or verdict == 'error'"
+                  decoration-warning="verdict == 'partial'"
+                  decoration-success="verdict == 'verified'">
+                <field name="run_at"/>
+                <field name="verdict"/>
+                <field name="trigger"/>
+                <field name="event_count" string="Events"/>
+                <field name="gaps" string="Gaps"/>
+                <field name="collisions" string="Collisions"/>
+                <field name="unattestable" string="Unattestable"/>
+                <field name="alert_fired" string="Alert" widget="boolean_toggle"
+                       optional="show"/>
+                <field name="duration_ms" string="ms" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company"
+                       optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="critical_audit_verdict_form" model="ir.ui.view">
+        <field name="name">sgc.critical.audit.verdict.form</field>
+        <field name="model">sgc.critical.audit.verdict</field>
+        <field name="arch" type="xml">
+            <form string="Critical Audit Verdict"
+                  create="false" delete="false" edit="false">
+                <header>
+                    <field name="verdict" widget="statusbar"
+                           statusbar_visible="verified,partial,broken,error"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="run_at" readonly="1"/></h1>
+                        <h3>
+                            <field name="trigger" readonly="1"/>
+                            <span class="text-muted">&#183;</span>
+                            <field name="company_id" readonly="1"
+                                   groups="base.group_multi_company"/>
+                        </h3>
+                    </div>
+
+                    <group>
+                        <group string="Outcome">
+                            <field name="ok" readonly="1"/>
+                            <field name="alert_fired" readonly="1"/>
+                            <field name="alert_class" readonly="1"
+                                   invisible="not alert_fired"/>
+                            <field name="coverage" readonly="1"/>
+                            <field name="duration_ms" readonly="1"/>
+                        </group>
+                        <group string="Chain Integrity">
+                            <field name="last_chain_no" readonly="1"/>
+                            <field name="event_count" readonly="1"/>
+                            <field name="gaps" readonly="1"/>
+                            <field name="collisions" readonly="1"/>
+                            <field name="attested" readonly="1"/>
+                            <field name="unattestable" readonly="1"/>
+                            <field name="unattestable_beyond_epoch" readonly="1"/>
+                            <field name="outgoing_failures" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group string="Scope">
+                        <field name="tenant_uuid" readonly="1"/>
+                    </group>
+
+                    <notebook>
+                        <page string="First Divergence" name="divergence"
+                              invisible="not first_divergence">
+                            <field name="first_divergence" nolabel="1" readonly="1"/>
+                        </page>
+                        <page string="Error" name="error" invisible="not error_text">
+                            <div class="alert alert-danger" role="alert">
+                                <field name="error_text" nolabel="1" readonly="1"/>
+                            </div>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="critical_audit_verdict_search" model="ir.ui.view">
+        <field name="name">sgc.critical.audit.verdict.search</field>
+        <field name="model">sgc.critical.audit.verdict</field>
+        <field name="arch" type="xml">
+            <search string="Critical Audit Verdicts">
+                <field name="verdict"/>
+                <field name="trigger"/>
+                <field name="company_id"/>
+                <field name="run_at"/>
+                <filter name="filter_verified" string="Verified"
+                        domain="[('verdict','=','verified')]"/>
+                <filter name="filter_partial" string="Partial"
+                        domain="[('verdict','=','partial')]"/>
+                <filter name="filter_broken" string="Broken"
+                        domain="[('verdict','=','broken')]"/>
+                <filter name="filter_error" string="Errored"
+                        domain="[('verdict','=','error')]"/>
+                <separator/>
+                <filter name="filter_problems" string="Needs Attention"
+                        domain="[('verdict','in',['broken','error'])]"/>
+                <filter name="filter_alerted" string="Alert Fired"
+                        domain="[('alert_fired','=',True)]"/>
+                <separator/>
+                <filter name="filter_today" string="Today"
+                        domain="[('run_at','&gt;=',context_today().strftime('%Y-%m-%d 00:00:00'))]"/>
+                <separator/>
+                <filter name="group_verdict" string="Verdict"
+                        context="{'group_by': 'verdict'}"/>
+                <filter name="group_trigger" string="Trigger"
+                        context="{'group_by': 'trigger'}"/>
+                <filter name="group_run_at" string="Run At"
+                        context="{'group_by': 'run_at'}"/>
+                <filter name="group_company" string="Company"
+                        context="{'group_by': 'company_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_critical_audit_verdicts" model="ir.actions.act_window">
+        <field name="name">Verification Verdicts</field>
+        <field name="res_model">sgc.critical.audit.verdict</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="critical_audit_verdict_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No verdict recorded yet.</p>
+            <p>
+                Each scheduled verification run appends one append-only verdict.
+                Nothing here is ever edited or deleted.
+            </p>
+        </field>
+    </record>
+
+    <!--
+        The verdict was previously unreachable from the UI: no action bound it, so
+        the only way to see one was to click through from an activity. Same group
+        gate as the rest of the audit UI.
+    -->
+    <menuitem
+        id="menu_critical_audit_verdicts"
+        name="Verification Verdicts"
+        action="action_critical_audit_verdicts"
+        parent="menu_critical_audit_root"
+        sequence="5"
+        groups="sgc_offplan_rental_property_management.sgc_audit_viewer_group"/>
+</odoo>

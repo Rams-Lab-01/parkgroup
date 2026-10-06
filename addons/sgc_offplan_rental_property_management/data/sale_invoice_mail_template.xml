@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record id="sale_invoice_payment_mail_template" model="mail.template">
+            <field name="name">Property Sale Invoice Template</field>
+            <field name="model_id" ref="account.model_account_move" />
+            <field name="subject">{{ object.sold_id.property_id.name }} Invoice Reminder</field>
+            <field name="email_from">{{object.company_id.email}}</field>
+            <field name="partner_to">{{ object.partner_id.id }}</field>
+            <field name="body_html" type="html">
+                <table style="width:100%">
+                    <tr>
+                        <td> Dear Tenant <br />
+                            <h4>
+                                <strong>
+                                    <span t-field="object.partner_id.name" />
+                                </strong>
+                            </h4>
+                        </td>
+                    </tr>
+                </table>
+                <hr />
+                <p> This is a friendly reminder that your upcoming invoice <strong>
+                        <span t-field="object.name" />
+                    </strong> has been created
+                    for your property at <strong>
+                        <span t-field="object.sold_id.property_id.name" />
+                    </strong>
+                    . The payment is due on <strong>
+                        <span t-field="object.invoice_date" />
+                    </strong> . Please
+                    ensure that the outstanding balance is settled before the due date to avoid any
+                    late payment charges. </p>
+                <p>
+                    If you have any questions or concerns regarding your invoice, please do not
+                    hesitate to contact
+                    our customer support team
+                </p>
+                <p>
+                    <strong>
+                        <h6>
+                            Please see the attached document for the details of the invoice.
+                        </h6>
+                    </strong>
+                </p>
+                <h6>
+                    Best Regards
+                </h6>
+                <h5>
+                    <strong>
+                        <t t-out="object.company_id.name" />
+                    </strong>
+                </h5>
+                <hr />
+                <span>
+                    <h6>
+                        <t t-out="object.company_id.name" />
+                    </h6>
+                    <t t-out="object.company_id.phone" />
+                    <br />
+                    <t t-out="object.company_id.email" />
+                    <br />
+                    <t t-out="object.company_id.website" />
+                </span>
+
+            </field>
+            <field name="report_template_ids" eval="[(4, ref('account.account_invoices'))]" />
+            <field name="auto_delete" eval="False" />
+        </record>
+    </odoo>

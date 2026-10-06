@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="module_rental_suite" model="ir.module.category">
+            <field name="name">Property Management</field>
+            <field name="description">Access rights for property management (core management, portal syndication, website)</field>
+        </record>
+        <record id="res_groups_privilege_rental_suite" model="res.groups.privilege">
+            <field name="name">Property Management</field>
+            <field name="category_id" ref="module_rental_suite"/>
+        </record>
+
+        <record id="property_rental_officer" model="res.groups">
+            <field name="name">Officer</field>
+            <field name="privilege_id" ref="res_groups_privilege_rental_suite"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+        <record id="property_rental_manager" model="res.groups">
+            <field name="name">Manager</field>
+            <field name="privilege_id" ref="res_groups_privilege_rental_suite"/>
+            <field name="implied_ids" eval="[(4, ref('property_rental_officer'))]"/>
+        </record>
+
+        <record id="group_portal_user" model="res.groups">
+            <field name="name">Portal Syndication User</field>
+            <field name="privilege_id" ref="res_groups_privilege_rental_suite"/>
+        </record>
+        <record id="group_portal_manager" model="res.groups">
+            <field name="name">Portal Syndication Manager</field>
+            <field name="privilege_id" ref="res_groups_privilege_rental_suite"/>
+            <field name="implied_ids" eval="[(4, ref('group_portal_user'))]"/>
+        </record>
+        <record id="group_portal_admin" model="res.groups">
+            <field name="name">Portal Syndication Admin</field>
+            <field name="privilege_id" ref="res_groups_privilege_rental_suite"/>
+            <field name="implied_ids" eval="[(4, ref('group_portal_manager'))]"/>
+        </record>
+    </data>
+</odoo>

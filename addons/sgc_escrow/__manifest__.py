@@ -59,10 +59,10 @@ released against bank approval.
         "views/res_config_setting_view.xml",
         # Report actions must exist before menus reference them.
         "data/report_actions.xml",
+        # Wizard view/action must exist before menus reference the action.
+        "wizard/views/escrow_allocation_import_views.xml",
         # Menus last (they reference the actions above)
         "views/menus.xml",
-        # Wizard
-        "wizard/views/escrow_allocation_import_views.xml",
         # QWeb templates
         "report/escrow_project_statement_template.xml",
         "report/escrow_allocation_register_template.xml",

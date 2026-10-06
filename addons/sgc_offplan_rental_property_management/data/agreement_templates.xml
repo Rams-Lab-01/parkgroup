@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="agreement_template_dld_form_f_ready" model="agreement.template">
+            <field name="name">DLD Form F - Ready Property Sale Agreement</field>
+            <field name="description">Official Dubai Land Department Form F (MOU) for secondary market ready property sales. Contains all 26 mandatory clauses per government standard.</field>
+            <field name="model">sale.contract</field>
+            <field name="agreement" type="html">
+                &lt;h2 style="text-align:center; color:#1a3a5c;"&gt;DUBAI LAND DEPARTMENT&lt;/h2&gt;
+                &lt;h3 style="text-align:center;"&gt;FORM F - MEMORANDUM OF UNDERSTANDING&lt;/h3&gt;
+                &lt;h4 style="text-align:center;"&gt;SALE AND PURCHASE AGREEMENT FOR READY PROPERTY&lt;/h4&gt;
+                &lt;p style="text-align:center;"&gt;&lt;em&gt;Unified Real Estate Contract - Secondary Market Transaction&lt;/em&gt;&lt;/p&gt;
+                &lt;hr/&gt;
+                &lt;p&gt;This Memorandum of Understanding is entered into through the Dubai Land Department REST platform, in accordance with the regulations of the Emirate of Dubai and the Real Estate Regulatory Agency (RERA).&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 1 - The Preamble&lt;/strong&gt;&lt;br/&gt;The above introduction is an integral part of this agreement and shall be read and construed therewith.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 2 - Ownership Confirmation&lt;/strong&gt;&lt;br/&gt;By signing this agreement, the Seller confirms and undertakes that he is the current owner of the property or his legal representative under legal power of attorney duly authorized by the competent authorities.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 3 - Superseding Clause&lt;/strong&gt;&lt;br/&gt;The parties agree to consider any conditions or clauses contained in any other document or agreement in a manner contrary to what is explicitly agreed in this contract is not valid against them.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 4 - Seller Obligation to Transfer&lt;/strong&gt;&lt;br/&gt;The Seller undertakes to provide all documents proving ownership and to complete all procedures to transfer the property to the Buyers name immediately after taking possession of the agreed price.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 5 - Amendments and Extensions&lt;/strong&gt;&lt;br/&gt;Any amendment or extension of the deadline dates hereof shall be carried out by mutual agreement of both parties in writing and signed by each of them.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 6 - Payment Terms&lt;/strong&gt;&lt;br/&gt;The Buyer agrees to pay to the Seller the total purchase price as follows: (A) Deposit cheque simultaneously with signing; (B) Balance amount by Manager Cheque or DLD-approved secure payment method.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 7 - Deposit Trust Provisions&lt;/strong&gt;&lt;br/&gt;The Deposit Cheque is kept as a trust. It is not permissible to dispose of the Deposit Cheque or cash it without obtaining a written order from both the Seller and the Buyer together.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 8 - Sellers Right to Cash Deposit&lt;/strong&gt;&lt;br/&gt;The Seller is not entitled to cash the deposit cheque until after completion of the real estate registration procedures, or the Buyer fails to complete the transfer on the agreed date.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 9 - Mortgage Application&lt;/strong&gt;&lt;br/&gt;If this Contract is conditional upon Buyer obtaining a financial loan, Buyer shall make written loan application within five (5) working days after execution of the Contract.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 10 - Loan Failure Provision&lt;/strong&gt;&lt;br/&gt;If the Buyer is unable to obtain such loan within thirty (30) days from execution, this Sales Contract shall be void and the full deposit shall be refunded to Buyer.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 11 - DLD Transfer Fees&lt;/strong&gt;&lt;br/&gt;Both parties agree to pay transfer fees (4.00%) to the Land Department, split equally (50% Seller, 50% Buyer) unless otherwise agreed.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 12 - Buyer Default&lt;/strong&gt;&lt;br/&gt;In the event that the Buyer fails to pay or complete the transfer on the agreed date, the Seller has the right to terminate this agreement and retain the deposit.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 13 - Property Handover&lt;/strong&gt;&lt;br/&gt;The Seller undertakes to hand over the property on the date of transfer as previewed when signing the contract, along with any lease agreements if applicable.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 14 - Sellers Delay Compensation&lt;/strong&gt;&lt;br/&gt;In the event of breach to hand over the property, the Seller shall compensate the Buyer for the entire period of delay.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 15 - Sellers Failure to Complete&lt;/strong&gt;&lt;br/&gt;If the Seller fails to complete the transfer, the full deposit will be refunded to the Buyer, and the Seller agrees to pay same deposit amount as compensation.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 16 - Fixed Sale Price&lt;/strong&gt;&lt;br/&gt;Both parties confirm the sale price is fixed and shall not increase or decrease regardless of market price changes.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 17 - Settlement of Obligations&lt;/strong&gt;&lt;br/&gt;The Seller undertakes to settle all outstanding penalties, taxes, charges or unpaid fees due to the developer or any third party prior to transfer.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 18 - Disclosure of Leases&lt;/strong&gt;&lt;br/&gt;The Seller confirms the property does not have any lease agreements or restrictions unless clearly mentioned in this agreement.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 19 - Property Free of Encumbrances&lt;/strong&gt;&lt;br/&gt;The Seller confirms the property is free of any disputes, mortgages, debts, rights, or any other unknown claims.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 20 - Buyers Inspection&lt;/strong&gt;&lt;br/&gt;The Buyer acknowledges that he inspected and previewed the property and agreed to buy it in its current condition.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 21 - Governing Law&lt;/strong&gt;&lt;br/&gt;This agreement is governed by local and federal laws applicable within the Emirate of Dubai.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 22 - Dispute Resolution&lt;/strong&gt;&lt;br/&gt;Any dispute shall be resolved amicably within (7) days. If unresolved, it shall be referred to the competent courts in the Emirate of Dubai.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 23 - Exclusive Jurisdiction&lt;/strong&gt;&lt;br/&gt;The parties agree to adopt the terms of this contract exclusively to resolve any future dispute.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 24 - Entire Agreement&lt;/strong&gt;&lt;br/&gt;By signing this agreement, both parties approve that they agreed to all its terms and conditions.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 25 - Language Precedence&lt;/strong&gt;&lt;br/&gt;In case of discrepancy between Arabic and English texts, the Arabic text shall prevail.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 26 - Enforceability&lt;/strong&gt;&lt;br/&gt;The parties have signed this agreement and its provisions shall be enforceable once both parties sign it.&lt;/p&gt;
+                &lt;hr/&gt;
+                &lt;p&gt;&lt;em&gt;This document is generated through the Dubai Land Department REST platform. All parties must sign digitally via UAE Pass or the DLD REST application.&lt;/em&gt;&lt;/p&gt;
+            </field>
+        </record>
+
+        <record id="agreement_template_offplan_spa" model="agreement.template">
+            <field name="name">Off-Plan SPA - Sales and Purchase Agreement</field>
+            <field name="description">RERA-compliant SPA for off-plan property purchases. Includes escrow, Oqood, construction milestones per Law No. 13 of 2008.</field>
+            <field name="model">sale.contract</field>
+            <field name="agreement" type="html">
+                &lt;h2 style="text-align:center; color:#1a3a5c;"&gt;SALES AND PURCHASE AGREEMENT&lt;/h2&gt;
+                &lt;h3 style="text-align:center;"&gt;OFF-PLAN PROPERTY&lt;/h3&gt;
+                &lt;p style="text-align:center;"&gt;&lt;em&gt;Pursuant to Law No. 13 of 2008 and Law No. 8 of 2007 (Escrow Account Law)&lt;/em&gt;&lt;/p&gt;
+                &lt;hr/&gt;
+                &lt;p&gt;This Sales and Purchase Agreement (SPA) is entered into between the Developer/Seller and the Purchaser/Buyer for the purchase of an off-plan real property unit.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 1 - Definitions&lt;/strong&gt;&lt;br/&gt;Developer means the Seller who owns or has the right to develop the land. Purchaser means the Buyer. Unit means the designated real property unit. Escrow Account means the project-specific account with a RERA-approved bank. Oqood means the Interim Property Register maintained by DLD.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 2 - Unit Description&lt;/strong&gt;&lt;br/&gt;The Developer agrees to sell and the Purchaser agrees to purchase the designated unit as described in the property particulars section of this agreement.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 3 - Purchase Price and Payment&lt;/strong&gt;&lt;br/&gt;The total purchase price is payable as follows: (A) Booking Deposit payable upon signing; (B) Construction Milestone Payments as per Payment Schedule; (C) Balance on handover.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 4 - Escrow Account Protection&lt;/strong&gt;&lt;br/&gt;All payments shall be deposited into the project-specific Escrow Account held with a RERA-approved bank. The Developer shall not withdraw funds except in accordance with verified construction milestones certified by an independent engineer.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 5 - Oqood Registration&lt;/strong&gt;&lt;br/&gt;This Agreement shall be registered with the Dubai Land Department through the Oqood system. The Developer shall submit all necessary documents for registration promptly after execution.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 6 - Developers Obligations&lt;/strong&gt;&lt;br/&gt;The Developer undertakes to construct the Unit per approved plans, complete the project within the timeline, use Escrow funds solely for this project, provide progress updates, deliver the Unit per specifications, and obtain the Completion Certificate.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 7 - Purchasers Obligations&lt;/strong&gt;&lt;br/&gt;The Purchaser undertakes to make all payments according to schedule, comply with SPA terms, complete all payments before handover, and accept delivery upon completion notice.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 8 - Completion Date and Grace Period&lt;/strong&gt;&lt;br/&gt;The anticipated completion date is as specified. The Developer shall have a grace period of twelve (12) months beyond the Anticipated Completion Date to complete and deliver the Unit.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 9 - Handover Procedures&lt;/strong&gt;&lt;br/&gt;Upon completion, the Developer shall notify the Purchaser with minimum thirty (30) days notice. The Purchaser shall inspect the Unit, report defects within fourteen (14) days, pay outstanding amounts, and accept delivery.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 10 - Title Deed Transfer&lt;/strong&gt;&lt;br/&gt;Upon completion of all payments and handover, the Developer shall transfer ownership by registering the Unit in the DLD Property Register and obtaining the Title Deed.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 11 - Late Payment Penalties&lt;/strong&gt;&lt;br/&gt;If the Purchaser fails to make any payment by its due date, a penalty of 1% per month on the outstanding amount may apply. If default continues beyond sixty (60) days, the Developer may invoke remedies under Law No. 19 of 2017.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 12 - Buyer Default (Law No. 19 of 2017)&lt;/strong&gt;&lt;br/&gt;If the Purchaser fails to fulfill obligations: (a) Developer notifies DLD; (b) DLD serves 30-day notice; (c) Based on completion - Over 80%: Developer may retain all or terminate and retain up to 40%; 60-80%: terminate and retain up to 40%; Under 60%: terminate and retain up to 25%.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 13 - Developer Default - Delay Compensation&lt;/strong&gt;&lt;br/&gt;If the Developer fails to deliver within the grace period: (a) Purchaser may claim compensation; (b) Developer pays interest at 9% per annum; (c) If delay exceeds 12 months beyond grace, Purchaser may cancel and receive full refund.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 14 - Cancellation by Purchaser&lt;/strong&gt;&lt;br/&gt;The Purchaser may cancel if: Developer fails to complete within grace period, project is cancelled by RERA, or material deviations from specifications are found.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 15 - Assignment and Resale&lt;/strong&gt;&lt;br/&gt;The Purchaser may not assign or resell without prior written consent of the Developer and DLD registration of the assignment.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 16 - Force Majeure&lt;/strong&gt;&lt;br/&gt;Neither party shall be liable for delays caused by events beyond reasonable control, including natural disasters, war, pandemics, or government actions.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 17 - Specifications and Finishes&lt;/strong&gt;&lt;br/&gt;The Developer shall deliver the Unit per approved specifications, floor plans, and finishes. Material deviations require Purchaser consent.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 18 - Service Charges&lt;/strong&gt;&lt;br/&gt;The Purchaser shall be responsible for service charges and maintenance fees from handover date, as determined by the Owners Association and RERA regulations.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 19 - Governing Law&lt;/strong&gt;&lt;br/&gt;This Agreement is governed by the laws of the Emirate of Dubai, including Law No. 13 of 2008, Law No. 8 of 2007, and Law No. 19 of 2017.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 20 - Dispute Resolution&lt;/strong&gt;&lt;br/&gt;Disputes shall first be referred to DLD for mediation. If unresolved, referred to Dubai Courts or RDSC as applicable.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 21 - Entire Agreement&lt;/strong&gt;&lt;br/&gt;This Agreement and its Schedules constitute the entire agreement between the parties.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 22 - Language&lt;/strong&gt;&lt;br/&gt;In case of discrepancy between Arabic and English, the Arabic text shall prevail.&lt;/p&gt;
+                &lt;hr/&gt;
+                &lt;p&gt;&lt;em&gt;This SPA must be registered with the Dubai Land Department Oqood system. All payments must be made into the RERA-approved Escrow Account.&lt;/em&gt;&lt;/p&gt;
+            </field>
+        </record>
+
+        <record id="agreement_template_unified_tenancy_residential" model="agreement.template">
+            <field name="name">Unified Tenancy Contract - Residential Rental (Ejari)</field>
+            <field name="description">Official DLD Unified Tenancy Contract v1.4 for residential rentals. Mandatory for Ejari registration. Law No. 26 of 2007.</field>
+            <field name="model">rent.contract</field>
+            <field name="agreement" type="html">
+                &lt;h2 style="text-align:center; color:#1a3a5c;"&gt;DUBAI LAND DEPARTMENT&lt;/h2&gt;
+                &lt;h3 style="text-align:center;"&gt;UNIFIED TENANCY CONTRACT - RESIDENTIAL&lt;/h3&gt;
+                &lt;p style="text-align:center;"&gt;&lt;em&gt;Ejari Registration Required - Version 1.4&lt;/em&gt;&lt;/p&gt;
+                &lt;hr/&gt;
+                &lt;p&gt;This Unified Tenancy Contract is entered into between the Landlord and Tenant for the lease of residential property in the Emirate of Dubai.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 1 - Inspection and Acceptance&lt;/strong&gt;&lt;br/&gt;The tenant has inspected the premises and agreed to lease the unit on its current condition.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 2 - Permitted Use and Subletting&lt;/strong&gt;&lt;br/&gt;Tenant undertakes to use the premises for designated residential purpose. Tenant has no rights to transfer or sublet the tenancy contract without landlords written approval.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 3 - Modifications and Alterations&lt;/strong&gt;&lt;br/&gt;The tenant undertakes not to make any amendments, modifications or addendums without landlords written approval. Tenant shall be liable for any damages.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 4 - Utility Responsibilities&lt;/strong&gt;&lt;br/&gt;The tenant shall be responsible for payment of all electricity, water, cooling and gas charges resulting from occupying the leased unit unless otherwise agreed in writing.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 5 - Rent Payment&lt;/strong&gt;&lt;br/&gt;The tenant must pay the rent amount in the manner and dates agreed with the landlord.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 6 - Compliance with Building Rules&lt;/strong&gt;&lt;br/&gt;The tenant fully undertakes to comply with all regulations related to the property management and common areas such as parking, swimming pools, gymnasium, etc.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 7 - Communication and Notifications&lt;/strong&gt;&lt;br/&gt;Tenancy contract parties declare all mentioned email addresses and phone numbers are correct. All formal and legal notifications will be sent to those addresses.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 8 - Landlords Obligations&lt;/strong&gt;&lt;br/&gt;The landlord undertakes to enable the tenant of the full use of the premises including its facilities and do the regular maintenance, unless otherwise agreed in writing.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 9 - Ownership Confirmation&lt;/strong&gt;&lt;br/&gt;The Landlord confirms and undertakes that he is the current owner of the property or his legal representative under power of attorney.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 10 - Dispute Resolution&lt;/strong&gt;&lt;br/&gt;Any dispute arising from this contract shall be settled by the Rental Disputes Settlement Centre (RDSC).&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 11 - Governing Law&lt;/strong&gt;&lt;br/&gt;This contract is subject to Law No. (26) of 2007 regulating the relation between landlords and tenants in Dubai, as amended by Law No. 33 of 2008.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 12 - Additional Conditions&lt;/strong&gt;&lt;br/&gt;Any additional condition will not be considered in case it conflicts with law.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 13 - Language Precedence&lt;/strong&gt;&lt;br/&gt;In case of discrepancy between Arabic and non-Arabic texts, the Arabic text shall prevail.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 14 - Ejari Registration&lt;/strong&gt;&lt;br/&gt;The landlord undertakes to register this tenancy contract on EJARI affiliated to Dubai Land Department and provide all required documents.&lt;/p&gt;
+                &lt;hr/&gt;
+                &lt;p&gt;&lt;em&gt;This contract must be registered with Ejari within 30 days of signing. Without Ejari registration, the contract has no legal standing for DEWA connection, visa renewals, or RDSC dispute resolution.&lt;/em&gt;&lt;/p&gt;
+            </field>
+        </record>
+
+        <record id="agreement_template_unified_tenancy_commercial" model="agreement.template">
+            <field name="name">Unified Tenancy Contract - Commercial Rental (Ejari)</field>
+            <field name="description">Official DLD Unified Tenancy Contract v1.4 for commercial rentals. Mandatory for Ejari registration. Includes trade license provisions.</field>
+            <field name="model">rent.contract</field>
+            <field name="agreement" type="html">
+                &lt;h2 style="text-align:center; color:#1a3a5c;"&gt;DUBAI LAND DEPARTMENT&lt;/h2&gt;
+                &lt;h3 style="text-align:center;"&gt;UNIFIED TENANCY CONTRACT - COMMERCIAL&lt;/h3&gt;
+                &lt;p style="text-align:center;"&gt;&lt;em&gt;Ejari Registration Required - Version 1.4 (Commercial Variant)&lt;/em&gt;&lt;/p&gt;
+                &lt;hr/&gt;
+                &lt;p&gt;This Unified Tenancy Contract is entered into between the Landlord and Tenant for the lease of commercial property in the Emirate of Dubai.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 1 - Inspection and Acceptance&lt;/strong&gt;&lt;br/&gt;The tenant has inspected the premises and agreed to lease the unit on its current condition.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 2 - Permitted Use&lt;/strong&gt;&lt;br/&gt;The tenant undertakes to use the premises solely for commercial/business purposes as specified in the tenants trade license. No other use without landlords prior written consent.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 3 - Trade License Requirement&lt;/strong&gt;&lt;br/&gt;The tenant shall maintain a valid trade license issued by the Department of Economy and Tourism (DET) for the duration of this tenancy.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 4 - Subletting and Assignment&lt;/strong&gt;&lt;br/&gt;The tenant shall not sublet, assign, or transfer this tenancy without landlords prior written consent and DLD registration of any sub-tenancy.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 5 - Modifications and Fit-Out&lt;/strong&gt;&lt;br/&gt;The tenant undertakes not to make any amendments without landlords written approval. All fit-out works must comply with Dubai Municipality and building management regulations.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 6 - Utility Responsibilities&lt;/strong&gt;&lt;br/&gt;The tenant shall be responsible for payment of all electricity, water, cooling, and gas charges. The tenant shall connect DEWA in the company/trade name.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 7 - Rent Payment&lt;/strong&gt;&lt;br/&gt;The tenant must pay the rent amount in the manner and dates agreed with the landlord.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 8 - Compliance with Building Rules&lt;/strong&gt;&lt;br/&gt;The tenant undertakes to comply with all regulations related to the property and common areas such as parking, loading docks, reception, security, etc.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 9 - Communication and Notifications&lt;/strong&gt;&lt;br/&gt;All mentioned email addresses and phone numbers are correct. All formal and legal notifications will be sent to those addresses.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 10 - Landlords Obligations&lt;/strong&gt;&lt;br/&gt;The landlord undertakes to enable the tenant of full use of the premises including facilities and regular maintenance, unless otherwise agreed in writing.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 11 - Ownership Confirmation&lt;/strong&gt;&lt;br/&gt;The Landlord confirms he is the current owner or legal representative under power of attorney.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 12 - Dispute Resolution&lt;/strong&gt;&lt;br/&gt;Any dispute shall be settled by the Rental Disputes Settlement Centre (RDSC).&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 13 - Governing Law&lt;/strong&gt;&lt;br/&gt;This contract is subject to Law No. (26) of 2007 as amended by Law No. 33 of 2008.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 14 - Language Precedence&lt;/strong&gt;&lt;br/&gt;In case of discrepancy between Arabic and non-Arabic texts, the Arabic text shall prevail.&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Clause 15 - Ejari Registration&lt;/strong&gt;&lt;br/&gt;The landlord undertakes to register this tenancy contract on EJARI and provide all required documents.&lt;/p&gt;
+                &lt;hr/&gt;
+                &lt;p&gt;&lt;em&gt;This contract must be registered with Ejari within 30 days of signing. Without Ejari registration, the contract has no legal standing for DEWA connection, trade license renewal, or RDSC dispute resolution.&lt;/em&gt;&lt;/p&gt;
+            </field>
+        </record>
+    </data>
+</odoo>

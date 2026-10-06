@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Critical-Change Audit (Rev 3 design §5.5) — Tier-1 reason wizard view.
+        Read-only invocation target: any user with base.group_user may open the
+        wizard (ACL = 1,0,0,0), matching the audit-viewer-only model of the suite.
+    -->
+    <record id="critical_audit_reason_wizard_form" model="ir.ui.view">
+        <field name="name">sgc.critical.audit.reason.wizard.form</field>
+        <field name="model">sgc.critical.audit.reason.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Reason Required for Audit">
+                <group>
+                    <group>
+                        <field name="model"/>
+                        <field name="res_id"/>
+                    </group>
+                    <group>
+                        <field name="operation"/>
+                        <field name="operation_kind" invisible="1"/>
+                        <field name="correlation_uuid"/>
+                        <field name="res_ids" invisible="not res_ids"/>
+                        <field name="target_count" invisible="1"/>
+                    </group>
+                </group>
+                <group string="Why is this change being made?">
+                    <field name="reason" placeholder="State the business justification for this logged change."/>
+                </group>
+                <p class="text-warning">
+                    This action is logged. Do not enter passwords, tokens, payment details,
+                    or unnecessary personal information.
+                </p>
+                <footer>
+                    <button name="action_confirm_and_unlink" string="Delete"
+                            type="object" class="btn-danger"
+                            invisible="operation_kind != 'unlink'"/>
+                    <button name="action_confirm" string="Confirm"
+                            type="object" class="btn-primary"
+                            invisible="operation_kind == 'unlink'"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

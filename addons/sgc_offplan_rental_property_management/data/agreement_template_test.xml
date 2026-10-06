@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="agreement_template_test" model="agreement.template">
+        <field name="name">Test Template</field>
+        <field name="description">Test</field>
+        <field name="model">sale.contract</field>
+        <field name="agreement" type="html">Test content</field>
+    </record>
+</odoo>

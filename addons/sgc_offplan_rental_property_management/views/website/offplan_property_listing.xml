@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="offplan_property_listing" name="Offplan Property Listing Page">
+        <t t-call="website.layout">
+            <t t-set="title">Available Properties</t>
+            <div class="container my-5">
+                <div class="row mb-4 align-items-center">
+                    <div class="col-md-8">
+                        <h1 class="mb-2">Available Properties</h1>
+                        <p class="text-muted">Browse our premium offplan property collection.</p>
+                    </div>
+                    <div class="col-md-4">
+                        <form class="search-box" method="get" action="/offplan/properties">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="search"
+                                       placeholder="Search property or city..."
+                                       t-att-value="search_term"/>
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary" type="submit">
+                                        <span class="fa fa-search" title="Search"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <form class="filter-section card mb-4" method="get" action="/offplan/properties">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <label class="font-weight-medium" for="prop_type">Type</label>
+                                <select class="form-control" name="property_type" id="prop_type">
+                                    <option value="">All Types</option>
+                                    <option t-foreach="property_types.items()" t-as="ptype"
+                                            t-att-value="ptype[0]"
+                                            t-att-selected="'selected' if filters.get('property_type') == ptype[0] else None"
+                                            t-esc="ptype[1]"/>
+                                </select>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="font-weight-medium" for="prop_state">Status</label>
+                                <select class="form-control" name="state" id="prop_state">
+                                    <option value="">All Status</option>
+                                    <option t-foreach="states.items()" t-as="st"
+                                            t-att-value="st[0]"
+                                            t-att-selected="'selected' if filters.get('state') == st[0] else None"
+                                            t-esc="st[1]"/>
+                                </select>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="font-weight-medium" for="prop_min">Min Price</label>
+                                <input type="number" class="form-control" name="min_price" id="prop_min" min="0" step="1000"
+                                       t-att-value="filters.get('min_price')" placeholder="e.g. 500000"/>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="font-weight-medium" for="prop_max">Max Price</label>
+                                <input type="number" class="form-control" name="max_price" id="prop_max" min="0" step="1000"
+                                       t-att-value="filters.get('max_price')" placeholder="e.g. 5000000"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <button class="btn btn-primary" type="submit">
+                                    <span class="fa fa-filter" title="Apply filters"></span> Apply Filters
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="property-grid">
+                    <div class="row" id="propertyContainer">
+                        <t t-if="properties">
+                            <div class="col-md-6 col-lg-4 mb-4" t-foreach="properties" t-as="prop">
+                                <div class="property-card card h-100 shadow-sm">
+                                    <div class="position-relative overflow-hidden" style="height: 220px;">
+                                        <img t-if="prop.image_512"
+                                             t-att-src="'/web/image/property.details/%s/image_512' % prop.id"
+                                             class="card-img-top" style="height:100%;width:100%;object-fit:cover;"
+                                             t-att-alt="prop.name"/>
+                                        <img t-else=""
+                                             t-att-src="'/web/static/src/img/placeholder.png'"
+                                             class="card-img-top" style="height:100%;width:100%;object-fit:cover;"/>
+                                        <div class="position-absolute" style="top:10px;right:10px;">
+                                            <span class="badge badge-primary" t-esc="dict(property_types).get(prop.property_type, prop.property_type)"/>
+                                        </div>
+                                        <t t-if="prop.state == 'available'">
+                                            <div class="position-absolute" style="bottom:10px;left:10px;">
+                                                <span class="badge badge-success">Available</span>
+                                            </div>
+                                        </t>
+                                        <t t-if="prop.state == 'sold'">
+                                            <div class="position-absolute" style="bottom:10px;left:10px;">
+                                                <span class="badge badge-secondary">Sold</span>
+                                            </div>
+                                        </t>
+                                    </div>
+                                    <div class="card-body d-flex flex-column">
+                                        <h5 class="card-title" t-esc="prop.name"/>
+                                        <p class="text-muted small mb-2" t-if="prop.city or prop.project_id">
+                                            <span class="fa fa-map-marker" title="Location"></span>
+                                            <span t-esc="prop.city or ''"/>
+                                            <t t-if="prop.project_id">
+                                                <span t-esc="', %s' % prop.project_id.name" t-if="prop.city"/>
+                                                <span t-esc="prop.project_id.name" t-if="not prop.city"/>
+                                            </t>
+                                        </p>
+                                        <div class="mb-3">
+                                            <span class="badge badge-info mr-1" t-esc="'%s bed' % prop.bedrooms if prop.bedrooms else 'Studio'"/>
+                                            <span class="badge badge-info mr-1" t-esc="'%s bath' % prop.bathrooms if prop.bathrooms else '1 bath'"/>
+                                            <span class="badge badge-info" t-esc="'{:,.0f} sqft'.format(prop.area) if prop.area else ''"/>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mt-auto">
+                                            <h4 class="text-primary mb-0" t-if="prop.sale_price">
+                                                <t t-esc="'AED %s' % '{:,.0f}'.format(prop.sale_price)"/>
+                                            </h4>
+                                            <h4 class="text-primary mb-0" t-if="not prop.sale_price and prop.price">
+                                                <t t-esc="'AED %s' % '{:,.0f}'.format(prop.price)"/>
+                                            </h4>
+                                            <a t-att-href="'/offplan/property/%s' % prop.id"
+                                               class="btn btn-sm btn-outline-primary">View Details</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                        <t t-if="not properties">
+                            <div class="col-12">
+                                <div class="alert alert-info text-center">
+                                    <span class="fa fa-info-circle" title="No results"></span>
+                                    No properties found. Try adjusting your filters.
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

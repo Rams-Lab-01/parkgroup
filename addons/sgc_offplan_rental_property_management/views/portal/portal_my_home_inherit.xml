@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_home_lease_tile" inherit_id="portal.portal_my_home"
+              name="Portal My Home: Lease Tile">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <div class="o_portal_category row g-2 mt-3" id="portal_lease_category">
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon" t-value="'/sgc_offplan_rental_property_management/static/src/img/portal-lease.svg'"/>
+                    <t t-set="title">My Lease</t>
+                    <t t-set="text">View your active tenancy contract</t>
+                    <t t-set="url" t-value="'/my/dashboard'"/>
+                    <t t-set="config_card" t-value="True"/>
+                </t>
+            </div>
+        </xpath>
+    </template>
+
+    <template id="portal_my_home_portfolio_tile" inherit_id="portal.portal_my_home"
+              name="Portal My Home: Landlord Portfolio Tile">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <div class="o_portal_category row g-2 mt-3" id="portal_portfolio_category">
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon" t-value="'/sgc_offplan_rental_property_management/static/src/img/portal-properties.svg'"/>
+                    <t t-set="title">My Properties</t>
+                    <t t-set="text">Manage your property portfolio</t>
+                    <t t-set="url" t-value="'/my/portfolio'"/>
+                    <t t-set="config_card" t-value="True"/>
+                </t>
+            </div>
+        </xpath>
+    </template>
+
+    <template id="portal_my_home_customer_tiles" inherit_id="portal.portal_my_home"
+              name="Portal My Home: Customer Tiles">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <div class="o_portal_category row g-2 mt-3" id="portal_customer_category">
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon" t-value="'/sgc_offplan_rental_property_management/static/src/img/portal-favorites.svg'"/>
+                    <t t-set="title">My Favorites</t>
+                    <t t-set="text">Properties you have saved</t>
+                    <t t-set="url" t-value="'/my/favorites'"/>
+                    <t t-set="config_card" t-value="True"/>
+                </t>
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon" t-value="'/sgc_offplan_rental_property_management/static/src/img/portal-inquiries.svg'"/>
+                    <t t-set="title">My Inquiries</t>
+                    <t t-set="text">Follow up on your property inquiries</t>
+                    <t t-set="url" t-value="'/my/inquiries'"/>
+                    <t t-set="config_card" t-value="True"/>
+                </t>
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon" t-value="'/sgc_offplan_rental_property_management/static/src/img/portal-purchases.svg'"/>
+                    <t t-set="title">My Purchases</t>
+                    <t t-set="text">Follow, view or pay your purchases</t>
+                    <t t-set="url" t-value="'/my/purchases'"/>
+                    <t t-set="config_card" t-value="True"/>
+                </t>
+            </div>
+        </xpath>
+    </template>
+</odoo>

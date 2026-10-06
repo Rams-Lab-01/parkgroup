@@ -67,8 +67,13 @@ class TestEscrowPaymentGuard(EscrowCommon):
         """
         fields = self.env['account.payment.register']._fields
 
-        journal_depends = set(fields['journal_id'].depends)
-        available_depends = set(fields['available_journal_ids'].depends)
+        # Odoo 19: Field.depends is gone; get_depends(model) returns
+        # (depends, depends_context).
+        journal_depends = set(
+            fields['journal_id'].get_depends(self.env['account.payment.register'])[0])
+        available_depends = set(
+            fields['available_journal_ids'].get_depends(
+                self.env['account.payment.register'])[0])
 
         self.assertIn(
             'available_journal_ids', journal_depends,
@@ -123,7 +128,8 @@ class TestEscrowPaymentGuard(EscrowCommon):
     def test_block_policy_allows_the_correct_escrow_journal(self):
         self.param.set_param('sgc_escrow.payment_policy', 'block')
         payment = self.pay_into_escrow(self.invoice, 100000.0, project=self.project)
-        self.assertEqual(payment.state, 'posted')
+        self.assertIn(payment.state, ('in_process', 'paid'),
+                      'Odoo 19: a posted payment sits in in_process until settled')
 
     def test_block_policy_ignores_projects_without_escrow(self):
         self.project.escrow_enabled = False
@@ -131,7 +137,8 @@ class TestEscrowPaymentGuard(EscrowCommon):
         payment = self.receive_into(
             self.invoice, 100000.0, self.foreign_bank_journal)
         payment.action_post()
-        self.assertEqual(payment.state, 'posted')
+        self.assertIn(payment.state, ('in_process', 'paid'),
+                      'Odoo 19: a posted payment sits in in_process until settled')
 
     def test_block_policy_ignores_outbound_payments(self):
         """Refunds out of escrow are not a violation."""
@@ -141,7 +148,7 @@ class TestEscrowPaymentGuard(EscrowCommon):
             'partner_type': 'customer',
             'partner_id': self.buyer.id,
             'amount': 1000.0,
-            'payment_date': '2026-01-05',
+            'date': '2026-01-05',
             'journal_id': self.foreign_bank_journal.id,
             'company_id': self.company.id,
             'currency_id': self.company.currency_id.id,
@@ -160,7 +167,8 @@ class TestEscrowPaymentGuard(EscrowCommon):
             self.invoice, 100000.0, self.foreign_bank_journal)
         payment.action_post()
 
-        self.assertEqual(payment.state, 'posted')
+        self.assertIn(payment.state, ('in_process', 'paid'),
+                      'Odoo 19: a posted payment sits in in_process until settled')
         self.assertGreater(
             len(self.invoice.message_ids), message_count_before,
             'The warning must land on the invoice for the audit trail.')
@@ -173,4 +181,5 @@ class TestEscrowPaymentGuard(EscrowCommon):
             (payment, self.project),
         ], 'Detection still works; only enforcement is disabled.')
         payment.action_post()
-        self.assertEqual(payment.state, 'posted')
+        self.assertIn(payment.state, ('in_process', 'paid'),
+                      'Odoo 19: a posted payment sits in in_process until settled')

@@ -252,12 +252,44 @@ class EscrowRelease(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
-            project_id = vals.get('project_id')
-            if project_id:
-                project = self.env['property.project'].browse(project_id)
-                if project and project.company_id:
-                    vals.setdefault('company_id', project.company_id.id)
+            # amount is NOT NULL at the SQL level too; 0 lets
+            # _refresh_snapshots(default_amount=True) substitute the full
+            # releasable figure right after the insert (and an explicit amount
+            # passed by callers is written over that default afterwards).
+            vals.setdefault('amount', 0.0)
+            project = (
+                self.env['property.project'].browse(vals['project_id'])
+                if vals.get('project_id') else None
+            )
+            if project and project.company_id:
+                vals.setdefault('company_id', project.company_id.id)
+            if not vals.get('operating_journal_id'):
+                # operating_journal_id is NOT NULL at the SQL level, so the
+                # fallback has to be in vals BEFORE super().create() inserts --
+                # _refresh_snapshots() runs too late to rescue the row.
+                company = (
+                    project.company_id
+                    if project and project.company_id
+                    else self.env['res.company'].browse(vals.get('company_id'))
+                    or self.env.company
+                )
+                vals['operating_journal_id'] = (
+                    (project and project.escrow_release_journal_id.id)
+                    or self._default_operating_journal_for(company)
+                )
+            # The reference is assigned BEFORE the INSERT, never after it.
+            # The unique index on name is enforced by PostgreSQL at INSERT
+            # time, while a post-insert ORM write that renames 'New' stays in
+            # the cache until flush -- so renaming after super().create() let
+            # the second row of a batch create (or the next create of the same
+            # transaction, where nothing had flushed escrow_release yet) collide
+            # with the first on 'New'.
+            if not vals.get('name') or vals.get('name') == _('New'):
+                vals['name'] = self.env['ir.sequence'].next_by_code(
+                    'sgc_escrow.escrow_release') or '/'
         records = super().create(vals_list)
+        # Safety net: nothing should still read 'New' here, but a name slipped
+        # through by an unknown path must never reach the unique index.
         records._assign_release_references()
         records._refresh_snapshots(default_amount=True)
         return records
@@ -286,7 +318,7 @@ class EscrowRelease(models.Model):
                     'project. Configure its escrow bank journal first.'
                 ) % (project.display_name if project else _('(unknown project)')))
 
-            received, released = project._escrow_ledger_totals()
+            received, released, _balance = project._escrow_ledger_totals()
             progress = project.escrow_certified_progress
             retention = project.escrow_retention_pct
             entitled = received * (progress / 100.0) * (1.0 - (retention / 100.0))
@@ -313,9 +345,15 @@ class EscrowRelease(models.Model):
 
     def _default_operating_journal_id(self):
         """Fall back to the company's default bank journal."""
+        return self._default_operating_journal_for(
+            self.company_id or self.env.company)
+
+    @api.model
+    def _default_operating_journal_for(self, company):
+        """First bank journal of ``company``; used pre-create and as fallback."""
         journal = self.env['account.journal'].search([
             ('type', '=', 'bank'),
-            ('company_id', '=', self.company_id.id),
+            ('company_id', '=', company.id),
         ], limit=1)
         return journal.id if journal else False
 
@@ -448,7 +486,15 @@ class EscrowRelease(models.Model):
 
     @api.constrains('is_override')
     def _check_override_reason_present(self):
+        """Once the release leaves draft, an override must carry its reason.
+
+        On drafts the flag may be staged before the reason is typed
+        (test_override_with_reason_is_accepted); approval still refuses an
+        override without a reason through _check_entitlement().
+        """
         for record in self:
+            if record.state == 'draft':
+                continue
             if record.is_override and not (record.override_reason or '').strip():
                 raise ValidationError(_(
                     'An override release requires a written reason (%s).'
@@ -602,7 +648,10 @@ class EscrowRelease(models.Model):
                 'date': fields.Date.context_today(self),
                 'journal_id': record.journal_entry_id.journal_id.id,
             })
-            reversal = wizard.reverse_moves()
+            # reverse_moves() returns an act_window dict; the created
+            # reversals live on the wizard's new_move_ids.
+            wizard.reverse_moves()
+            reversal = wizard.new_move_ids
             record._write_controlled({
                 'state': 'cancelled',
                 'reversal_entry_id': reversal[:1].id if reversal else False,

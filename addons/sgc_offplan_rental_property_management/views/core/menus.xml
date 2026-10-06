@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2026 SGC TECH AI (https://sgctech.ai)
+    Part of SGC Odoo Suite. See LICENSE file for full copyright and licensing details.
+
+    Top-level menu hierarchy under "Property Management":
+      5   Statistics
+     10   Projects
+     15   Properties
+     20   Selling
+     25   Renting
+     30   Maintenances    (Payment Plans entry also lives here)
+     35   Regions
+     80   Leads
+     82   Customers
+     85   Vendors
+     86   Employees
+     90   Configurations  (config + Payment Plans + Portal Syndication + Connectors)
+-->
+<odoo>
+
+    <!-- Override declared sequence for menu_property_details (originally 1 in property_details_view.xml). -->
+    <record id="menu_property_details" model="ir.ui.menu">
+        <field name="sequence" eval="15"/>
+    </record>
+
+    <!-- ── 5. Statistics (Dashboard) — first ── -->
+    <menuitem
+        id="menu_rental_dashboard"
+        name="Statistics"
+        parent="sgc_offplan_rental_property_management.main_menu_rental_management"
+        action="action_property_dashboard"
+        sequence="5"
+        groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+
+    <!-- ── 10. Projects / Sub-Projects ── -->
+    <menuitem
+        id="menu_property_project_root"
+        name="Projects"
+        parent="sgc_offplan_rental_property_management.main_menu_rental_management"
+        sequence="10"
+        groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer">
+        <menuitem
+            id="menu_property_project"
+            name="Projects"
+            action="action_property_project"
+            sequence="1"
+            groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+        <menuitem
+            id="menu_property_sub_project"
+            name="Sub Projects"
+            action="action_property_sub_project"
+            sequence="2"
+            groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+    </menuitem>
+
+    <!-- ── 20. Selling ── -->
+    <menuitem
+        id="menu_property_vendor"
+        name="Selling"
+        parent="sgc_offplan_rental_property_management.main_menu_rental_management"
+        sequence="20"
+        groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer">
+        <menuitem
+            id="menu_sale_contract"
+            name="Contracts"
+            action="action_sale_contract"
+            sequence="1"
+            groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+        <menuitem
+            id="menu_sale_invoice"
+            name="Invoices"
+            action="sale_invoice_action"
+            sequence="2"
+            groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+    </menuitem>
+
+    <!-- ── 25. Renting ── -->
+    <menuitem
+        id="menu_tenancy_details"
+        name="Renting"
+        parent="sgc_offplan_rental_property_management.main_menu_rental_management"
+        sequence="25"
+        groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer">
+        <menuitem
+            id="menu_tenancy_details_list"
+            name="Tenancies"
+            action="tenancy_details_action"
+            sequence="1"
+            groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+        <menuitem
+            id="menu_rent_contract"
+            name="Contracts"
+            action="action_rent_contract"
+            sequence="2"
+            groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+        <menuitem
+            id="menu_rent_invoice_tenancy"
+            name="Invoices"
+            action="rent_invoice_action"
+            sequence="3"
+            groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+        <menuitem
+            id="menu_rent_bills_tenancy"
+            name="Bills"
+            action="rent_bill_action"
+            sequence="4"
+            groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+    </menuitem>
+
+    <!-- ── 30. Maintenances (Payment Plans entry also lives here) ── -->
+    <menuitem
+        id="menu_maintenance_root"
+        name="Maintenances"
+        parent="sgc_offplan_rental_property_management.main_menu_rental_management"
+        sequence="30"
+        groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer">
+        <menuitem
+            id="menu_property_maintenance"
+            name="Request"
+            action="property_maintenance_action"
+            sequence="1"
+            groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+        <menuitem
+            id="menu_property_maintenance_invoices"
+            name="Invoices"
+            action="maintenace_invoice_action"
+            sequence="2"
+            groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+        <menuitem
+            id="menu_property_maintenance_bills"
+            name="Bills"
+            action="maintenace_bill_action"
+            sequence="3"
+            groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+        <menuitem
+            id="menu_maintenance_payment_plan"
+            name="Payment Plans"
+            action="action_payment_schedule"
+            sequence="4"
+            groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+    </menuitem>
+
+    <!-- ── 35. Regions ── -->
+    <menuitem
+        id="menu_property_region"
+        name="Regions"
+        parent="sgc_offplan_rental_property_management.main_menu_rental_management"
+        action="action_property_region"
+        sequence="35"
+        groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+
+    <!-- ── 80. Leads ── -->
+    <menuitem
+        id="menu_property_lead"
+        name="Leads"
+        parent="sgc_offplan_rental_property_management.main_menu_rental_management"
+        action="property_inquiry_action"
+        sequence="80"
+        groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+
+    <!-- ── 82. Customers ── -->
+    <menuitem
+        id="menu_customer_details"
+        name="Customers"
+        parent="sgc_offplan_rental_property_management.main_menu_rental_management"
+        action="customer_details_action"
+        sequence="82"
+        groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+
+    <!-- ── 85. Vendors ── -->
+    <menuitem
+        id="menu_property_broker_landlord"
+        name="Vendors"
+        parent="sgc_offplan_rental_property_management.main_menu_rental_management"
+        sequence="85"
+        groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer">
+        <menuitem
+            id="menu_landlord_details"
+            name="Landlords"
+            action="landlord_details_action"
+            sequence="1"
+            groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+        <menuitem
+            id="menu_broker_details"
+            name="Brokers"
+            action="broker_details_action"
+            sequence="2"
+            groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+    </menuitem>
+
+    <!-- ── 86. Employees ── -->
+    <menuitem
+        id="menu_employee"
+        name="Employees"
+        parent="sgc_offplan_rental_property_management.main_menu_rental_management"
+        action="hr.open_view_employee_list_my"
+        sequence="86"
+        groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+
+    <!-- ── 90. Configurations (Payment Plans + Portal Syndication + Connectors) ── -->
+    <menuitem
+        id="menu_configuration"
+        name="Configurations"
+        parent="sgc_offplan_rental_property_management.main_menu_rental_management"
+        sequence="90"
+        groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer">
+        <menuitem
+            id="menu_contract_duration"
+            name="Contract Durations"
+            action="contract_duration_action"
+            sequence="1"
+            groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+        <menuitem
+            id="menu_agreement_template"
+            name="Agreement Templates"
+            action="agreement_template_action"
+            sequence="2"
+            groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+        <menuitem
+            id="menu_certificate_type"
+            name="Certificate Types"
+            action="certificate_type_action"
+            sequence="3"
+            groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+        <menuitem
+            id="menu_configuration_payment_plan"
+            name="Payment Plans"
+            action="action_payment_schedule"
+            sequence="4"
+            groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+        <menuitem
+            id="menu_configuration_property"
+            name="Property"
+            sequence="5"
+            groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer">
+            <menuitem
+                id="menu_property_amenities"
+                name="Amenities"
+                action="property_amenities_action"
+                sequence="1"
+                groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+            <menuitem
+                id="property_tag_menu"
+                name="Tags"
+                action="property_tag_action"
+                sequence="2"
+                groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+            <menuitem
+                id="menu_property_specification"
+                name="Specifications"
+                action="property_specification_action"
+                sequence="3"
+                groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+            <menuitem
+                id="menu_nearby_connectivity"
+                name="Nearby Connectivities"
+                action="property_connectivity_action"
+                sequence="4"
+                groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+            <menuitem
+                id="property_extra_service_menu"
+                name="Utility Services"
+                action="product_extra_service_action"
+                sequence="5"
+                groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+            <menuitem
+                id="property_res_city_sub_menu"
+                name="Cities"
+                action="property_res_city_action"
+                sequence="6"
+                groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+            <menuitem
+                id="menu_property_documents"
+                name="Documents"
+                action="property_document_action"
+                sequence="7"
+                groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+        </menuitem>
+        <menuitem
+            id="sgc_offplan_rental_property_management.menu_rps_root"
+            name="Portal Syndication"
+            sequence="6"
+            groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer">
+            <menuitem
+                id="sgc_offplan_rental_property_management.menu_portal_connector"
+                name="Connectors"
+                action="action_portal_connector"
+                sequence="10"
+                groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+            <menuitem
+                id="sgc_offplan_rental_property_management.menu_portal_lead"
+                name="Leads"
+                action="action_portal_lead"
+                sequence="20"
+                groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+            <menuitem
+                id="sgc_offplan_rental_property_management.menu_portal_sync_log"
+                name="Sync Logs"
+                action="action_portal_sync_log"
+                sequence="30"
+                groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+            <menuitem
+                id="sgc_offplan_rental_property_management.menu_xml_feed_config"
+                name="Feed Config"
+                action="action_xml_feed_config"
+                sequence="40"
+                groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+        </menuitem>
+    </menuitem>
+
+    <!-- Legacy top-level Payment Schedules (declared seq=3 in payment_schedule_views.xml)
+         is pushed to seq=999 so Payment Plans sit last under Configurations and Maintenances.
+         The XMLID is preserved (other modules may depend on it). -->
+    <record id="menu_payment_schedule" model="ir.ui.menu">
+        <field name="sequence" eval="999"/>
+    </record>
+
+</odoo>

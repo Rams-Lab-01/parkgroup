@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record id="property_document_tree_view" model="ir.ui.view">
+            <field name="name">property.document.tree.view</field>
+            <field name="model">property.documents</field>
+            <field name="arch" type="xml">
+                <list string="Document" editable="bottom">
+                    <field name="property_id"/>
+                    <field name="document_date"/>
+                    <field name="doc_type"/>
+                    <field name="document_reference_number"/>
+                    <field name="expiry_date" optional="show"/>
+                    <field name="ownership_verified" widget="boolean_icon" optional="show"/>
+                    <field name="approval_state" optional="show"/>
+                    <field name="file_name" column_invisible="1"/>
+                    <field name="document" filename="file_name" widget="binary"/>
+                </list>
+            </field>
+        </record>
+        <record id="property_document_kanban_view" model="ir.ui.view">
+            <field name="name">property.document.kanban.view</field>
+            <field name="model">property.documents</field>
+            <field name="arch" type="xml">
+                <kanban string="Kanban" class="">
+                    <field name="id"/>
+                    <field name="doc_category"/>
+                    <field name="doc_type"/>
+                    <field name="document_reference_number"/>
+                    <field name="expiry_date"/>
+                    <field name="ownership_verified"/>
+                    <field name="approval_state"/>
+                    <field name="document"/>
+                    <field name="file_name"/>
+                    <field name="file_extension"/>
+                    <field name="is_image_document"/>
+                    <field name="is_expired"/>
+                    <templates>
+                        <t t-name="card">
+                            <div class="row oe_kanban_global_click" style="max-width:250px !important;">
+                                <div class="col-12">
+                                    <t t-if="record.is_image_document.raw_value">
+                                        <img t-att-src="'data:image/png;base64,' + record.document.raw_value"
+                                             t-att-alt="record.file_name.value" style="margin: 10px 0" width="200px"
+                                             height="200px" class="img img-responsive"/>
+                                    </t>
+                                    <t t-else="">
+                                        <div class="d-flex flex-column align-items-center justify-content-center text-muted"
+                                             style="height:160px; margin: 10px 0; background-color:#f8f9fa; border-radius:4px;">
+                                            <i t-if="record.file_extension.raw_value == 'pdf'" class="fa fa-file-pdf-o fa-3x text-danger" title="PDF document"/>
+                                            <i t-elif="record.file_extension.raw_value == 'doc' or record.file_extension.raw_value == 'docx' or record.file_extension.raw_value == 'rtf'" class="fa fa-file-word-o fa-3x text-primary" title="Word document"/>
+                                            <i t-elif="record.file_extension.raw_value == 'xls' or record.file_extension.raw_value == 'xlsx' or record.file_extension.raw_value == 'csv'" class="fa fa-file-excel-o fa-3x text-success" title="Spreadsheet"/>
+                                            <i t-else="" class="fa fa-file-o fa-3x" title="File"/>
+                                            <span class="mt-2 small text-uppercase" t-esc="record.file_extension.raw_value or 'file'"/>
+                                        </div>
+                                    </t>
+                                </div>
+                                <div class="col-12">
+                                    <div class="oe_kanban_details">
+                                        <strong><field name="doc_category"/></strong>
+                                        <div t-if="record.doc_type.raw_value">
+                                            Type: <field name="doc_type"/>
+                                        </div>
+                                        <div t-if="record.document_reference_number.raw_value">
+                                            <field name="document_reference_number"/>
+                                        </div>
+                                        <div t-if="record.expiry_date.raw_value">
+                                            Expires: <field name="expiry_date"/>
+                                            <t t-if="record.is_expired.raw_value">
+                                                <span class="badge badge-danger">Expired</span>
+                                            </t>
+                                        </div>
+                                        <div t-if="record.ownership_verified.raw_value">
+                                            <field name="ownership_verified" widget="boolean_icon"/> Verified
+                                        </div>
+                                        <div>
+                                            Status: <field name="approval_state"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+        <record id="property_document_form_view" model="ir.ui.view">
+            <field name="name">property.document.form.view</field>
+            <field name="model">property.documents</field>
+            <field name="arch" type="xml">
+                <form string="Document">
+                    <sheet>
+                        <group>
+                            <group string="Document Information">
+                                <field name="property_id"/>
+                                <field name="doc_type"/>
+                                <field name="doc_category"/>
+                                <field name="document_date"/>
+                                <field name="file_name"/>
+                            </group>
+                            <group string="Compliance Details">
+                                <field name="document_reference_number"/>
+                                <field name="expiry_date"/>
+                                <field name="is_expired"/>
+                                <field name="days_until_expiry"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group string="Approval &amp; Portal">
+                                <field name="approval_state"/>
+                                <field name="portal_visible"/>
+                                <field name="uploaded_by_partner_id"/>
+                            </group>
+                            <group string="Ownership Verification">
+                                <field name="ownership_verified"/>
+                                <field name="verified_by"/>
+                                <field name="verification_date"/>
+                            </group>
+                        </group>
+                        <group string="Notes">
+                            <field name="notes" nolabel="1" placeholder="Verification notes..."/>
+                        </group>
+                        <group string="Attachment">
+                            <field name="document" filename="file_name" widget="binary" nolabel="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="property_document_action" model="ir.actions.act_window">
+            <field name="name">Document</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">property.documents</field>
+            <field name="view_mode">kanban,list,form</field>
+        </record>
+    </odoo>

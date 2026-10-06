@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="booking_agreement_template">
+        <t t-call="web.html_container">
+          <t t-foreach="docs" t-as="o">
+            <t t-set="company" t-value="o.company_id or env.company"/>
+            <t t-set="fd" t-value="lambda d: d.strftime('%d %b %Y') if d else ' - '"/>
+            <t t-set="mon" t-value="o.currency_id or o.company_id.currency_id"/>
+            <div class="o_pmg_doc article" t-att-data-oe-model="o._name" t-att-data-oe-id="o.id"><t t-call="sgc_offplan_rental_property_management.property_report_styles"/>
+                <t t-set="report_ref" t-value="o.name or o.sold_seq or ' - '"/>
+                <t t-set="report_date" t-value="fd(o.date or o.contract_date)"/>
+                <t t-call="sgc_offplan_rental_property_management.property_report_letterhead"/>
+                <t t-set="report_title">Booking Agreement</t>
+                <t t-set="report_subtitle">Property Reservation  -  United Arab Emirates</t>
+                <t t-call="sgc_offplan_rental_property_management.property_report_title"/>
+
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">1</span>Property</div>
+                    <div class="o_pmg_section-body">
+                        <table class="o_pmg_dl">
+                            <tr><td class="o_pmg_dl-label">Property</td><td class="o_pmg_dl-value" t-out="o.property_id.name or ' - '"/></tr>
+                            <tr t-if="o.property_id.property_type"><td class="o_pmg_dl-label">Type</td><td class="o_pmg_dl-value" t-out="o.property_id.property_type"/></tr>
+                            <tr t-if="o.property_id.project_id"><td class="o_pmg_dl-label">Project</td><td class="o_pmg_dl-value" t-out="o.property_id.project_id.name"/></tr>
+                            <tr t-if="o.property_id.bedrooms"><td class="o_pmg_dl-label">Bedrooms</td><td class="o_pmg_dl-value" t-out="o.property_id.bedrooms"/></tr>
+                            <tr t-if="o.property_id.area"><td class="o_pmg_dl-label">Area</td><td class="o_pmg_dl-value" t-out="'{:,.0f} sq ft'.format(o.property_id.area)"/></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">2</span>Parties</div>
+                    <div class="o_pmg_section-body">
+                        <table class="o_pmg_dl">
+                            <tr t-if="o.customer_id"><td class="o_pmg_dl-label">Customer / Buyer</td><td class="o_pmg_dl-value" t-out="o.customer_id.name"/></tr>
+                            <tr t-if="o.customer_id and o.customer_id.phone"><td class="o_pmg_dl-label">Phone</td><td class="o_pmg_dl-value" t-out="o.customer_id.phone"/></tr>
+                            <tr t-if="o.customer_id and o.customer_id.email"><td class="o_pmg_dl-label">Email</td><td class="o_pmg_dl-value" t-out="o.customer_id.email"/></tr>
+                            <tr t-if="o.vendor_id"><td class="o_pmg_dl-label">Vendor / Seller</td><td class="o_pmg_dl-value" t-out="o.vendor_id.name"/></tr>
+                            <tr t-if="o.broker_id"><td class="o_pmg_dl-label">Broker</td><td class="o_pmg_dl-value" t-out="o.broker_id.name"/></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">3</span>Financial Summary</div>
+                    <div class="o_pmg_section-body">
+                        <table class="o_pmg_dl">
+                            <tr><td class="o_pmg_dl-label">Sale Price</td><td class="o_pmg_dl-value"><span t-out="o.sale_price" t-options="{'widget': 'monetary', 'display_currency': mon}"/></td></tr>
+                            <tr t-if="o.total_commission"><td class="o_pmg_dl-label">Commission</td><td class="o_pmg_dl-value"><span t-out="o.total_commission" t-options="{'widget': 'monetary', 'display_currency': mon}"/></td></tr>
+                            <tr><td class="o_pmg_dl-label" style="font-weight:700;">Total (incl. Commission)</td><td class="o_pmg_dl-value" style="font-weight:700;"><span t-out="(o.sale_price or 0.0) + (o.total_commission or 0.0)" t-options="{'widget': 'monetary', 'display_currency': mon}"/></td></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="o_pmg_section o_pmg_keep" t-if="o.property_id.payment_schedule_id">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">4</span>Payment Plan</div>
+                    <div class="o_pmg_section-body">
+                        <p t-out="o.property_id.payment_schedule_id.name"/>
+                    </div>
+                </div>
+
+                <t t-set="signature_slots" t-value="[
+                    {'label': 'Customer Signature', 'name': o.customer_id.name or ''},
+                    {'label': 'Company Representative', 'name': company.name or ''},
+                ]"/>
+                <t t-call="sgc_offplan_rental_property_management.property_report_signatures"/>
+                <t t-set="report_name">Booking Agreement</t>
+                <t t-set="report_footer_note">This is a computer-generated Booking Agreement document. Terms and conditions apply.</t>
+                <t t-call="sgc_offplan_rental_property_management.property_report_footer"/>
+            </div>
+          </t>
+        </t>
+    </template>
+</odoo>

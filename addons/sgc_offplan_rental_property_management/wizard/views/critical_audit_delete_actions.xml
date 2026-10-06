@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Critical-Change Audit (design 5.5) - Tier-1 delete-with-reason workflow.
+
+        One bound window action per audit-governed model (mixin with
+        _audit_unlink_requires_reason = True, enumerated in Entries 50 (21), 51 (+6) and 52 (+5)). The
+        action opens the reason wizard on the current record or the current
+        list selection; the wizard's Delete button registers the sanitized
+        reason and performs the unlink in the same transaction (the reason
+        registry is per-transaction, so the business action must live in the
+        wizard).
+
+        Context discipline (Entry 52, live defect 2026-09-20): the context is
+        evaluated CLIENT-side by py.js, which exposes active_id/active_ids but
+        NOT `len`; res_ids and the selection size are therefore computed in
+        the wizard's default_get(), never in this context.
+
+        A drift guard in tests/test_audit_delete_workflow.py asserts that every
+        gated model in the registry has one of these bindings.
+    -->
+    <!-- account.move -->
+    <record id="critical_audit_delete_with_reason_account_move" model="ir.actions.act_window">
+        <field name="name">Delete with audit reason</field>
+        <field name="res_model">sgc.critical.audit.reason.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_account_move"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="context">{'default_model': 'account.move', 'default_res_id': active_id, 'default_operation': 'Record deleted', 'default_operation_kind': 'unlink'}</field>
+    </record>
+
+    <!-- agreement.template -->
+    <record id="critical_audit_delete_with_reason_agreement_template" model="ir.actions.act_window">
+        <field name="name">Delete with audit reason</field>
+        <field name="res_model">sgc.critical.audit.reason.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_agreement_template"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="context">{'default_model': 'agreement.template', 'default_res_id': active_id, 'default_operation': 'Record deleted', 'default_operation_kind': 'unlink'}</field>
+    </record>
+
+    <!-- contract.duration -->
+    <record id="critical_audit_delete_with_reason_contract_duration" model="ir.actions.act_window">
+        <field name="name">Delete with audit reason</field>
+        <field name="res_model">sgc.critical.audit.reason.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_contract_duration"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="context">{'default_model': 'contract.duration', 'default_res_id': active_id, 'default_operation': 'Record deleted', 'default_operation_kind': 'unlink'}</field>
+    </record>
+
+    <!-- payment.schedule -->
+    <record id="critical_audit_delete_with_reason_payment_schedule" model="ir.actions.act_window">
+        <field name="name">Delete with audit reason</field>
+        <field name="res_model">sgc.critical.audit.reason.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_payment_schedule"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="context">{'default_model': 'payment.schedule', 'default_res_id': active_id, 'default_operation': 'Record deleted', 'default_operation_kind': 'unlink'}</field>
+    </record>
+
+    <!-- portal.connector -->
+    <record id="critical_audit_delete_with_reason_portal_connector" model="ir.actions.act_window">
+        <field name="name">Delete with audit reason</field>
+        <field name="res_model">sgc.critical.audit.reason.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_portal_connector"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="context">{'default_model': 'portal.connector', 'default_res_id': active_id, 'default_operation': 'Record deleted', 'default_operation_kind': 'unlink'}</field>
+    </record>
+
+    <!-- portal.lead -->
+    <record id="critical_audit_delete_with_reason_portal_lead" model="ir.actions.act_window">
+        <field name="name">Delete with audit reason</field>
+        <field name="res_model">sgc.critical.audit.reason.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_portal_lead"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="context">{'default_model': 'portal.lead', 'default_res_id': active_id, 'default_operation': 'Record deleted', 'default_operation_kind': 'unlink'}</field>
+    </record>
+
+    <!-- property.commission.line -->
+    <record id="critical_audit_delete_with_reason_property_commission_line" model="ir.actions.act_window">
+        <field name="name">Delete with audit reason</field>
+        <field name="res_model">sgc.critical.audit.reason.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_property_commission_line"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="context">{'default_model': 'property.commission.line', 'default_res_id': active_id, 'default_operation': 'Record deleted', 'default_operation_kind': 'unlink'}</field>
+    </record>
+
+    <!-- property.documents -->
+    <record id="critical_audit_delete_with_reason_property_documents" model="ir.actions.act_window">
+        <field name="name">Delete with audit reason</field>
+        <field name="res_model">sgc.critical.audit.reason.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_property_documents"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="context">{'default_model': 'property.documents', 'default_res_id': active_id, 'default_operation': 'Record deleted', 'default_operation_kind': 'unlink'}</field>
+    </record>
+
+    <!-- property.region -->
+    <record id="critical_audit_delete_with_reason_property_region" model="ir.actions.act_window">
+        <field name="name">Delete with audit reason</field>
+        <field name="res_model">sgc.critical.audit.reason.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_property_region"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="context">{'default_model': 'property.region', 'default_res_id': active_id, 'default_operation': 'Record deleted', 'default_operation_kind': 'unlink'}</field>
+    </record>
+
+    <!-- property.vendor -->
+    <record id="critical_audit_delete_with_reason_property_vendor" model="ir.actions.act_window">
+        <field name="name">Delete with audit reason</field>
+        <field name="res_model">sgc.critical.audit.reason.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_property_vendor"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="context">{'default_model': 'property.vendor', 'default_res_id': active_id, 'default_operation': 'Record deleted', 'default_operation_kind': 'unlink'}</field>
+    </record>
+
+    <!-- property.vendor.commission.line -->
+    <record id="critical_audit_delete_with_reason_property_vendor_commission_line" model="ir.actions.act_window">
+        <field name="name">Delete with audit reason</field>
+        <field name="res_model">sgc.critical.audit.reason.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_property_vendor_commission_line"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="context">{'default_model': 'property.vendor.commission.line', 'default_res_id': active_id, 'default_operation': 'Record deleted', 'default_operation_kind': 'unlink'}</field>
+    </record>
+
+    <!-- rent.bill -->
+    <record id="critical_audit_delete_with_reason_rent_bill" model="ir.actions.act_window">
+        <field name="name">Delete with audit reason</field>
+        <field name="res_model">sgc.critical.audit.reason.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_rent_bill"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="context">{'default_model': 'rent.bill', 'default_res_id': active_id, 'default_operation': 'Record deleted', 'default_operation_kind': 'unlink'}</field>
+    </record>
+
+    <!-- rent.commission.line -->
+    <record id="critical_audit_delete_with_reason_rent_commission_line" model="ir.actions.act_window">
+        <field name="name">Delete with audit reason</field>
+        <field name="res_model">sgc.critical.audit.reason.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_rent_commission_line"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="context">{'default_model': 'rent.commission.line', 'default_res_id': active_id, 'default_operation': 'Record deleted', 'default_operation_kind': 'unlink'}</field>
+    </record>
+
+    <!-- rent.contract -->
+    <record id="critical_audit_delete_with_reason_rent_contract" model="ir.actions.act_window">
+        <field name="name">Delete with audit reason</field>
+        <field name="res_model">sgc.critical.audit.reason.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_rent_contract"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="context">{'default_model': 'rent.contract', 'default_res_id': active_id, 'default_operation': 'Record deleted', 'default_operation_kind': 'unlink'}</field>
+    </record>
+
+    <!-- rent.invoice -->
+    <record id="critical_audit_delete_with_reason_rent_invoice" model="ir.actions.act_window">
+        <field name="name">Delete with audit reason</field>
+        <field name="res_model">sgc.critical.audit.reason.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_rent_invoice"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="context">{'default_model': 'rent.invoice', 'default_res_id': active_id, 'default_operation': 'Record deleted', 'default_operation_kind': 'unlink'}</field>
+    </record>
+
+    <!-- rera.form.a -->
+    <record id="critical_audit_delete_with_reason_rera_form_a" model="ir.actions.act_window">
+        <field name="name">Delete with audit reason</field>
+        <field name="res_model">sgc.critical.audit.reason.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_rera_form_a"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="context">{'default_model': 'rera.form.a', 'default_res_id': active_id, 'default_operation': 'Record deleted', 'default_operation_kind': 'unlink'}</field>
+    </record>
+
+    <!-- res.partner -->
+    <record id="critical_audit_delete_with_reason_res_partner" model="ir.actions.act_window">
+        <field name="name">Delete with audit reason</field>
+        <field name="res_model">sgc.critical.audit.reason.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_res_partner"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="context">{'default_model': 'res.partner', 'default_res_id': active_id, 'default_operation': 'Record deleted', 'default_operation_kind': 'unlink'}</field>
+    </record>
+
+    <!-- sale.contract -->
+    <record id="critical_audit_delete_with_reason_sale_contract" model="ir.actions.act_window">
+        <field name="name">Delete with audit reason</field>
+        <field name="res_model">sgc.critical.audit.reason.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_sale_contract"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="context">{'default_model': 'sale.contract', 'default_res_id': active_id, 'default_operation': 'Record deleted', 'default_operation_kind': 'unlink'}</field>
+    </record>
+
+    <!-- sale.contract.installment -->
+    <record id="critical_audit_delete_with_reason_sale_contract_installment" model="ir.actions.act_window">
+        <field name="name">Delete with audit reason</field>
+        <field name="res_model">sgc.critical.audit.reason.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_sale_contract_installment"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="context">{'default_model': 'sale.contract.installment', 'default_res_id': active_id, 'default_operation': 'Record deleted', 'default_operation_kind': 'unlink'}</field>
+    </record>
+
+    <!-- tenancy.details -->
+    <record id="critical_audit_delete_with_reason_tenancy_details" model="ir.actions.act_window">
+        <field name="name">Delete with audit reason</field>
+        <field name="res_model">sgc.critical.audit.reason.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_tenancy_details"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="context">{'default_model': 'tenancy.details', 'default_res_id': active_id, 'default_operation': 'Record deleted', 'default_operation_kind': 'unlink'}</field>
+    </record>
+
+    <!-- tenancy.inquiry -->
+    <record id="critical_audit_delete_with_reason_tenancy_inquiry" model="ir.actions.act_window">
+        <field name="name">Delete with audit reason</field>
+        <field name="res_model">sgc.critical.audit.reason.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_tenancy_inquiry"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="context">{'default_model': 'tenancy.inquiry', 'default_res_id': active_id, 'default_operation': 'Record deleted', 'default_operation_kind': 'unlink'}</field>
+    </record>
+    <!-- certificate.type (Entry 51) -->
+    <record id="critical_audit_delete_with_reason_certificate_type" model="ir.actions.act_window">
+        <field name="name">Delete with audit reason</field>
+        <field name="res_model">sgc.critical.audit.reason.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_certificate_type"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="context">{'default_model': 'certificate.type', 'default_res_id': active_id, 'default_operation': 'Record deleted', 'default_operation_kind': 'unlink'}</field>
+    </record>
+
+    <!-- property.amenities (Entry 51) -->
+    <record id="critical_audit_delete_with_reason_property_amenities" model="ir.actions.act_window">
+        <field name="name">Delete with audit reason</field>
+        <field name="res_model">sgc.critical.audit.reason.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_property_amenities"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="context">{'default_model': 'property.amenities', 'default_res_id': active_id, 'default_operation': 'Record deleted', 'default_operation_kind': 'unlink'}</field>
+    </record>
+
+    <!-- property.connectivity (Entry 51) -->
+    <record id="critical_audit_delete_with_reason_property_connectivity" model="ir.actions.act_window">
+        <field name="name">Delete with audit reason</field>
+        <field name="res_model">sgc.critical.audit.reason.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_property_connectivity"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="context">{'default_model': 'property.connectivity', 'default_res_id': active_id, 'default_operation': 'Record deleted', 'default_operation_kind': 'unlink'}</field>
+    </record>
+
+    <!-- property.res.city (Entry 51) -->
+    <record id="critical_audit_delete_with_reason_property_res_city" model="ir.actions.act_window">
+        <field name="name">Delete with audit reason</field>
+        <field name="res_model">sgc.critical.audit.reason.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_property_res_city"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="context">{'default_model': 'property.res.city', 'default_res_id': active_id, 'default_operation': 'Record deleted', 'default_operation_kind': 'unlink'}</field>
+    </record>
+
+    <!-- property.specification (Entry 51) -->
+    <record id="critical_audit_delete_with_reason_property_specification" model="ir.actions.act_window">
+        <field name="name">Delete with audit reason</field>
+        <field name="res_model">sgc.critical.audit.reason.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_property_specification"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="context">{'default_model': 'property.specification', 'default_res_id': active_id, 'default_operation': 'Record deleted', 'default_operation_kind': 'unlink'}</field>
+    </record>
+
+    <!-- property.tag (Entry 51) -->
+    <record id="critical_audit_delete_with_reason_property_tag" model="ir.actions.act_window">
+        <field name="name">Delete with audit reason</field>
+        <field name="res_model">sgc.critical.audit.reason.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_property_tag"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="context">{'default_model': 'property.tag', 'default_res_id': active_id, 'default_operation': 'Record deleted', 'default_operation_kind': 'unlink'}</field>
+    </record>
+    <!-- maintenance.request (Entry 52) -->
+    <record id="critical_audit_delete_with_reason_maintenance_request" model="ir.actions.act_window">
+        <field name="name">Delete with audit reason</field>
+        <field name="res_model">sgc.critical.audit.reason.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_maintenance_request"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="context">{'default_model': 'maintenance.request', 'default_res_id': active_id, 'default_operation': 'Record deleted', 'default_operation_kind': 'unlink'}</field>
+    </record>
+
+    <!-- parent.property (Entry 52) -->
+    <record id="critical_audit_delete_with_reason_parent_property" model="ir.actions.act_window">
+        <field name="name">Delete with audit reason</field>
+        <field name="res_model">sgc.critical.audit.reason.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_parent_property"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="context">{'default_model': 'parent.property', 'default_res_id': active_id, 'default_operation': 'Record deleted', 'default_operation_kind': 'unlink'}</field>
+    </record>
+
+    <!-- property.website.inquiry (Entry 52) -->
+    <record id="critical_audit_delete_with_reason_property_website_inquiry" model="ir.actions.act_window">
+        <field name="name">Delete with audit reason</field>
+        <field name="res_model">sgc.critical.audit.reason.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_property_website_inquiry"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="context">{'default_model': 'property.website.inquiry', 'default_res_id': active_id, 'default_operation': 'Record deleted', 'default_operation_kind': 'unlink'}</field>
+    </record>
+
+    <!-- sale.inquiry (Entry 52) -->
+    <record id="critical_audit_delete_with_reason_sale_inquiry" model="ir.actions.act_window">
+        <field name="name">Delete with audit reason</field>
+        <field name="res_model">sgc.critical.audit.reason.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_sale_inquiry"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="context">{'default_model': 'sale.inquiry', 'default_res_id': active_id, 'default_operation': 'Record deleted', 'default_operation_kind': 'unlink'}</field>
+    </record>
+
+    <!-- xml.feed.config (Entry 52) -->
+    <record id="critical_audit_delete_with_reason_xml_feed_config" model="ir.actions.act_window">
+        <field name="name">Delete with audit reason</field>
+        <field name="res_model">sgc.critical.audit.reason.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_xml_feed_config"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="context">{'default_model': 'xml.feed.config', 'default_res_id': active_id, 'default_operation': 'Record deleted', 'default_operation_kind': 'unlink'}</field>
+    </record>
+</odoo>

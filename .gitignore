@@ -67,6 +67,26 @@ target_out/
 odoo_mcp/data/*.csv
 odoo_mcp/data/*.xlsx
 
+# VPS pull artifacts
+sgc_offplan_vps.b64
+sgc_offplan_vps.tar.gz
+
+# Odoo module generated/cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Odoo module non-source
+i18n/
+static/lib/
+static/description/
+video and ss/
+docs/
+ops/
+services/
+migrations/
+tools/demo/
+
 # Recon work pickles
 recon_work/audit4/*.pkl
 recon_work/audit5/*.pkl

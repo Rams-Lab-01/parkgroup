@@ -1,0 +1,203 @@
+
+/* Design System Variables — aliased to the shared sgc_design_tokens palette
+   (this module depends on sgc_design_tokens) rather than a locally
+   hardcoded blue/green/amber scheme, so property pages match the rest of
+   the site. */
+:root {
+  --color-primary: var(--re-primary);
+  --color-cta: var(--re-accent);
+  --color-accent: var(--re-accent);
+  --color-text: var(--re-text);
+  --color-muted: var(--re-text-muted);
+  --color-bg: var(--re-card-ivory);
+  --radius-md: 12px;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+  --shadow-md: 0 10px 30px rgba(0,0,0,0.12);
+}
+
+/* Base Typography */
+.o_property_listing, .o_property_detail {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+.o_property_listing h1, .o_property_detail h1,
+.o_property_listing h3, .o_property_detail h3,
+.o_property_listing h4, .o_property_detail h4 {
+  letter-spacing: -0.02em;
+}
+
+/* Hero */
+.o_property_hero {
+  background: radial-gradient(1200px circle at 20% 0,
+    rgba(30,58,138,0.15), transparent 40%),
+    linear-gradient(135deg, #1E3A8A 0%, #0f172a 100%);
+  color: #fff;
+}
+.o_property_hero h1 { font-weight: 800; font-size: 2.4rem; }
+.o_property_search_form {
+  background: #fff; padding: 24px; border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+}
+.o_property_search_form .btn.btn-primary {
+  background: var(--color-cta); border-color: var(--color-cta);
+}
+.o_property_search_form .btn.btn-primary:hover {
+  filter: brightness(1.05);
+}
+
+/* Cards */
+.o_property_card { border: none; box-shadow: var(--shadow-sm); transition: transform .25s ease, box-shadow .25s ease; }
+.o_property_card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+.o_property_card .card-title a { color: var(--color-text); }
+.o_property_card .card-title a:hover { color: var(--color-primary) !important; }
+
+.o_property_card .card-img-top { height: 250px; overflow: hidden; border-top-left-radius: var(--radius-md); border-top-right-radius: var(--radius-md); }
+.o_property_card .card-img-top img { width: 100%; height: 100%; object-fit: cover; transition: transform .3s ease; }
+.o_property_card:hover .card-img-top img { transform: scale(1.04); }
+
+/* Property/project listing + homepage featured cards actually use the
+   "property-card" class (not "o_property_card" above) — image itself IS
+   the .card-img-top element here, not a wrapped child. Zoom-on-hover per
+   the luxury showcase brief. */
+.property-card .card-img-top {
+  transition: transform .4s ease;
+}
+.property-card:hover .card-img-top {
+  transform: scale(1.05);
+}
+
+/* Badges */
+.badge.bg-warning { background-color: var(--color-accent) !important; color: #111827; }
+.badge.bg-success { background-color: #059669 !important; }
+.badge.bg-info { background-color: #2563EB !important; }
+
+/* Price */
+.price-label { font-size: 1.25rem; color: var(--color-primary); font-weight: 700; }
+
+/* Detail Page
+   Note: .o_property_detail is applied on the page's outer container by
+   offplan_property_detail.xml - these rules were previously dead (the
+   template never carried that class) until the redesign pass added it. */
+.o_property_detail .card { border: none; box-shadow: var(--shadow-sm); }
+.o_property_detail .sticky-top { z-index: 100; }
+.o-spec-pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; background: rgba(200, 162, 74, 0.14); color: var(--color-primary); font-weight: 600; }
+.o-spec-pill i { color: var(--color-cta); }
+.o-spec-grid .col { display: flex; justify-content: center; }
+
+/* Gallery: gold hairline frame + slow zoom on hover, clipped by the
+   rounded/overflow-hidden wrapper so the zoom never spills past the frame. */
+.o_property_detail .property-gallery {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--re-hairline, rgba(200, 162, 74, 0.28));
+}
+.o_property_detail .property-gallery .main-carousel-img {
+  transition: transform 0.5s ease;
+}
+.o_property_detail .property-gallery:hover .main-carousel-img {
+  transform: scale(1.04);
+}
+.o_property_detail .property-gallery .carousel-control-prev,
+.o_property_detail .property-gallery .carousel-control-next {
+  width: 44px;
+  height: 44px;
+  top: 50%;
+  bottom: auto;
+  transform: translateY(-50%);
+  background-color: rgba(16, 36, 59, 0.6);
+  border-radius: 50%;
+  opacity: 0.9;
+  transition: background-color 0.2s ease;
+}
+.o_property_detail .property-gallery .carousel-control-prev { left: 16px; }
+.o_property_detail .property-gallery .carousel-control-next { right: 16px; }
+.o_property_detail .property-gallery .carousel-control-prev:hover,
+.o_property_detail .property-gallery .carousel-control-next:hover {
+  background-color: var(--color-cta);
+}
+.o_property_detail .property-gallery .carousel-control-prev-icon,
+.o_property_detail .property-gallery .carousel-control-next-icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* Thumbnail strip */
+.o_property_detail .thumbnail-strip .thumb-img {
+  border-radius: 10px;
+  border: 2px solid transparent;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.o_property_detail .thumbnail-strip .thumb-img:hover {
+  border-color: var(--color-cta);
+  transform: translateY(-2px);
+}
+
+/* Section titles inside cards get a gold hairline rule, matching the
+   brief's "architectural gold separators" direction. */
+.o_property_detail .card h3 {
+  font-family: var(--re-font-display, 'Gambetta', Georgia, serif);
+  font-size: 1.4rem;
+  border-bottom: 1px solid var(--re-hairline, rgba(200, 162, 74, 0.28));
+  padding-bottom: 14px;
+  margin-bottom: 20px;
+}
+
+/* Specifications table */
+.o_property_detail .table.table-hover td {
+  border-color: var(--re-hairline, rgba(200, 162, 74, 0.28));
+  padding: 12px 8px;
+}
+.o_property_detail .table.table-hover tr:hover {
+  background-color: rgba(200, 162, 74, 0.06);
+}
+.o_property_detail .table td strong {
+  color: var(--color-primary);
+}
+
+/* Amenity / connectivity icon tiles */
+.o_property_detail .o-amenity-tile {
+  padding: 16px 8px;
+  border-radius: 12px;
+  transition: background-color 0.2s ease;
+}
+.o_property_detail .o-amenity-tile:hover {
+  background-color: rgba(200, 162, 74, 0.08);
+}
+.o_property_detail .o-amenity-tile img {
+  background: rgba(200, 162, 74, 0.12);
+  border-radius: 50%;
+  padding: 10px;
+}
+
+/* Sticky CTA card gets a gold top accent to read as the primary action. */
+.o_property_detail .col-md-4 .card.sticky-top {
+  border-top: 3px solid var(--color-cta);
+}
+
+/* Inquiry panel: replaces Bootstrap's plain bg-light gray with an
+   ivory/gold-tinted panel consistent with the rest of the page. */
+.o_property_detail .o-inquiry-panel {
+  background: linear-gradient(180deg, rgba(200, 162, 74, 0.07), rgba(200, 162, 74, 0.02));
+  border: 1px solid var(--re-hairline, rgba(200, 162, 74, 0.28));
+}
+.o_property_detail .o-inquiry-panel h6 {
+  font-family: var(--re-font-display, 'Gambetta', Georgia, serif);
+  color: var(--color-primary);
+}
+
+/* Buttons — gold outline/CTA styling now lives in sgc_design_tokens's
+   03_components.css, which this module depends on (both target the plain
+   .btn-outline-primary/.btn-primary classes used by offplan_property_listing.xml
+   / offplan_property_detail.xml, so no local override is needed here). */
+
+/* Skeleton Loader */
+.skeleton { background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 37%, #e5e7eb 63%);
+  background-size: 400% 100%; animation: shimmer 1.4s ease infinite; }
+@keyframes shimmer { 0% { background-position: 100% 0 } 100% { background-position: -100% 0 } }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .o_property_hero h1 { font-size: 1.8rem; }
+  .o_property_search_form { padding: 16px; }
+  .o_property_card .card-img-top { height: 200px !important; }
+}

@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ======================================================
+         PROPERTY VENDOR / BOOKING — Tree View
+    ====================================================== -->
+    <record id="property_vendor_tree_view" model="ir.ui.view">
+        <field name="name">property.vendor.tree</field>
+        <field name="model">property.vendor</field>
+        <field name="arch" type="xml">
+            <list string="Bookings / Vendor Records"
+                  decoration-muted="state == 'cancelled'"
+                  decoration-success="state == 'confirmed'">
+                <field name="name"/>
+                <field name="property_id"/>
+                <field name="customer_id"/>
+                <field name="vendor_id"/>
+                <field name="sale_price" widget="monetary" options="{'currency_field': 'currency_id'}" sum="Total"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="broker_id"/>
+                <field name="state" widget="badge"/>
+                <field name="sale_type"/>
+                <field name="payment_recorded" widget="boolean_toggle"/>
+                <field name="sale_confirmed" widget="boolean_toggle"/>
+                <field name="contract_date"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ======================================================
+         PROPERTY VENDOR / BOOKING — Form View
+    ====================================================== -->
+    <record id="property_vendor_form_view" model="ir.ui.view">
+        <field name="name">property.vendor.form</field>
+        <field name="model">property.vendor</field>
+        <field name="arch" type="xml">
+            <form string="Booking / Vendor Record">
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_record_payment" string="Record Payment" type="object"
+                            class="btn-info"
+                            invisible="state != 'confirmed' or payment_recorded or sale_confirmed"/>
+                    <button name="action_confirm_sale_button" string="Confirm Sales" type="object"
+                            class="btn-success"
+                            invisible="state != 'confirmed' or sale_confirmed"/>
+                    <button name="action_cancel" string="Cancel" type="object"
+                            class="btn-danger" invisible="state == 'cancelled'"/>
+                    <button name="action_draft" string="Set to Draft" type="object"
+                            invisible="state != 'cancelled'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,confirmed"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Cancelled"
+                            bg_color="text-bg-danger" invisible="state != 'cancelled'"/>
+                    <widget name="web_ribbon" title="Sale Confirmed"
+                            bg_color="text-bg-success" invisible="not sale_confirmed"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. PS/2026/09/00001"/></h1>
+                    </div>
+                    <group>
+                        <group string="Parties">
+                            <field name="property_id"/>
+                            <field name="customer_id"/>
+                            <field name="vendor_id"/>
+                            <field name="broker_id"/>
+                            <field name="contract_date"/>
+                            <field name="sale_type" widget="radio" options="{'horizontal': true}"/>
+                        </group>
+                        <group string="Financial">
+                            <field name="currency_id"/>
+                            <field name="sale_price" widget="monetary"/>
+                            <field name="payment_schedule_id"
+                                   options="{'no_create': True}"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+
+                    <!-- Payment Section (visible after booking confirmed) -->
+                    <group string="Payment Information" invisible="state != 'confirmed'">
+                        <group string="Payment Status">
+                            <field name="payment_recorded" widget="boolean_toggle" readonly="1"/>
+                            <field name="payment_amount" widget="monetary" options="{'currency_field': 'currency_id'}" readonly="1"/>
+                            <field name="payment_date" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <!-- Linked Sale Contract (visible after sale confirmed) -->
+                    <group string="Linked Sale Contract" invisible="not sale_confirmed">
+                        <field name="sale_contract_id"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Commission" name="commission">
+                            <group>
+                                <group string="Commission Summary">
+                                    <field name="total_external_commission" widget="monetary"/>
+                                    <field name="total_internal_commission" widget="monetary"/>
+                                    <field name="total_commission" widget="monetary"/>
+                                </group>
+                            </group>
+                            <field name="commission_line_ids"
+                                   context="{'default_vendor_id': id, 'default_currency_id': currency_id}">
+                                <list editable="bottom"
+                                      decoration-success="state == 'paid'"
+                                      decoration-warning="state == 'approved'"
+                                      decoration-muted="state == 'draft'">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="category"/>
+                                    <field name="partner_id"/>
+                                    <field name="role"/>
+                                    <field name="custom_role_name"
+                                           invisible="role != 'custom'"/>
+                                    <field name="computation_type"/>
+                                    <field name="base_line_id"
+                                           invisible="computation_type != 'commission_received'"
+                                           context="{'default_vendor_id': vendor_id}"/>
+                                    <field name="commission_percentage"
+                                           invisible="computation_type == 'fixed_amount'"
+                                           digits="[5,2]"/>
+                                    <field name="commission_fixed_amount" sum="Total"
+                                           widget="monetary"
+                                           invisible="computation_type != 'fixed_amount'"
+                                           options="{'currency_field': 'currency_id'}" />
+                                    <field name="tax_ids" widget="many2many_tags" optional="show"/>
+                                    <field name="commission_amount" widget="monetary" sum="Total"
+                                           readonly="1"
+                                           options="{'currency_field': 'currency_id'}" />
+                                    <field name="amount_total" widget="monetary" sum="Total"
+                                           readonly="1"
+                                           options="{'currency_field': 'currency_id'}" />
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="state" widget="badge"
+                                           decoration-info="state == 'draft'"
+                                           decoration-success="state == 'paid'"
+                                           decoration-warning="state == 'approved'"
+                                           decoration-danger="state == 'cancelled'"/>
+                                    <field name="payment_state" widget="badge"
+                                           decoration-info="payment_state == 'not_paid'"
+                                           decoration-success="payment_state == 'paid'"/>
+                                </list>
+                            </field>
+                            <div class="oe_subtotal_footer_separator"/>
+                            <group class="oe_subtotal_footer" col="4" name="commission_totals">
+                                <field name="commission_line_count"/>
+                                <field name="total_tax" widget="monetary"
+                                       options="{'currency_field': 'currency_id'}"/>
+                                <field name="total_commission" widget="monetary"
+                                       options="{'currency_field': 'currency_id'}"/>
+                                <field name="amount_total" widget="monetary"
+                                       options="{'currency_field': 'currency_id'}"
+                                       decoration-bf="True"/>
+                            </group>
+                        </page>
+
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Additional notes..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ======================================================
+         PROPERTY VENDOR / BOOKING — Search View
+    ====================================================== -->
+    <record id="property_vendor_search_view" model="ir.ui.view">
+        <field name="name">property.vendor.search</field>
+        <field name="model">property.vendor</field>
+        <field name="arch" type="xml">
+            <search string="Bookings">
+                <field name="name"/>
+                <field name="property_id"/>
+                <field name="customer_id"/>
+                <field name="vendor_id"/>
+                <field name="broker_id"/>
+                <filter name="filter_draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                <filter name="filter_confirmed" string="Confirmed" domain="[('state', '=', 'confirmed')]"/>
+                <filter name="filter_cancelled" string="Cancelled" domain="[('state', '=', 'cancelled')]"/>
+                <separator/>
+                <filter name="group_by_state" string="Status" context="{'group_by': 'state'}"/>
+                <filter name="group_by_property" string="Property" context="{'group_by': 'property_id'}"/>
+            </search>
+        </field>
+    </record>
+
+        <!-- ======================================================
+             PROPERTY VENDOR / BOOKING — Action
+        ====================================================== -->
+        <record id="property_vendor_action" model="ir.actions.act_window">
+        <field name="name">Bookings</field>
+        <field name="res_model">property.vendor</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="property_vendor_search_view"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Booking / Vendor Record
+            </p>
+        </field>
+    </record>
+
+</odoo>

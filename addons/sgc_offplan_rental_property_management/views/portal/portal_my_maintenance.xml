@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_maintenance" name="Portal My Maintenance">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs" t-value="[
+                {'name': 'My Account', 'slug': '/my'},
+                {'name': 'Maintenance', 'slug': '/my/maintenance'},
+            ]"/>
+            <div class="container">
+                <div class="row mb-4">
+                    <div class="col-12 d-flex justify-content-between align-items-center">
+                        <h1 class="mb-0">Maintenance Requests</h1>
+                        <a href="/my/maintenance/new" class="btn btn-primary">
+                            <span class="fa fa-plus" title="New"></span> New Request
+                        </a>
+                    </div>
+                </div>
+                <t t-if="maintenance_requests">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr><th>Subject</th><th>Property</th><th>Date</th><th>Status</th><th>AI Priority</th><th></th></tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="maintenance_requests" t-as="m">
+                                <td t-esc="m.name"/>
+                                <td t-esc="m.property_id.name or ''"/>
+                                <td t-esc="m.create_date"/>
+                                <td><span class="badge badge-info" t-esc="m.stage_id.name or 'Open'"/></td>
+                                <td>
+                                    <span t-if="m.ai_priority"
+                                          t-attf-class="badge #{'badge-danger' if m.ai_priority in ('urgent', 'high') else 'badge-info'}"
+                                          t-esc="m.ai_priority.capitalize()"/>
+                                </td>
+                                <td><a t-att-href="'/my/maintenance/%s' % m.id" class="btn btn-sm btn-outline-primary">View</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+                <t t-if="not maintenance_requests">
+                    <div class="alert alert-info">No maintenance requests. <a href="/my/maintenance/new">Create one</a>.</div>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_my_maintenance_form" name="Portal New Maintenance Request">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs" t-value="[
+                {'name': 'My Account', 'slug': '/my'},
+                {'name': 'Maintenance', 'slug': '/my/maintenance'},
+                {'name': 'New Request', 'slug': '/my/maintenance/new'},
+            ]"/>
+            <div class="container">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h1>New Maintenance Request</h1>
+                    </div>
+                </div>
+                <t t-if="error">
+                    <div class="alert alert-danger">Your request could not be submitted. Please check the form and try again.</div>
+                </t>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-body">
+                                <form method="POST" action="/my/maintenance/submit">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <div class="form-group mb-3">
+                                        <label for="subject">Subject</label>
+                                        <input type="text" name="subject" class="form-control" required="required"/>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="property_id">Property</label>
+                                        <select name="property_id" class="form-control">
+                                            <option value="">Select Property</option>
+                                            <option t-foreach="properties" t-as="prop"
+                                                    t-att-value="prop.id"
+                                                    t-att-selected="'selected' if selected_property_id and int(selected_property_id) == prop.id else None"
+                                                    t-esc="prop.name"/>
+                                        </select>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="description">Description</label>
+                                        <textarea name="description" class="form-control" rows="5"
+                                                  placeholder="Describe the issue in detail..."/>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Submit Request</button>
+                                    <a href="/my/maintenance" class="btn btn-secondary">Cancel</a>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_my_maintenance_detail" name="Portal Maintenance Request Detail">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs" t-value="[
+                {'name': 'My Account', 'slug': '/my'},
+                {'name': 'Maintenance', 'slug': '/my/maintenance'},
+                {'name': maintenance.name, 'slug': '/my/maintenance/%s' % maintenance.id},
+            ]"/>
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <h1 t-esc="maintenance.name"/>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h4>Request Details</h4>
+                                <table class="table table-sm">
+                                    <tr><td><strong>Subject</strong></td><td t-esc="maintenance.name"/></tr>
+                                    <tr t-if="maintenance.property_id">
+                                        <td><strong>Property</strong></td>
+                                        <td><a t-att-href="'/my/property/%s' % maintenance.property_id.id" t-esc="maintenance.property_id.name"/></td>
+                                    </tr>
+                                    <tr><td><strong>Status</strong></td><td><span class="badge badge-info" t-esc="maintenance.stage_id.name or 'Open'"/></td></tr>
+                                    <tr><td><strong>Created</strong></td><td t-esc="maintenance.create_date"/></tr>
+                                    <tr t-if="maintenance.ai_priority">
+                                        <td><strong>AI Priority</strong></td>
+                                        <td>
+                                            <span t-attf-class="badge #{'badge-danger' if maintenance.ai_priority in ('urgent', 'high') else 'badge-info'}"
+                                                  t-esc="maintenance.ai_priority.capitalize()"/>
+                                        </td>
+                                    </tr>
+                                    <tr t-if="maintenance.ai_summary">
+                                        <td><strong>AI Summary</strong></td>
+                                        <td t-esc="maintenance.ai_summary"/>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h4>Description</h4>
+                                <p t-esc="maintenance.description or 'No description provided.'"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" t-if="maintenance.invoice_id">
+                    <div class="col-md-6">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h4>Invoice</h4>
+                                <table class="table table-sm">
+                                    <tr><td><strong>Reference</strong></td><td t-esc="maintenance.invoice_id.name"/></tr>
+                                    <tr><td><strong>Amount</strong></td><td t-esc="'AED %s' % '{:,.2f}'.format(maintenance.total)"/></tr>
+                                    <tr>
+                                        <td><strong>Status</strong></td>
+                                        <td>
+                                            <span class="badge"
+                                                  t-att-class="'badge-success' if maintenance.invoice_id.payment_state == 'paid' else 'badge-warning'"
+                                                  t-esc="maintenance.invoice_id.payment_state"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <a t-att-href="'/my/invoice/%s' % maintenance.invoice_id.id" class="btn btn-sm btn-outline-primary">View Invoice</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

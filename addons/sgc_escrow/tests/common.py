@@ -29,6 +29,9 @@ class EscrowCommon(common.TransactionCase):
             'type': 'service',
             'list_price': 1000.0,
             'company_id': cls.company.id,
+            # No default sale tax: the company default (5%) would inflate every
+            # invoice total and break the ledger assertions on exact amounts.
+            'taxes_id': [(5, 0, 0)],
         })
 
     @classmethod
@@ -44,6 +47,16 @@ class EscrowCommon(common.TransactionCase):
         # as an unexplained zero balance.
         assert journal.default_account_id, (
             'Bank journal %s did not get a default account' % code)
+        # Odoo 19 posts payment liquidity through the payment-method line's
+        # outstanding account (payment_account_id), never journal.default_account_id
+        # directly; money only reaches the bank account via statement
+        # reconciliation. Escrow roll-ups read lines on the escrow account, so
+        # point the method lines at the journal's own liquidity account --
+        # exactly what action_setup_escrow_journal configures in production.
+        (journal.inbound_payment_method_line_ids
+         | journal.outbound_payment_method_line_ids).write({
+            'payment_account_id': journal.default_account_id.id,
+        })
         return journal
 
     @classmethod
@@ -173,10 +186,14 @@ class EscrowCommon(common.TransactionCase):
     # -- Releases ---
     @classmethod
     def set_progress(cls, project, progress):
-        """Certify progress and re-baseline any draft release on the project."""
+        """Certify progress on the project.
+
+        Draft releases keep the snapshots they were created with: a draft is
+        re-baselined only through the explicit Refresh Snapshots action, never
+        as a side effect of certifying progress (see
+        test_snapshots_freeze_on_approval).
+        """
         project.escrow_certified_progress = progress
-        project.escrow_release_ids.filtered(
-            lambda r: r.state == 'draft').action_refresh_snapshots()
 
     @classmethod
     def create_release(cls, project, amount=None, date='2026-02-01'):
@@ -188,3 +205,30 @@ class EscrowCommon(common.TransactionCase):
         if amount is not None:
             release.amount = amount
         return release
+
+    def _escrow_manager(self):
+        """A user holding the Escrow Manager role *and* accounting rights.
+
+        The accounting groups are not decoration: posting a release writes an
+        ``account.move``, so a manager without them would hit an AccessError in
+        the middle of the flow. In production an Escrow Manager is a finance
+        user, so the fixture mirrors that.
+        """
+        user = self.env['res.users'].create({
+            'name': 'SGCEscrow Manager',
+            'login': 'sgc_escrow_manager_test',
+            'email': 'sgc_escrow_manager@example.com',
+            'company_id': self.company.id,
+            'company_ids': [(4, self.company.id)],
+        })
+        user.write({
+            'group_ids': [(6, 0, [
+                self.env.ref('base.group_user').id,
+                self.env.ref('account.group_account_invoice').id,
+                self.env.ref('account.group_account_manager').id,
+                self.env.ref('sgc_escrow.group_escrow_user').id,
+                self.env.ref('sgc_escrow.group_escrow_approver').id,
+                self.env.ref('sgc_escrow.group_escrow_manager').id,
+            ])],
+        })
+        return user

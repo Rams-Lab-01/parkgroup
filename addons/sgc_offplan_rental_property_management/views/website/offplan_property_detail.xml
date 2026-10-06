@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="offplan_property_detail" name="Offplan Property Detail Page">
+        <t t-call="website.layout">
+            <t t-set="title" t-value="property.name or 'Property Detail'"/>
+            <div class="container mt-4 mb-5 o_property_detail">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="property-gallery mb-4 carousel slide" id="propertyCarousel">
+                            <t t-if="property.image_1920 or property.image_ids">
+                                <div class="carousel-inner">
+                                    <t t-if="property.image_1920">
+                                        <div class="carousel-item active">
+                                            <img t-att-src="'/web/image/property.details/%s/image_1920' % property.id"
+                                                 class="img-fluid rounded main-carousel-img"
+                                                 style="width:100%;max-height:500px;object-fit:cover;"
+                                                 t-att-alt="property.name"/>
+                                        </div>
+                                    </t>
+                                    <t t-foreach="property.image_ids" t-as="gallery_img" t-as-index="gallery_img_index">
+                                        <div t-attf-class="carousel-item#{' active' if not property.image_1920 and gallery_img_index == 0 else ''}"
+                                             t-attf-data-img-id="#{gallery_img.id}">
+                                            <img t-att-src="'/web/image/property.image/%s/image_512' % gallery_img.id"
+                                                 class="img-fluid rounded main-carousel-img"
+                                                 style="width:100%;max-height:500px;object-fit:cover;"
+                                                 t-att-alt="gallery_img.name or property.name"/>
+                                        </div>
+                                    </t>
+                                </div>
+                                <a t-if="len(property.image_ids) > 1 or property.image_1920" class="carousel-control-prev" href="#propertyCarousel" data-bs-slide="prev" role="button">
+                                    <span class="carousel-control-prev-icon"></span>
+                                </a>
+                                <a t-if="len(property.image_ids) > 1 or property.image_1920" class="carousel-control-next" href="#propertyCarousel" data-bs-slide="next" role="button">
+                                    <span class="carousel-control-next-icon"></span>
+                                </a>
+                            </t>
+                            <t t-else="">
+                                <img src="/web/static/src/img/placeholder.png"
+                                     class="img-fluid rounded main-carousel-img"
+                                     style="width:100%;max-height:500px;object-fit:cover;"/>
+                            </t>
+                        </div>
+
+                        <t t-if="property.image_ids">
+                            <div class="thumbnail-strip d-flex overflow-auto mt-2" style="gap:8px;max-height:120px;">
+                                <t t-foreach="property.image_ids" t-as="gallery_img" t-as-index="gallery_img_index">
+                                    <img t-att-src="'/web/image/property.image/%s/image_512' % gallery_img.id"
+                                         class="rounded thumb-img flex-shrink-0"
+                                         data-bs-target="#propertyCarousel"
+                                         t-attf-data-bs-slide-to="#{gallery_img_index + (1 if property.image_1920 else 0)}"
+                                         t-att-alt="gallery_img.name or property.name"
+                                         style="width:100px;height:75px;object-fit:cover;cursor:pointer;"
+                                         t-attf-data-img-id="#{gallery_img.id}"/>
+                                </t>
+                            </div>
+                        </t>
+
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h3 class="mb-3">Description</h3>
+                                <div t-out="property.description or 'No description available.'"/>
+                            </div>
+                        </div>
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h3 class="mb-3">Specifications</h3>
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <tr t-if="property.property_type">
+                                            <td><strong>Property Type</strong></td>
+                                            <td t-esc="dict(property._fields['property_type'].selection).get(property.property_type, property.property_type)"/>
+                                        </tr>
+                                        <tr t-if="property.bedrooms">
+                                            <td><strong>Bedrooms</strong></td>
+                                            <td t-esc="property.bedrooms"/>
+                                        </tr>
+                                        <tr t-if="property.bathrooms">
+                                            <td><strong>Bathrooms</strong></td>
+                                            <td t-esc="property.bathrooms"/>
+                                        </tr>
+                                        <tr t-if="property.area">
+                                            <td><strong>Area</strong></td>
+                                            <td t-esc="'{:,.0f} sqft'.format(property.area)"/>
+                                        </tr>
+                                        <tr t-if="property.project_id">
+                                            <td><strong>Project</strong></td>
+                                            <td>
+                                                <a t-att-href="'/offplan/project/%s' % property.project_id.id"
+                                                   t-esc="property.project_id.name"/>
+                                            </td>
+                                        </tr>
+                                        <tr t-if="property.sub_project_id">
+                                            <td><strong>Sub Project</strong></td>
+                                            <td t-esc="property.sub_project_id.name"/>
+                                        </tr>
+                                        <tr t-if="property.state">
+                                            <td><strong>Status</strong></td>
+                                            <td t-esc="dict(property._fields['state'].selection).get(property.state, property.state)"/>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card mb-4" t-if="property.amenity_ids or property.connectivity_ids">
+                            <div class="card-body">
+                                <t t-if="property.amenity_ids">
+                                    <h3 class="mb-3">Amenities</h3>
+                                    <div class="row mb-3">
+                                        <t t-foreach="property.amenity_ids" t-as="amenity">
+                                            <div class="col-6 col-md-4 col-lg-3 mb-3 text-center o-amenity-tile">
+                                                <img t-att-src="amenity.get_icon_url()"
+                                                     t-att-alt="amenity.title"
+                                                     style="width:48px;height:48px;object-fit:contain;"/>
+                                                <p class="small mb-0" t-esc="amenity.title"/>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </t>
+                                <t t-if="property.connectivity_ids">
+                                    <h3 class="mb-3">Nearby Connectivity</h3>
+                                    <div class="row">
+                                        <t t-foreach="property.connectivity_ids" t-as="connectivity">
+                                            <div class="col-6 col-md-4 col-lg-3 mb-3 text-center o-amenity-tile">
+                                                <img t-att-src="connectivity.get_icon_url()"
+                                                     t-att-alt="connectivity.name"
+                                                     style="width:48px;height:48px;object-fit:contain;"/>
+                                                <p class="small mb-0" t-esc="connectivity.name"/>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card mb-4 sticky-top" style="top:80px;">
+                            <div class="card-body">
+                                <h1 class="h3 mb-2" t-esc="property.name"/>
+                                <p class="text-muted mb-3" t-if="property.city or property.project_id">
+                                    <span class="fa fa-map-marker" title="Location"></span>
+                                    <span t-esc="property.city or ''"/>
+                                    <t t-if="property.city and property.project_id">, </t>
+                                    <span t-esc="property.project_id.name" t-if="property.project_id"/>
+                                </p>
+
+                                <h2 class="text-primary mb-3" t-if="property.sale_price">
+                                    AED <t t-esc="'{:,.0f}'.format(property.sale_price)"/>
+                                </h2>
+                                <h2 class="text-primary mb-3" t-if="not property.sale_price and property.rent_price">
+                                    AED <t t-esc="'{:,.0f}'.format(property.rent_price)"/>
+                                </h2>
+
+                                <div class="property-highlights mb-4 d-flex flex-wrap gap-2">
+                                    <span class="o-spec-pill">
+                                        <i class="fa fa-bed" aria-hidden="true"></i>
+                                        <strong t-esc="property.bedrooms or 'Studio'"/> Beds
+                                    </span>
+                                    <span class="o-spec-pill">
+                                        <i class="fa fa-bath" aria-hidden="true"></i>
+                                        <strong t-esc="property.bathrooms or 1"/> Baths
+                                    </span>
+                                    <span class="o-spec-pill" t-if="property.area">
+                                        <i class="fa fa-ruler" aria-hidden="true"></i>
+                                        <strong t-esc="'{:,.0f}'.format(property.area)"/> sqft
+                                    </span>
+                                    <span class="o-spec-pill">
+                                        <i class="fa fa-building" aria-hidden="true"></i>
+                                        <t t-esc="dict(property._fields['property_type'].selection).get(property.property_type, 'N/A')"/>
+                                    </span>
+                                </div>
+
+                                <button type="button"
+                                        class="btn btn-primary btn-lg btn-block mb-2 w-100"
+                                        onclick="document.getElementById('inquiry-form-box').classList.toggle('d-none'); this.classList.toggle('d-none')">
+                                    <span class="fa fa-envelope"></span> Inquire Now
+                                </button>
+
+                                <div id="inquiry-form-box" class="d-none rounded p-3 mb-2 o-inquiry-panel">
+                                    <h6 class="fw-bold mb-3">Get Full Details</h6>
+                                    <form id="inquiry-form">
+                                        <input type="hidden" name="property_id"
+                                               t-att-value="property.id"/>
+                                        <div class="mb-2">
+                                            <input type="text" class="form-control form-control-sm"
+                                                   name="name" placeholder="Your name *" required=""/>
+                                        </div>
+                                        <div class="mb-2">
+                                            <input type="email" class="form-control form-control-sm"
+                                                   name="email" placeholder="Email *" required=""/>
+                                        </div>
+                                        <div class="mb-2">
+                                            <input type="tel" class="form-control form-control-sm"
+                                                   name="phone" placeholder="Phone"/>
+                                        </div>
+                                        <div class="mb-2">
+                                            <textarea class="form-control form-control-sm" name="message"
+                                                      rows="2" placeholder="Message (optional)"></textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary btn-sm w-100">
+                                            <span class="fa fa-paper-plane"></span> Send &amp; Download
+                                        </button>
+                                    </form>
+                                    <div id="inquiry-result" class="mt-2"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card mb-4 shadow-sm o-trakheesi-qr-card" t-if="property.trakheesi_qr_code">
+                            <div class="card-body text-center py-3">
+                                <img class="img-fluid mb-2" style="max-width:140px;"
+                                     t-att-src="'/web/image/property.details/%s/trakheesi_qr_code' % property.id"
+                                     t-att-alt="'Trakheesi QR Code - %s' % property.name"/>
+                                <div class="small text-uppercase fw-bold" style="letter-spacing:1px;">Scan to verify</div>
+                                <div class="small text-muted">
+                                    Trakheesi / DLD permit
+                                    <t t-if="property.trakheesi_permit_number"> #<span t-esc="property.trakheesi_permit_number"/></t>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-5 mb-5" t-if="similar_properties">
+                    <div class="col-12">
+                        <h3 class="mb-4">Similar Properties</h3>
+                        <div class="row">
+                            <div class="col-md-4 mb-4" t-foreach="similar_properties" t-as="sim">
+                                <div class="card h-100 shadow-sm">
+                                    <img t-if="sim.image_512"
+                                         t-att-src="'/web/image/property.details/%s/image_512' % sim.id"
+                                         class="card-img-top" style="height:200px;object-fit:cover;"
+                                         t-att-alt="sim.name"/>
+                                    <div class="card-body d-flex flex-column">
+                                        <h5 class="card-title" t-esc="sim.name"/>
+                                        <div class="mt-auto d-flex justify-content-between align-items-center">
+                                            <span class="text-primary font-weight-bold" t-if="sim.sale_price">
+                                                AED <t t-esc="'{:,.0f}'.format(sim.sale_price)"/>
+                                            </span>
+                                            <a t-att-href="'/offplan/property/%s' % sim.id"
+                                               class="btn btn-sm btn-outline-primary">View</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+
+        <t t-set="gated_inquiry_js">
+            <script>
+                //<![CDATA[
+                document.addEventListener('DOMContentLoaded', function () {
+                    var form = document.getElementById('inquiry-form');
+                    if (!form) return;
+                    form.addEventListener('submit', function (e) {
+                        e.preventDefault();
+                        var data = {params: {}};
+                        new FormData(form).forEach(function (v, k) {
+                            data.params[k] = v;
+                        });
+                        var btn = form.querySelector('button[type=submit]');
+                        var orig = btn.innerHTML;
+                        btn.disabled = true;
+                        btn.innerHTML = 'Sending...';
+                        fetch('/offplan/property/inquiry', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify(data),
+                        })
+                        .then(function (r) { return r.json(); })
+                        .then(function (resp) {
+                            var r = resp.result || {};
+                            var box = document.getElementById('inquiry-result');
+                            if (r.success) {
+                                var msg = '<div class="alert alert-success mb-0">' +
+                                    '<strong>Thank you!</strong> Our team will contact you shortly.';
+                                if (r.download_url) {
+                                    msg += '<div class="mt-2">' +
+                                        '<a href="' + r.download_url + '" class="btn btn-success btn-sm" target="_blank">' +
+                                        '<span class="fa fa-download"></span> Download Brochure</a></div>';
+                                }
+                                msg += '</div>';
+                                box.innerHTML = msg;
+                                form.classList.add('d-none');
+                            } else {
+                                box.innerHTML = '<div class="alert alert-danger mb-0">' +
+                                    (r.error || 'Something went wrong. Please try again.') + '</div>';
+                                btn.disabled = false;
+                                btn.innerHTML = orig;
+                            }
+                        })
+                        .catch(function (err) {
+                            document.getElementById('inquiry-result').innerHTML =
+                                '<div class="alert alert-danger mb-0">Network error. Please try again.</div>';
+                            btn.disabled = false;
+                            btn.innerHTML = orig;
+                        });
+                    });
+                });
+                //]]>
+            </script>
+        </t>
+        <t t-out="gated_inquiry_js"/>
+    </template>
+</odoo>

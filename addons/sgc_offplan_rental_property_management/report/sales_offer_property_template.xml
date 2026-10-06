@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="sales_offer_property_template">
+        <t t-call="web.html_container">
+          <t t-foreach="docs" t-as="o">
+            <t t-set="company" t-value="o.company_id or env.company"/>
+            <t t-set="fd" t-value="lambda d: d.strftime('%d %b %Y') if d else ' - '"/>
+            <t t-set="mon" t-value="o.currency_id or o.company_id.currency_id"/>
+            <t t-call="sgc_offplan_rental_property_management.property_report_styles"/>
+            <div class="o_pmg_doc article" t-att-data-oe-model="o._name" t-att-data-oe-id="o.id"><t t-call="sgc_offplan_rental_property_management.property_report_styles"/>
+                <t t-set="report_ref" t-value="o.name or ' - '"/>
+                <t t-set="report_date" t-value="fd(datetime.date.today())"/>
+                <t t-call="sgc_offplan_rental_property_management.property_report_letterhead"/>
+                <t t-set="report_title">Sales Offer</t>
+                <t t-set="report_subtitle">Property Offer Sheet  -  United Arab Emirates</t>
+                <t t-call="sgc_offplan_rental_property_management.property_report_title"/>
+
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">1</span>Property Information</div>
+                    <div class="o_pmg_section-body">
+                        <table class="o_pmg_dl">
+                            <tr><td class="o_pmg_dl-label">Property Name</td><td class="o_pmg_dl-value" t-out="o.name or ' - '"/></tr>
+                            <tr t-if="o.property_type"><td class="o_pmg_dl-label">Type</td><td class="o_pmg_dl-value" t-out="dict(o._fields['property_type'].selection).get(o.property_type, o.property_type)"/></tr>
+                            <tr t-if="o.project_id"><td class="o_pmg_dl-label">Project</td><td class="o_pmg_dl-value" t-out="o.project_id.name"/></tr>
+                            <tr t-if="o.sub_project_id"><td class="o_pmg_dl-label">Sub Project</td><td class="o_pmg_dl-value" t-out="o.sub_project_id.name"/></tr>
+                            <tr t-if="o.city"><td class="o_pmg_dl-label">City</td><td class="o_pmg_dl-value" t-out="o.city"/></tr>
+                            <tr t-if="o.bedrooms"><td class="o_pmg_dl-label">Bedrooms</td><td class="o_pmg_dl-value" t-out="o.bedrooms"/></tr>
+                            <tr t-if="o.bathrooms"><td class="o_pmg_dl-label">Bathrooms</td><td class="o_pmg_dl-value" t-out="o.bathrooms"/></tr>
+                            <tr t-if="o.area"><td class="o_pmg_dl-label">Area</td><td class="o_pmg_dl-value" t-out="'{:,.0f} sq ft'.format(o.area)"/></tr>
+                            <tr><td class="o_pmg_dl-label">Sale Price</td><td class="o_pmg_dl-value"><span t-if="o.sale_price" t-out="o.sale_price" t-options="{'widget': 'monetary', 'display_currency': mon}"/><t t-if="not o.sale_price">N/A</t></td></tr>
+                            <tr t-if="o.rent_price"><td class="o_pmg_dl-label">Rent Price</td><td class="o_pmg_dl-value"><span t-out="o.rent_price" t-options="{'widget': 'monetary', 'display_currency': mon}"/></td></tr>
+                            <tr t-if="o.state"><td class="o_pmg_dl-label">Status</td><td class="o_pmg_dl-value" t-out="dict(o._fields['state'].selection).get(o.state, o.state)"/></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="o_pmg_section" t-if="o.description">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">2</span>Description</div>
+                    <div class="o_pmg_section-body">
+                        <div t-out="o.description"/>
+                    </div>
+                </div>
+
+                <t t-set="prop_plan" t-value="o._report_property_payment_plan_lines()"/>
+                <t t-set="prop_plan_total" t-value="0"/>
+                <t t-set="prop_basis" t-value="o.sale_price or 0.0"/>
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">3</span>Payment Plan Schedule</div>
+                    <div class="o_pmg_section-body" style="padding: 0; overflow: hidden;">
+                        <t t-if="prop_plan">
+                            <p class="o_pmg_clause" style="margin: 12px 12px 8px;">
+                                <strong>Calculation basis:</strong> all amounts are calculated on the
+                                Sale Price of <strong t-out="o.name or 'the property'"/> -
+                                <span t-out="prop_basis" t-options="{'widget': 'monetary', 'display_currency': mon}"/> -
+                                using the payment schedule
+                                <strong t-out="o.payment_schedule_id.name or 'selected on the property'"/>.
+                            </p>
+                            <table class="o_pmg_table">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center" style="width:6%;">#</th>
+                                        <th style="width:44%;">Milestone</th>
+                                        <th class="text-right" style="width:10%;">%</th>
+                                        <th class="text-right" style="width:22%;">Amount (AED)</th>
+                                        <th class="text-center" style="width:18%;">Due Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="prop_plan" t-as="line">
+                                        <tr t-att-class="'o_pmg_row-reconciled' if line.get('reconciled') else ''">
+                                            <td class="text-center" t-esc="line.get('sequence')"/>
+                                            <td t-esc="line.get('name') or ''"/>
+                                            <td class="text-right">
+                                                <span t-if="line.get('percentage')"
+                                                      t-out="('%.2f' % line.get('percentage')) + '%'"/>
+                                                <span t-if="not line.get('percentage')"> - </span>
+                                            </td>
+                                            <td class="text-right">
+                                                <span t-out="line.get('amount')"
+                                                      t-options="{'widget': 'monetary', 'display_currency': mon}"/>
+                                            </td>
+                                            <td class="text-center" t-esc="fd(line.get('due_date'))"/>
+                                        </tr>
+                                        <t t-set="prop_plan_total" t-value="prop_plan_total + (line.get('amount') or 0.0)"/>
+                                    </t>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="3" class="text-right">Total Scheduled</td>
+                                        <td class="text-right">
+                                            <span t-out="prop_plan_total"
+                                                  t-options="{'widget': 'monetary', 'display_currency': mon}"/>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3" class="text-right">Sale Price (Reference)</td>
+                                        <td class="text-right">
+                                            <span t-out="prop_basis"
+                                                  t-options="{'widget': 'monetary', 'display_currency': mon}"/>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                            <p class="o_pmg_clause" style="margin: 8px 12px 10px;">
+                                <em>Indicative payment plan based on the selected payment schedule
+                                (<strong t-out="o.payment_schedule_id.name"/>).</em>
+                                The final row above absorbs the rounding residual so the plan always
+                                adds back to the Sale Price shown.
+                            </p>
+                        </t>
+                        <t t-else="">
+                            <p class="o_pmg_clause" style="margin: 12px;">
+                                <strong>Payment plan not specified.</strong><br/>
+                                No payment plan has been selected for this property yet. Open the
+                                property's Pricing &amp; Fees page, enable the Payment Plan and choose
+                                a schedule, then print this document again.
+                            </p>
+                        </t>
+                    </div>
+                </div>
+
+                <t t-set="offer_fp" t-value="o._report_floor_plan_data()"/>
+                <div class="o_pmg_section" t-if="offer_fp.get('has')">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">4</span>Floor Plan</div>
+                    <div class="o_pmg_section-body">
+                        <table class="o_pmg_dl">
+                            <tr><td class="o_pmg_dl-label">Property</td><td class="o_pmg_dl-value" t-out="o.name or ' - '"/></tr>
+                            <tr t-if="offer_fp.get('source')"><td class="o_pmg_dl-label">Source</td><td class="o_pmg_dl-value" t-out="offer_fp.get('source')"/></tr>
+                        </table>
+                        <t t-if="offer_fp.get('kind') == 'image'">
+                            <img t-foreach="offer_fp.get('pages')" t-as="page" class="o_pmg_floorplan"
+                                 t-att-src="'data:' + page.get('mime') + ';base64,' + page.get('b64')"
+                                 t-att-alt="page.get('filename')"/>
+                        </t>
+                        <p class="o_pmg_clause" style="margin-top: 8px;" t-if="offer_fp.get('kind') == 'pdf'">
+                            The floor plan of this property is a PDF document; it is attached to this
+                            offer sheet on the pages appended at the end of this file.
+                        </p>
+                    </div>
+                </div>
+
+                <t t-set="report_name">Sales Offer</t>
+                <t t-set="report_footer_note">This is a computer-generated property offer sheet.</t>
+                <t t-call="sgc_offplan_rental_property_management.property_report_footer"/>
+            </div>
+          </t>
+        </t>
+    </template>
+</odoo>

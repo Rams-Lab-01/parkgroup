@@ -1,0 +1,20 @@
+.leaflet-popup-content {
+    margin: 0px 0px 0px 0px !important;
+}
+.leaflet-popup-content-wrapper {
+    border-radius: 2px !important;
+}
+.prop-img {
+ width: 6.375rem;
+ height: 10.925rem;
+ padding-right: 7px;
+ object-fit: content;
+}
+.prop-btn {
+ margin-left: 4px;
+ font-size: 0.9rem !important;
+ padding: 0.2rem 0.4rem;
+}
+.leaflet-popup-content{
+    width:255px !important;
+}

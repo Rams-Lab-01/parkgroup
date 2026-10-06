@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2025 SGC TECH AI
+     Part of SGC Odoo Suite. See LICENSE file for full copyright and licensing details. -->
+<odoo>
+
+    <!-- ======================================================
+         SALE CONTRACT — List View
+    ====================================================== -->
+    <record id="sale_contract_list_view" model="ir.ui.view">
+        <field name="name">sale.contract.list</field>
+        <field name="model">sale.contract</field>
+        <field name="arch" type="xml">
+            <list string="Sale Contracts" decoration-muted="state == 'cancelled'">
+                <field name="name"/>
+                <field name="property_id"/>
+                <field name="buyer_id"/>
+                <field name="sale_price" widget="monetary" options="{'currency_field': 'currency_id'}" sum="Total"/>
+                <field name="balance_due" widget="monetary" options="{'currency_field': 'currency_id'}" sum="Total" optional="show"/>
+                <field name="collection_pct" optional="show"/>
+                <field name="last_activity_date" optional="show"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="contract_date"/>
+                <field name="state"
+                       widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-success="state in ('signed', 'completed')"
+                       decoration-danger="state == 'cancelled'"/>
+                <field name="overall_payment_state"
+                       widget="badge"
+                       decoration-success="overall_payment_state == 'paid'"
+                       decoration-warning="overall_payment_state == 'partial'"
+                       decoration-danger="overall_payment_state == 'not_paid'"
+                       decoration-muted="overall_payment_state == 'no_invoices'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ======================================================
+         SALE CONTRACT — Form View
+    ====================================================== -->
+    <record id="sale_contract_form_view" model="ir.ui.view">
+        <field name="name">sale.contract.form</field>
+        <field name="model">sale.contract</field>
+        <field name="arch" type="xml">
+            <form string="Sale Contract">
+                <header>
+                    <button name="action_sign"
+                            string="Sign Contract"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_complete"
+                            string="Mark Complete"
+                            type="object"
+                            invisible="state != 'signed'"/>
+                    <button name="action_cancel"
+                            string="Cancel"
+                            type="object"
+                            class="btn-danger"
+                            invisible="state in ('completed', 'cancelled')"/>
+                    <field name="state"
+                           widget="statusbar"
+                           statusbar_visible="draft,signed,completed"/>
+                    <field name="overall_payment_state"
+                           widget="badge"
+                           decoration-success="overall_payment_state == 'paid'"
+                           decoration-warning="overall_payment_state == 'partial'"
+                           decoration-danger="overall_payment_state == 'not_paid'"
+                           decoration-muted="overall_payment_state == 'no_invoices'"/>
+                </header>
+                <sheet>
+                    <!-- Smart buttons -->
+                    <div name="button_box" class="oe_button_box">
+                        <button name="action_view_installments"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-calendar">
+                            <field name="installment_count" widget="statinfo" string="Installments"/>
+                        </button>
+                        <button name="action_view_invoices"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-pencil-square-o"
+                                invisible="not invoice_count">
+                            <field name="invoice_count" widget="statinfo" string="Invoices"/>
+                        </button>
+                        <button name="action_view_commission_bills"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-money"
+                                invisible="not commission_bill_count">
+                            <field name="commission_bill_count" widget="statinfo" string="Commission Bills"/>
+                        </button>
+                    </div>
+
+                    <!-- Cancelled ribbon -->
+                    <widget name="web_ribbon"
+                            title="Cancelled"
+                            bg_color="text-bg-danger"
+                            invisible="state != 'cancelled'"/>
+
+                    <!-- Record title -->
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="e.g. SC/2025/0001"/>
+                        </h1>
+                    </div>
+
+                    <!-- Main fields -->
+                    <group>
+                        <group string="Contract Parties">
+                            <field name="property_id"/>
+                            <field name="buyer_id"/>
+                            <field name="seller_id"/>
+                            <field name="contract_date"/>
+                            <field name="handover_date"/>
+                        </group>
+                        <group string="Financial Details">
+                            <field name="currency_id"/>
+                            <field name="sale_price"
+                                   widget="monetary"
+                                   options="{'currency_field': 'currency_id'}"/>
+                            <field name="booking_amount"
+                                   widget="monetary"
+                                   options="{'currency_field': 'currency_id'}"/>
+                            <field name="total_paid"
+                                   widget="monetary"
+                                   options="{'currency_field': 'currency_id'}"/>
+                            <field name="payment_schedule_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+
+                    <!-- Notebook -->
+                    <notebook>
+                        <page string="Commission" name="commission">
+                            <field name="is_commission_eligible" invisible="1"/>
+                            <div class="alert alert-warning" role="alert"
+                                 invisible="is_commission_eligible or not commission_line_ids">
+                                <field name="commission_ineligible_reason" nolabel="1"/>
+                            </div>
+                            <div class="mb-3">
+                                <button name="action_generate_commission_bills"
+                                        string="Generate Commission Bills"
+                                        type="object"
+                                        class="btn btn-primary"
+                                        invisible="not commission_line_ids or not is_commission_eligible"/>
+                            </div>
+                            <field name="commission_line_ids"
+                                   context="{'default_contract_id': id, 'default_currency_id': currency_id}">
+                                <list editable="bottom"
+                                      decoration-success="state == 'paid'"
+                                      decoration-warning="state == 'approved'"
+                                      decoration-muted="state == 'draft'">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="category" readonly="1"/>
+                                    <field name="partner_id"/>
+                                    <field name="role"/>
+                                    <field name="custom_role_name"
+                                           invisible="role != 'custom'"/>
+                                    <field name="computation_type"/>
+                                    <field name="base_line_id"
+                                           invisible="computation_type != 'commission_received'"
+                                           context="{'default_contract_id': contract_id}"/>
+                                    <field name="commission_percentage"
+                                           invisible="computation_type == 'fixed_amount'"
+                                           digits="[5,2]"/>
+                                    <field name="commission_fixed_amount" sum="Total"
+                                           widget="monetary"
+                                           invisible="computation_type != 'fixed_amount'"
+                                           options="{'currency_field': 'currency_id'}"/>
+                                    <field name="tax_ids" widget="many2many_tags" optional="show"/>
+                                    <field name="commission_amount" widget="monetary" sum="Total"
+                                           readonly="1"
+                                           options="{'currency_field': 'currency_id'}"/>
+                                    <field name="amount_total" widget="monetary" sum="Total"
+                                           readonly="1"
+                                           options="{'currency_field': 'currency_id'}"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="state" widget="badge"
+                                           decoration-info="state == 'draft'"
+                                           decoration-success="state == 'paid'"
+                                           decoration-warning="state == 'approved'"
+                                           decoration-danger="state == 'cancelled'"/>
+                                    <field name="bill_id" optional="hide"/>
+                                    <field name="payment_state" widget="badge"
+                                           decoration-info="payment_state == 'not_paid'"
+                                           decoration-success="payment_state == 'paid'"
+                                           decoration-warning="payment_state == 'partial'"/>
+                                    <button name="action_generate_bill"
+                                            string="Generate Bill"
+                                            type="object"
+                                            icon="fa-file-text-o"
+                                            invisible="bill_id or state != 'approved'"
+                                            class="btn-sm btn-primary"/>
+                                    <button name="action_view_bill"
+                                            string="View Bill"
+                                            type="object"
+                                            icon="fa-search"
+                                            invisible="not bill_id"
+                                            class="btn-sm btn-secondary"/>
+                                </list>
+                            </field>
+                            <!-- Totals footer — mirrors invoice/sale-order style. Sums
+                                 are computed and aggregated here so the layout doesn't
+                                 duplicate summary cards at the top of the page. -->
+                            <div class="oe_subtotal_footer_separator"/>
+                            <group class="oe_subtotal_footer" col="4" name="commission_totals">
+                                <field name="commission_line_count"/>
+                                <field name="commission_total_tax" widget="monetary"
+                                       options="{'currency_field': 'currency_id'}"/>
+                                <field name="commission_total_amount" widget="monetary"
+                                       options="{'currency_field': 'currency_id'}"/>
+                                <field name="commission_amount_total" widget="monetary"
+                                       options="{'currency_field': 'currency_id'}"
+                                       decoration-bf="True"/>
+                            </group>
+                        </page>
+                        <page string="Payment Plan" name="payment_plan">
+                            <div class="mb-3">
+                                <button name="action_generate_installments"
+                                        string="Generate Installments"
+                                        type="object"
+                                        class="btn btn-secondary"
+                                        invisible="not payment_schedule_id"/>
+                                <button name="action_generate_installment_invoices"
+                                        string="Generate Installment Invoices"
+                                        type="object"
+                                        class="btn btn-primary"
+                                        invisible="not installment_ids or not buyer_id"/>
+                            </div>
+                            <field name="installment_ids"
+                                   context="{'default_contract_id': id}">
+                                <list editable="bottom"
+                                      decoration-success="state in ('paid', 'partial')"
+                                      decoration-danger="state == 'overdue'"
+                                      decoration-warning="state == 'invoiced'"
+                                      decoration-muted="state == 'pending'">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="due_date"/>
+                                    <field name="percentage" string="%" digits="[5,2]"/>
+                                    <field name="amount" sum="Total"
+                                           widget="monetary"
+                                           options="{'currency_field': 'currency_id'}"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="state"
+                                           widget="badge"
+                                           decoration-info="state == 'pending'"
+                                           decoration-success="state in ('paid', 'partial')"
+                                           decoration-warning="state == 'invoiced'"
+                                           decoration-danger="state == 'overdue'"
+                                           decoration-muted="state == 'cancelled'"/>
+                                    <field name="invoice_id"
+                                           widget="many2one_button"
+                                           string="Invoice"
+                                           optional="hide"/>
+                                    <field name="payment_date" optional="hide"/>
+                                    <button name="action_generate_invoice"
+                                            string="Generate Invoice"
+                                            type="object"
+                                            icon="fa-file-text-o"
+                                            invisible="invoice_id"
+                                            class="btn-sm btn-primary"/>
+                                    <button name="action_view_invoice"
+                                            string="View Invoice"
+                                            type="object"
+                                            icon="fa-search"
+                                            invisible="not invoice_id"
+                                            class="btn-sm btn-secondary"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Internal notes about this contract…"/>
+                        </page>
+                    </notebook>
+                </sheet>
+
+                <!-- Chatter -->
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ======================================================
+         SALE CONTRACT INSTALLMENT — Form View (popup)
+    ====================================================== -->
+    <record id="sale_contract_installment_form_view" model="ir.ui.view">
+        <field name="name">sale.contract.installment.form</field>
+        <field name="model">sale.contract.installment</field>
+        <field name="arch" type="xml">
+            <form string="Installment">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="due_date"/>
+                            <field name="amount"
+                                   widget="monetary"
+                                   options="{'currency_field': 'currency_id'}"/>
+                            <field name="currency_id"/>
+                            <field name="percentage"/>
+                        </group>
+                        <group>
+                            <field name="state"/>
+                            <field name="payment_date"
+                                   invisible="state != 'paid'"/>
+                        </group>
+                    </group>
+                    <field name="notes" placeholder="Notes…"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ======================================================
+         SALE CONTRACT INSTALLMENT — List View
+    ====================================================== -->
+    <record id="sale_contract_installment_list_view" model="ir.ui.view">
+        <field name="name">sale.contract.installment.list</field>
+        <field name="model">sale.contract.installment</field>
+        <field name="arch" type="xml">
+            <list string="Installments"
+                  decoration-success="state == 'paid'"
+                  decoration-danger="state == 'overdue'">
+                <field name="contract_id"/>
+                <field name="name"/>
+                <field name="due_date"/>
+                <field name="percentage" string="%"/>
+                <field name="amount" sum="Total"
+                       widget="monetary"
+                       options="{'currency_field': 'currency_id'}"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="state"
+                       widget="badge"
+                       decoration-info="state == 'pending'"
+                       decoration-success="state == 'paid'"
+                       decoration-danger="state == 'overdue'"/>
+                <field name="payment_date"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ======================================================
+         SALE CONTRACT — Search View
+    ====================================================== -->
+    <record id="sale_contract_search_view" model="ir.ui.view">
+        <field name="name">sale.contract.search</field>
+        <field name="model">sale.contract</field>
+        <field name="arch" type="xml">
+            <search string="Sale Contracts">
+                <field name="name" string="Reference"/>
+                <field name="property_id"/>
+                <field name="buyer_id"/>
+                <filter name="filter_draft"
+                        string="Draft"
+                        domain="[('state', '=', 'draft')]"/>
+                <filter name="filter_signed"
+                        string="Signed"
+                        domain="[('state', '=', 'signed')]"/>
+                <filter name="filter_completed"
+                        string="Completed"
+                        domain="[('state', '=', 'completed')]"/>
+                <filter name="filter_cancelled"
+                        string="Cancelled"
+                        domain="[('state', '=', 'cancelled')]"/>
+                <filter name="group_by_state"
+                        string="Status"
+                        context="{'group_by': 'state'}"/>
+                <filter name="group_by_property"
+                        string="Property"
+                        context="{'group_by': 'property_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ======================================================
+         ACTIONS
+    ====================================================== -->
+    <record id="action_sale_contract" model="ir.actions.act_window">
+        <field name="name">Sale Contracts</field>
+        <field name="res_model">sale.contract</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="sale_contract_search_view"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Sale Contract
+            </p>
+        </field>
+    </record>
+
+    <record id="action_sale_contract_installments" model="ir.actions.act_window">
+        <field name="name">Sale Contract Installments</field>
+        <field name="res_model">sale.contract.installment</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

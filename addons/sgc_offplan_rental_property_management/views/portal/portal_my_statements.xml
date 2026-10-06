@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_statements" name="Portal My Statements">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs" t-value="[
+                {'name': 'My Account', 'slug': '/my'},
+                {'name': 'Statements', 'slug': '/my/statements'},
+            ]"/>
+            <div class="container">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h1>Statement of Account</h1>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Transaction History</h5>
+                                <button class="btn btn-sm btn-outline-primary" onclick="window.print()">
+                                    <span class="fa fa-print" title="Print"></span> Print
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <t t-if="invoices">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr><th>Date</th><th>Reference</th><th>Description</th><th>Amount (AED)</th><th>Status</th></tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr t-foreach="invoices" t-as="inv">
+                                                <td t-esc="inv.invoice_date"/>
+                                                <td t-esc="inv.name"/>
+                                                <td t-esc="inv.ref or ''"/>
+                                                <td t-esc="'{:,.2f}'.format(abs(inv.amount_total_signed))"/>
+                                                <td><span class="badge" t-att-class="'badge-success' if inv.payment_state == 'paid' else 'badge-warning'" t-esc="inv.payment_state"/></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </t>
+                                <t t-if="not invoices">
+                                    <p class="text-muted">No transactions found.</p>
+                                </t>
+                            </div>
+                        </div>
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Maintenance Charges</h5>
+                            </div>
+                            <div class="card-body">
+                                <t t-if="maintenance_invoices">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr><th>Date</th><th>Reference</th><th>Amount (AED)</th><th>Status</th></tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr t-foreach="maintenance_invoices" t-as="inv">
+                                                <td t-esc="inv.invoice_date"/>
+                                                <td t-esc="inv.name"/>
+                                                <td t-esc="'{:,.2f}'.format(abs(inv.amount_total_signed))"/>
+                                                <td><span class="badge" t-att-class="'badge-success' if inv.payment_state == 'paid' else 'badge-warning'" t-esc="inv.payment_state"/></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </t>
+                                <t t-if="not maintenance_invoices">
+                                    <p class="text-muted">No maintenance charges found.</p>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h5>Summary</h5>
+                                <table class="table table-sm">
+                                    <tr><td><strong>Total Outstanding</strong></td>
+                                        <td class="text-danger" t-esc="'AED %s' % '{:,.2f}'.format(total_outstanding)"/></tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+      Removed dead cron "tenancy_product_update_cron": it ran every minute calling
+      tenancy.details.get_default_product(), a method that does not exist in the
+      module. There is no default-product maintenance to perform, so the record is
+      dropped entirely rather than reimplemented.
+    -->
+</odoo>

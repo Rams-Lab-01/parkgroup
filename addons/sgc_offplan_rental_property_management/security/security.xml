@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rental_company_restricted_property" model="ir.rule">
+        <field name="name">Property Management : Company Property Only</field>
+        <field name="model_id" ref="model_property_details"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rental_company_restricted_parent_property" model="ir.rule">
+        <field name="name">Property Management : Company Parent Property Only</field>
+        <field name="model_id" ref="model_parent_property"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rental_company_restricted_tenancy" model="ir.rule">
+        <field name="name">Property Management : Company Tenancy Only</field>
+        <field name="model_id" ref="model_tenancy_details"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rental_company_restricted_selling" model="ir.rule">
+        <field name="name">Property Management : Company Selling Only</field>
+        <field name="model_id" ref="model_property_vendor"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rental_company_restricted_rent_invoice" model="ir.rule">
+        <field name="name">Property Management : Company Rent Invoice Only</field>
+        <field name="model_id" ref="model_rent_invoice"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rental_company_restricted_rent_bill" model="ir.rule">
+        <field name="name">Property Management : Company Rent Bill Only</field>
+        <field name="model_id" ref="model_rent_bill"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rental_company_restricted_agreement_template" model="ir.rule">
+        <field name="name">Property Management : Company Rental Agreement Template</field>
+        <field name="model_id" ref="model_agreement_template"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rental_company_restricted_project" model="ir.rule">
+        <field name="name">Property Management : Company Project Only</field>
+        <field name="model_id" ref="model_property_project"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rental_company_restricted_sub_project" model="ir.rule">
+        <field name="name">Property Management : Company Sub Project Only</field>
+        <field name="model_id" ref="model_property_sub_project"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rental_company_restricted_rent_contract" model="ir.rule">
+        <field name="name">Property Management : Company Rent Contract Only</field>
+        <field name="model_id" ref="model_rent_contract"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rental_company_restricted_sale_contract" model="ir.rule">
+        <field name="name">Property Management : Company Sale Contract Only</field>
+        <field name="model_id" ref="model_sale_contract"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rental_company_restricted_payment_schedule" model="ir.rule">
+        <field name="name">Property Management : Company Payment Schedule Only</field>
+        <field name="model_id" ref="model_payment_schedule"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rental_company_restricted_rera_form_a" model="ir.rule">
+        <field name="name">Property Management : Company RERA Form A Only</field>
+        <field name="model_id" ref="model_rera_form_a"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rental_company_restricted_portal_connector" model="ir.rule">
+        <field name="name">Property Management : Company Portal Connector Only</field>
+        <field name="model_id" ref="model_portal_connector"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rental_company_restricted_maintenance_product_line" model="ir.rule">
+        <field name="name">Property Management : Company Maintenance Product Line Only</field>
+        <field name="model_id" ref="model_maintenance_product_line"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rental_company_restricted_property_images" model="ir.rule">
+        <field name="name">Property Management : Company Property Images Only</field>
+        <field name="model_id" ref="model_property_images"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rental_website_rule_property_public" model="ir.rule">
+        <field name="name">Website Published Properties - Public Read</field>
+        <field name="model_id" ref="model_property_details"/>
+        <field name="groups" eval="[(4, ref('base.group_public'))]"/>
+        <field name="domain_force">[("is_published_website", "=", True)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+</odoo>

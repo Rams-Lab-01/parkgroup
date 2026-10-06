@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!--
+      Dead crons removed (each referenced a method that does not exist anywhere
+      in the module's Python; they never survived an upgrade and would crash on
+      the next data reload):
+        - tenancy_recurring_invoice / tenancy_recurring_quarterly_invoice /
+          tenancy_yearly_invoice / tenancy_manual_invoice (tenancy.details):
+          superseded by the canonical rent.contract billing flow
+          (rent.contract.action_generate_rent_bills, run on demand). No automated
+          recurring billing is offered this phase.
+        - sale_recurring_invoice (property.vendor): superseded by the sale.contract
+          installment flow; no such method exists.
+        - update_property_address / update_property_measurement (property.details):
+          property address/measurement are static stored fields, no cron needed.
+
+      Retained: a single real cron that expires overdue rent contracts.
+    -->
+    <record id="rent_contract_expire_cron" model="ir.cron">
+        <field name="name">Property Management: Expire Overdue Rent Contracts</field>
+        <field name="model_id" ref="sgc_offplan_rental_property_management.model_rent_contract"/>
+        <field name="state" eval="'code'"/>
+        <field name="code" eval="'model.cron_expire_contracts()'"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

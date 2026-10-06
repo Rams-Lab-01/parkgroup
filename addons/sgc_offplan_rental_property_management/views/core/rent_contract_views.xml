@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         List view
+    ═══════════════════════════════════════════════════════════════════ -->
+    <record id="view_rent_contract_list" model="ir.ui.view">
+        <field name="name">rent.contract.list</field>
+        <field name="model">rent.contract</field>
+        <field name="arch" type="xml">
+            <list string="Rent Contracts" decoration-muted="state == 'cancelled'">
+                <field name="name"/>
+                <field name="property_id"/>
+                <field name="tenant_id"/>
+                <field name="landlord_id"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="rent_amount" widget="monetary" sum="Total"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-success="state == 'active'"
+                       decoration-warning="state == 'expired'"
+                       decoration-danger="state == 'cancelled'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         Form view
+    ═══════════════════════════════════════════════════════════════════ -->
+    <record id="view_rent_contract_form" model="ir.ui.view">
+        <field name="name">rent.contract.form</field>
+        <field name="model">rent.contract</field>
+        <field name="arch" type="xml">
+            <form string="Rent Contract">
+                <header>
+                    <button name="action_activate"
+                            string="Activate"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_expire"
+                            string="Mark Expired"
+                            type="object"
+                            invisible="state != 'active'"/>
+                    <button name="action_cancel"
+                            string="Cancel"
+                            type="object"
+                            class="btn-danger"
+                            invisible="state in ['expired', 'cancelled']"/>
+                    <field name="state"
+                           widget="statusbar"
+                           statusbar_visible="draft,active,expired"/>
+                </header>
+                <sheet>
+                    <!-- Smart buttons -->
+                    <div name="button_box" class="oe_button_box">
+                        <button name="action_view_rent_bills"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-file-text-o">
+                            <field name="rent_bill_count"
+                                   widget="statinfo"
+                                   string="Rent Bills"/>
+                        </button>
+                        <button name="action_view_commission_bills"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-money"
+                                invisible="not commission_bill_count">
+                            <field name="commission_bill_count" widget="statinfo" string="Commission Bills"/>
+                        </button>
+                    </div>
+
+                    <!-- Cancelled ribbon -->
+                    <widget name="web_ribbon"
+                            title="Cancelled"
+                            bg_color="bg-danger"
+                            invisible="state != 'cancelled'"/>
+
+                    <!-- Title -->
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"
+                                   placeholder="Contract Reference…"
+                                   readonly="state in ['active', 'expired', 'cancelled']"/>
+                        </h1>
+                    </div>
+
+                    <!-- Main groups -->
+                    <group>
+                        <group string="Contract Details">
+                            <field name="property_id"/>
+                            <field name="tenant_id"/>
+                            <field name="landlord_id"/>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                        </group>
+                        <group string="Financial Details">
+                            <!-- currency_id must be present for monetary widgets -->
+                            <field name="currency_id" invisible="1"/>
+                            <field name="rent_amount" widget="monetary"/>
+                            <field name="security_deposit" widget="monetary"/>
+                            <field name="security_deposit_paid"/>
+                            <field name="payment_frequency"/>
+                            <field name="duration_months" readonly="1"/>
+                            <field name="total_rent" widget="monetary" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <!-- Payment plan -->
+                    <group string="Payment Plan">
+                        <field name="payment_schedule_id" colspan="2"/>
+                    </group>
+
+                    <!-- Company (multi-company environments only) -->
+                    <group groups="base.group_multi_company">
+                        <field name="company_id"/>
+                    </group>
+
+                    <!-- Notebook -->
+                    <notebook>
+                        <page string="Rent Bills" name="rent_bills">
+                            <div class="mb-3">
+                                <button name="action_generate_rent_bills"
+                                        string="Generate Rent Bills"
+                                        type="object"
+                                        class="btn btn-primary"
+                                        invisible="not start_date"/>
+                            </div>
+                            <field name="rent_bill_ids">
+                                <list decoration-success="payment_state == 'paid'"
+                                      decoration-warning="payment_state == 'partial'"
+                                      decoration-danger="payment_state == 'not_paid'">
+                                    <field name="rent_no"/>
+                                    <field name="bill_type"/>
+                                    <field name="invoice_date"/>
+                                    <field name="amount" widget="monetary" sum="Total"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="payment_state" widget="badge"
+                                           decoration-success="payment_state == 'paid'"
+                                           decoration-warning="payment_state == 'partial'"
+                                           decoration-danger="payment_state == 'not_paid'"/>
+                                    <button name="action_view_bill"
+                                            string="View Invoice"
+                                            type="object"
+                                            icon="fa-search"
+                                            invisible="not rent_bill_id"
+                                            class="btn-sm btn-secondary"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Commission" name="commission">
+                            <field name="is_commission_eligible" invisible="1"/>
+                            <div class="alert alert-warning" role="alert"
+                                 invisible="is_commission_eligible or not commission_line_ids">
+                                <field name="commission_ineligible_reason" nolabel="1"/>
+                            </div>
+                            <group>
+                                <group string="Commission Summary">
+                                    <field name="annual_rent_amount" widget="monetary" readonly="1"/>
+                                    <field name="commission_external_total" widget="monetary"/>
+                                    <field name="commission_internal_total" widget="monetary"/>
+                                    <field name="commission_total_amount" widget="monetary"/>
+                                    <field name="commission_line_count"/>
+                                </group>
+                            </group>
+                            <div class="mb-3">
+                                <button name="action_generate_commission_bills"
+                                        string="Generate Commission Bills"
+                                        type="object"
+                                        class="btn btn-primary"
+                                        invisible="not commission_line_ids or not is_commission_eligible"/>
+                            </div>
+                            <field name="commission_line_ids"
+                                   context="{'default_contract_id': id, 'default_currency_id': currency_id}">
+                                <list editable="bottom"
+                                      decoration-success="state == 'paid'"
+                                      decoration-warning="state == 'approved'"
+                                      decoration-muted="state == 'draft'">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="category" readonly="1"/>
+                                    <field name="partner_id"/>
+                                    <field name="payer_type"/>
+                                    <field name="role"/>
+                                    <field name="custom_role_name"
+                                           invisible="role != 'custom'"/>
+                                    <field name="computation_type"/>
+                                    <field name="base_line_id"
+                                           invisible="computation_type != 'commission_received'"
+                                           context="{'default_contract_id': contract_id}"/>
+                                    <field name="commission_percentage"
+                                           invisible="computation_type == 'fixed_amount'"
+                                           digits="[5,2]"/>
+                                    <field name="commission_fixed_amount" sum="Total"
+                                           widget="monetary"
+                                           invisible="computation_type != 'fixed_amount'"
+                                           options="{'currency_field': 'currency_id'}" />
+                                    <field name="tax_ids" widget="many2many_tags" optional="show"/>
+                                    <field name="commission_amount" widget="monetary" sum="Total"
+                                           readonly="1"
+                                           options="{'currency_field': 'currency_id'}" />
+                                    <field name="amount_total" widget="monetary" sum="Total"
+                                           readonly="1"
+                                           options="{'currency_field': 'currency_id'}" />
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="state" widget="badge"
+                                           decoration-info="state == 'draft'"
+                                           decoration-success="state == 'paid'"
+                                           decoration-warning="state == 'approved'"
+                                           decoration-danger="state == 'cancelled'"/>
+                                    <field name="bill_id" optional="hide"/>
+                                    <field name="payment_state" widget="badge"
+                                           decoration-info="payment_state == 'not_paid'"
+                                           decoration-success="payment_state == 'paid'"
+                                           decoration-warning="payment_state == 'partial'"/>
+                                    <button name="action_generate_bill"
+                                            string="Generate Bill"
+                                            type="object"
+                                            icon="fa-file-text-o"
+                                            invisible="bill_id or state != 'approved'"
+                                            class="btn-sm btn-primary"/>
+                                    <button name="action_view_bill"
+                                            string="View Bill"
+                                            type="object"
+                                            icon="fa-search"
+                                            invisible="not bill_id"
+                                            class="btn-sm btn-secondary"/>
+                                </list>
+                            </field>
+                            <div class="oe_subtotal_footer_separator"/>
+                            <group class="oe_subtotal_footer" col="4" name="commission_totals">
+                                <field name="commission_line_count"/>
+                                <field name="commission_total_tax" widget="monetary"
+                                       options="{'currency_field': 'currency_id'}"/>
+                                <field name="commission_total_amount" widget="monetary"
+                                       options="{'currency_field': 'currency_id'}"/>
+                                <field name="commission_amount_total" widget="monetary"
+                                       options="{'currency_field': 'currency_id'}"
+                                       decoration-bf="True"/>
+                            </group>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes"
+                                   placeholder="Add internal notes here…"/>
+                        </page>
+                    </notebook>
+                </sheet>
+
+                <!-- Chatter -->
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         Search view
+    ═══════════════════════════════════════════════════════════════════ -->
+    <record id="view_rent_contract_search" model="ir.ui.view">
+        <field name="name">rent.contract.search</field>
+        <field name="model">rent.contract</field>
+        <field name="arch" type="xml">
+            <search string="Search Rent Contracts">
+                <field name="name" string="Contract Reference"/>
+                <field name="property_id"/>
+                <field name="tenant_id"/>
+                <filter string="Draft"
+                        name="filter_draft"
+                        domain="[('state', '=', 'draft')]"/>
+                <filter string="Active"
+                        name="filter_active"
+                        domain="[('state', '=', 'active')]"/>
+                <filter string="Expired"
+                        name="filter_expired"
+                        domain="[('state', '=', 'expired')]"/>
+                <filter string="Cancelled"
+                        name="filter_cancelled"
+                        domain="[('state', '=', 'cancelled')]"/>
+                <filter string="Status"
+                        name="group_state"
+                        context="{'group_by': 'state'}"/>
+                <filter string="Property"
+                        name="group_property"
+                        context="{'group_by': 'property_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         Window action
+    ═══════════════════════════════════════════════════════════════════ -->
+    <record id="action_rent_contract" model="ir.actions.act_window">
+        <field name="name">Rent Contracts</field>
+        <field name="res_model">rent.contract</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_rent_contract_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Rent Contract
+            </p>
+            <p>
+                Manage rental agreements, track payment schedules,
+                and generate periodic rent bills from one place.
+            </p>
+        </field>
+    </record>
+
+</odoo>

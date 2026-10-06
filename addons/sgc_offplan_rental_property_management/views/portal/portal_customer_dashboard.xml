@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── Favorites ───────────────────────────────────────────────────── -->
+
+    <template id="portal_customer_favorites" name="Portal Customer: Favorites">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs" t-value="[
+                {'name': 'My Account', 'slug': '/my'},
+                {'name': 'Favorites', 'slug': '/my/favorites'},
+            ]"/>
+            <div class="container">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h1>My Favorite Properties</h1>
+                        <p class="text-muted">Saved properties for quick reference.</p>
+                    </div>
+                </div>
+                <t t-if="favorites">
+                    <div class="row">
+                        <div class="col-md-6 col-lg-4 mb-4" t-foreach="favorites" t-as="prop">
+                            <div class="card h-100 shadow-sm">
+                                <div class="position-relative overflow-hidden" style="height:180px;">
+                                    <img t-if="prop.image_512"
+                                         t-att-src="'/web/image/property.details/%s/image_512' % prop.id"
+                                         class="card-img-top" style="height:100%;width:100%;object-fit:cover;"
+                                         t-att-alt="prop.name"/>
+                                    <img t-else=""
+                                         t-att-src="'/web/static/src/img/placeholder.png'"
+                                         class="card-img-top" style="height:100%;width:100%;object-fit:cover;"/>
+                                </div>
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title" t-esc="prop.name"/>
+                                    <p class="text-muted small" t-if="prop.property_code">
+                                        <span class="fa fa-hashtag" title="Code"></span>
+                                        <span t-esc="prop.property_code"/>
+                                    </p>
+                                    <p class="text-muted small" t-if="prop.city">
+                                        <span class="fa fa-map-marker" title="City"></span>
+                                        <span t-esc="prop.city"/>
+                                    </p>
+                                    <div class="mb-2" t-if="prop.price">
+                                        <strong t-esc="'%s %s' % (prop.currency_id.symbol or 'AED', '{:,.0f}'.format(prop.price))"/>
+                                    </div>
+                                    <div class="mt-auto d-flex justify-content-between">
+                                        <a t-att-href="'/my/property/%s' % prop.id"
+                                           class="btn btn-sm btn-primary">View</a>
+                                        <form method="POST"
+                                              t-att-action="'/my/favorites/%s/remove' % prop.id"
+                                              class="d-inline">
+                                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                <span class="fa fa-trash" title="Remove"></span> Remove
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+                <t t-if="not favorites">
+                    <div class="alert alert-info">No favorite properties yet.</div>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <!-- ── Inquiry New ──────────────────────────────────────────────────── -->
+
+    <template id="portal_customer_inquiry_new" name="Portal Customer: New Inquiry">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs" t-value="[
+                {'name': 'My Account', 'slug': '/my'},
+                {'name': 'Inquiries', 'slug': '/my/inquiries'},
+                {'name': 'New Inquiry', 'slug': '/my/inquiries/new'},
+            ]"/>
+            <div class="container">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h1>New Inquiry</h1>
+                        <p class="text-muted">Submit a booking or quotation inquiry for a property.</p>
+                    </div>
+                </div>
+                <t t-if="error">
+                    <div class="alert alert-danger">Your inquiry could not be submitted. Please check the form and try again.</div>
+                </t>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-body">
+                                <form method="POST" action="/my/inquiries/new">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <div class="form-group mb-3">
+                                        <label for="property_id">Property</label>
+                                        <select name="property_id" class="form-control" required="required">
+                                            <option value="">Select Property</option>
+                                            <option t-foreach="properties" t-as="prop"
+                                                    t-att-value="prop.id"
+                                                    t-esc="prop.name"/>
+                                        </select>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="proposed_price">Proposed Price (optional)</label>
+                                        <input type="number" step="0.01" min="0" name="proposed_price"
+                                               class="form-control" placeholder="AED"/>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="contact_phone">Contact Phone</label>
+                                        <input type="text" name="contact_phone"
+                                               class="form-control"
+                                               t-att-value="partner.phone or ''"
+                                               placeholder="Phone number"/>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="notes">Notes</label>
+                                        <textarea name="notes" class="form-control" rows="5"
+                                                  placeholder="Tell us more about your inquiry..."></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Submit Inquiry</button>
+                                    <a href="/my/inquiries" class="btn btn-secondary">Cancel</a>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- ── Inquiries list ───────────────────────────────────────────────── -->
+
+    <template id="portal_customer_inquiries" name="Portal Customer: Inquiries">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs" t-value="[
+                {'name': 'My Account', 'slug': '/my'},
+                {'name': 'Inquiries', 'slug': '/my/inquiries'},
+            ]"/>
+            <div class="container">
+                <div class="row mb-4">
+                    <div class="col-12 d-flex justify-content-between align-items-center">
+                        <h1 class="mb-0">My Inquiries</h1>
+                        <a href="/my/inquiries/new" class="btn btn-primary">
+                            <span class="fa fa-plus" title="New"></span> New Inquiry
+                        </a>
+                    </div>
+                </div>
+                <t t-if="inquiries">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Reference</th>
+                                <th>Property</th>
+                                <th>Submitted</th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="inquiries" t-as="inq">
+                                <td t-esc="inq.name"/>
+                                <td t-esc="inq.property_id.name or ''"/>
+                                <td t-esc="inq.create_date"/>
+                                <td>
+                                    <span class="badge badge-info"
+                                          t-esc="dict(inq._fields.get('stage_id') and inq._fields['stage_id']._description_selection(inq.env) or inq._fields.get('state').selection or []).get(inq.stage_id.name if inq.stage_id else '', inq.stage_id.name if inq.stage_id else 'Open') if inq.stage_id else 'Open'"/>
+                                </td>
+                                <td><a t-att-href="'/my/inquiries/%s' % inq.id"
+                                       class="btn btn-sm btn-outline-primary">View</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+                <t t-if="not inquiries">
+                    <div class="alert alert-info">No inquiries yet. <a href="/my/inquiries/new">Create one</a>.</div>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <!-- ── Inquiry detail ───────────────────────────────────────────────── -->
+
+    <template id="portal_customer_inquiry_detail" name="Portal Customer: Inquiry Detail">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs" t-value="[
+                {'name': 'My Account', 'slug': '/my'},
+                {'name': 'Inquiries', 'slug': '/my/inquiries'},
+                {'name': inquiry.name or ('Inquiry #%s' % inquiry.id),
+                 'slug': '/my/inquiries/%s' % inquiry.id},
+            ]"/>
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <h1 t-esc="inquiry.name or ('Inquiry #%s' % inquiry.id)"/>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h4>Inquiry Details</h4>
+                                <table class="table table-sm">
+                                    <tr t-if="inquiry.property_id">
+                                        <td><strong>Property</strong></td>
+                                        <td>
+                                            <a t-att-href="'/my/property/%s' % inquiry.property_id.id"
+                                               t-esc="inquiry.property_id.name"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Submitted</strong></td>
+                                        <td t-esc="inquiry.create_date"/>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Contact Phone</strong></td>
+                                        <td t-esc="inquiry.phone or '-'"/>
+                                    </tr>
+                                    <tr t-if="inquiry.expected_revenue">
+                                        <td><strong>Proposed Price</strong></td>
+                                        <td t-esc="'%s %s' % (inquiry.currency_id.symbol or 'AED', '{:,.0f}'.format(inquiry.expected_revenue))"/>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h4>Notes</h4>
+                                <p t-esc="inquiry.description or 'No notes provided.'"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h4>Activity</h4>
+                                <t t-if="inquiry.message_ids">
+                                    <ul class="list-unstyled mb-0">
+                                        <li t-foreach="inquiry.message_ids" t-as="msg"
+                                            class="border-bottom py-2">
+                                            <small class="text-muted" t-esc="msg.date"/>
+                                            <div t-out="msg.body"/>
+                                        </li>
+                                    </ul>
+                                </t>
+                                <t t-if="not inquiry.message_ids">
+                                    <p class="text-muted">No activity yet.</p>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- ── Purchases ────────────────────────────────────────────────────── -->
+
+    <template id="portal_customer_purchases" name="Portal Customer: Purchases">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs" t-value="[
+                {'name': 'My Account', 'slug': '/my'},
+                {'name': 'Purchases', 'slug': '/my/purchases'},
+            ]"/>
+            <div class="container">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h1>My Purchases</h1>
+                        <p class="text-muted">Sale contracts tied to your account.</p>
+                    </div>
+                </div>
+                <t t-if="purchases">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Reference</th>
+                                <th>Property</th>
+                                <th>Contract Date</th>
+                                <th>Handover</th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="purchases" t-as="p">
+                                <td t-esc="p.name"/>
+                                <td t-esc="p.property_id.name or ''"/>
+                                <td t-esc="p.contract_date or '-'"/>
+                                <td t-esc="p.handover_date or '-'"/>
+                                <td>
+                                    <span class="badge badge-info"
+                                          t-esc="dict(p._fields['state'].selection).get(p.state, p.state)"/>
+                                </td>
+                                <td>
+                                    <a t-att-href="'/my/contract/sale/%s' % p.id"
+                                       class="btn btn-sm btn-outline-primary">View</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+                <t t-if="not purchases">
+                    <div class="alert alert-info">No purchases yet.</div>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <!-- ── Bookings ─────────────────────────────────────────────────────── -->
+
+    <template id="portal_customer_bookings" name="Portal Customer: Bookings">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs" t-value="[
+                {'name': 'My Account', 'slug': '/my'},
+                {'name': 'Bookings', 'slug': '/my/bookings'},
+            ]"/>
+            <div class="container">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h1>My Bookings</h1>
+                        <p class="text-muted">Property reservations tied to your account.</p>
+                    </div>
+                </div>
+                <t t-if="bookings">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Reference</th>
+                                <th>Property</th>
+                                <th>Reserved On</th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="bookings" t-as="b">
+                                <td t-esc="b.name"/>
+                                <td t-esc="b.property_id.name or ''"/>
+                                <td t-esc="b.date or b.contract_date or '-'"/>
+                                <td>
+                                    <span class="badge badge-info"
+                                          t-esc="dict(b._fields['state'].selection).get(b.state, b.state)"/>
+                                </td>
+                                <td>
+                                    <t t-if="b.state == 'draft'">
+                                        <form method="POST"
+                                              t-att-action="'/my/bookings/%s/cancel' % b.id"
+                                              class="d-inline">
+                                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">Cancel</button>
+                                        </form>
+                                    </t>
+                                    <t t-if="b.state != 'draft'">
+                                        <span class="text-muted small">Locked</span>
+                                    </t>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+                <t t-if="not bookings">
+                    <div class="alert alert-info">No bookings yet.</div>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <!-- ── Sign contract ────────────────────────────────────────────────── -->
+
+    <template id="portal_customer_sign_contract" name="Portal Customer: Sign Contract">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs" t-value="[
+                {'name': 'My Account', 'slug': '/my'},
+                {'name': 'Contracts', 'slug': '/my/contracts'},
+                {'name': contract.name, 'slug': '/my/contract/sale/%s' % contract.id},
+                {'name': 'Sign', 'slug': '/my/contracts/%s/sign' % contract.id},
+            ]"/>
+            <div class="container">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h1>Sign Contract: <span t-esc="contract.name"/></h1>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h4>Confirmation</h4>
+                                <p>
+                                    By clicking <strong>I agree &amp; sign</strong> below you
+                                    acknowledge the contents of contract
+                                    <strong t-esc="contract.name"/>.
+                                </p>
+                                <p class="text-muted small">
+                                    This is the MVP e-signature seam. Phase 4 will replace
+                                    this with a real cryptographic e-sign provider.
+                                </p>
+                                <form method="POST" t-att-action="'/my/contracts/%s/sign' % contract.id">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <button type="submit" class="btn btn-primary">I agree &amp; sign</button>
+                                    <a t-att-href="'/my/contract/sale/%s' % contract.id"
+                                       class="btn btn-secondary">Cancel</a>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>

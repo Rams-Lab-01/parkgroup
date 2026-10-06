@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Sample inbound XML feed for end-to-end testing of
+    models/portal/inbound_feed_service.py.
+
+    SCHEMA: this is the GENERIC schema documented at the top of
+    inbound_feed_service.py — NOT the real Bayut / Dubizzle / Property
+    Finder XML. Once real partner feed specs arrive, the only function
+    that needs to change is parse_feed_property(); the rest of the
+    pipeline (resolve_related_records, create_property_from_vals,
+    process_feed_properties, portal_line tracking, is_feed_sourced
+    compute) is schema-agnostic.
+
+    This fixture contains 3 properties covering the realistic scenarios:
+
+      1. Marina Heights Tower 1204 - Dubai Marina apartment, sale + lease.
+         Resolves cleanly against Dubai / Dubai Marina existing records.
+
+      2. Palm Jumeirah Villa - offplan villa, sale-only. Permit_id is
+         set so the Phase 0.6 Trakheesi uniqueness constraint is exercised
+         (a SECOND feed run with the same permit_number should fail with
+         ValidationError on update — but update uses .write() which calls
+         @api.constrains only on stored fields, so this depends on
+         onchange vs constraint timing — see test_inbound_feed_service.py).
+
+      3. Sharjah Studio - small unit, lease-only, missing some optional
+         fields (no agent, no images, no permit). Tests that the parser
+         is tolerant of partial feeds.
+-->
+<list>
+    <property>
+        <reference_number>BAY-MHT-1204</reference_number>
+        <title>Marina Heights Tower - Unit 1204</title>
+        <description>Spacious 2-bed apartment in Dubai Marina with full
+        marina views, modern kitchen, covered parking. Walking distance
+        to Marina Walk and tram station.</description>
+        <property_type>residential</property_type>
+        <offering>
+            <sale_price>1850000</sale_price>
+            <rent_price>12000</rent_price>
+            <currency>AED</currency>
+            <frequency>monthly</frequency>
+        </offering>
+        <location>
+            <address>Marina Heights Tower, Dubai Marina, Dubai, UAE</address>
+            <city>Dubai</city>
+            <region>Dubai</region>
+            <country>United Arab Emirates</country>
+            <project>Marina Heights Tower</project>
+        </location>
+        <bedrooms>2</bedrooms>
+        <bathrooms>2</bathrooms>
+        <area>
+            <value>1345</value>
+            <unit>sqft</unit>
+        </area>
+        <images>
+            <image>https://example.invalid/bayut/mht-1204-living.jpg</image>
+            <image>https://example.invalid/bayut/mht-1204-kitchen.jpg</image>
+            <image>https://example.invalid/bayut/mht-1204-view.jpg</image>
+        </images>
+        <agent>
+            <name>Ahmed Al Rashid</name>
+            <email>ahmed.alrashid@example.invalid</email>
+            <phone>+971-50-1234567</phone>
+        </agent>
+        <permit_number>TRK-2026-001234</permit_number>
+        <last_updated>2026-08-15T10:30:00</last_updated>
+    </property>
+
+    <property>
+        <reference_number>BAY-PJV-FROND-G-07</reference_number>
+        <title>Palm Jumeirah - Frond G Villa</title>
+        <description>Luxury 5-bed offplan villa on Frond G of Palm Jumeirah
+        with private beach, infinity pool, smart home system.</description>
+        <property_type>residential</property_type>
+        <offering>
+            <sale_price>18500000</sale_price>
+            <currency>AED</currency>
+        </offering>
+        <location>
+            <address>Frond G, Palm Jumeirah, Dubai, UAE</address>
+            <city>Dubai</city>
+            <region>Dubai</region>
+            <country>United Arab Emirates</country>
+            <project>Palm Jumeirah</project>
+        </location>
+        <bedrooms>5</bedrooms>
+        <bathrooms>6</bathrooms>
+        <area>
+            <value>8200</value>
+            <unit>sqft</unit>
+        </area>
+        <images>
+            <image>https://example.invalid/bayut/pjv-frond-g-07-exterior.jpg</image>
+            <image>https://example.invalid/bayut/pjv-frond-g-07-pool.jpg</image>
+        </images>
+        <agent>
+            <name>Sarah Khan</name>
+            <email>sarah.khan@example.invalid</email>
+            <phone>+971-55-9876543</phone>
+        </agent>
+        <permit_number>TRK-2026-005678</permit_number>
+        <last_updated>2026-08-16T14:15:00</last_updated>
+    </property>
+
+    <property>
+        <reference_number>BAY-SHJ-STUDIO-04</reference_number>
+        <title>Al Majaz Studio</title>
+        <description>Cozy studio apartment in Al Majaz district, near
+        Buhaira Corniche.</description>
+        <property_type>residential</property_type>
+        <offering>
+            <rent_price>28000</rent_price>
+            <currency>AED</currency>
+            <frequency>yearly</frequency>
+        </offering>
+        <location>
+            <address>Al Majaz 1, Sharjah, UAE</address>
+            <city>Sharjah</city>
+            <region>Sharjah</region>
+            <country>United Arab Emirates</country>
+        </location>
+        <bedrooms>0</bedrooms>
+        <bathrooms>1</bathrooms>
+        <area>
+            <value>420</value>
+            <unit>sqft</unit>
+        </area>
+        <last_updated>2026-08-10T09:00:00</last_updated>
+    </property>
+</list>

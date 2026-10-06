@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record id="property_sequence" model="ir.sequence">
+            <field name="name">Property Sequence Number</field>
+            <field name="code">property.details</field>
+            <field name="active">TRUE</field>
+            <field name="prefix">PI/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="tenancy_sequence" model="ir.sequence">
+            <field name="name">Tenancy Sequence Number</field>
+            <field name="code">tenancy.details</field>
+            <field name="active">TRUE</field>
+            <field name="prefix">T/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="sold_sequence" model="ir.sequence">
+            <field name="name">Sold Sequence Number</field>
+            <field name="code">property.vendor</field>
+            <field name="active">TRUE</field>
+            <field name="prefix">PS/%(year)s/%(month)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="sale_contract_sequence" model="ir.sequence">
+            <field name="name">Sale Contract Reference Sequence</field>
+            <field name="code">sale.contract</field>
+            <field name="active">TRUE</field>
+            <field name="prefix">SC/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="rent_contract_sequence" model="ir.sequence">
+            <field name="name">Rent Contract Reference Sequence</field>
+            <field name="code">rent.contract</field>
+            <field name="active">TRUE</field>
+            <field name="prefix">RC/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="rent_bill_sequence" model="ir.sequence">
+            <field name="name">Rent Bill Number Sequence</field>
+            <field name="code">rent.bill</field>
+            <field name="active">TRUE</field>
+            <field name="prefix">RENT/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="rera_form_a_sequence" model="ir.sequence">
+            <field name="name">RERA Form A Number Sequence</field>
+            <field name="code">rera.form.a</field>
+            <field name="active">TRUE</field>
+            <field name="prefix">FA/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+    </odoo>

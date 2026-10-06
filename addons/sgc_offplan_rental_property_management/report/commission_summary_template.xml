@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2026 SGC TECH AI
+    Commission Summary report  -  sale.contract / rent.contract / property.vendor.
+    Unified property-management layout (shared property_report_common system).
+-->
+<odoo>
+
+    <template id="commission_summary" name="Commission Summary Report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <div class="o_pmg_doc article" t-att-data-oe-model="o._name" t-att-data-oe-id="o.id">
+                <t t-call="sgc_offplan_rental_property_management.property_report_styles"/>
+                <t t-set="company" t-value="o.company_id if 'company_id' in o._fields and o.company_id else env.company"/>
+                <t t-set="currency_obj"
+                   t-value="o.env['res.currency'].browse(o.currency_id.id) if o and o.currency_id else None"/>
+                <t t-set="report_ref" t-value="o.name or ''"/>
+                <t t-set="report_date" t-value="context_timestamp(datetime.datetime.now()).strftime('%d %b %Y')"/>
+                <t t-set="letterhead_tag">Commission Summary</t>
+                <t t-call="sgc_offplan_rental_property_management.property_report_letterhead"/>
+                <t t-set="report_title">Commission Summary</t>
+                <t t-set="report_subtitle">Commission distribution  -  <t t-out="dict(o._fields['state'].selection).get(o.state, o.state) if o.state else ''"/></t>
+                <t t-call="sgc_offplan_rental_property_management.property_report_title"/>
+
+                <t t-if="'is_commission_eligible' in o._fields and not o.is_commission_eligible" t-set="commission_alert" t-value="1"/>
+
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">1</span>Contract Summary</div>
+                    <div class="o_pmg_section-body">
+                        <table class="o_pmg_dl">
+                            <tr><td class="o_pmg_dl-label">Reference</td><td class="o_pmg_dl-value" t-out="o.name or ' - '"/></tr>
+                            <tr>
+                                <td class="o_pmg_dl-label">Status</td>
+                                <td class="o_pmg_dl-value" t-out="dict(o._fields['state'].selection).get(o.state, o.state) if o.state else ' - '"/>
+                            </tr>
+                            <tr t-if="'property_id' in o._fields and o.property_id">
+                                <td class="o_pmg_dl-label">Property</td>
+                                <td class="o_pmg_dl-value" t-out="o.property_id.name or ' - '"/>
+                            </tr>
+                            <tr t-if="'buyer_id' in o._fields and o.buyer_id">
+                                <td class="o_pmg_dl-label">Buyer</td><td class="o_pmg_dl-value" t-out="o.buyer_id.name or ' - '"/>
+                            </tr>
+                            <tr t-if="'seller_id' in o._fields and o.seller_id">
+                                <td class="o_pmg_dl-label">Seller</td><td class="o_pmg_dl-value" t-out="o.seller_id.name"/>
+                            </tr>
+                            <tr t-if="'tenant_id' in o._fields and o.tenant_id">
+                                <td class="o_pmg_dl-label">Tenant</td><td class="o_pmg_dl-value" t-out="o.tenant_id.name or ' - '"/>
+                            </tr>
+                            <tr t-if="'landlord_id' in o._fields and o.landlord_id">
+                                <td class="o_pmg_dl-label">Landlord</td><td class="o_pmg_dl-value" t-out="o.landlord_id.name"/>
+                            </tr>
+                            <tr t-if="'customer_id' in o._fields and o.customer_id">
+                                <td class="o_pmg_dl-label">Customer</td><td class="o_pmg_dl-value" t-out="o.customer_id.name or ' - '"/>
+                            </tr>
+                            <tr t-if="'vendor_id' in o._fields and o.vendor_id">
+                                <td class="o_pmg_dl-label">Vendor</td><td class="o_pmg_dl-value" t-out="o.vendor_id.name"/>
+                            </tr>
+                        </table>
+                        <div t-if="commission_alert" class="o_pmg_alert" style="margin-bottom: 0;">
+                            <strong>Commission not yet eligible to bill.</strong>
+                            <span t-if="o.commission_ineligible_reason" t-out="' ' + o.commission_ineligible_reason"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="o_pmg_section">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">2</span>Commission Lines</div>
+                    <div class="o_pmg_section-body" style="padding: 0; overflow: hidden;">
+                        <t t-if="o.commission_line_ids">
+                            <table class="o_pmg_table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 6%;">#</th>
+                                        <th style="width: 12%;">Category</th>
+                                        <th style="width: 16%;">Role</th>
+                                        <th style="width: 20%;">Beneficiary</th>
+                                        <th style="width: 14%;">Computation</th>
+                                        <th style="width: 8%;" class="text-right">Rate %</th>
+                                        <th style="width: 8%;" class="text-right">Fixed Amt</th>
+                                        <th style="width: 10%;" class="text-right">W/o Tax</th>
+                                        <th style="width: 8%;" class="text-right">Tax</th>
+                                        <th style="width: 10%;" class="text-right">W/ Tax</th>
+                                        <th style="width: 6%;">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="o.commission_line_ids" t-as="line">
+                                        <tr t-att-style="'background: #fefce8;' if line.category == 'external' else ('background: #ecfdf5;' if line.state == 'paid' else '')">
+                                            <td><t t-out="line.sequence"/></td>
+                                            <td><t t-out="dict(line._fields['category'].selection).get(line.category, line.category)"/></td>
+                                            <td>
+                                                <t t-out="line.get_role_label()"/>
+                                            </td>
+                                            <td>
+                                                <t t-out="line.partner_id.name or ''"/>
+                                            </td>
+                                            <td>
+                                                <t t-out="dict(line._fields['computation_type'].selection).get(line.computation_type, line.computation_type)"/>
+                                            </td>
+                                            <td class="text-right">
+                                                <t t-if="line.computation_type != 'fixed_amount'"
+                                                   t-out="'{:.2f}%'.format(line.commission_percentage)"/>
+                                            </td>
+                                            <td class="text-right">
+                                                <t t-if="line.computation_type == 'fixed_amount'"
+                                                   t-out="line.commission_fixed_amount"
+                                                   t-options="{'widget': 'monetary', 'display_currency': currency_obj}"/>
+                                            </td>
+                                            <td class="text-right">
+                                                <t t-out="line.commission_amount"
+                                                   t-options="{'widget': 'monetary', 'display_currency': currency_obj}"/>
+                                            </td>
+                                            <td class="text-right">
+                                                <t t-out="line.amount_tax"
+                                                   t-options="{'widget': 'monetary', 'display_currency': currency_obj}"/>
+                                            </td>
+                                            <td class="text-right">
+                                                <strong t-out="line.amount_total"
+                                                        t-options="{'widget': 'monetary', 'display_currency': currency_obj}"/>
+                                            </td>
+                                            <td>
+                                                <span t-out="dict(line._fields['state'].selection).get(line.state, line.state) if line.state else ''"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="6"></td>
+                                        <td class="text-right">Total</td>
+                                        <td class="text-right">
+                                            <t t-out="o.commission_total_amount if 'commission_total_amount' in o._fields else (o.total_commission if 'total_commission' in o._fields else 0.0)"
+                                               t-options="{'widget': 'monetary', 'display_currency': currency_obj}"/>
+                                        </td>
+                                        <td class="text-right">
+                                            <t t-out="o.commission_total_tax if 'commission_total_tax' in o._fields else 0.0"
+                                               t-options="{'widget': 'monetary', 'display_currency': currency_obj}"/>
+                                        </td>
+                                        <td class="text-right">
+                                            <t t-out="o.commission_amount_total if 'commission_amount_total' in o._fields else (o.amount_total if 'amount_total' in o._fields else 0.0)"
+                                               t-options="{'widget': 'monetary', 'display_currency': currency_obj}"/>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </t>
+                        <t t-else="">
+                            <div class="o_pmg_alert o_pmg_alert-info" style="margin: 10px 12px;">
+                                No commission lines have been configured for this contract yet.
+                            </div>
+                        </t>
+                    </div>
+                </div>
+
+                <t t-set="report_name">Commission Summary</t>
+                <t t-set="report_footer_note">This is a computer-generated Commission Summary document. Please verify with the source contract for the authoritative record.</t>
+                <t t-call="sgc_offplan_rental_property_management.property_report_footer"/>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- Report actions for each model. Deliberately NOT noupdate: the source
+         file is the single source of truth for report_name, so the loader must
+         own these rows. -->
+    <template id="commission_summary_sale" name="Commission Summary (Sale)">
+        <t t-call="sgc_offplan_rental_property_management.commission_summary"/>
+    </template>
+
+    <template id="commission_summary_rent" name="Commission Summary (Rent)">
+        <t t-call="sgc_offplan_rental_property_management.commission_summary"/>
+    </template>
+
+    <template id="commission_summary_vendor" name="Commission Summary (Vendor)">
+        <t t-call="sgc_offplan_rental_property_management.commission_summary"/>
+    </template>
+
+    <data noupdate="0">
+
+        <record id="action_print_commission_summary_sale" model="ir.actions.report">
+            <field name="name">Commission Summary</field>
+            <field name="model">sale.contract</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_name">sgc_offplan_rental_property_management.commission_summary_sale</field>
+            <field name="binding_model_id" ref="model_sale_contract"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="sgc_offplan_rental_property_management.paperformat_property_report"/>
+            <field name="print_report_name">Commission Summary Report - %s</field>
+        </record>
+
+        <record id="action_print_commission_summary_rent" model="ir.actions.report">
+            <field name="name">Commission Summary</field>
+            <field name="model">rent.contract</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_name">sgc_offplan_rental_property_management.commission_summary_rent</field>
+            <field name="binding_model_id" ref="model_rent_contract"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="sgc_offplan_rental_property_management.paperformat_property_report"/>
+            <field name="print_report_name">Commission Summary Report - %s</field>
+        </record>
+
+        <record id="action_print_commission_summary_vendor" model="ir.actions.report">
+            <field name="name">Commission Summary</field>
+            <field name="model">property.vendor</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_name">sgc_offplan_rental_property_management.commission_summary_vendor</field>
+            <field name="binding_model_id" ref="model_property_vendor"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="sgc_offplan_rental_property_management.paperformat_property_report"/>
+            <field name="print_report_name">Commission Summary Report - %s</field>
+        </record>
+
+    </data>
+
+</odoo>

@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record id="certificate_type_tree_view" model="ir.ui.view">
+            <field name="name">certificate.type.tree.view</field>
+            <field name="model">certificate.type</field>
+            <field name="arch" type="xml">
+                <list string="Certificate Type" editable="top">
+                    <field name="type" required="1"/>
+                </list>
+            </field>
+        </record>
+        <record id="certificate_type_action" model="ir.actions.act_window">
+            <field name="name">Certificate Types</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">certificate.type</field>
+            <field name="view_mode">list</field>
+        </record>
+    </odoo>

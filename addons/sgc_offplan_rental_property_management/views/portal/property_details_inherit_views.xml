@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="property_details_form_view_portal_buttons" model="ir.ui.view">
+        <field name="name">property.details.form.portal.buttons</field>
+        <field name="model">property.details</field>
+        <field name="inherit_id" ref="sgc_offplan_rental_property_management.property_details_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button class="oe_stat_button" type="object" name="action_open_portal_lines" icon="fa-send">
+                    <field name="portal_line_count" widget="statinfo" string="Portals"/>
+                </button>
+                <button class="oe_stat_button" type="object" name="action_open_portal_leads" icon="fa-envelope">
+                    <field name="portal_lead_count" widget="statinfo" string="Leads"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="property_details_form_view_portal_page" model="ir.ui.view">
+        <field name="name">property.details.form.portal.page</field>
+        <field name="model">property.details</field>
+        <field name="inherit_id" ref="sgc_offplan_rental_property_management.property_details_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Portal Syndication">
+                    <field name="portal_line_ids">
+                        <list editable="bottom">
+                            <field name="portal_id"/>
+                            <field name="status"/>
+                            <field name="external_id"/>
+                            <field name="last_sync"/>
+                            <field name="last_error"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

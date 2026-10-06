@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record id="res_config_settings_view_form_rental" model="ir.ui.view">
+            <field name="name">res.config.settings.view.form.rental</field>
+            <field name="model">res.config.settings</field>
+            <field name="priority" eval="40" />
+            <field name="inherit_id" ref="base.res_config_settings_view_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//form" position="inside">
+                    <app data-string="Property Management" string="Property Management"
+                        name="rental_management">
+                        <block title="Reminder Days">
+                            <setting help="Reminder days for Creating Tenancy Invoice">
+                                <field name="reminder_days" required="1" />
+                            </setting>
+                            <setting help="Reminder days for Creating Invoice">
+                                <field name="sale_reminder_days" />
+                            </setting>
+                        </block>
+                        <block title="Default Duration Days for Month, Quarter and Year">
+                            <setting help="Month Days">
+                                <field name="month_days" />
+                            </setting>
+                            <setting help="Quarter Days">
+                                <field name="quarter_days" />
+                            </setting>
+                            <setting help="Year Days">
+                                <field name="year_days" />
+                            </setting>
+                        </block>
+                        <block title="Invoice Post Type">
+                            <setting help="Invoice Post Type">
+                                <field name="invoice_post_type" widget="radio"
+                                    options="{'horizontal':True}"
+                                    required="1" />
+                            </setting>
+                        </block>
+                        <block title="Commission Eligibility">
+                            <setting help="Minimum percentage of sale price paid before commission can be billed (payment-plan sales)">
+                                <field name="commission_eligibility_sale_pct" required="1" />
+                            </setting>
+                        </block>
+                        <block title="Default Items">
+                            <setting help="Installment Default Item">
+                                <field name="installment_item_id" required="1" />
+                            </setting>
+                            <setting help="Deposit Default Item">
+                                <field name="deposit_item_id" required="1" />
+                            </setting>
+                            <setting help="Broker Default Item">
+                                <field name="broker_item_id" required="1" />
+                            </setting>
+                            <setting help="Maintenance Default Item">
+                                <field name="maintenance_item_id" required="1" />
+                            </setting>
+                        </block>
+                        <block title="Fee Configuration (Registration &amp; Admin Fees)">
+                            <setting string="Registration Fee" help="Default property registration fee charged by the emirate's land registration authority (e.g. Dubai Land Department)">
+                                <div class="content-group">
+                                    <div class="row mt16">
+                                        <label for="registration_fee_type" string="Registration Fee Type" class="col-lg-3 o_light_label"/>
+                                        <field name="registration_fee_type" widget="radio" options="{'horizontal':True}"/>
+                                    </div>
+                                    <div class="row" invisible="registration_fee_type == 'fixed'">
+                                        <label for="registration_fee_percentage" string="Registration Fee %" class="col-lg-3 o_light_label"/>
+                                        <field name="registration_fee_percentage" class="oe_inline"/>
+                                        <span class="o_form_label">%</span>
+                                    </div>
+                                    <div class="row" invisible="registration_fee_type == 'percentage'">
+                                        <label for="registration_fee_amount" string="Fixed Registration Fee" class="col-lg-3 o_light_label"/>
+                                        <field name="currency_id" invisible="1"/>
+                                        <field name="registration_fee_amount" class="oe_inline"/>
+                                    </div>
+                                </div>
+                            </setting>
+                            <setting string="Admin Fee" help="Configure default administrative fee">
+                                <div class="content-group">
+                                    <div class="row mt16">
+                                        <label for="admin_fee_type" string="Admin Fee Type" class="col-lg-3 o_light_label"/>
+                                        <field name="admin_fee_type" widget="radio" options="{'horizontal':True}"/>
+                                    </div>
+                                    <div class="row" invisible="admin_fee_type == 'fixed'">
+                                        <label for="admin_fee_percentage" string="Admin Fee %" class="col-lg-3 o_light_label"/>
+                                        <field name="admin_fee_percentage" class="oe_inline"/>
+                                        <span class="o_form_label">%</span>
+                                    </div>
+                                    <div class="row" invisible="admin_fee_type == 'percentage'">
+                                        <label for="admin_fee_amount" string="Fixed Admin Fee" class="col-lg-3 o_light_label"/>
+                                        <field name="admin_fee_amount" class="oe_inline"/>
+                                    </div>
+                                </div>
+                            </setting>
+                        </block>
+                                            <block title="Sales Consolidation">
+                            <setting help="Require payment recording before confirming sale from a booking. Hard gate blocks until payment recorded; permissive mode allows with acknowledgement.">
+                                <field name="confirm_sales_requires_payment" />
+                            </setting>
+                        </block>
+</app>
+                </xpath>
+
+            </field>
+        </record>
+    </odoo>

@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record id="agreement_template_view_form" model="ir.ui.view">
+            <field name="name">agreement.template.view.form</field>
+            <field name="model">agreement.template</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="action_preview" type="object" string="Preview Template"
+                            class="btn-primary" />
+                    </header>
+                    <sheet>
+                        <group>
+                            <field name="name" required="1"/>
+                        </group>
+                        <group>
+                            <field name="company_id" required="1"/>
+                            <field name="model" readonly="1" force_save="1" invisible="1"/>
+                        </group>
+                        <div class="font-italic text-muted">
+                            To use a dynamic template, you must specify variables like {{1}}. In the 'Variable' tab, you
+                            can assign exact values to these {{1}} variables (any text or tenancy field). When this
+                            template is added and all dynamic variables are configured, the values
+                            are automatically populated. For example, if {{1}} represents a user's name, in the
+                            'Variable' tab, you would enter "John Doe" or any tenancy field for {{1}} to populate the
+                            template with that specific name.
+                        </div>
+                        <notebook>
+                            <page string="Agreement">
+                                <field name="agreement" placeholder="Add you dynamic variable inside {{}}"
+                                       required="1"/>
+                            </page>
+                            <page string="Variables">
+                                <field name="template_variable_ids">
+                                    <list create="0" delete="0" editable="bottom">
+                                        <field name="name" readonly="1" force_save="1"/>
+                                        <field name="field_type" required="1"/>
+                                        <field name="model" column_invisible="1"/>
+                                        <field name="field_name" options="{'model': 'model'}"
+                                               widget="DynamicModelFieldSelectorChar"
+                                               invisible="field_type != 'field'"
+                                               required="field_type == 'field'"/>
+                                        <field name="free_text" invisible="field_type != 'free_text'"
+                                               required="field_type == 'free_text'"/>
+                                        <field name="demo"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="agreement_template_view_tree" model="ir.ui.view">
+            <field name="name">agreement.template.view.tree</field>
+            <field name="model">agreement.template</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name"/>
+                </list>
+            </field>
+        </record>
+        <record id="agreement_template_action" model="ir.actions.act_window">
+            <field name="name">Agreement Templates</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">agreement.template</field>
+            <field name="view_mode">list,form</field>
+        </record>
+    </odoo>

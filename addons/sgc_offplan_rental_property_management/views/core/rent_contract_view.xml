@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<odoo>
+    <!-- Inherit form view to add "Send for Signature" button -->
+    <record id="view_rent_contract_form_inherit" model="ir.ui.view">
+        <field name="name">rent.contract.form.inherit</field>
+        <field name="model">rent.contract</field>
+        <field name="inherit_id" ref="sgc_offplan_rental_property_management.view_rent_contract_form"/>
+        <field name="arch" type="xml">
+            <!-- Add button in header next to Activate button -->
+            <xpath expr="//button[@name='action_activate']" position="after">
+                <button name="action_send_for_signature"
+                        string="Send for Signature"
+                        type="object"
+                        class="btn-secondary"
+                        invisible="signed_via_portal"/>
+            </xpath>
+            <!-- Add signature status in button box -->
+            <xpath expr="//div[@name='button_box' ]" position="inside">
+                <button name="action_send_for_signature"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-file-signature"
+                        invisible="not signed_via_portal">
+                    <field name="signed_via_portal" string="Signed via Portal"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>

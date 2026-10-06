@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_properties" name="Portal My Properties">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs" t-value="[
+                {'name': 'My Account', 'slug': '/my'},
+                {'name': 'Properties', 'slug': '/my/properties'},
+            ]"/>
+            <div class="container">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h1>My Properties</h1>
+                        <p class="text-muted">View and manage your properties.</p>
+                    </div>
+                </div>
+                <t t-if="properties">
+                    <div class="row">
+                        <div class="col-md-6 col-lg-4 mb-4" t-foreach="properties" t-as="prop">
+                            <div class="card h-100 shadow-sm">
+                                <div class="position-relative overflow-hidden" style="height:200px;">
+                                    <img t-if="prop.image_512"
+                                         t-att-src="'/web/image/property.details/%s/image_512' % prop.id"
+                                         class="card-img-top" style="height:100%;width:100%;object-fit:cover;"
+                                         t-att-alt="prop.name"/>
+                                    <img t-else=""
+                                         t-att-src="'/web/static/src/img/placeholder.png'"
+                                         class="card-img-top" style="height:100%;width:100%;object-fit:cover;"/>
+                                </div>
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title" t-esc="prop.name"/>
+                                    <p class="text-muted small" t-if="prop.city">
+                                        <span class="fa fa-map-marker" title="Location"></span>
+                                        <span t-esc="prop.city"/>
+                                    </p>
+                                    <div class="mb-3">
+                                        <span class="badge" t-att-class="'badge-success' if prop.state == 'available' else 'badge-info'"
+                                              t-esc="dict(prop._fields['state'].selection).get(prop.state, prop.state).title()"/>
+                                    </div>
+                                    <div class="mt-auto">
+                                        <a t-att-href="'/my/property/%s' % prop.id"
+                                           class="btn btn-sm btn-primary">View Details</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+                <t t-if="not properties">
+                    <div class="alert alert-info">You have no properties associated with your account.</div>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_my_property_detail" name="Portal My Property Detail">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs" t-value="[
+                {'name': 'My Account', 'slug': '/my'},
+                {'name': 'Properties', 'slug': '/my/properties'},
+                {'name': property.name, 'slug': '/my/property/%s' % property.id},
+            ]"/>
+            <div class="container">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h1 t-esc="property.name"/>
+                        <ul class="nav nav-tabs mt-3">
+                            <li class="nav-item">
+                                <a class="nav-link" t-att-class="'active' if tab == 'overview' else ''"
+                                   t-att-href="'/my/property/%s/overview' % property.id">Overview</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" t-att-class="'active' if tab == 'contracts' else ''"
+                                   t-att-href="'/my/property/%s/contracts' % property.id">Contracts</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" t-att-class="'active' if tab == 'installments' else ''"
+                                   t-att-href="'/my/property/%s/installments' % property.id">Payments</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" t-att-class="'active' if tab == 'invoices' else ''"
+                                   t-att-href="'/my/property/%s/invoices' % property.id">Invoices</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" t-att-class="'active' if tab == 'maintenance' else ''"
+                                   t-att-href="'/my/property/%s/maintenance' % property.id">Maintenance</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <t t-if="tab == 'overview'">
+                    <!-- ── Photo Gallery ── -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4>Photo Gallery</h4>
+                                    <div class="row">
+                                        <!-- Main image -->
+                                        <div class="col-md-8 mb-3" t-if="property.image_1920">
+                                            <div class="position-relative overflow-hidden rounded"
+                                                 style="height:400px;background:#f8f9fa;">
+                                                <img t-att-src="'/web/image/property.details/%s/image_1920' % property.id"
+                                                     class="img-fluid" style="width:100%;height:100%;object-fit:cover;"
+                                                     t-att-alt="property.name"/>
+                                            </div>
+                                        </div>
+                                        <!-- Gallery images from image_ids (after module upgrade) -->
+                                        <t t-if="'image_ids' in property._fields">
+                                            <t t-if="property.image_ids">
+                                                <div class="col-md-4" t-foreach="property.image_ids" t-as="img">
+                                                    <div class="position-relative overflow-hidden rounded mb-3"
+                                                         style="height:180px;background:#f8f9fa;cursor:pointer;">
+                                                        <img t-att-src="'/web/image/property.image/%s/image_512' % img.id"
+                                                             class="img-fluid" style="width:100%;height:100%;object-fit:cover;"
+                                                             t-att-alt="img.name or 'Gallery image'"/>
+                                                        <div class="position-absolute bottom-0 start-0 bg-dark bg-opacity-50 text-white small px-2 py-1 rounded-end"
+                                                             t-if="img.name" t-esc="img.name"/>
+                                                    </div>
+                                                </div>
+                                            </t>
+                                            <t t-if="not property.image_ids">
+                                                <div class="col-12">
+                                                    <p class="text-muted mb-0">
+                                                        <span class="fa fa-info-circle"></span>
+                                                        No gallery images yet. Upload photos in the Property form's Gallery tab.
+                                                    </p>
+                                                </div>
+                                            </t>
+                                        </t>
+                                        <t t-if="'image_ids' not in property._fields">
+                                            <div class="col-12">
+                                                <p class="text-muted mb-0">
+                                                    <span class="fa fa-info-circle"></span>
+                                                    Upload images via the Property form's chatter (drag &amp; drop). Install the latest module upgrade for the full Gallery tab.
+                                                </p>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <h4>Property Info</h4>
+                                    <table class="table table-sm">
+                                        <tr><td>Type</td><td t-esc="dict(property._fields['property_type'].selection).get(property.property_type, 'N/A')"/></tr>
+                                        <tr><td>Status</td><td t-esc="dict(property._fields['state'].selection).get(property.state, property.state).title()"/></tr>
+                                        <tr t-if="property.bedrooms"><td>Bedrooms</td><td t-esc="property.bedrooms"/></tr>
+                                        <tr t-if="property.bathrooms"><td>Bathrooms</td><td t-esc="property.bathrooms"/></tr>
+                                        <tr t-if="property.area"><td>Area</td><td t-esc="'{:,.0f} sqft'.format(property.area)"/></tr>
+                                        <tr t-if="property.city"><td>City</td><td t-esc="property.city"/></tr>
+                                        <tr t-if="property.project_id"><td>Project</td><td t-esc="property.project_id.name"/></tr>
+                                        <tr t-if="property.sale_price"><td>Sale Price</td><td><t t-esc="'AED %s' % '{:,.0f}'.format(property.sale_price)"/></td></tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card mb-4" t-if="property.trakheesi_qr_code">
+                                <div class="card-body text-center">
+                                    <h4>DLD/RERA Verification</h4>
+                                    <img class="img-fluid mb-2" style="max-width:150px;"
+                                         t-att-src="'/web/image/property.details/%s/trakheesi_qr_code' % property.id"
+                                         t-att-alt="'Trakheesi QR Code - %s' % property.name"/>
+                                    <p class="text-muted small mb-0">
+                                        Scan to verify this listing against the Trakheesi permit
+                                        <t t-if="property.trakheesi_permit_number"> #<span t-esc="property.trakheesi_permit_number"/></t>.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+
+                <t t-if="tab == 'contracts'">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card mb-4">
+                                <div class="card-header"><h5 class="mb-0">Sale Contracts</h5></div>
+                                <div class="card-body">
+                                    <t t-if="sale_contracts">
+                                        <table class="table table-sm">
+                                            <thead><tr><th>Ref</th><th>Status</th><th>Amount</th><th></th></tr></thead>
+                                            <tbody>
+                                                <tr t-foreach="sale_contracts" t-as="c">
+                                                    <td t-esc="c.name"/>
+                                                    <td><span class="badge badge-info" t-esc="c.state"/></td>
+                                                    <td t-esc="'%s %.0f' % (c.currency_id.symbol or 'AED', c.sale_price)"/>
+                                                    <td><a t-att-href="'/my/contract/sale/%s' % c.id" class="btn btn-sm btn-outline-primary">View</a></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </t>
+                                    <t t-if="not sale_contracts"><p class="text-muted">No sale contracts.</p></t>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card mb-4">
+                                <div class="card-header"><h5 class="mb-0">Rent Contracts</h5></div>
+                                <div class="card-body">
+                                    <t t-if="rent_contracts">
+                                        <table class="table table-sm">
+                                            <thead><tr><th>Ref</th><th>Status</th><th>Amount</th><th></th></tr></thead>
+                                            <tbody>
+                                                <tr t-foreach="rent_contracts" t-as="c">
+                                                    <td t-esc="c.name"/>
+                                                    <td><span class="badge badge-info" t-esc="c.state"/></td>
+                                                    <td t-esc="'%s %.0f' % (c.currency_id.symbol or 'AED', c.rent_amount)"/>
+                                                    <td><a t-att-href="'/my/contract/rent/%s' % c.id" class="btn btn-sm btn-outline-primary">View</a></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </t>
+                                    <t t-if="not rent_contracts"><p class="text-muted">No rent contracts.</p></t>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card mb-4">
+                                <div class="card-header"><h5 class="mb-0">Tenancy Details (Legacy)</h5></div>
+                                <div class="card-body">
+                                    <t t-if="tenancy_details">
+                                        <table class="table table-sm">
+                                            <thead><tr><th>Ref</th><th>Status</th><th>Amount</th><th></th></tr></thead>
+                                            <tbody>
+                                                <tr t-foreach="tenancy_details" t-as="c">
+                                                    <td t-esc="c.name or c.id"/>
+                                                    <td><span class="badge badge-info" t-esc="c.state or 'draft'"/></td>
+                                                    <td t-esc="'AED %s' % '{:,.0f}'.format(c.rent_amount or 0)"/>
+                                                    <td><a t-att-href="'/my/lease/tenancy_details/%s' % c.id" class="btn btn-sm btn-outline-primary">View</a></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </t>
+                                    <t t-if="not tenancy_details"><p class="text-muted">No tenancy details.</p></t>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="card mb-4">
+                                <div class="card-header"><h5 class="mb-0">Vendor Bookings (Legacy)</h5></div>
+                                <div class="card-body">
+                                    <t t-if="vendor_bookings">
+                                        <table class="table table-sm">
+                                            <thead><tr><th>Ref</th><th>Status</th><th>Amount</th><th></th></tr></thead>
+                                            <tbody>
+                                                <tr t-foreach="vendor_bookings" t-as="c">
+                                                    <td t-esc="c.name or c.id"/>
+                                                    <td><span class="badge badge-info" t-esc="c.state or 'draft'"/></td>
+                                                    <td t-esc="'AED %s' % '{:,.0f}'.format(c.sale_price or 0)"/>
+                                                    <td><a t-att-href="'/my/bookings/%s' % c.id" class="btn btn-sm btn-outline-primary">View</a></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </t>
+                                    <t t-if="not vendor_bookings"><p class="text-muted">No vendor bookings.</p></t>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+
+                <t t-if="tab == 'installments'">
+                    <div class="card mb-4">
+                        <div class="card-header"><h5 class="mb-0">Payment Installments</h5></div>
+                        <div class="card-body">
+                            <t t-if="installments">
+                                <table class="table table-sm">
+                                    <thead><tr><th>Description</th><th>Due Date</th><th>Amount</th><th>Status</th></tr></thead>
+                                    <tbody>
+                                        <tr t-foreach="installments" t-as="inst">
+                                            <td t-esc="inst.name"/>
+                                            <td t-esc="inst.due_date"/>
+                                            <td t-esc="'AED %s' % '{:,.2f}'.format(inst.amount)"/>
+                                            <td><span class="badge" t-att-class="'badge-success' if inst.state == 'paid' else 'badge-warning'" t-esc="inst.state"/></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </t>
+                            <t t-if="not installments"><p class="text-muted">No payment installments.</p></t>
+                        </div>
+                    </div>
+                </t>
+
+                <t t-if="tab == 'invoices'">
+                    <div class="card mb-4">
+                        <div class="card-header"><h5 class="mb-0">Invoices</h5></div>
+                        <div class="card-body">
+                            <t t-if="invoices">
+                                <table class="table table-sm">
+                                    <thead><tr><th>Reference</th><th>Date</th><th>Amount</th><th>Status</th><th></th></tr></thead>
+                                    <tbody>
+                                        <tr t-foreach="invoices" t-as="inv">
+                                            <td t-esc="inv.name"/>
+                                            <td t-esc="inv.invoice_date"/>
+                                            <td t-esc="'AED %s' % '{:,.2f}'.format(inv.amount_total)"/>
+                                            <td><span class="badge" t-att-class="'badge-success' if inv.payment_state == 'paid' else 'badge-warning'" t-esc="inv.payment_state"/></td>
+                                            <td><a t-att-href="'/my/invoice/%s' % inv.id" class="btn btn-sm btn-outline-primary">View</a></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </t>
+                            <t t-if="not invoices"><p class="text-muted">No invoices.</p></t>
+                        </div>
+                    </div>
+                </t>
+
+                <t t-if="tab == 'maintenance'">
+                    <div class="card mb-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Maintenance Requests</h5>
+                            <a t-att-href="'/my/maintenance/new/%s' % property.id" class="btn btn-sm btn-primary">
+                                <span class="fa fa-plus" title="New"></span> New Request
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            <t t-if="maintenance_requests">
+                                <table class="table table-sm">
+                                    <thead><tr><th>Subject</th><th>Date</th><th>Status</th><th></th></tr></thead>
+                                    <tbody>
+                                        <tr t-foreach="maintenance_requests" t-as="m">
+                                            <td t-esc="m.name"/>
+                                            <td t-esc="m.create_date"/>
+                                            <td><span class="badge badge-info" t-esc="m.stage_id.name or 'Open'"/></td>
+                                            <td><a t-att-href="'/my/maintenance/%s' % m.id" class="btn btn-sm btn-outline-primary">View</a></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </t>
+                            <t t-if="not maintenance_requests"><p class="text-muted">No maintenance requests.</p></t>
+                        </div>
+                    </div>
+                </t>
+            </div>
+        </t>
+    </template>
+</odoo>

@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--Copyright (C) 2026 SGC TECH AI (https://sgctech.ai)
- Part of SGC Odoo Suite. See LICENSE file for full copyright and licensing details.
+<!--
+    Copyright (C) 2026 SGC TECH AI (https://sgctech.ai)
+    Part of SGC Odoo Suite. See LICENSE file for full copyright and licensing details.
 
- Escrow control panel injected onto the Property Management project form.
- Everything here reads the ledger; nothing here invents a figure.
+    Escrow control panel injected onto the Property Management project form.
+    Everything here reads the ledger; nothing here invents a figure.
 
- The base project form has no <notebook>, so this extension adds one at the
- bottom of the sheet rather than appending to an existing notebook page.-->
+    The base project form has no <notebook>, so this extension adds one at the
+    bottom of the sheet rather than appending to an existing notebook page.
+-->
 <odoo>
 
     <record id="view_property_project_escrow_form" model="ir.ui.view">
@@ -15,7 +17,7 @@
         <field name="inherit_id" ref="sgc_offplan_rental_property_management.property_project_view_form"/>
         <field name="arch" type="xml">
 
-            <!--Smart buttons in the existing button box-->
+            <!-- Smart buttons in the existing button box -->
             <xpath expr="//div[@name='button_box']" position="inside">
                 <button type="object" name="action_view_escrow_releases"
                         class="oe_stat_button" icon="fa-money"
@@ -42,7 +44,7 @@
                             </p>
                         </div>
 
-                        <!--Money summary-->
+                        <!-- == Money summary == -->
                         <div class="o_row justify-content-between mb-3" invisible="not escrow_enabled">
                             <div class="o_row">
                                 <button type="object" name="action_view_escrow_ledger"
@@ -63,7 +65,7 @@
                             </div>
                         </div>
 
-                        <!--Entitlement control-->
+                        <!-- == Entitlement control == -->
                         <group string="Release Entitlement">
                             <group>
                                 <field name="escrow_certified_progress"/>
@@ -92,7 +94,7 @@
                             entitlement ceiling immediately, so it is change-tracked and audited.
                         </p>
 
-                        <!--Bank configuration-->
+                        <!-- == Bank configuration == -->
                         <group string="Escrow Account Configuration">
                             <group>
                                 <field name="escrow_enabled"/>
@@ -112,7 +114,7 @@
 
                     </page>
 
-                    <!--Allocation register-->
+                    <!-- == Allocation register == -->
                     <page string="Allocations" name="escrow_allocations">
                             <div class="o_row mb-2">
                                 <button type="object" name="action_view_escrow_allocations"
@@ -139,7 +141,7 @@
                             </field>
                         </page>
 
-                        <!--Release register-->
+                        <!-- == Release register == -->
                         <page string="Releases" name="escrow_releases">
                             <div class="o_row mb-2">
                                 <button type="object" name="action_view_escrow_releases"
@@ -170,7 +172,7 @@
         </field>
     </record>
 
-    <!--Project list: surface the escrow position without opening each project-->
+    <!-- Project list: surface the escrow position without opening each project -->
     <record id="view_property_project_escrow_list" model="ir.ui.view">
         <field name="name">property.project.list.escrow</field>
         <field name="model">property.project</field>

@@ -1,0 +1,183 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record id="rent_invoice_form_view" model="ir.ui.view">
+            <field name="name">rent.invoice.form.view</field>
+            <field name="model">rent.invoice</field>
+            <field name="arch" type="xml">
+                <form create="false">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,open,paid" invisible="1"/>
+                        <button name="action_confirm" type="object" string="Confirm"
+                            class="btn-primary" invisible="state != 'draft'" />
+                        <button name="action_pay" type="object" string="Mark Paid"
+                            class="btn-success" invisible="state not in ['draft', 'open']" />
+                        <button name="action_cancel" type="object" string="Cancel"
+                            class="btn btn-outline-danger" invisible="state == 'cancelled'" />
+                        <button name="action_draft" type="object" string="Reset to Draft"
+                            invisible="state != 'cancelled'" />
+                    </header>
+                    <field name="company_id" invisible="1" />
+                    <field name="currency_id" invisible="1" />
+                    <field name="invoice_count" invisible="1" />
+                    <field name="contract_count" invisible="1" />
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_invoice" type="object"
+                                class="oe_stat_button" icon="fa-file-text-o"
+                                invisible="invoice_count &lt;= 0">
+                                <field name="invoice_count" string="Invoices" widget="statinfo" />
+                            </button>
+                            <button name="action_view_contract" type="object"
+                                class="oe_stat_button" icon="fa-home"
+                                invisible="contract_count &lt;= 0">
+                                <field name="contract_count" string="Contract" widget="statinfo" />
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <label for="tenancy_id" />
+                            <h1>
+                                <field name="tenancy_id" required="1" readonly="1" force_save="1"
+                                    options="{'no_quick_create':True,'no_create_edit':True}" />
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="customer_id" required="1"
+                                    options="{'no_quick_create':True,'no_create_edit':True}" />
+                                <field name="landlord_id" invisible="1" force_save="1" />
+                                <field name="is_extra_service" invisible="1" />
+                            </group>
+                            <group>
+                                <label for="rent_invoice_id" class="mt-1" />
+                                <div name="rent_invoice_id">
+                                    <field name="rent_invoice_id" readonly="1" class="oe_inline"
+                                        force_save="1"
+                                        style="width:auto;" />
+                                    <field name="payment_state" widget="badge"
+                                        style="margin-left: 10px;width:auto;"
+                                        decoration-success="payment_state=='paid'"
+                                        decoration-danger="payment_state=='not_paid'"
+                                        decoration-info="payment_state=='in_payment'"
+                                        decoration-primary="payment_state=='partial'"
+                                        decoration-warning="payment_state=='reversed'"
+                                    />
+                                </div>
+                            </group>
+                        </group>
+                        <group string="Payment Information">
+                            <group>
+                                <field name="type" required="1" />
+                                <field name="rent_amount" required="1" widget="monetary"
+                                    invisible="1" />
+                                <field name="amount" widget="monetary" required="1" readonly="1"
+                                    force_save="1" />
+                            </group>
+                            <group>
+                                <field name="installment_type" invisible="1" />
+                                <field name="service_amount" invisible="installment_type != 'manual'"
+                                    readonly="1" />
+                                <field name="invoice_date" required="1" readonly="1" force_save="1" />
+                                <field name="description" />
+                            </group>
+                        </group>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <record id="rent_invoice_tree_view" model="ir.ui.view">
+            <field name="name">rent.invoice.tree.view</field>
+            <field name="model">rent.invoice</field>
+            <field name="arch" type="xml">
+                <list string="Rent Invoice" create="false">
+                    <field name="tenancy_id" />
+                    <field name="customer_id" />
+                    <field name="invoice_date" />
+                    <field name="type" />
+                    <field name="description" />
+                    <field name="currency_id" invisible="1" />
+                    <field name="amount" sum="Total" />
+                    <field name="rent_invoice_id" widget="many2onebutton" />
+                    <field name="payment_state" widget="badge"
+                        decoration-success="payment_state=='paid'"
+                        decoration-danger="payment_state=='not_paid'"
+                        decoration-info="payment_state=='in_payment'"
+                        decoration-primary="payment_state=='partial'"
+                        decoration-warning="payment_state=='reversed'"
+                    />
+                </list>
+            </field>
+        </record>
+
+        <record id="rent_invoice_calendar_view" model="ir.ui.view">
+            <field name="name">rent.invoice.calendar.view</field>
+            <field name="model">rent.invoice</field>
+            <field name="arch" type="xml">
+                <calendar string="Invoices" date_start="invoice_date" color="type" mode="month"
+                    quick_create="False"
+                    hide_time="True" event_open_popup="True">
+                    <field name="tenancy_id" />
+                    <field name="customer_id" />
+                    <field name="type" />
+                    <field name="description" />
+                    <field name="rent_invoice_id" widget="many2onebutton" />
+                </calendar>
+            </field>
+        </record>
+        <record id="rent_invoice_search_view" model="ir.ui.view">
+            <field name="name">rent.invoice.search.view</field>
+            <field name="model">rent.invoice</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="customer_id" />
+                    <field name="contract_id" />
+                    <field name="tenancy_id" />
+                    <filter string="Company" name="group_by_company" domain="[]"
+                        context="{'group_by':'company_id'}" />
+                    <separator />
+                    <filter string="Customer" name="customer" domain="[]"
+                        context="{'group_by':'customer_id'}" />
+                    <separator />
+                    <filter string="Landlord" name="landlord" domain="[]"
+                        context="{'group_by':'landlord_id'}" />
+                    <separator />
+                    <filter string="Contract" name="group_by_contract" domain="[]"
+                        context="{'group_by':'contract_id'}" />
+                    <separator />
+                    <searchpanel>
+                        <field name="type" string="Payment For" enable_counters="1" icon="fa-filter" />
+                    </searchpanel>
+                </search>
+            </field>
+        </record>
+
+        <record id="rent_invoice_pivot_view" model="ir.ui.view">
+            <field name="name">rent.invoice.pivot.view</field>
+            <field name="model">rent.invoice</field>
+            <field name="arch" type="xml">
+                <pivot string="Statistic">
+                    <field name="tenancy_id" type="row" />
+                    <field name="amount" type="measure" />
+                    <field name="invoice_date" type="col" interval="month" />
+                    <field name="type" type="col" />
+                </pivot>
+            </field>
+        </record>
+
+        <record id="rent_invoice_action" model="ir.actions.act_window">
+            <field name="name">Rent Invoices</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">rent.invoice</field>
+            <field name="view_mode">list,form,calendar,pivot,activity</field>
+            <field name="context">{'group_by':'tenancy_id'}</field>
+        </record>
+        <record id="sale_invoice_action" model="ir.actions.act_window">
+            <field name="name">Sale Invoices</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">account.move</field>
+            <field name="view_mode">list,form,kanban,activity</field>
+            <field name="domain">[('sold_id', '!=', False),('sold_property_id','!=',False)]</field>
+            <field name="context">{'group_by':'sold_id','create':False}</field>
+        </record>
+    </odoo>

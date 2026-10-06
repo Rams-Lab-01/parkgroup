@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2026 SGC TECH AI
+    Portal Syndication + Connectors are now declared under
+    views/core/menus.xml (parent = menu_configuration) to satisfy the
+    requirement that portal connector live with configurations, not as a
+    top-level item next to the app menu.
+
+    This file remains so that other modules or XML entries that depend on
+    these XMLIDs resolve. We re-bind each sub-item to menu_rps_root in
+    case a third-party module changed its parent, and we keep the
+    sequence numbers consistent with views/core/menus.xml.
+-->
+<odoo>
+    <menuitem id="sgc_offplan_rental_property_management.menu_rps_root"
+        parent="sgc_offplan_rental_property_management.menu_configuration"
+        sequence="6"
+        groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+    <menuitem id="sgc_offplan_rental_property_management.menu_portal_connector"
+        parent="sgc_offplan_rental_property_management.menu_rps_root"
+        action="action_portal_connector"
+        sequence="10"
+        groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+    <menuitem id="sgc_offplan_rental_property_management.menu_portal_lead"
+        parent="sgc_offplan_rental_property_management.menu_rps_root"
+        action="action_portal_lead"
+        sequence="20"
+        groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+    <menuitem id="sgc_offplan_rental_property_management.menu_portal_sync_log"
+        parent="sgc_offplan_rental_property_management.menu_rps_root"
+        action="action_portal_sync_log"
+        sequence="30"
+        groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+    <menuitem id="sgc_offplan_rental_property_management.menu_xml_feed_config"
+        parent="sgc_offplan_rental_property_management.menu_rps_root"
+        action="action_xml_feed_config"
+        sequence="40"
+        groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+</odoo>

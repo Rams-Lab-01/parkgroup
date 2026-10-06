@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="sales_offer_template">
+        <t t-call="web.html_container">
+          <t t-foreach="docs" t-as="o">
+            <t t-set="company" t-value="o.company_id or env.company"/>
+            <t t-set="fd" t-value="lambda d: d.strftime('%d %b %Y') if d else ' - '"/>
+            <t t-set="mon" t-value="o.currency_id or o.company_id.currency_id"/>
+            <t t-call="sgc_offplan_rental_property_management.property_report_styles"/>
+            <div class="o_pmg_doc article" t-att-data-oe-model="o._name" t-att-data-oe-id="o.id"><t t-call="sgc_offplan_rental_property_management.property_report_styles"/>
+                <t t-set="report_ref" t-value="o.name or o.sold_seq or ' - '"/>
+                <t t-set="report_date" t-value="fd(o.date or o.contract_date)"/>
+                <t t-call="sgc_offplan_rental_property_management.property_report_letterhead"/>
+                <t t-set="report_title">Sales Offer</t>
+                <t t-set="report_subtitle">Vendor Offer Summary  -  United Arab Emirates</t>
+                <t t-call="sgc_offplan_rental_property_management.property_report_title"/>
+
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">1</span>Property</div>
+                    <div class="o_pmg_section-body">
+                        <table class="o_pmg_dl">
+                            <tr><td class="o_pmg_dl-label">Property</td><td class="o_pmg_dl-value" t-out="o.property_id.name or ' - '"/></tr>
+                            <tr t-if="o.property_id.property_type"><td class="o_pmg_dl-label">Type</td><td class="o_pmg_dl-value" t-out="o.property_id.property_type"/></tr>
+                            <tr t-if="o.property_id.project_id"><td class="o_pmg_dl-label">Project</td><td class="o_pmg_dl-value" t-out="o.property_id.project_id.name"/></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">2</span>Parties</div>
+                    <div class="o_pmg_section-body">
+                        <table class="o_pmg_dl">
+                            <tr t-if="o.customer_id"><td class="o_pmg_dl-label">Customer</td><td class="o_pmg_dl-value" t-out="o.customer_id.name"/></tr>
+                            <tr t-if="o.vendor_id"><td class="o_pmg_dl-label">Vendor</td><td class="o_pmg_dl-value" t-out="o.vendor_id.name"/></tr>
+                            <tr t-if="o.broker_id"><td class="o_pmg_dl-label">Broker</td><td class="o_pmg_dl-value" t-out="o.broker_id.name"/></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">3</span>Financial Summary</div>
+                    <div class="o_pmg_section-body">
+                        <table class="o_pmg_dl">
+                            <tr><td class="o_pmg_dl-label">Sale Price</td><td class="o_pmg_dl-value"><span t-out="o.sale_price" t-options="{'widget': 'monetary', 'display_currency': mon}"/></td></tr>
+                            <tr t-if="o.total_commission"><td class="o_pmg_dl-label">Commission</td><td class="o_pmg_dl-value"><span t-out="o.total_commission" t-options="{'widget': 'monetary', 'display_currency': mon}"/></td></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <t t-set="offer_contract" t-value="o.sale_contract_id"/>
+                <t t-set="payplan" t-value="o._report_offer_payment_plan_lines()"/>
+                <t t-set="pplan_total" t-value="0"/>
+                <t t-set="pplan_basis" t-value="offer_contract.sale_price if offer_contract and offer_contract.sale_price else o.sale_price"/>
+                <t t-set="pplan_schedule" t-value="o.payment_schedule_id or (offer_contract.payment_schedule_id if offer_contract else None)"/>
+                <t t-set="pplan_projected" t-value="True if payplan and payplan[0].get('state') == 'projected' else False"/>
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">4</span>Payment Plan Schedule</div>
+                    <div class="o_pmg_section-body" style="padding: 0; overflow: hidden;">
+                        <t t-if="payplan">
+                            <p class="o_pmg_clause" style="margin: 12px 12px 8px;">
+                                <strong>Calculation basis:</strong> all amounts are calculated on the
+                                Sale Price of <strong t-out="o.property_id.name or 'the property'"/> -
+                                <span t-out="pplan_basis" t-options="{'widget': 'monetary', 'display_currency': mon}"/> -
+                                using the payment schedule
+                                <strong t-out="pplan_schedule.name if pplan_schedule else 'selected on the linked sale contract'"/>.
+                            </p>
+                            <table class="o_pmg_table">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center" style="width:6%;">#</th>
+                                        <th style="width:44%;">Milestone</th>
+                                        <th class="text-right" style="width:10%;">%</th>
+                                        <th class="text-right" style="width:22%;">Amount (AED)</th>
+                                        <th class="text-center" style="width:18%;">Due Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="payplan" t-as="line">
+                                        <tr t-att-class="'o_pmg_row-reconciled' if line.get('reconciled') else ''">
+                                            <td class="text-center" t-esc="line.get('sequence')"/>
+                                            <td t-esc="line.get('name') or ''"/>
+                                            <td class="text-right">
+                                                <span t-if="line.get('percentage')"
+                                                      t-out="('%.2f' % line.get('percentage')) + '%'"/>
+                                                <span t-if="not line.get('percentage')"> - </span>
+                                            </td>
+                                            <td class="text-right">
+                                                <span t-out="line.get('amount')"
+                                                      t-options="{'widget': 'monetary', 'display_currency': mon}"/>
+                                            </td>
+                                            <td class="text-center" t-esc="fd(line.get('due_date'))"/>
+                                        </tr>
+                                        <t t-set="pplan_total" t-value="pplan_total + (line.get('amount') or 0.0)"/>
+                                    </t>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="3" class="text-right">Total Scheduled</td>
+                                        <td class="text-right">
+                                            <span t-out="pplan_total"
+                                                  t-options="{'widget': 'monetary', 'display_currency': mon}"/>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3" class="text-right">Sale Price (Reference)</td>
+                                        <td class="text-right">
+                                            <span t-out="pplan_basis"
+                                                  t-options="{'widget': 'monetary', 'display_currency': mon}"/>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                            <p class="o_pmg_clause" style="margin: 8px 12px 10px;">
+                                <t t-if="pplan_projected">
+                                    <em>Indicative payment plan based on the selected payment schedule
+                                    (<strong t-out="pplan_schedule.name if pplan_schedule else 'the selected payment plan'"/>).</em>
+                                    The definitive installment schedule will be generated from the linked
+                                    sale contract and supersedes this projection.
+                                </t>
+                                <t t-else="">
+                                    <em>Payment installments generated from the linked sale contract.</em>
+                                    Statuses and payment dates are updated as payments are recorded.
+                                </t>
+                                The final row above absorbs the rounding residual so the plan always
+                                adds back to the Sale Price shown; no stored installment value is modified.
+                            </p>
+                        </t>
+                        <t t-else="">
+                            <p class="o_pmg_clause" style="margin: 12px;">
+                                <strong>Payment plan not specified - select a plan before sending this
+                                offer.</strong><br/>
+                                No payment plan has been selected for this offer yet. Open this
+                                booking/offer, choose a payment plan (e.g. on the Pricing &amp; Fees /
+                                Payment section), then print this document again.
+                            </p>
+                        </t>
+                    </div>
+                </div>
+
+                <t t-set="offer_fp" t-value="o.property_id._report_floor_plan_data() if o.property_id else {}"/>
+                <div class="o_pmg_section" t-if="offer_fp.get('has')">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">5</span>Floor Plan</div>
+                    <div class="o_pmg_section-body">
+                        <table class="o_pmg_dl">
+                            <tr><td class="o_pmg_dl-label">Property</td><td class="o_pmg_dl-value" t-out="o.property_id.name or ' - '"/></tr>
+                            <tr t-if="offer_fp.get('source')"><td class="o_pmg_dl-label">Source</td><td class="o_pmg_dl-value" t-out="offer_fp.get('source')"/></tr>
+                        </table>
+                        <t t-if="offer_fp.get('kind') == 'image'">
+                            <img t-foreach="offer_fp.get('pages')" t-as="page" class="o_pmg_floorplan"
+                                 t-att-src="'data:' + page.get('mime') + ';base64,' + page.get('b64')"
+                                 t-att-alt="page.get('filename')"/>
+                        </t>
+                        <p class="o_pmg_clause" style="margin-top: 8px;" t-if="offer_fp.get('kind') == 'pdf'">
+                            The floor plan of this property is a PDF document; it is attached to this
+                            offer on the pages appended at the end of this file.
+                        </p>
+                    </div>
+                </div>
+
+                <t t-set="report_name">Sales Offer</t>
+                <t t-set="report_footer_note">This is a computer-generated document. No signature required.</t>
+                <t t-call="sgc_offplan_rental_property_management.property_report_footer"/>
+            </div>
+          </t>
+        </t>
+    </template>
+</odoo>

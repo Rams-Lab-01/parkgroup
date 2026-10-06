@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2026 SGC TECH AI (https://sgctech.ai)
+    Part of SGC Odoo Suite. See LICENSE file for full copyright and licensing details.
+-->
+<odoo>
+    <!-- ═══════════════ Bulk Unit Creation (from project / sub-project) ═══════════════ -->
+    <record id="unit_creation_view_form" model="ir.ui.view">
+        <field name="name">unit.creation.view.form</field>
+        <field name="model">unit.creation</field>
+        <field name="arch" type="xml">
+            <form string="Bulk Create Units">
+                <group>
+                    <group string="Unit Layout">
+                        <field name="total_floors"/>
+                        <field name="units_per_floor"/>
+                        <field name="floor_start_from"/>
+                        <field name="unit_code_prefix"/>
+                        <field name="total_unit_count"/>
+                    </group>
+                    <group string="Defaults for Every Unit">
+                        <field name="currency_id" invisible="1"/>
+                        <field name="default_price" widget="monetary"/>
+                        <field name="default_area"/>
+                    </group>
+                </group>
+                <group string="Unit Mix (optional — counts must equal Units per Floor)">
+                    <field name="unit_mix_ids" nolabel="1" colspan="2">
+                        <list editable="bottom" create="true" delete="true">
+                            <field name="unit_type"/>
+                            <field name="count"/>
+                        </list>
+                    </field>
+                </group>
+                <footer>
+                    <button name="action_create_units" string="Create Units"
+                            type="object" class="btn-primary" data-hotkey="q"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"
+                            data-hotkey="x"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_unit_creation" model="ir.actions.act_window">
+        <field name="name">Bulk Create Units</field>
+        <field name="res_model">unit.creation</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- ═══════════════ Sub-Project Creation (from project) ═══════════════ -->
+    <record id="subproject_creation_view_form" model="ir.ui.view">
+        <field name="name">subproject.creation.view.form</field>
+        <field name="model">subproject.creation</field>
+        <field name="arch" type="xml">
+            <form string="Create Sub-Project">
+                <group>
+                    <group string="Identity">
+                        <field name="name"/>
+                        <field name="code"/>
+                    </group>
+                    <group string="Unit Layout">
+                        <field name="total_floors"/>
+                        <field name="units_per_floor"/>
+                    </group>
+                    <group string="Commercial">
+                        <field name="sale_lease"/>
+                        <field name="payment_schedule_id"/>
+                        <field name="region_id"/>
+                    </group>
+                    <group string="Location">
+                        <field name="address"/>
+                        <field name="city"/>
+                        <field name="state_id"/>
+                        <field name="country_id"/>
+                        <field name="zip"/>
+                    </group>
+                </group>
+                <group>
+                    <field name="copy_parent_image"/>
+                </group>
+                <footer>
+                    <button name="create_sub_project" string="Create"
+                            type="object" class="btn-primary" data-hotkey="q"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"
+                            data-hotkey="x"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_subproject_creation" model="ir.actions.act_window">
+        <field name="name">Create Sub-Project</field>
+        <field name="res_model">subproject.creation</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

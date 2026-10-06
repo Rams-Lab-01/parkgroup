@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Mixed-result sample: 1 valid + 1 missing-required-field + 1 valid.
+
+    Used by TestInboundFeedServiceErrors to verify process_feed_properties
+    returns (created=2, updated=0, errors=[...]) and continues past the
+    malformed property without aborting the batch.
+    -->
+<properties>
+    <property>
+        <reference_number>BAY-MIXED-001</reference_number>
+        <title>Valid Property A</title>
+        <property_type>residential</property_type>
+        <offering>
+            <sale_price>500000</sale_price>
+            <currency>AED</currency>
+        </offering>
+        <location>
+            <city>Dubai</city>
+            <region>Dubai</region>
+            <country>United Arab Emirates</country>
+        </location>
+        <bedrooms>1</bedrooms>
+        <bathrooms>1</bathrooms>
+    </property>
+
+    <property>
+        <!-- Missing reference_number — should raise ValueError inside
+             parse_feed_property and be reported as an error, not crash
+             the batch. -->
+        <title>This Property Has No Reference</title>
+        <property_type>residential</property_type>
+    </property>
+
+    <property>
+        <reference_number>BAY-MIXED-003</reference_number>
+        <title>Valid Property B</title>
+        <property_type>commercial</property_type>
+        <offering>
+            <rent_price>25000</rent_price>
+            <currency>AED</currency>
+            <frequency>monthly</frequency>
+        </offering>
+        <location>
+            <city>Abu Dhabi</city>
+            <region>Abu Dhabi</region>
+            <country>United Arab Emirates</country>
+        </location>
+        <bedrooms>0</bedrooms>
+        <bathrooms>2</bathrooms>
+    </property>
+</properties>

@@ -155,8 +155,11 @@ class TestEscrollRollups(EscrowCommon):
 
     # -- Project configuration guards ---
     def test_one_escrow_account_per_project(self):
+        # Reuse an existing project's journal: one escrow account backs
+        # exactly one project, and the clash must be refused on write.
+        other = self.setup_project(code='SGCR2')
         with self.assertRaises(ValidationError):
-            self.setup_project(code='SGCR2', own_journal=False)
+            other.escrow_bank_journal_id = self.project.escrow_bank_journal_id
 
     def test_escrow_cannot_be_enabled_without_a_journal(self):
         with self.assertRaises(ValidationError):

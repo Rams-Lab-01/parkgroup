@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+        <record id="property_invoice_form_inherit" model="ir.ui.view">
+            <field name="name">property.invoice.form.inherit.view</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form" />
+            <field name="priority" eval="8" />
+            <field name="arch" type="xml">
+                <!-- Move the property/tenancy/sale reference fields out of the
+                     compact header into a dedicated, labeled notebook page.
+                     Rent-side vs sale-side fields are separated into their own
+                     groups and gated by field truthiness, and the whole page is
+                     hidden on plain journal entries via move_type. -->
+                <xpath expr="//notebook" position="inside">
+                    <page string="Property Reference" name="property_reference"
+                        invisible="move_type not in ('out_invoice','in_invoice','out_refund','in_refund') or (not tenancy_id and not sold_id and not maintenance_request_id)">
+                        <group>
+                            <group string="Rental" name="rent_reference"
+                                invisible="not tenancy_id">
+                                <field name="tenancy_id" invisible="not tenancy_id" />
+                                <field name="tenancy_property_id" invisible="not tenancy_id" />
+                            </group>
+                            <group string="Sale" name="sale_reference"
+                                invisible="not sold_id">
+                                <field name="sold_id" invisible="not sold_id" />
+                                <field name="sold_property_id" invisible="not sold_id" />
+                            </group>
+                            <group string="Maintenance" name="maintenance_reference"
+                                invisible="not maintenance_request_id">
+                                <field name="maintenance_request_id" readonly="1"
+                                    force_save="1" invisible="not maintenance_request_id" />
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Search view: let users filter/group invoices & bills by the
+             property, tenancy or sale contract they relate to. -->
+        <record id="property_invoice_search_inherit" model="ir.ui.view">
+            <field name="name">property.invoice.search.inherit.view</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_account_invoice_filter" />
+            <field name="arch" type="xml">
+                <xpath expr="//search" position="inside">
+                    <field name="tenancy_id" string="Tenancy" />
+                    <field name="sold_id" string="Sale Contract" />
+                    <field name="tenancy_property_id" string="Rented Property" />
+                    <field name="sold_property_id" string="Sold Property" />
+                    <filter name="group_by_tenancy" string="Tenancy"
+                        context="{'group_by': 'tenancy_id'}" />
+                    <filter name="group_by_sold" string="Sale Contract"
+                        context="{'group_by': 'sold_id'}" />
+                </xpath>
+            </field>
+        </record>
+    </odoo>

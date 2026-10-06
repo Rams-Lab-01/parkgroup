@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Shared A4 paperformat for ALL property-management printable reports
+         (brochures excluded: they use their own full-bleed paperformats).
+         Loaded before any report action that references it (see __manifest__.py). -->
+    <record id="paperformat_property_report" model="report.paperformat">
+        <field name="name">A4 Property Report</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">14</field>
+        <field name="margin_bottom">14</field>
+        <field name="margin_left">15</field>
+        <field name="margin_right">15</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">96</field>
+    </record>
+
+    <record id="paperformat_luxury_brochure" model="report.paperformat">
+        <field name="name">A4 Luxury Brochure (Full Bleed)</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">0</field>
+        <field name="margin_bottom">0</field>
+        <field name="margin_left">0</field>
+        <field name="margin_right">0</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">96</field>
+        <!-- wkhtmltopdf's default "smart shrinking" heuristic misjudges the
+             natural size of these full-bleed, absolutely-positioned 210mm x
+             297mm pages and uniformly scales the whole rendered page down
+             (observed about 80%), anchored top-left. That produces the
+             exact symptom reported: every page's content and cover photo
+             shifted toward the top-left with a growing gap of raw page
+             background on the right and bottom, even though the underlying
+             CSS padding on every page is already symmetric. Disabling smart
+             shrinking renders content at its true 1:1 CSS size. -->
+        <field name="disable_shrinking" eval="True"/>
+    </record>
+</odoo>

@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<odoo>
+    <template id="portal_my_lease_detail" inherit_id="sgc_offplan_rental_property_management.portal_my_lease_detail">
+        <xpath expr="//div[@class= oe_button_box]" position="inside">
+            <div t-if="lease.signed_via_portal">
+                <span class="text-success">Signed Electronically via Portal</span>
+            </div>
+        </xpath>
+    </template>
+</odoo>

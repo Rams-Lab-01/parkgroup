@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_tenant_dashboard" name="Portal Tenant Dashboard">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs" t-value="[
+                {'name': 'My Account', 'slug': '/my'},
+                {'name': 'Dashboard', 'slug': '/my/dashboard'},
+            ]"/>
+            <div class="container">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h1>My Dashboard</h1>
+                        <p class="text-muted">Your lease, maintenance and account summary.</p>
+                    </div>
+                </div>
+                <t t-if="lease">
+                    <div class="row">
+                        <div class="col-md-3 mb-4">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <h6 class="text-muted">Active Lease</h6>
+                                    <h5 t-esc="lease.name"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-4">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <h6 class="text-muted">Lease End</h6>
+                                    <h5 t-esc="lease_end_date or 'N/A'"/>
+                                    <p class="small mb-0" t-if="days_remaining is not None">
+                                        <span t-esc="days_remaining"/> day(s) remaining
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-4">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <h6 class="text-muted">Open Maintenance</h6>
+                                    <h5 t-esc="open_maintenance_count"/>
+                                    <a href="/my/maintenance" class="small">View requests</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-4">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <h6 class="text-muted">Outstanding</h6>
+                                    <h5 t-esc="'AED %s' % '{:,.2f}'.format(total_outstanding)"/>
+                                    <a href="/my/invoices" class="small">View invoices</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <a t-att-href="'/my/lease'" class="btn btn-primary">My Leases</a>
+                            <a href="/my/documents" class="btn btn-outline-primary">My Documents</a>
+                        </div>
+                    </div>
+                </t>
+                <t t-if="not lease">
+                    <div class="alert alert-info">
+                        You have no active lease associated with your account.
+                        <a href="/my/lease">View all leases</a>.
+                    </div>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_my_lease" name="Portal My Lease">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs" t-value="[
+                {'name': 'My Account', 'slug': '/my'},
+                {'name': 'Leases', 'slug': '/my/lease'},
+            ]"/>
+            <div class="container">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h1>My Leases</h1>
+                        <p class="text-muted">Your rental agreements.</p>
+                    </div>
+                </div>
+                <t t-if="leases">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr><th>Reference</th><th>Property</th><th>Start</th><th>End</th><th>Status</th><th></th></tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="leases" t-as="l">
+                                <td t-esc="l['record'].name"/>
+                                <td t-esc="l['record'].property_id.name or ''"/>
+                                <td t-esc="l['record'].start_date or ''"/>
+                                <td t-esc="l['record'].end_date or ''"/>
+                                <td><span class="badge badge-info" t-esc="l['record'].state"/></td>
+                                <td>
+                                    <a t-att-href="'/my/lease/%s/%s' % (l['model'], l['record'].id)"
+                                       class="btn btn-sm btn-outline-primary">View</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+                <t t-if="not leases">
+                    <div class="alert alert-info">You have no leases associated with your account.</div>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_my_lease_detail" name="Portal My Lease Detail">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs" t-value="[
+                {'name': 'My Account', 'slug': '/my'},
+                {'name': 'Leases', 'slug': '/my/lease'},
+                {'name': lease.name, 'slug': '/my/lease/%s/%s' % (model, lease.id)},
+            ]"/>
+            <div class="container">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h1 t-esc="lease.name"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h4>Lease Details</h4>
+                                <table class="table table-sm">
+                                    <tr t-if="lease.property_id">
+                                        <td><strong>Property</strong></td>
+                                        <td t-esc="lease.property_id.name"/>
+                                    </tr>
+                                    <tr><td><strong>Start Date</strong></td><td t-esc="lease.start_date or 'N/A'"/></tr>
+                                    <tr><td><strong>End Date</strong></td><td t-esc="lease.end_date or 'N/A'"/></tr>
+                                    <tr><td><strong>Rent Amount</strong></td><td t-esc="'AED %s' % '{:,.2f}'.format(lease.rent_amount)"/></tr>
+                                    <tr><td><strong>Status</strong></td><td><span class="badge badge-info" t-esc="lease.state"/></td></tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h4>Renewal</h4>
+                                <t t-if="model == 'rent_contract'">
+                                    <t t-if="lease.renewal_requested">
+                                        <div class="alert alert-success">Renewal has been requested.</div>
+                                    </t>
+                                    <t t-if="not lease.renewal_requested">
+                                        <form method="POST" t-att-action="'/my/lease/%s/%s/renew' % (model, lease.id)">
+                                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                            <button type="submit" class="btn btn-primary">Request Renewal</button>
+                                        </form>
+                                    </t>
+                                </t>
+                                <t t-if="model != 'rent_contract'">
+                                    <p class="text-muted">Renewal requests are not available for this lease.</p>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_my_documents" name="Portal My Documents">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs" t-value="[
+                {'name': 'My Account', 'slug': '/my'},
+                {'name': 'Documents', 'slug': '/my/documents'},
+            ]"/>
+            <div class="container">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h1>My Documents</h1>
+                        <p class="text-muted">Documents shared for your properties.</p>
+                    </div>
+                </div>
+                <t t-if="error">
+                    <div class="alert alert-danger">The document could not be uploaded. Please check the file and try again.</div>
+                </t>
+                <div class="row">
+                    <div class="col-md-8">
+                        <t t-if="documents">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr><th>File</th><th>Property</th><th>Category</th><th>Status</th><th></th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="documents" t-as="doc">
+                                        <td t-esc="doc.file_name or 'Document'"/>
+                                        <td t-esc="doc.property_id.name or ''"/>
+                                        <td t-esc="dict(doc._fields['doc_category'].selection).get(doc.doc_category, doc.doc_category)"/>
+                                        <td><span class="badge badge-info" t-esc="dict(doc._fields['approval_state'].selection).get(doc.approval_state, doc.approval_state)"/></td>
+                                        <td>
+                                            <a t-if="doc.document"
+                                               t-att-href="'/web/content/property.documents/%s/document?download=true' % doc.id"
+                                               class="btn btn-sm btn-outline-primary">Download</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </t>
+                        <t t-if="not documents">
+                            <div class="alert alert-info">No documents available for your properties.</div>
+                        </t>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5>Upload Document</h5>
+                                <form method="POST" action="/my/documents/upload" enctype="multipart/form-data">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <div class="form-group mb-3">
+                                        <label for="property_id">Property</label>
+                                        <select name="property_id" class="form-control" required="required">
+                                            <option value="">Select Property</option>
+                                            <option t-foreach="properties" t-as="prop"
+                                                    t-att-value="prop.id" t-esc="prop.name"/>
+                                        </select>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="doc_category">Category</label>
+                                        <select name="doc_category" class="form-control">
+                                            <option t-foreach="doc_categories" t-as="cat"
+                                                    t-att-value="cat[0]" t-esc="cat[1]"/>
+                                        </select>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="document">File</label>
+                                        <input type="file" name="document" class="form-control" required="required"/>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Upload</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

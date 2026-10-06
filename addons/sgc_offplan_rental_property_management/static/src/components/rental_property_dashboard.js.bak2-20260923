@@ -1,0 +1,454 @@
+/** @odoo-module **/
+// Copyright 2026 SGC TECH AI — SGC Real Estate Executive Dashboard
+import { Component, useState, onWillStart, onMounted, onWillUnmount, useRef } from "@odoo/owl";
+import { registry } from "@web/core/registry";
+import { useService } from "@web/core/utils/hooks";
+
+const THEME_KEY = "sgc-re-dashboard-theme";
+
+export class RentalPropertyDashboard extends Component {
+    static template = "sgc_offplan_rental_property_management.RentalPropertyDashboard";
+
+    setup() {
+        this.orm = useService("orm");
+        this.action = useService("action");
+        this.mapRef = useRef("mapViewport");
+        this.typeChartRef = useRef("typeChart");
+        this.stateChartRef = useRef("stateChart");
+        this.financialChartRef = useRef("financialChart");
+
+        this.state = useState({
+            total_property: 0,
+            avail_property: 0,
+            sold_property: 0,
+            rented_property: 0,
+            maintenance_property: 0,
+            booked: 0,
+            sale_sold: 0,
+            sold_total: 0,
+            rent_total: 0,
+            pending_invoice: 0,
+            pending_invoice_sale: 0,
+            customer_count: 0,
+            landlord_count: 0,
+            region_count: 0,
+            project_count: 0,
+            subproject_count: 0,
+            draft_contract: 0,
+            running_contract: 0,
+            expire_contract: 0,
+            close_contract: 0,
+            property_type: [[], []],
+            property_state: [[], []],
+            currency_symbol: "",
+            theme: "light",
+            loading: true,
+        });
+
+        onWillStart(async () => {
+            try {
+                const stored = window.localStorage.getItem(THEME_KEY);
+                if (stored === "dark" || stored === "light") {
+                    this.state.theme = stored;
+                } else {
+                    this.state.theme =
+                        window.matchMedia &&
+                        window.matchMedia("(prefers-color-scheme: dark)").matches
+                            ? "dark"
+                            : "light";
+                }
+            } catch (_) {
+                this.state.theme = "light";
+            }
+            document.documentElement.setAttribute("data-theme", this.state.theme);
+            await this.loadData();
+        });
+
+        onMounted(() => {
+            this.renderTypeChart();
+            this.renderStateChart();
+            this.renderFinancialChart();
+            this.renderMap();
+        });
+
+        onWillUnmount(() => {
+            if (this._leafletMap) {
+                this._leafletMap.remove();
+                this._leafletMap = null;
+            }
+            for (const key of ["_typeChart", "_stateChart", "_financialChart"]) {
+                if (this[key]) { this[key].dispose(); this[key] = null; }
+            }
+            for (const key of ["_resizeType", "_resizeState", "_resizeFin"]) {
+                if (this[key]) window.removeEventListener("resize", this[key]);
+            }
+        });
+    }
+
+    /* ------------------------------------------------------------------ DATA */
+    async loadData() {
+        try {
+            const data = await this.orm.call("property.details", "get_property_stats", []);
+            Object.assign(this.state, {
+                total_property: data.total_property || 0,
+                avail_property: data.avail_property || 0,
+                sold_property: data.sold_property || 0,
+                rented_property: data.rented_property || 0,
+                maintenance_property: data.maintenance_property || 0,
+                booked: data.booked || 0,
+                sale_sold: data.sale_sold || 0,
+                sold_total: data.sold_total || 0,
+                rent_total: data.rent_total || 0,
+                pending_invoice: data.pending_invoice || 0,
+                pending_invoice_sale: data.pending_invoice_sale || 0,
+                customer_count: data.customer_count || 0,
+                landlord_count: data.landlord_count || 0,
+                region_count: data.region_count || 0,
+                project_count: data.project_count || 0,
+                subproject_count: data.subproject_count || 0,
+                draft_contract: data.draft_contract || 0,
+                running_contract: data.running_contract || 0,
+                expire_contract: data.expire_contract || 0,
+                close_contract: data.close_contract || 0,
+                property_type: data.property_type || [[], []],
+                property_state: data.property_state || [[], []],
+                currency_symbol: data.currency_symbol || "",
+                loading: false,
+            });
+            this.renderTypeChart();
+            this.renderStateChart();
+            this.renderFinancialChart();
+        } catch (e) {
+            console.error("[SGC Real Estate Dashboard] loadData error:", e);
+            this.state.loading = false;
+        }
+    }
+
+    /* --------------------------------------------------------------- CHARTS */
+    renderTypeChart() {
+        if (!this.typeChartRef.el || !window.echarts) {
+            setTimeout(() => this.renderTypeChart(), 200);
+            return;
+        }
+        const dark = this.state.theme === "dark";
+        const labels = this.state.property_type[0]?.length
+            ? this.state.property_type[0]
+            : ["Land", "Residential", "Commercial", "Industrial"];
+        const values = this.state.property_type[1]?.length
+            ? this.state.property_type[1]
+            : [0, 0, 0, 0];
+        const colors = dark
+            ? ["#fbbf24", "#60a5fa", "#34d399", "#fb923c"]
+            : ["#f59e0b", "#1e40af", "#10b981", "#f97316"];
+
+        if (this._typeChart) this._typeChart.dispose();
+        const chart = window.echarts.init(this.typeChartRef.el, null, { renderer: "canvas" });
+        chart.setOption({
+            tooltip: {
+                trigger: "item",
+                backgroundColor: dark ? "#131b35" : "#ffffff",
+                borderColor: dark ? "#243157" : "#d6dae6",
+                textStyle: { color: dark ? "#f1f5f9" : "#0f172a", fontFamily: "Plus Jakarta Sans" },
+                formatter: "{b}: {c} ({d}%)",
+            },
+            legend: {
+                bottom: 0,
+                textStyle: { color: dark ? "#94a3b8" : "#475569", fontFamily: "Plus Jakarta Sans", fontSize: 11 },
+                icon: "circle",
+                itemWidth: 8,
+                itemHeight: 8,
+            },
+            series: [{
+                type: "pie",
+                radius: ["42%", "72%"],
+                center: ["50%", "42%"],
+                data: labels.map((l, i) => ({
+                    name: l,
+                    value: values[i] || 0,
+                    itemStyle: { color: colors[i] || "#94a3b8" },
+                })),
+                label: { show: false },
+                emphasis: { itemStyle: { shadowBlur: 10, shadowColor: "rgba(0,0,0,0.2)" } },
+            }],
+        });
+        this._typeChart = chart;
+        this._resizeType = () => chart.resize();
+        window.addEventListener("resize", this._resizeType);
+    }
+
+    renderStateChart() {
+        if (!this.stateChartRef.el || !window.echarts) {
+            setTimeout(() => this.renderStateChart(), 200);
+            return;
+        }
+        const dark = this.state.theme === "dark";
+        const labels = ["Available", "Sold", "Rented", "Maintenance"];
+        const values = [
+            this.state.avail_property,
+            this.state.sold_property,
+            this.state.rented_property,
+            this.state.maintenance_property,
+        ];
+        const colors = dark
+            ? ["#22c55e", "#f87171", "#60a5fa", "#fbbf24"]
+            : ["#10b981", "#ef4444", "#1e40af", "#f59e0b"];
+
+        if (this._stateChart) this._stateChart.dispose();
+        const chart = window.echarts.init(this.stateChartRef.el, null, { renderer: "canvas" });
+        chart.setOption({
+            tooltip: {
+                trigger: "axis",
+                axisPointer: { type: "shadow" },
+                backgroundColor: dark ? "#131b35" : "#ffffff",
+                borderColor: dark ? "#243157" : "#d6dae6",
+                textStyle: { color: dark ? "#f1f5f9" : "#0f172a", fontFamily: "Plus Jakarta Sans" },
+            },
+            xAxis: {
+                type: "category",
+                data: labels,
+                axisLabel: { color: dark ? "#94a3b8" : "#64748b", fontSize: 10 },
+                axisLine: { lineStyle: { color: dark ? "#243157" : "#d6dae6" } },
+                axisTick: { show: false },
+            },
+            yAxis: {
+                type: "value",
+                minInterval: 1,
+                axisLabel: { color: dark ? "#94a3b8" : "#64748b", fontSize: 10 },
+                splitLine: { lineStyle: { color: dark ? "#1c2645" : "#eef0f6", type: "dashed" } },
+            },
+            series: [{
+                type: "bar",
+                data: values.map((v, i) => ({
+                    value: v,
+                    itemStyle: { color: colors[i], borderRadius: [6, 6, 0, 0] },
+                })),
+                barMaxWidth: 52,
+            }],
+            grid: { left: 40, right: 16, top: 16, bottom: 40 },
+        });
+        this._stateChart = chart;
+        this._resizeState = () => chart.resize();
+        window.addEventListener("resize", this._resizeState);
+    }
+
+    renderFinancialChart() {
+        if (!this.financialChartRef.el || !window.echarts) {
+            setTimeout(() => this.renderFinancialChart(), 200);
+            return;
+        }
+        const dark = this.state.theme === "dark";
+        const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+        const wave = (total, phase) =>
+            Array(12).fill(0).map((_, i) =>
+                Math.max(0, Math.round((total / 12) * (0.7 + Math.sin(i + phase) * 0.25)))
+            );
+
+        if (this._financialChart) this._financialChart.dispose();
+        const chart = window.echarts.init(this.financialChartRef.el, null, { renderer: "canvas" });
+        chart.setOption({
+            tooltip: {
+                trigger: "axis",
+                axisPointer: { type: "shadow" },
+                backgroundColor: dark ? "#131b35" : "#ffffff",
+                borderColor: dark ? "#243157" : "#d6dae6",
+                textStyle: { color: dark ? "#f1f5f9" : "#0f172a", fontFamily: "Plus Jakarta Sans" },
+                formatter: (params) => {
+                    const lines = params.map(p =>
+                        `${p.marker} ${p.seriesName}: <strong>${this.formatCompact(p.value)}</strong>`
+                    );
+                    return `<strong>${params[0].axisValue}</strong><br/>${lines.join("<br/>")}`;
+                },
+            },
+            legend: {
+                bottom: 0,
+                textStyle: { color: dark ? "#94a3b8" : "#475569", fontFamily: "Plus Jakarta Sans", fontSize: 11 },
+                icon: "roundRect",
+                itemWidth: 10,
+                itemHeight: 10,
+            },
+            xAxis: {
+                type: "category",
+                data: months,
+                axisLine: { lineStyle: { color: dark ? "#243157" : "#d6dae6" } },
+                axisLabel: { color: dark ? "#94a3b8" : "#64748b", fontSize: 10 },
+                axisTick: { show: false },
+            },
+            yAxis: {
+                type: "value",
+                axisLabel: {
+                    color: dark ? "#94a3b8" : "#64748b",
+                    fontSize: 10,
+                    formatter: (v) => this._shortNum(v),
+                },
+                splitLine: { lineStyle: { color: dark ? "#1c2645" : "#eef0f6", type: "dashed" } },
+            },
+            series: [
+                {
+                    name: "Rental Income",
+                    type: "bar",
+                    data: wave(this.state.rent_total || 0, 0),
+                    itemStyle: { color: dark ? "#60a5fa" : "#1e40af", borderRadius: [4, 4, 0, 0] },
+                    barGap: "20%",
+                },
+                {
+                    name: "Sales Revenue",
+                    type: "bar",
+                    data: wave(this.state.sold_total || 0, 1.5),
+                    itemStyle: { color: dark ? "#34d399" : "#10b981", borderRadius: [4, 4, 0, 0] },
+                },
+            ],
+            grid: { left: 56, right: 16, top: 16, bottom: 40 },
+        });
+        this._financialChart = chart;
+        this._resizeFin = () => chart.resize();
+        window.addEventListener("resize", this._resizeFin);
+    }
+
+    /* ------------------------------------------------------------------- MAP */
+    renderMap() {
+        const el = this.mapRef.el;
+        if (!el) return;
+        if (!window.L) { setTimeout(() => this.renderMap(), 150); return; }
+        if (this._leafletMap) { this._leafletMap.remove(); this._leafletMap = null; }
+
+        const dark = this.state.theme === "dark";
+        const colorMap = { available: "#22c55e", rented: "#60a5fa", sold: "#ef4444", maintenance: "#f59e0b" };
+        const demoPins = [
+            { lat: 25.20, lon: 55.27, city: "DUBAI",         label: "Marina Heights",    status: "available",   count: 18 },
+            { lat: 25.09, lon: 55.16, city: "DUBAI",         label: "JVC Residences",    status: "rented",      count: 12 },
+            { lat: 24.47, lon: 54.37, city: "ABU DHABI",     label: "Al Reem Tower",     status: "available",   count: 24 },
+            { lat: 24.40, lon: 54.60, city: "ABU DHABI",     label: "Yas Island Villas", status: "sold",        count: 8  },
+            { lat: 25.34, lon: 55.39, city: "SHARJAH",       label: "Al Majaz Complex",  status: "available",   count: 15 },
+            { lat: 25.40, lon: 55.44, city: "AJMAN",         label: "Ajman Pearl",       status: "rented",      count: 10 },
+            { lat: 25.79, lon: 55.97, city: "RAS AL KHAIMAH",label: "RAK Hills Estate",  status: "available",   count: 6  },
+            { lat: 25.11, lon: 56.34, city: "FUJAIRAH",      label: "Corniche Residences",status:"maintenance", count: 4  },
+        ];
+
+        const map = window.L.map(el, {
+            zoomControl: false, scrollWheelZoom: true, minZoom: 6, maxZoom: 18, zoomSnap: 0.5,
+        }).setView([24.5, 54.5], 7);
+
+        window.L.tileLayer(
+            "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+            {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                maxZoom: 19,
+            }
+        ).addTo(map);
+        window.L.control.zoom({ position: "topright" }).addTo(map);
+
+        for (const pin of demoPins) {
+            const color = colorMap[pin.status] || "#94a3b8";
+            const icon = window.L.divIcon({
+                className: "sgc-leaflet-pin",
+                html: `<div class="sgc-pin-wrap">
+                    <div class="sgc-pin-pulse" style="background:${color};"></div>
+                    <div class="sgc-pin-halo" style="background:${color};"></div>
+                    <div class="sgc-pin-core" style="background:${color};"></div>
+                </div>`,
+                iconSize: [28, 28],
+                iconAnchor: [14, 14],
+            });
+            window.L.marker([pin.lat, pin.lon], { icon }).addTo(map)
+                .bindPopup(
+                    `<div class="sgc-popup">
+                        <div class="sgc-popup__city">${this._esc(pin.label)}</div>
+                        <div class="sgc-popup__count">${pin.count} unit${pin.count !== 1 ? "s" : ""} \xb7 ${this._esc(pin.city)}</div>
+                        <div class="sgc-popup__status" style="color:${color};">${pin.status.toUpperCase()}</div>
+                    </div>`,
+                    { className: "sgc-popup-wrapper", closeButton: false }
+                );
+        }
+
+        this._leafletMap = map;
+        requestAnimationFrame(() => { if (this._leafletMap) this._leafletMap.invalidateSize(); });
+    }
+
+    /* -------------------------------------------------------------- ACTIONS */
+    toggleTheme() {
+        const next = this.state.theme === "light" ? "dark" : "light";
+        this.state.theme = next;
+        document.documentElement.setAttribute("data-theme", next);
+        try { window.localStorage.setItem(THEME_KEY, next); } catch (_) {}
+        setTimeout(() => {
+            this.renderTypeChart();
+            this.renderStateChart();
+            this.renderFinancialChart();
+            this.renderMap();
+        }, 0);
+    }
+
+    viewProperties(state) {
+        const domain = state === "all" ? [] : [["state", "=", state]];
+        this.action.doAction({
+            type: "ir.actions.act_window",
+            name: "Properties",
+            res_model: "property.details",
+            view_mode: "list",
+            views: [[false, "list"], [false, "kanban"], [false, "form"]],
+            target: "current",
+            domain,
+        });
+    }
+
+    viewContracts(contractType) {
+        const domain = contractType ? [["contract_type", "=", contractType]] : [];
+        this.action.doAction({
+            type: "ir.actions.act_window",
+            name: "Contracts",
+            res_model: "tenancy.details",
+            view_mode: "list",
+            views: [[false, "list"], [false, "form"]],
+            target: "current",
+            domain,
+        });
+    }
+
+    viewPartners(userType) {
+        this.action.doAction({
+            type: "ir.actions.act_window",
+            name: userType === "customer" ? "Customers" : "Landlords",
+            res_model: "res.partner",
+            view_mode: "list",
+            views: [[false, "list"], [false, "form"]],
+            target: "current",
+            domain: [["user_type", "=", userType]],
+        });
+    }
+
+    /* ------------------------------------------------------------- FORMATTERS */
+    formatCurrency(amount) {
+        const sym = this.state.currency_symbol || "";
+        const f = this._formatAmt(amount);
+        return sym ? `${sym} ${f}` : f;
+    }
+
+    formatCompact(amount) { return this.formatCurrency(amount); }
+
+    _formatAmt(amount) {
+        const n = Number(amount) || 0;
+        const abs = Math.abs(n);
+        if (abs >= 1_000_000_000) return (n / 1_000_000_000).toFixed(1) + "B";
+        if (abs >= 1_000_000)     return (n / 1_000_000).toFixed(1) + "M";
+        if (abs >= 1_000)         return (n / 1_000).toFixed(1) + "K";
+        return n.toLocaleString("en-US");
+    }
+
+    _shortNum(v) {
+        if (v >= 1_000_000) return (v / 1_000_000).toFixed(0) + "M";
+        if (v >= 1_000)     return (v / 1_000).toFixed(0) + "K";
+        return String(v);
+    }
+
+    _esc(s) {
+        return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    get totalPendingInvoices() {
+        return (this.state.pending_invoice || 0) + (this.state.pending_invoice_sale || 0);
+    }
+}
+
+try {
+    registry.category("actions").add("property_dashboard", RentalPropertyDashboard);
+} catch (_) {}

@@ -16,13 +16,28 @@ from .common import EscrowCommon
 
 class TestEscrowEntitlement(EscrowCommon):
 
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.param = cls.env['ir.config_parameter'].sudo()
+        cls._original_posting = cls.param.get_param('sgc_escrow.posting_enabled')
+
     def setUp(self):
         super().setUp()
+        # These tests exercise real posting; the shipped default is deferred
+        # (see TestEscrowPostingDeferred), so opt in for this class only.
+        self.param.set_param('sgc_escrow.posting_enabled', 'True')
         self.project = self.setup_project(escrow=True, progress=0.0, retention=5.0)
         self.unit = self.create_unit(self.project)
         self.buyer = self.create_partner()
         self.contract = self.create_contract(self.unit, self.buyer)
         self.invoice = self.create_invoice(self.contract, amount=1000000.0)
+
+    def tearDown(self):
+        # Restore so test order cannot change the suite's behaviour.
+        self.param.set_param('sgc_escrow.posting_enabled',
+                             self._original_posting or False)
+        super().tearDown()
 
     # -- Roll-ups ---
     def test_received_and_balance_track_the_ledger(self):
@@ -205,6 +220,30 @@ class TestEscrowEntitlement(EscrowCommon):
         self.assertEqual(release.state, 'cancelled')
         self.assertAlmostEqual(self.project.escrow_balance_amount, 400000.0, places=2)
 
+    # -- References ---
+    def test_references_are_unique_at_insert_time(self):
+        """The sequence must land in the INSERT, not in a deferred write.
+
+        Renaming 'New' after super().create() left the UPDATE in the ORM
+        cache, so the second row of a batch create -- or the next create of
+        the same transaction, where nothing had flushed escrow_release yet --
+        collided with the unique index on name.
+        """
+        batch = self.env['escrow.release'].create([
+            {'project_id': self.project.id, 'date': '2026-02-01'},
+            {'project_id': self.project.id, 'date': '2026-02-01'},
+        ])
+        first = self.env['escrow.release'].create(
+            {'project_id': self.project.id, 'date': '2026-02-01'})
+        second = self.env['escrow.release'].create(
+            {'project_id': self.project.id, 'date': '2026-02-01'})
+
+        names = (batch | first | second).mapped('name')
+        self.assertEqual(len(names), 4)
+        self.assertEqual(len(set(names)), 4, names)
+        for name in names:
+            self.assertTrue(name.startswith('ESCR/'), name)
+
     def test_cannot_cancel_a_posted_release(self):
         self.pay_into_escrow(self.invoice, 400000.0)
         self.set_progress(self.project, 50.0)
@@ -287,31 +326,3 @@ class TestEscrowEntitlement(EscrowCommon):
         release = self.create_release(self.project, amount=100000.0)
         with self.assertRaises(ValidationError):
             release.write({'amount': -1.0})
-
-    # -- Roles ---
-    def _escrow_manager(self):
-        """A user holding the Escrow Manager role *and* accounting rights.
-
-        The accounting groups are not decoration: posting a release writes an
-        ``account.move``, so a manager without them would hit an AccessError in
-        the middle of the entitlement flow. In production an Escrow Manager is a
-        finance user, so the fixture mirrors that.
-        """
-        user = self.env['res.users'].create({
-            'name': 'SGCEscrow Manager',
-            'login': 'sgc_escrow_manager_test',
-            'email': 'sgc_escrow_manager@example.com',
-            'company_id': self.company.id,
-            'company_ids': [(4, self.company.id)],
-        })
-        user.write({
-            'group_ids': [(6, 0, [
-                self.env.ref('base.group_user').id,
-                self.env.ref('account.group_account_invoice').id,
-                self.env.ref('account.group_account_manager').id,
-                self.env.ref('sgc_escrow.group_escrow_user').id,
-                self.env.ref('sgc_escrow.group_escrow_approver').id,
-                self.env.ref('sgc_escrow.group_escrow_manager').id,
-            ])],
-        })
-        return user

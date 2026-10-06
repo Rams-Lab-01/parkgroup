@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="sale_contract_installment_plan_template">
+        <t t-call="web.html_container">
+          <t t-foreach="docs" t-as="o">
+            <t t-set="company" t-value="o.company_id or env.company"/>
+            <t t-set="fd" t-value="lambda d: d.strftime('%d %b %Y') if d else ' - '"/>
+            <t t-set="total_paid" t-value="o.total_paid"/>
+            <t t-set="outstanding" t-value="(o.sale_price or 0.0) - total_paid"/>
+            <t t-set="pct_complete" t-value="round((total_paid / o.sale_price) * 100, 1) if o.sale_price else 0.0"/>
+            <div class="o_pmg_doc article" t-att-data-oe-model="o._name" t-att-data-oe-id="o.id"><t t-call="sgc_offplan_rental_property_management.property_report_styles"/>
+                <t t-set="report_ref" t-value="o.name or ' - '"/>
+                <t t-set="report_date" t-value="fd(o.contract_date)"/>
+                <t t-call="sgc_offplan_rental_property_management.property_report_letterhead"/>
+                <t t-set="report_title">Installment Payment Plan</t>
+                <t t-set="report_subtitle">Sale Contract Payment Progress  -  United Arab Emirates</t>
+                <t t-call="sgc_offplan_rental_property_management.property_report_title"/>
+
+                <div class="o_pmg_grid-3">
+                    <div class="o_pmg_card">
+                        <div class="o_pmg_card-label">Property</div>
+                        <div class="o_pmg_card-value" t-out="o.property_id.name or ' - '"/>
+                    </div>
+                    <div class="o_pmg_card">
+                        <div class="o_pmg_card-label">Buyer</div>
+                        <div class="o_pmg_card-value" t-out="o.buyer_id.name or ' - '"/>
+                    </div>
+                    <div class="o_pmg_card">
+                        <div class="o_pmg_card-label">Contract Date</div>
+                        <div class="o_pmg_card-value" t-out="fd(o.contract_date)"/>
+                    </div>
+                </div>
+                <div class="o_pmg_grid-3">
+                    <div class="o_pmg_card">
+                        <div class="o_pmg_card-label">Total Contract Value</div>
+                        <div class="o_pmg_card-value"><span t-out="o.sale_price" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/></div>
+                    </div>
+                    <div class="o_pmg_card">
+                        <div class="o_pmg_card-label">Total Paid</div>
+                        <div class="o_pmg_card-value" style="color:#065f46;"><span t-out="total_paid" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/></div>
+                    </div>
+                    <div class="o_pmg_card">
+                        <div class="o_pmg_card-label">Outstanding Balance</div>
+                        <div class="o_pmg_card-value" style="color:#991b1b;"><span t-out="outstanding" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/></div>
+                    </div>
+                </div>
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-body" style="border-top:1px solid #e2e8f0; border-radius:4px;">
+                        <p style="font-size:8.5pt; text-transform:uppercase; letter-spacing:0.8px; color:#475569;">Payment Progress  -  <span t-out="pct_complete"/>% complete</p>
+                        <div class="o_pmg_progress"><div t-attf-style="width: #{min(pct_complete, 100)}%;"/></div>
+                    </div>
+                </div>
+
+                <div class="o_pmg_section">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">1</span>Installments</div>
+                    <table class="o_pmg_table">
+                        <colgroup>
+                            <col style="width:5%;"/><col style="width:26%;"/><col style="width:12%;"/>
+                            <col style="width:8%;"/><col style="width:17%;"/><col style="width:12%;"/><col style="width:20%;"/>
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Description</th>
+                                <th>Due Date</th>
+                                <th>%</th>
+                                <th style="text-align:right;">Amount</th>
+                                <th>Status</th>
+                                <th>Payment Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="o.installment_ids.sorted(key=lambda l: (l.sequence, l.due_date or ''))" t-as="line">
+                                <td t-out="line.sequence"/>
+                                <td t-out="line.name or ''"/>
+                                <td t-out="fd(line.due_date) if line.due_date else ' - '"/>
+                                <td t-out="('%.2f' % line.percentage) + '%' if line.percentage else ' - '"/>
+                                <td style="text-align:right;"><span t-out="line.amount" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/></td>
+                                <td>
+                                    <span t-if="line.state == 'paid'" class="o_pmg_badge o_pmg_badge-green">Paid</span>
+                                    <span t-elif="line.state == 'overdue'" class="o_pmg_badge o_pmg_badge-red">Overdue</span>
+                                    <span t-else="" class="o_pmg_badge o_pmg_badge-amber">Pending</span>
+                                </td>
+                                <td t-out="fd(line.payment_date) if line.payment_date else ' - '"/>
+                            </tr>
+                            <tr t-if="not o.installment_ids">
+                                <td colspan="7" style="text-align:center; color:#64748b;">No installments have been scheduled for this contract.</td>
+                            </tr>
+                        </tbody>
+                        <tfoot t-if="o.installment_ids">
+                            <tr>
+                                <th colspan="4" style="text-align:right;">Total</th>
+                                <th style="text-align:right;"><span t-out="sum(o.installment_ids.mapped('amount'))" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/></th>
+                                <th colspan="2"/>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <t t-set="report_name">Installment Payment Plan</t>
+                <t t-set="report_footer_note">This is a computer-generated installment payment plan. Figures reflect the system as of the print date.</t>
+                <t t-call="sgc_offplan_rental_property_management.property_report_footer"/>
+            </div>
+          </t>
+        </t>
+    </template>
+
+    <record id="action_report_sale_contract_installment_plan" model="ir.actions.report">
+        <field name="name">Installment Payment Plan</field>
+        <field name="model">sale.contract</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">sgc_offplan_rental_property_management.sale_contract_installment_plan_template</field>
+        <field name="report_file">sgc_offplan_rental_property_management.sale_contract_installment_plan_template</field>
+        <field name="binding_model_id" ref="model_sale_contract"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Installment Plan - %s' % (object.name)</field>
+        <field name="paperformat_id" ref="sgc_offplan_rental_property_management.paperformat_property_report"/>
+    </record>
+</odoo>

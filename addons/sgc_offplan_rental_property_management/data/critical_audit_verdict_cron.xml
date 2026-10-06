@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!--
+      Scheduled chain verification (Wave 0.3, D13 / blocker 2).
+
+      Odoo 19 refactored ir.cron: the physical table has no name / model_id /
+      state / code columns (they are proxied onto the linked ir_actions_server
+      row) and no longer has doall or numbercall. A record that still declares
+      doall aborts the registry load with
+        ValueError: Invalid field 'doall' in 'ir.cron'
+      and rolls the whole module upgrade back. The field set here matches
+      data/ir_cron_feed_ingest.xml, the cron pattern that does load.
+
+      The target method NEVER raises. Odoo marks a scheduled action failed after
+      three consecutive errors or timeouts and deactivates it after five
+      consecutive failures over at least seven days (columns failure_count and
+      first_failure_date exist on ir_cron for exactly this), notifying the DB
+      admin. A cron that raised on a broken chain would switch off the estate's
+      only chain-failure detection control exactly when it is needed, so the
+      method catches broadly, persists a verdict on a separate transaction, and
+      returns cleanly.
+
+      Interval is hourly. Alerts are throttled to one open activity per
+      (tenant, alert class), so a persistent fault does not create one activity
+      per run.
+    -->
+    <record id="critical_audit_verification_cron" model="ir.cron">
+        <field name="name">Critical Audit: Scheduled Chain Verification</field>
+        <field name="model_id" ref="sgc_offplan_rental_property_management.model_sgc_critical_audit_verdict"/>
+        <field name="state" eval="'code'"/>
+        <field name="code" eval="'model._run_scheduled_verification(trigger=&quot;cron&quot;)'"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="priority">5</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

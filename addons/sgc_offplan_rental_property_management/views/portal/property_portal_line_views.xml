@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="property_portal_line_tree" model="ir.ui.view">
+        <field name="name">property.portal.line.tree</field>
+        <field name="model">property.portal.line</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="property_id"/>
+                <field name="portal_id"/>
+                <field name="status"/>
+                <field name="external_id"/>
+                <field name="last_sync"/>
+                <field name="last_error"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="property_portal_line_form" model="ir.ui.view">
+        <field name="name">property.portal.line.form</field>
+        <field name="model">property.portal.line</field>
+        <field name="arch" type="xml">
+            <form string="Portal Listing">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="property_id"/>
+                            <field name="portal_id"/>
+                            <field name="status"/>
+                            <field name="external_id"/>
+                        </group>
+                        <group>
+                            <field name="last_sync"/>
+                            <field name="payload_hash" readonly="1"/>
+                            <field name="last_error"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

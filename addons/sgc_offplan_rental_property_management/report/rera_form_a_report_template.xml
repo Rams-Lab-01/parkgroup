@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- RERA Form A  -  Brokerage Listing Agreement (DLD / RERA Dubai).
+         Regulatory clone: all sections required by the accepted Form A layout.
+         Unified property-management layout (shared property_report_common). -->
+
+    <template id="report_rera_form_a_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <div class="o_pmg_doc article" t-att-data-oe-model="o._name" t-att-data-oe-id="o.id">
+                <t t-call="sgc_offplan_rental_property_management.property_report_styles"/>
+                <t t-set="company" t-value="o.company_id or env.company"/>
+                <t t-set="currency_symbol" t-value="o.currency_id.symbol if o.currency_id else 'AED'"/>
+                <t t-set="report_ref" t-value="o.name or ' - '"/>
+                <t t-set="report_ref_label">Form A Ref:</t>
+                <t t-set="report_date" t-value="o.agreement_date.strftime('%d %b %Y') if o.agreement_date else ' - '"/>
+                <t t-set="letterhead_tag">RERA Form A  -  Brokerage Listing Agreement</t>
+                <t t-call="sgc_offplan_rental_property_management.property_report_letterhead"/>
+                <t t-set="report_title">RERA FORM A</t>
+                <t t-set="report_subtitle">Brokerage Listing Agreement  -  Dubai Land Department  -  United Arab Emirates  -  Status: <t t-out="dict(o._fields['state'].selection).get(o.state, ' - ')"/></t>
+                <t t-call="sgc_offplan_rental_property_management.property_report_title"/>
+
+                <!-- Section 1: Seller / Owner (Principal) -->
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">1</span>Seller / Owner (Principal)</div>
+                    <div class="o_pmg_section-body">
+                        <div class="o_pmg_grid-2">
+                            <table class="o_pmg_dl">
+                                <tr>
+                                    <td class="o_pmg_dl-label">Full Name</td>
+                                    <td class="o_pmg_dl-value" t-out="o.owner_id.name or ' - '"/>
+                                </tr>
+                                <tr>
+                                    <td class="o_pmg_dl-label">Type</td>
+                                    <td class="o_pmg_dl-value">
+                                        <t t-if="o.owner_type == 'company'">Company / Entity</t>
+                                        <t t-elif="o.owner_type == 'individual'">Individual</t>
+                                        <t t-else=""> - </t>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="o_pmg_dl-label">Emirates ID</td>
+                                    <td class="o_pmg_dl-value" t-out="o.owner_emirates_id or o.owner_id.vat or ' - '"/>
+                                </tr>
+                                <tr t-if="o.owner_passport or o.owner_id.vat">
+                                    <td class="o_pmg_dl-label">Passport / ID</td>
+                                    <td class="o_pmg_dl-value" t-out="o.owner_passport or o.owner_id.vat or ' - '"/>
+                                </tr>
+                                <tr>
+                                    <td class="o_pmg_dl-label">Nationality</td>
+                                    <td class="o_pmg_dl-value" t-out="o.owner_nationality or ' - '"/>
+                                </tr>
+                            </table>
+                            <table class="o_pmg_dl">
+                                <tr>
+                                    <td class="o_pmg_dl-label">Address</td>
+                                    <td class="o_pmg_dl-value">
+                                        <span t-out="o.owner_id.street or ' - '"/>
+                                        <t t-if="o.owner_id.city"><br/><span t-out="o.owner_id.city"/></t>
+                                        <t t-if="o.owner_id.country_id"><span>, </span><span t-out="o.owner_id.country_id.name"/></t>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="o_pmg_dl-label">Phone</td>
+                                    <td class="o_pmg_dl-value" t-out="o.owner_id.phone or ' - '"/>
+                                </tr>
+                                <tr>
+                                    <td class="o_pmg_dl-label">Email</td>
+                                    <td class="o_pmg_dl-value" t-out="o.owner_id.email or ' - '"/>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Brokerage Firm & Listing Agent -->
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">2</span>Brokerage Firm &amp; Listing Agent</div>
+                    <div class="o_pmg_section-body">
+                        <div class="o_pmg_grid-2">
+                            <table class="o_pmg_dl">
+                                <tr>
+                                    <td class="o_pmg_dl-label">Brokerage Firm</td>
+                                    <td class="o_pmg_dl-value" t-out="o.broker_id.name or company.name or ' - '"/>
+                                </tr>
+                                <tr>
+                                    <td class="o_pmg_dl-label">Office Reg. No. (ORN)</td>
+                                    <td class="o_pmg_dl-value" t-out="o.brokerage_orn or ' - '"/>
+                                </tr>
+                                <tr>
+                                    <td class="o_pmg_dl-label">Broker Reg. No. (BRN)</td>
+                                    <td class="o_pmg_dl-value" t-out="o.brokerage_brn or ' - '"/>
+                                </tr>
+                                <tr>
+                                    <td class="o_pmg_dl-label">Trade Licence</td>
+                                    <td class="o_pmg_dl-value" t-out="o.brokerage_trade_license or ' - '"/>
+                                </tr>
+                                <tr t-if="o.brokerage_po_box">
+                                    <td class="o_pmg_dl-label">PO Box</td>
+                                    <td class="o_pmg_dl-value" t-out="o.brokerage_po_box"/>
+                                </tr>
+                            </table>
+                            <table class="o_pmg_dl">
+                                <tr>
+                                    <td class="o_pmg_dl-label">Listing Agent</td>
+                                    <td class="o_pmg_dl-value" t-out="o.agent_id.name or ' - '"/>
+                                </tr>
+                                <tr>
+                                    <td class="o_pmg_dl-label">Agent BRN</td>
+                                    <td class="o_pmg_dl-value" t-out="o.agent_brn or ' - '"/>
+                                </tr>
+                                <tr>
+                                    <td class="o_pmg_dl-label">Agent Phone</td>
+                                    <td class="o_pmg_dl-value" t-out="o.agent_id.phone or ' - '"/>
+                                </tr>
+                                <tr>
+                                    <td class="o_pmg_dl-label">Agent Email</td>
+                                    <td class="o_pmg_dl-value" t-out="o.agent_id.email or ' - '"/>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3: Subject Property -->
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">3</span>Subject Property</div>
+                    <div class="o_pmg_section-body">
+                        <div class="o_pmg_grid-2">
+                            <table class="o_pmg_dl">
+                                <tr>
+                                    <td class="o_pmg_dl-label">Property Name</td>
+                                    <td class="o_pmg_dl-value" t-out="o.property_id.name or ' - '"/>
+                                </tr>
+                                <tr>
+                                    <td class="o_pmg_dl-label">Type</td>
+                                    <td class="o_pmg_dl-value" t-out="dict(o.property_id._fields['property_type'].selection).get(o.property_id.property_type, ' - ') if o.property_id and o.property_id.property_type else ' - '"/>
+                                </tr>
+                                <tr>
+                                    <td class="o_pmg_dl-label">Community</td>
+                                    <td class="o_pmg_dl-value" t-out="o.property_community or o.property_id.city or ' - '"/>
+                                </tr>
+                                <tr>
+                                    <td class="o_pmg_dl-label">Building</td>
+                                    <td class="o_pmg_dl-value" t-out="o.property_building_name or ' - '"/>
+                                </tr>
+                                <tr>
+                                    <td class="o_pmg_dl-label">Title Deed #</td>
+                                    <td class="o_pmg_dl-value" t-out="o.property_title_deed_number or o.property_id.title_deed_number or ' - '"/>
+                                </tr>
+                            </table>
+                            <table class="o_pmg_dl">
+                                <tr>
+                                    <td class="o_pmg_dl-label">Area (sq ft)</td>
+                                    <td class="o_pmg_dl-value" t-out="f'{(o.property_id.area or 0):,.0f}' if o.property_id and o.property_id.area else ' - '"/>
+                                </tr>
+                                <tr>
+                                    <td class="o_pmg_dl-label">Bed / Bath</td>
+                                    <td class="o_pmg_dl-value">
+                                        <span t-out="o.property_id.bedrooms or ' - '"/> / <span t-out="o.property_id.bathrooms or ' - '"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="o_pmg_dl-label">Parking</td>
+                                    <td class="o_pmg_dl-value" t-out="o.property_parking or ' - '"/>
+                                </tr>
+                                <tr>
+                                    <td class="o_pmg_dl-label">Trakheesi Permit #</td>
+                                    <td class="o_pmg_dl-value" t-out="o.permit_number or ' - '"/>
+                                </tr>
+                                <tr t-if="o.dld_permit_number">
+                                    <td class="o_pmg_dl-label">DLD Permit #</td>
+                                    <td class="o_pmg_dl-value" t-out="o.dld_permit_number"/>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 4: Listing Terms -->
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">4</span>Listing Terms</div>
+                    <div class="o_pmg_section-body">
+                        <div class="o_pmg_grid-2">
+                            <table class="o_pmg_dl">
+                                <tr>
+                                    <td class="o_pmg_dl-label">Listing Type</td>
+                                    <td class="o_pmg_dl-value">
+                                        <t t-if="o.listing_type == 'sale'">For Sale</t>
+                                        <t t-elif="o.listing_type == 'rent'">For Rent</t>
+                                        <t t-elif="o.listing_type == 'both'">Sale &amp; Rent</t>
+                                        <t t-else=""> - </t>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="o_pmg_dl-label">Exclusivity</td>
+                                    <td class="o_pmg_dl-value">
+                                        <strong t-if="o.is_exclusive">EXCLUSIVE</strong>
+                                        <t t-else="">Non-Exclusive (Open)</t>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="o_pmg_dl-label">Asking Price</td>
+                                    <td class="o_pmg_dl-value">
+                                        <strong t-out="f'{(o.listing_price or 0):,.2f}'"/> <span t-out="currency_symbol"/>
+                                    </td>
+                                </tr>
+                                <tr t-if="o.minimum_price">
+                                    <td class="o_pmg_dl-label">Minimum Acceptable</td>
+                                    <td class="o_pmg_dl-value">
+                                        <strong t-out="f'{(o.minimum_price or 0):,.2f}'"/> <span t-out="currency_symbol"/>
+                                    </td>
+                                </tr>
+                            </table>
+                            <table class="o_pmg_dl">
+                                <tr>
+                                    <td class="o_pmg_dl-label">Valid From</td>
+                                    <td class="o_pmg_dl-value" t-out="o.valid_from.strftime('%d %b %Y') if o.valid_from else ' - '"/>
+                                </tr>
+                                <tr>
+                                    <td class="o_pmg_dl-label">Valid Until</td>
+                                    <td class="o_pmg_dl-value" t-out="o.valid_until.strftime('%d %b %Y') if o.valid_until else ' - '"/>
+                                </tr>
+                                <tr>
+                                    <td class="o_pmg_dl-label">Auto-Renewal</td>
+                                    <td class="o_pmg_dl-value">
+                                        <t t-if="o.auto_renew">Yes (renews unless terminated)</t>
+                                        <t t-else="">No</t>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="o_pmg_dl-label">Notice Period</td>
+                                    <td class="o_pmg_dl-value">
+                                        <span t-out="o.notice_period_days or 7"/> days (written notice required to terminate)
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 5: Commission -->
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">5</span>Commission</div>
+                    <div class="o_pmg_section-body">
+                        <div class="o_pmg_grid-2">
+                            <table class="o_pmg_dl">
+                                <tr>
+                                    <td class="o_pmg_dl-label">Commission Type</td>
+                                    <td class="o_pmg_dl-value">
+                                        <t t-if="o.commission_type == 'percentage'">Percentage of Sale Price</t>
+                                        <t t-elif="o.commission_type == 'fixed'">Fixed Amount</t>
+                                        <t t-else=""> - </t>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="o_pmg_dl-label">Rate / Amount</td>
+                                    <td class="o_pmg_dl-value">
+                                        <t t-if="o.commission_type == 'percentage'">
+                                            <strong t-out="f'{o.commission_amount:.2f}%'"/> of sale price
+                                        </t>
+                                        <t t-elif="o.commission_type == 'fixed'">
+                                            <strong t-out="f'{o.commission_amount:,.2f}'"/> <span t-out="currency_symbol"/>
+                                        </t>
+                                    </td>
+                                </tr>
+                                <tr t-if="o.commission_total">
+                                    <td class="o_pmg_dl-label">Estimated Total</td>
+                                    <td class="o_pmg_dl-value">
+                                        <strong t-out="f'{(o.commission_total or 0):,.2f}'"/> <span t-out="currency_symbol"/> (excl. VAT)
+                                    </td>
+                                </tr>
+                            </table>
+                            <table class="o_pmg_dl">
+                                <tr>
+                                    <td class="o_pmg_dl-label">Paid By</td>
+                                    <td class="o_pmg_dl-value">
+                                        <t t-if="o.commission_payer == 'seller'">Owner / Seller</t>
+                                        <t t-elif="o.commission_payer == 'buyer'">Buyer</t>
+                                        <t t-elif="o.commission_payer == 'split'">Split (50 / 50)</t>
+                                        <t t-else="">Seller (DLD standard)</t>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="o_pmg_dl-label">Payable On</td>
+                                    <td class="o_pmg_dl-value">
+                                        <t t-if="o.commission_trigger == 'form_f_execution'">On Form F Execution</t>
+                                        <t t-elif="o.commission_trigger == 'dld_transfer'">On DLD Transfer</t>
+                                        <t t-elif="o.commission_trigger == 'keys_handover'">On Keys Handover</t>
+                                        <t t-else="">On Form F / DLD Transfer</t>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="o_pmg_dl-label">VAT</td>
+                                    <td class="o_pmg_dl-value">5% on commission (UAE standard)</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 6: Marketing Rights -->
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">6</span>Marketing Rights &amp; Channels</div>
+                    <div class="o_pmg_section-body">
+                        <p class="o_pmg_clause">The Broker is authorised to market and advertise the Property during the Validity Period on the following approved channels (per Trakheesi permit <strong t-out="o.permit_number or 'pending'"/>):</p>
+                        <div class="o_pmg_note-box" t-field="o.marketing_channels"/>
+                        <p class="o_pmg_clause" style="margin-top: 6px;">All marketing materials must display the valid Trakheesi permit number. Listings without a valid permit are subject to immediate removal by DLD.</p>
+                    </div>
+                </div>
+
+                <!-- Section 7: Owner Obligations -->
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">7</span>Owner Obligations</div>
+                    <div class="o_pmg_section-body">
+                        <p class="o_pmg_clause">The Owner undertakes and agrees:</p>
+                        <ol class="o_pmg_clause">
+                            <li>To provide accurate information regarding the Property, including Title Deed, NOC, and service-charge status.</li>
+                            <li>To provide the Broker with the original Title Deed or Oqood certificate, and any encumbrances affecting the Property.</li>
+                            <li>To allow the Broker to arrange property viewings by appointment with prospective buyers or tenants.</li>
+                            <li>If this is an EXCLUSIVE agreement, not to engage any other broker, agent, or agency to market the Property during the Validity Period.</li>
+                            <li>To inform the Broker promptly of any offer, negotiation, or expression of interest received directly from any party regarding the Property.</li>
+                            <li>To pay the agreed commission upon the trigger event, as specified in Section 5.</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- Section 8: Broker Obligations -->
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">8</span>Broker Obligations</div>
+                    <div class="o_pmg_section-body">
+                        <p class="o_pmg_clause">The Broker undertakes and agrees:</p>
+                        <ol class="o_pmg_clause">
+                            <li>To act in the Owner's best interest and in accordance with RERA / DLD regulations.</li>
+                            <li>To market the Property only on the approved channels listed in Section 6, with a valid Trakheesi permit.</li>
+                            <li>To maintain confidentiality of the Owner's personal information and to use it solely for the purpose of this Agreement.</li>
+                            <li>To report all offers and expressions of interest to the Owner without delay.</li>
+                            <li>To obtain all necessary approvals and to ensure the Property is marketed in compliance with UAE real estate law.</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- Section 9: Termination & Validity -->
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">9</span>Termination &amp; Validity</div>
+                    <div class="o_pmg_section-body">
+                        <p class="o_pmg_clause">This Agreement is valid from the Valid From date through the Valid Until date as specified in Section 4. Either party may terminate this Agreement by providing written notice of not less than the Notice Period specified in Section 4 to the other party.</p>
+                        <p class="o_pmg_clause">In the event of early termination of an EXCLUSIVE agreement, if the Property is subsequently sold to a buyer introduced by the Broker during the term of this Agreement, the Owner shall remain liable for the commission as specified in Section 5.</p>
+                        <p class="o_pmg_clause">Upon expiration of the Validity Period, this Agreement automatically expires. A renewal constitutes a new Agreement and must be re-registered with DLD / RERA. Termination of this Agreement must be executed via Form U.</p>
+                    </div>
+                </div>
+
+                <!-- Section 10: Governing Law -->
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">10</span>Governing Law &amp; Jurisdiction</div>
+                    <div class="o_pmg_section-body">
+                        <p class="o_pmg_clause">This Agreement is governed by and construed in accordance with the laws of the United Arab Emirates and the regulations of the Dubai Land Department (DLD) and the Real Estate Regulatory Agency (RERA). Any dispute arising out of or in connection with this Agreement shall be subject to the jurisdiction of the Dubai courts or the DLD / RERA dispute resolution committees.</p>
+                    </div>
+                </div>
+
+                <!-- Section 11: Acknowledgment -->
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">11</span>Acknowledgment</div>
+                    <div class="o_pmg_section-body">
+                        <p class="o_pmg_clause">The Owner and the Broker acknowledge that they have read, understood, and agreed to all the terms and conditions set forth in this Form A. They further acknowledge that this Form A constitutes a binding agreement under the laws of the United Arab Emirates.</p>
+                        <p class="o_pmg_clause" t-if="o.notes" style="margin-top: 8px;"><strong>Additional Notes:</strong></p>
+                        <div class="o_pmg_note-box o_pmg_note-box-muted" t-field="o.notes" t-if="o.notes"/>
+                    </div>
+                </div>
+
+                <t t-set="signature_slots" t-value="[
+                    {'label': 'Owner / Landlord', 'name': o.owner_id.name or '', 'lines': [('Emirates ID: %s' % (o.owner_emirates_id or '__________')), 'Date: ____________']},
+                    {'label': 'Listing Agent', 'name': o.agent_id.name or '', 'lines': [('Agent BRN: %s' % (o.agent_brn or '__________')), 'Date: ____________']},
+                    {'label': 'For the Brokerage Firm', 'name': o.broker_id.name or company.name or '', 'lines': [('BRN: %s' % (o.brokerage_brn or '__________')), 'Stamp &amp; Date']},
+                ]"/>
+                <t t-call="sgc_offplan_rental_property_management.property_report_signatures"/>
+
+                <t t-set="report_name">RERA Form A</t>
+                <t t-set="report_footer_note" t-value="'This document is generated by %s in accordance with RERA / DLD requirements.' % (company.name or 'the property management system')"/>
+                <t t-call="sgc_offplan_rental_property_management.property_report_footer"/>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_rera_form_a">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="docid">
+                <t t-call="sgc_offplan_rental_property_management.report_rera_form_a_document">
+                    <t t-set="docs" t-value="docid"/>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

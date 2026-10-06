@@ -44,6 +44,16 @@ class AccountMoveEscrow(models.Model):
         help='Set only on the journal entry that moves money out of an escrow '
              'account. It is the authorisation record for that movement.',
     )
+    escrow_bank_journal_id = fields.Many2one(
+        'account.journal',
+        string='Escrow Bank Journal',
+        related='escrow_project_id.escrow_bank_journal_id',
+        readonly=True,
+        help='The escrow bank journal of the attributed project, surfaced so the '
+             'invoice form can show where Register Payment will route the money. '
+             'Odoo 19 view validation rejects dotted field names, hence the '
+             'explicit related field.',
+    )
     is_escrow_release = fields.Boolean(
         string='Is Escrow Release',
         compute='_compute_is_escrow_release',

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================================
+         TREE / LIST VIEW for property.image
+         ============================================================ -->
+    <record id="property_image_tree_view" model="ir.ui.view">
+        <field name="name">property.image.tree</field>
+        <field name="model">property.image</field>
+        <field name="arch" type="xml">
+            <list string="Gallery Images" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="image_256" widget="image" class="oe_avatar"/>
+                <field name="name"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ============================================================
+         FORM VIEW for property.image
+         ============================================================ -->
+    <record id="property_image_form_view" model="ir.ui.view">
+        <field name="name">property.image.form</field>
+        <field name="model">property.image</field>
+        <field name="arch" type="xml">
+            <form string="Image">
+                <sheet>
+                    <group>
+                        <field name="image_1920" widget="image" class="oe_avatar"
+                               options="{'preview_image': 'image_512'}"/>
+                    </group>
+                    <group>
+                        <field name="name" placeholder="e.g. Living Room, Front View"/>
+                        <field name="sequence"/>
+                        <field name="active"/>
+                    </group>
+                    <group invisible="1">
+                        <field name="property_id"/>
+                        <field name="project_id"/>
+                        <field name="sub_project_id"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============================================================
+         WINDOW ACTION for property.image (standalone access)
+         ============================================================ -->
+    <record id="action_property_image" model="ir.actions.act_window">
+        <field name="name">Gallery Images</field>
+        <field name="res_model">property.image</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Upload gallery images for your properties.
+            </p>
+        </field>
+    </record>
+
+    <!-- ============================================================
+         INHERITED VIEWS: Add Gallery tab to property.details
+         ============================================================ -->
+    <record id="property_details_form_gallery_inherit" model="ir.ui.view">
+        <field name="name">property.details.form.gallery.inherit</field>
+        <field name="model">property.details</field>
+        <field name="inherit_id" ref="sgc_offplan_rental_property_management.property_details_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Gallery" name="gallery">
+                    <field name="image_ids">
+                        <list editable="bottom" multi_edit="1">
+                            <field name="sequence" widget="handle"/>
+                            <field name="image_256" widget="image"/>
+                            <field name="name"/>
+                            <field name="active"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+
+</odoo>

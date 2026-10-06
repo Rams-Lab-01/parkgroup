@@ -1,0 +1,605 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_property_brochure">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="property">
+                <div class="article" t-att-data-oe-model="property._name" t-att-data-oe-id="property.id">
+                <!-- Ensure UTF-8 encoding is properly set -->
+                <t t-set="base_url" t-value="docs.env['ir.config_parameter'].sudo().get_param('web.base.url')"/>
+                <t t-set="currency" t-value="property.company_id.currency_id"/>
+                <t t-set="currency_symbol" t-value="currency.symbol or 'AED'"/>
+                <t t-set="address" t-value="property.address or ''"/>
+                <t t-set="city" t-value="property.city or ''"/>
+                <t t-set="full_address" t-value="'%s, %s' % (address, city) if address and city else address or city or ''"/>
+                <t t-set="region" t-value="property.region_id.name or ''"/>
+                <t t-set="project" t-value="property.project_id.name or ''"/>
+                <t t-set="sub_project" t-value="property.sub_project_id.name or ''"/>
+                <t t-set="amenities" t-value="property.amenity_ids"/>
+                <t t-set="nearby" t-value="property.connectivity_ids"/>
+                <t t-set="images" t-value="property.image_ids"/>
+                <t t-set="property_type_display" t-value="dict(property._fields['property_type'].selection).get(property.property_type, property.property_type)"/>
+                <t t-set="sale_lease_display" t-value="dict(property._fields['sale_lease'].selection).get(property.sale_lease, property.sale_lease)"/>
+                <t t-set="state_display" t-value="dict(property._fields['state'].selection).get(property.state, property.state)"/>
+                <t t-set="company_name" t-value="property.company_id.name or ''"/>
+                <t t-set="company_head" t-value="company_name.split(' ')[0] if company_name else ''"/>
+                <t t-set="company_tail" t-value="' '.join(company_name.split(' ')[1:])"/>
+
+                <style>
+                    /* SGC brand tokens (mirrors --re-* custom properties used
+                       site-wide in sgc_scroll_hero_homepage/views/layout.xml)
+                       -- PDF/wkhtmltopdf rendering doesn't reliably support
+                       CSS custom properties, so the literal hex values are
+                       repeated directly rather than referenced via var(). */
+
+                    /* Deliberately NOT loading Fraunces/Cabinet Grotesk from
+                       Google Fonts/Fontshare here like the HTML pages do:
+                       wkhtmltopdf re-embeds each remote webfont file as a
+                       full TrueType/Type0 font object per page context
+                       instead of subsetting/deduping it once, which turned a
+                       3-page brochure into a 36MB PDF (measured). Georgia and
+                       Arial are installed in the rendering container, so
+                       these render instantly, reliably (no network fetch
+                       during PDF generation), and at a fraction of the size,
+                       while keeping the same serif/sans-serif character. */
+                    @page {
+                        size: A4;
+                        margin: 0;
+                    }
+                    * { box-sizing: border-box; margin: 0; padding: 0; }
+                    body {
+                        font-family: Arial, sans-serif;
+                        color: #262421;
+                        background: #fff;
+                    }
+
+                    .brochure-page {
+                        width: 210mm;
+                        min-height: 297mm;
+                        position: relative;
+                        overflow: hidden;
+                        page-break-after: always;
+                    }
+
+                    /* ── COVER PAGE ── */
+                    .cover {
+                        background: #10243B;
+                        color: #fff;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: space-between;
+                        padding: 0;
+                    }
+                    .cover-hero {
+                        position: relative;
+                        height: 65%;
+                        overflow: hidden;
+                    }
+                    .cover-hero img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                        filter: brightness(0.7);
+                    }
+                    .cover-hero-overlay {
+                        position: absolute;
+                        bottom: 0;
+                        left: 0;
+                        right: 0;
+                        height: 50%;
+                        background: rgba(16,36,59,0.72);
+                    }
+                    .cover-badge {
+                        position: absolute;
+                        top: 30px;
+                        right: 30px;
+                        background: #C8A24A;
+                        color: #10243B;
+                        padding: 10px 24px;
+                        font-size: 13px;
+                        font-weight: 700;
+                        letter-spacing: 2px;
+                        text-transform: uppercase;
+                        border-radius: 2px;
+                        font-family: Arial, sans-serif;
+                    }
+                    .cover-content {
+                        padding: 40px 50px;
+                        flex: 1;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: flex-end;
+                    }
+                    .cover-brand {
+                        font-size: 11px;
+                        letter-spacing: 4px;
+                        text-transform: uppercase;
+                        color: #C8A24A;
+                        margin-bottom: 12px;
+                        font-family: Arial, sans-serif;
+                    }
+                    .cover-title {
+                        font-family: Georgia, serif;
+                        font-size: 40px;
+                        font-weight: 400;
+                        line-height: 1.15;
+                        margin-bottom: 8px;
+                        letter-spacing: -0.01em;
+                    }
+                    .cover-title strong {
+                        font-weight: 700;
+                        color: #C8A24A;
+                    }
+                    .cover-subtitle {
+                        font-size: 15px;
+                        color: rgba(255,255,255,0.75);
+                        margin-bottom: 30px;
+                    }
+                    .cover-meta {
+                        display: flex;
+                        gap: 40px;
+                        border-top: 1px solid rgba(200,162,74,0.35);
+                        padding-top: 20px;
+                    }
+                    .cover-meta-item {
+                        text-align: left;
+                    }
+                    .cover-meta-label {
+                        font-size: 10px;
+                        letter-spacing: 2px;
+                        text-transform: uppercase;
+                        color: #C8A24A;
+                        margin-bottom: 4px;
+                    }
+                    .cover-meta-value {
+                        font-size: 16px;
+                        font-weight: 600;
+                    }
+
+                    /* ── DETAILS PAGE ── */
+                    .details-page {
+                        padding: 24px 50px;
+                    }
+                    .section-header {
+                        display: flex;
+                        align-items: center;
+                        gap: 16px;
+                        margin-bottom: 22px;
+                        border-bottom: 2px solid #C8A24A;
+                        padding-bottom: 12px;
+                    }
+                    .section-number {
+                        font-family: Georgia, serif;
+                        font-size: 42px;
+                        font-weight: 300;
+                        color: #C8A24A;
+                        line-height: 1;
+                    }
+                    .section-title {
+                        font-family: Georgia, serif;
+                        font-size: 22px;
+                        font-weight: 600;
+                        letter-spacing: 0.02em;
+                        text-transform: uppercase;
+                        color: #10243B;
+                    }
+                    .details-grid {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 24px;
+                        margin-bottom: 36px;
+                    }
+                    .detail-card {
+                        background: #F7F4EE;
+                        border-left: 3px solid #C8A24A;
+                        padding: 12px 20px;
+                        border-radius: 0 4px 4px 0;
+                    }
+                    .detail-card-label {
+                        font-size: 10px;
+                        letter-spacing: 2px;
+                        text-transform: uppercase;
+                        color: #6B6459;
+                        margin-bottom: 6px;
+                    }
+                    .detail-card-value {
+                        font-family: Georgia, serif;
+                        font-size: 18px;
+                        font-weight: 600;
+                        color: #10243B;
+                    }
+                    .detail-card-value.price {
+                        font-size: 26px;
+                        color: #C8A24A;
+                        font-weight: 700;
+                    }
+                    .description-box {
+                        background: #F7F4EE;
+                        padding: 24px;
+                        border-radius: 4px;
+                        margin-bottom: 36px;
+                    }
+                    .description-box h3 {
+                        font-family: Georgia, serif;
+                        font-size: 14px;
+                        letter-spacing: 2px;
+                        text-transform: uppercase;
+                        color: #C8A24A;
+                        margin-bottom: 12px;
+                        font-weight: 600;
+                    }
+                    .description-box p {
+                        font-size: 13px;
+                        line-height: 1.7;
+                        color: #6B6459;
+                    }
+
+                    /* ── AMENITIES ── */
+                    .amenities-grid {
+                        display: grid;
+                        grid-template-columns: repeat(3, 1fr);
+                        gap: 12px;
+                        margin-bottom: 36px;
+                    }
+                    .amenity-item {
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                        padding: 12px 16px;
+                        background: #F7F4EE;
+                        border-radius: 4px;
+                        font-size: 12px;
+                        color: #10243B;
+                    }
+                     .amenity-icon {
+                         width: 28px;
+                         height: 28px;
+                         display: flex;
+                         align-items: center;
+                         justify-content: center;
+                     }
+                     .amenity-icon img {
+                         width: 18px;
+                         height: 18px;
+                     }
+
+                    /* ── NEARBY ── */
+                    .nearby-list {
+                        list-style: none;
+                        padding: 0;
+                    }
+                    .nearby-item {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        padding: 12px 0;
+                        border-bottom: 1px solid rgba(107,100,89,0.18);
+                        font-size: 13px;
+                    }
+                    .nearby-item:last-child {
+                        border-bottom: none;
+                    }
+                    .nearby-name {
+                        font-weight: 500;
+                        color: #10243B;
+                    }
+                    .nearby-distance {
+                        color: #C8A24A;
+                        font-weight: 600;
+                    }
+
+                    /* ── GALLERY ── */
+                    .gallery-grid {
+                        display: grid;
+                        grid-template-columns: repeat(2, 1fr);
+                        gap: 12px;
+                        margin-bottom: 36px;
+                    }
+                    .gallery-item {
+                        height: 180px;
+                        border-radius: 4px;
+                        overflow: hidden;
+                    }
+                    .gallery-item img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                    }
+
+                    /* ── FOOTER ── */
+                    .footer-qr {
+                        display: flex;
+                        align-items: center;
+                        gap: 12px;
+                        margin-right: 24px;
+                    }
+                    .footer-qr img {
+                        width: 64px;
+                        height: 64px;
+                        background: #fff;
+                        padding: 4px;
+                        border-radius: 4px;
+                    }
+                    .footer-qr-label {
+                        font-size: 9px;
+                        letter-spacing: 0.08em;
+                        text-transform: uppercase;
+                        color: #C8A24A;
+                        line-height: 1.5;
+                    }
+                    .brochure-footer {
+                        background: #10243B;
+                        color: #fff;
+                        padding: 30px 50px;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                    }
+                    .footer-brand {
+                        font-family: Georgia, serif;
+                        font-size: 18px;
+                        font-weight: 400;
+                        letter-spacing: 0.02em;
+                    }
+                    .footer-brand strong {
+                        color: #C8A24A;
+                        font-weight: 700;
+                    }
+                    .footer-contact {
+                        text-align: right;
+                        font-size: 11px;
+                        color: rgba(255,255,255,0.65);
+                        line-height: 1.6;
+                    }
+                    .footer-contact a {
+                        color: #C8A24A;
+                        text-decoration: none;
+                    }
+
+                    /* ── WATERMARK ── */
+                    .watermark {
+                        position: absolute;
+                        bottom: 80px;
+                        right: 50px;
+                        font-size: 9px;
+                        letter-spacing: 1px;
+                        color: rgba(255,255,255,0.3);
+                        text-transform: uppercase;
+                    }
+                
+                    /* shared pagination + wrapping hardening */
+                    thead { display: table-header-group; }
+                    tbody tr { page-break-inside: avoid; }
+                    p, li { orphans: 2; widows: 2; }
+                    td, p, div, th { overflow-wrap: break-word; }
+</style>
+
+                <!-- ══════════ PAGE 1: COVER ══════════ -->
+                <div class="brochure-page cover">
+                    <div class="cover-hero">
+                        <t t-if="property.image_1920">
+                            <img t-att-src="image_data_uri(convert_image(property.image_1920))" alt="Property"/>
+                        </t>
+                        <t t-else="">
+                            <div style="width:100%;height:100%;background:#1B3A5C;"></div>
+                        </t>
+                        <div class="cover-hero-overlay"></div>
+                        <div class="cover-badge">EXCLUSIVE LISTING</div>
+                    </div>
+                    <div class="cover-content">
+                        <div class="cover-brand" t-out="property.company_id.name or ''"/>
+                        <h1 class="cover-title">
+                            <t t-out="property.name or 'Luxury Property'"/>
+                            <t t-if="project">  -  <strong t-out="project"/></t>
+                        </h1>
+                        <p class="cover-subtitle">
+                            <t t-if="property_type_display" t-out="property_type_display"/>
+                            <t t-if="full_address"> · <t t-out="full_address"/></t>
+                            <t t-if="region"> · <t t-out="region"/></t>
+                        </p>
+                        <div class="cover-meta">
+                            <div class="cover-meta-item">
+                                <div class="cover-meta-label">Price</div>
+                                <div class="cover-meta-value">
+                                    <t t-if="property.sale_price">
+                                        <t t-out="currency_symbol"/> <t t-out="'{:,.0f}'.format(property.sale_price)"/>
+                                    </t>
+                                    <t t-elif="property.rent_price">
+                                        <t t-out="currency_symbol"/> <t t-out="'{:,.0f}'.format(property.rent_price)"/>/yr
+                                    </t>
+                                    <t t-elif="property.price">
+                                        <t t-out="currency_symbol"/> <t t-out="'{:,.0f}'.format(property.price)"/>
+                                    </t>
+                                    <t t-else="">Price on Request</t>
+                                </div>
+                            </div>
+                            <div class="cover-meta-item">
+                                <div class="cover-meta-label">Status</div>
+                                <div class="cover-meta-value" t-out="state_display"/>
+                            </div>
+                            <div class="cover-meta-item" t-if="sale_lease_display">
+                                <div class="cover-meta-label">Type</div>
+                                <div class="cover-meta-value" t-out="sale_lease_display"/>
+                            </div>
+                            <div class="cover-meta-item" t-if="property.area">
+                                <div class="cover-meta-label">Area</div>
+                                <div class="cover-meta-value"><t t-out="'{:,.0f}'.format(property.area)"/> sq ft</div>
+                            </div>
+                            <div class="cover-meta-item">
+                                <div class="cover-meta-label">QR Code</div>
+                                <div class="cover-meta-value">
+                                    <t t-set="qr_value" t-value="qr_url_for(property)"/>
+                                    <t t-set="qr_url" t-value="'%s/report/barcode/?barcode_type=QR&amp;width=200&amp;height=200&amp;value=%s' % (base_url, quote_plus(qr_value))"/>
+                                    <img t-att-src="qr_url" alt="QR Code" style="width: 60px; height: 60px;"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="watermark" t-out="property.company_id.name or ''"/>
+                </div>
+
+                <!-- ══════════ PAGE 2: DETAILS ══════════ -->
+                <div class="brochure-page details-page" style="display:flex;flex-direction:column;justify-content:space-between;">
+                    <div>
+                        <div class="section-header">
+                            <div class="section-number">01</div>
+                            <div class="section-title">Property Details</div>
+                        </div>
+                        <div class="details-grid">
+                            <div class="detail-card">
+                                <div class="detail-card-label">Property Name</div>
+                                <div class="detail-card-value" t-out="property.name or '-'"/>
+                            </div>
+                            <div class="detail-card">
+                                <div class="detail-card-label">Property Code</div>
+                                <div class="detail-card-value" t-out="property.property_code or '-'"/>
+                            </div>
+                            <div class="detail-card">
+                                <div class="detail-card-label">Property Type</div>
+                                <div class="detail-card-value" t-out="property_type_display or '-'"/>
+                            </div>
+                            <div class="detail-card">
+                                <div class="detail-card-label">Status</div>
+                                <div class="detail-card-value" t-out="state_display or '-'"/>
+                            </div>
+                            <div class="detail-card" t-if="property.bedrooms">
+                                <div class="detail-card-label">Bedrooms</div>
+                                <div class="detail-card-value" t-out="property.bedrooms"/>
+                            </div>
+                            <div class="detail-card" t-if="property.bathrooms">
+                                <div class="detail-card-label">Bathrooms</div>
+                                <div class="detail-card-value" t-out="property.bathrooms"/>
+                            </div>
+                            <div class="detail-card" t-if="property.area">
+                                <div class="detail-card-label">Built-Up Area</div>
+                                <div class="detail-card-value"><t t-out="'{:,.0f}'.format(property.area)"/> sq ft</div>
+                            </div>
+                            <div class="detail-card" t-if="project">
+                                <div class="detail-card-label">Project</div>
+                                <div class="detail-card-value" t-out="project"/>
+                            </div>
+                            <div class="detail-card" t-if="sub_project">
+                                <div class="detail-card-label">Building / Tower</div>
+                                <div class="detail-card-value" t-out="sub_project"/>
+                            </div>
+                            <div class="detail-card" t-if="region">
+                                <div class="detail-card-label">Region</div>
+                                <div class="detail-card-value" t-out="region"/>
+                            </div>
+                            <div class="detail-card" t-if="full_address">
+                                <div class="detail-card-label">Address</div>
+                                <div class="detail-card-value" t-out="full_address"/>
+                            </div>
+                            <div class="detail-card" t-if="property.sale_price">
+                                <div class="detail-card-label">Sale Price</div>
+                                <div class="detail-card-value price"><t t-out="currency_symbol"/> <t t-out="'{:,.0f}'.format(property.sale_price)"/></div>
+                            </div>
+                            <div class="detail-card" t-if="property.rent_price">
+                                <div class="detail-card-label">Annual Rent</div>
+                                <div class="detail-card-value price"><t t-out="currency_symbol"/> <t t-out="'{:,.0f}'.format(property.rent_price)"/></div>
+                            </div>
+                        </div>
+
+                        <t t-if="property.description">
+                            <div class="description-box">
+                                <h3>Description</h3>
+                                <p t-out="property.description"/>
+                            </div>
+                        </t>
+
+                        <t t-if="amenities">
+                            <div class="section-header">
+                                <div class="section-number">02</div>
+                                <div class="section-title">Amenities &amp; Features</div>
+                            </div>
+                            <div class="amenities-grid">
+                                <t t-foreach="amenities" t-as="amenity">
+                                    <div class="amenity-item">
+                                        <div class="amenity-icon">
+                                            <img t-att-src="'/sgc_offplan_rental_property_management/static/src/img/icons/diamond.svg'" alt="diamond"/>
+                                        </div>
+                                        <span t-out="amenity.title"/>
+                                    </div>
+                                </t>
+                            </div>
+                        </t>
+
+                        <t t-if="nearby">
+                            <div class="section-header">
+                                <div class="section-number">03</div>
+                                <div class="section-title">Nearby</div>
+                            </div>
+                            <ul class="nearby-list">
+                                <t t-foreach="nearby" t-as="n">
+                                    <li class="nearby-item">
+                                        <span class="nearby-name" t-out="n.name"/>
+                                    </li>
+                                </t>
+                            </ul>
+                        </t>
+                    </div>
+
+                    <div class="brochure-footer">
+                        <div class="footer-brand"><strong t-out="company_head"/><t t-if="company_tail"> <t t-out="company_tail"/></t></div>
+                        <div class="footer-qr" t-if="property.trakheesi_qr_code">
+                            <img t-att-src="trakheesi_qr_uri(property.trakheesi_qr_code)" alt="Trakheesi QR"/>
+                            <div class="footer-qr-label">Scan to verify<br/>Trakheesi / DLD</div>
+                        </div>
+                        <div class="footer-contact">
+                            <div t-if="property.company_id.phone" t-out="property.company_id.phone"/>
+                            <div t-if="property.company_id.email" t-out="property.company_id.email"/>
+                            <div t-if="property.company_id.website" t-out="property.company_id.website"/>
+                            <div style="font-size:8px;letter-spacing:0.08em;color:rgba(255,255,255,0.45);margin-top:5px;text-transform:uppercase;">Powered by SGC TECH AI</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ══════════ PAGE 3: GALLERY ══════════ -->
+                <t t-if="images">
+                    <div class="brochure-page details-page" style="display:flex;flex-direction:column;justify-content:space-between;">
+                        <div>
+                            <div class="section-header">
+                                <div class="section-number">04</div>
+                                <div class="section-title">Gallery</div>
+                            </div>
+                            <div class="gallery-grid">
+                                <t t-foreach="images" t-as="img">
+                                    <div class="gallery-item">
+                                        <t t-if="img.image_512">
+                                            <img t-att-src="image_data_uri(convert_image(img.image_512))" t-att-alt="img.name or 'Property Image'"/>
+                                        </t>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                        <div class="brochure-footer">
+                            <div class="footer-brand"><strong t-out="company_head"/><t t-if="company_tail"> <t t-out="company_tail"/></t></div>
+                            <div class="footer-qr" t-if="property.trakheesi_qr_code">
+                                <img t-att-src="trakheesi_qr_uri(property.trakheesi_qr_code)" alt="Trakheesi QR"/>
+                                <div class="footer-qr-label">Scan to verify<br/>Trakheesi / DLD</div>
+                            </div>
+                            <div class="footer-contact">
+                                <div t-if="property.company_id.phone" t-out="property.company_id.phone"/>
+                                <div t-if="property.company_id.email" t-out="property.company_id.email"/>
+                                <div t-if="property.company_id.website" t-out="property.company_id.website"/>
+                            <div style="font-size:8px;letter-spacing:0.08em;color:rgba(255,255,255,0.45);margin-top:5px;text-transform:uppercase;">Powered by SGC TECH AI</div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_property_brochure" model="ir.actions.report">
+        <field name="name">Property Brochure</field>
+        <field name="model">property.details</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">sgc_offplan_rental_property_management.report_property_brochure</field>
+        <field name="report_file">sgc_offplan_rental_property_management.report_property_brochure</field>
+        <field name="binding_model_id" ref="model_property_details"/>
+        <field name="binding_type">report</field>
+        <field name="binding_view_types">form</field>
+            <field name="paperformat_id" ref="sgc_offplan_rental_property_management.paperformat_luxury_brochure"/>
+</record>
+</odoo>

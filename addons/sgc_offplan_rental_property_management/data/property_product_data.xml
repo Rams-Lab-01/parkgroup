@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <!-- Service Products used for rental management accounting lines -->
+        <record id="property_product_1" model="product.product">
+            <field name="name">Rent Installment</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product.product_category_services"/>
+            <field name="list_price">0.0</field>
+            <field name="standard_price">0.0</field>
+            <field name="taxes_id" eval="[(5,)]"/>
+        </record>
+
+        <record id="property_product_2" model="product.product">
+            <field name="name">Security Deposit</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product.product_category_services"/>
+            <field name="list_price">0.0</field>
+            <field name="standard_price">0.0</field>
+            <field name="taxes_id" eval="[(5,)]"/>
+        </record>
+
+        <record id="property_product_3" model="product.product">
+            <field name="name">Broker Commission</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product.product_category_services"/>
+            <field name="list_price">0.0</field>
+            <field name="standard_price">0.0</field>
+            <field name="taxes_id" eval="[(5,)]"/>
+        </record>
+
+        <record id="property_product_4" model="product.product">
+            <field name="name">Maintenance Fee</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product.product_category_services"/>
+            <field name="list_price">0.0</field>
+            <field name="standard_price">0.0</field>
+            <field name="taxes_id" eval="[(5,)]"/>
+        </record>
+    </odoo>

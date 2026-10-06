@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!--
+            SGC Critical Change Audit - Access Groups (Rev 3 design §5.2)
+            Two read-only groups under the existing 'Property Management' category.
+            There is intentionally NO human writer group: audit records are created
+            exclusively by the module-internal service (see sgc_audit_internal_service).
+        -->
+        <record id="sgc_audit_viewer_group" model="res.groups">
+            <field name="name">Audit Viewer</field>
+            <field name="privilege_id" ref="res_groups_privilege_rental_suite"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="sgc_audit_admin_group" model="res.groups">
+            <field name="name">Audit Administrator</field>
+            <field name="privilege_id" ref="res_groups_privilege_rental_suite"/>
+            <field name="implied_ids" eval="[(4, ref('sgc_audit_viewer_group'))]"/>
+        </record>
+    </data>
+</odoo>

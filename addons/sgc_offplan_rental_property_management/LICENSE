@@ -1,0 +1,46 @@
+Odoo Proprietary License v1.0
+
+This software and associated files (the "Software") may only be used (executed,
+modified, executed after modifications) if you have purchased a valid license
+from the authors, in accordance with the terms of this license.
+
+If you have purchased a valid license from the authors, you may:
+
+- use the Software on one single server for one single production environment;
+- execute the Software, modified or unmodified, on one single server for one
+  single production environment;
+- allow up to five (5) users to connect to the Software on that server;
+- use the Software for your own internal business purposes only;
+- make backup copies of the Software, provided that all such copies bear this
+  license notice and the original copyright notice.
+
+You may NOT:
+
+- distribute, sublicense, rent, lease, lend, sell or otherwise transfer the
+  Software or copies of it, modified or unmodified, to any third party;
+- use the Software in a software-as-a-service, hosting, timesharing or similar
+  arrangement for third parties without a separate written agreement with the
+  authors;
+- remove, alter or obscure any copyright, trademark or other proprietary
+  notices contained in the Software;
+- use the Software after the termination of your license.
+
+If your license permits more than five (5) users, or more than one production
+environment (as is the case for the SGC ten-tenant deployment), the specific
+quantities, environments and identities permitted are those stated in the
+license agreement between you and the authors, and this license applies to
+each such environment as if it were the single production environment referred
+to above.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+Except as expressly stated otherwise, the authors reserve all rights, title
+and interest in and to the Software.
+
+Copyright (C) 2026 SGC TECH AI (https://sgctech.ai)

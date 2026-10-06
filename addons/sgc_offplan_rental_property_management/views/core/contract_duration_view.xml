@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record id="contract_duration_form_view" model="ir.ui.view">
+            <field name="name">contract.duration.form.view</field>
+            <field name="model">contract.duration</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="duration"/>
+                            <h1>
+                                <field name="duration" placeholder="Duration in Month/Year"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="month" required="1"/>
+                            </group>
+                            <group>
+                                <field name="rent_unit" required="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="contract_duration_tree_view" model="ir.ui.view">
+            <field name="name">contract.duration.tree.view</field>
+            <field name="model">contract.duration</field>
+            <field name="arch" type="xml">
+                <list string="Duration">
+                    <field name="duration"/>
+                    <field name="month"/>
+                </list>
+            </field>
+        </record>
+        <record id="contract_duration_action" model="ir.actions.act_window">
+            <field name="name">Contract Durations</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">contract.duration</field>
+            <field name="view_mode">list,form</field>
+        </record>
+    </odoo>

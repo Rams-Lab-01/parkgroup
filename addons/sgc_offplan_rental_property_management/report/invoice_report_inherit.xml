@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="invoice_report_inherit" inherit_id="account.report_invoice_document">
+        <xpath expr="//div[@id='informations']" position="inside">
+            <div class="col-auto col-3 mw-100 mb-2" t-if="o.tenancy_property_id or o.sold_property_id">
+                <strong>Property Name:</strong>
+                <t t-if="o.tenancy_property_id">
+                    <p class="m-0" t-out="o.tenancy_property_id.name"/>
+                </t>
+                <t t-if="o.sold_property_id">
+                    <p class="m-0" t-out="o.sold_property_id.name"/>
+                </t>
+            </div>
+            <div class="col-auto col-3 mw-100 mb-2">
+                <t t-if="o.tenancy_id">
+                    <strong>Tenancy Contract</strong>
+                    <p class="m-0" t-out="o.tenancy_id.tenancy_seq"/>
+                </t>
+                <t t-if="o.sold_id">
+                    <strong>Sold Contract</strong>
+                    <p t-out="o.sold_id.name"/>
+                </t>
+            </div>
+        </xpath>
+    </template>
+</odoo>

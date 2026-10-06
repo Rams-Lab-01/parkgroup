@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_invoices" name="Portal My Invoices">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs" t-value="[
+                {'name': 'My Account', 'slug': '/my'},
+                {'name': 'Invoices', 'slug': '/my/invoices'},
+            ]"/>
+            <div class="container">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h1>My Invoices</h1>
+                        <ul class="nav nav-tabs mt-3">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="/my/invoices">All Invoices</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/my/credit-notes">Credit Notes</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <t t-if="invoices">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Reference</th>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Amount (AED)</th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="invoices" t-as="inv">
+                                <td t-esc="inv.name"/>
+                                <td t-esc="inv.invoice_date"/>
+                                <td t-esc="inv.ref or ''"/>
+                                <td t-esc="'{:,.2f}'.format(inv.amount_total)"/>
+                                <td>
+                                    <span class="badge"
+                                          t-att-class="'badge-success' if inv.payment_state == 'paid' else ('badge-warning' if inv.payment_state in ('not_paid', 'partial') else 'badge-secondary')"
+                                          t-esc="inv.payment_state"/>
+                                </td>
+                                <td>
+                                    <a t-att-href="'/my/invoice/%s' % inv.id" class="btn btn-sm btn-outline-primary">
+                                        <span class="fa fa-eye" title="View"></span>
+                                    </a>
+                                    <a t-att-href="'/my/invoice/%s/pay' % inv.id"
+                                       class="btn btn-sm btn-success"
+                                       t-if="inv.payment_state in ('not_paid', 'partial')">
+                                        <span class="fa fa-credit-card" title="Pay"></span> Pay
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+                <t t-if="not invoices">
+                    <div class="alert alert-info">No invoices found.</div>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_my_invoice_detail" name="Portal My Invoice Detail">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs" t-value="[
+                {'name': 'My Account', 'slug': '/my'},
+                {'name': 'Invoices', 'slug': '/my/invoices'},
+                {'name': invoice.name, 'slug': '/my/invoice/%s' % invoice.id},
+            ]"/>
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <h1>Invoice <span t-esc="invoice.name"/></h1>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h4>Invoice Details</h4>
+                                <table class="table table-sm">
+                                    <tr><td><strong>Reference</strong></td><td t-esc="invoice.name"/></tr>
+                                    <tr><td><strong>Date</strong></td><td t-esc="invoice.invoice_date"/></tr>
+                                    <tr><td><strong>Due Date</strong></td><td t-esc="invoice.invoice_date_due or ''"/></tr>
+                                    <tr><td><strong>Total</strong></td><td t-esc="'AED %s' % '{:,.2f}'.format(invoice.amount_total)"/></tr>
+                                    <tr><td><strong>Status</strong></td><td><span class="badge" t-att-class="'badge-success' if invoice.payment_state == 'paid' else 'badge-warning'" t-esc="invoice.payment_state"/></td></tr>
+                                </table>
+                                <a t-att-href="'/my/invoice/%s/pay' % invoice.id"
+                                   class="btn btn-success"
+                                   t-if="invoice.payment_state in ('not_paid', 'partial')">
+                                    <span class="fa fa-credit-card" title="Pay"></span> Pay Now
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_my_credit_notes" name="Portal My Credit Notes">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs" t-value="[
+                {'name': 'My Account', 'slug': '/my'},
+                {'name': 'Invoices', 'slug': '/my/invoices'},
+                {'name': 'Credit Notes', 'slug': '/my/credit-notes'},
+            ]"/>
+            <div class="container">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h1>Credit Notes / Refunds</h1>
+                        <a href="/my/invoices" class="btn btn-sm btn-outline-secondary mb-3">&#8592; Back to Invoices</a>
+                    </div>
+                </div>
+                <t t-if="credit_notes">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr><th>Reference</th><th>Date</th><th>Amount (AED)</th><th>Status</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="credit_notes" t-as="cn">
+                                <td t-esc="cn.name"/>
+                                <td t-esc="cn.invoice_date"/>
+                                <td t-esc="'{:,.2f}'.format(cn.amount_total)"/>
+                                <td><span class="badge badge-info" t-esc="cn.payment_state"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+                <t t-if="not credit_notes">
+                    <div class="alert alert-info">No credit notes found.</div>
+                </t>
+            </div>
+        </t>
+    </template>
+</odoo>

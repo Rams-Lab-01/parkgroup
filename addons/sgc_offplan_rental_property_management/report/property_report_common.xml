@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================================= -->
+    <!-- Shared property-management report design system.              -->
+    <!-- Single source of truth for the layout of EVERY printable PM   -->
+    <!-- report (brochures excluded: they ship their own full-bleed    -->
+    <!-- design + paperformat).                                        -->
+    <!--                                                               -->
+    <!-- Rendered by wkhtmltopdf 0.12.6 (Qt WebKit):                   -->
+    <!--   display:flex / display:grid are NOT supported -> the layout -->
+    <!--   uses CSS tables (display:table/table-cell), which render    -->
+    <!--   identically in wkhtmltopdf and in browsers.                 -->
+    <!-- ============================================================= -->
+
+    <template id="property_report_styles">
+        <style>
+            /* ── Base typography ─────────────────────────────────── */
+            .o_pmg_doc {
+                font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+                font-size: 10pt;
+                line-height: 1.45;
+                color: #1f2937;
+                margin: 0;
+                padding: 0;
+            }
+            .o_pmg_doc p { margin: 0 0 5px; orphans: 3; widows: 3; }
+            .o_pmg_doc p:last-child { margin-bottom: 0; }
+            .o_pmg_doc h1, .o_pmg_doc h2, .o_pmg_doc h3, .o_pmg_doc h4 {
+                margin: 0 0 6px; font-weight: 700; color: #0f172a;
+            }
+            .o_pmg_doc ul, .o_pmg_doc ol { margin: 0 0 5px; padding-left: 18px; }
+            .o_pmg_doc li { margin-bottom: 2px; }
+            .o_pmg_doc td, .o_pmg_doc th, .o_pmg_doc p, .o_pmg_doc li, .o_pmg_doc div {
+                overflow-wrap: break-word;
+            }
+            .o_pmg_doc thead { display: table-header-group; }
+            .o_pmg_doc tbody tr { page-break-inside: avoid; }
+
+            /* ── Letterhead (brand left / meta right, CSS-table) ─── */
+            .o_pmg_letterhead {
+                border-bottom: 2px solid #0f172a;
+                padding-bottom: 12px;
+                margin-bottom: 16px;
+            }
+            .o_pmg_letterhead-row { display: table; width: 100%; table-layout: fixed; }
+            .o_pmg_letterhead-row > div { display: table-cell; vertical-align: top; }
+            .o_pmg_letterhead-brand { width: 62%; padding-right: 12px; }
+            .o_pmg_letterhead-logo { width: 38%; text-align: right; }
+            .o_pmg_logo_img { max-height: 48px; max-width: 200px; vertical-align: top; }
+            .o_pmg_brand-name { font-size: 18pt; font-weight: 700; color: #0f172a; letter-spacing: -0.5px; line-height: 1.15; }
+            .o_pmg_brand-tag { font-size: 8pt; color: #64748b; margin-top: 3px; text-transform: uppercase; letter-spacing: 1.2px; }
+            .o_pmg_meta { text-align: right; font-size: 8.5pt; color: #475569; line-height: 1.45; margin-top: 8px; }
+            .o_pmg_meta-label { font-weight: 600; color: #334155; }
+
+            /* ── Title bar ───────────────────────────────────────── */
+            .o_pmg_title-bar {
+                background: #0f172a; color: #ffffff; text-align: center;
+                padding: 11px 18px; margin: 0 0 16px; border-radius: 4px;
+                page-break-inside: avoid; page-break-after: avoid;
+            }
+            .o_pmg_title { font-size: 13pt; font-weight: 700; letter-spacing: 0.4px; }
+            .o_pmg_subtitle { font-size: 8.5pt; color: #cbd5e1; margin-top: 3px; }
+
+            /* ── Sections ────────────────────────────────────────── */
+            .o_pmg_section { margin-bottom: 14px; page-break-inside: auto; }
+            .o_pmg_section-heading {
+                background: #1e3a8a; color: #ffffff; font-size: 10pt; font-weight: 600;
+                padding: 7px 12px; border-radius: 4px 4px 0 0;
+                page-break-after: avoid; line-height: 1.3;
+            }
+            .o_pmg_num {
+                display: inline-block; background: #312e81; color: #c7d2fe;
+                width: 20px; height: 20px; line-height: 20px; text-align: center;
+                border-radius: 50%; font-size: 8pt; margin-right: 8px;
+            }
+            .o_pmg_section-body {
+                border: 1px solid #e2e8f0; border-top: none; padding: 10px 12px;
+                border-radius: 0 0 4px 4px;
+            }
+            .o_pmg_keep { page-break-inside: avoid; }
+            .o_pmg_break-before { page-break-before: always; }
+
+            /* ── Definition list (label : value) ─────────────────── */
+            .o_pmg_dl { width: 100%; border-collapse: collapse; table-layout: fixed; }
+            .o_pmg_dl td {
+                padding: 5px 10px; border-bottom: 1px solid #f1f5f9;
+                font-size: 9.5pt; vertical-align: top;
+            }
+            .o_pmg_dl td.o_pmg_dl-label { background: #f8fafc; font-weight: 600; color: #475569; width: 32%; }
+            .o_pmg_dl td.o_pmg_dl-value { color: #1e293b; }
+            .o_pmg_dl tr:last-child td { border-bottom: none; }
+
+            /* ── Data tables ─────────────────────────────────────── */
+            .o_pmg_table { width: 100%; border-collapse: collapse; }
+            .o_pmg_table thead { display: table-header-group; }
+            .o_pmg_table thead tr { background: #1e3a8a; page-break-inside: avoid; page-break-after: avoid; }
+            .o_pmg_table thead th {
+                color: #ffffff; font-size: 8.5pt; font-weight: 600; padding: 6px 9px;
+                text-transform: uppercase; letter-spacing: 0.4px; text-align: left;
+            }
+            .o_pmg_table tbody td {
+                padding: 5px 9px; font-size: 9.5pt; border-bottom: 1px solid #e2e8f0; vertical-align: top;
+            }
+            .o_pmg_table tbody tr { page-break-inside: avoid; }
+            .o_pmg_table tbody tr:nth-child(even) { background: #f8fafc; }
+            .o_pmg_table tfoot tr { background: #eef2f7; font-weight: 700; font-size: 9.5pt; page-break-inside: avoid; }
+            .o_pmg_table tfoot th, .o_pmg_table tfoot td { padding: 6px 9px; border-top: 2px solid #1e3a8a; }
+            .o_pmg_table .text-right, .o_pmg_text-right { text-align: right; }
+            .o_pmg_table .text-center, .o_pmg_text-center { text-align: center; }
+
+            /* ── Cards &amp; KPI cards ──────────────────────────── */
+            .o_pmg_card {
+                border: 1px solid #e2e8f0; border-top: 3px solid #1e3a8a; border-radius: 4px;
+                padding: 10px 12px; page-break-inside: avoid;
+            }
+            .o_pmg_card-label { font-size: 7.5pt; text-transform: uppercase; letter-spacing: 1px; color: #64748b; margin-bottom: 4px; }
+            .o_pmg_card-value { font-size: 10pt; font-weight: 600; color: #1e293b; }
+            .o_pmg_kpi-card {
+                border: 1px solid #e2e8f0; border-top: 3px solid #1e3a8a; border-radius: 4px;
+                padding: 10px 8px; text-align: center; page-break-inside: avoid;
+            }
+            .o_pmg_kpi-label { font-size: 7.5pt; text-transform: uppercase; letter-spacing: 0.8px; color: #64748b; margin-bottom: 4px; }
+            .o_pmg_kpi-value { font-size: 15pt; font-weight: 700; color: #1e293b; line-height: 1.15; }
+            .o_pmg_kpi-sub { font-size: 7.5pt; color: #64748b; margin-top: 3px; }
+
+            /* ── Grids (CSS tables, wkhtmltopdf-safe) ────────────── */
+            .o_pmg_grid-2, .o_pmg_grid-3, .o_pmg_grid-4, .o_pmg_grid-5 {
+                display: table; width: 100%; table-layout: fixed; margin-bottom: 10px;
+            }
+            .o_pmg_grid-2 > *, .o_pmg_grid-3 > *, .o_pmg_grid-4 > *, .o_pmg_grid-5 > * {
+                display: table-cell; vertical-align: top; padding-right: 10px;
+            }
+            .o_pmg_grid-2 > *:last-child, .o_pmg_grid-3 > *:last-child,
+            .o_pmg_grid-4 > *:last-child, .o_pmg_grid-5 > *:last-child { padding-right: 0; }
+            .o_pmg_grid-2 > * { width: 50%; }
+            .o_pmg_grid-3 > * { width: 33.33%; }
+            .o_pmg_grid-4 > * { width: 25%; }
+            .o_pmg_grid-5 > * { width: 20%; }
+
+            /* ── Badges ──────────────────────────────────────────── */
+            .o_pmg_badge {
+                display: inline-block; padding: 2px 9px; border-radius: 10px;
+                font-size: 8pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px;
+            }
+            .o_pmg_badge-green { background: #d1fae5; color: #065f46; }
+            .o_pmg_badge-red { background: #fee2e2; color: #991b1b; }
+            .o_pmg_badge-amber { background: #fef3c7; color: #92400e; }
+            .o_pmg_badge-blue { background: #dbeafe; color: #1e40af; }
+            .o_pmg_badge-indigo { background: #e0e7ff; color: #3730a3; }
+            .o_pmg_badge-rose { background: #fce7f3; color: #9f1239; }
+            .o_pmg_badge-gray { background: #e2e8f0; color: #334155; }
+
+            /* ── Alerts / verdicts ───────────────────────────────── */
+            .o_pmg_alert {
+                background: #fef3c7; border: 1px solid #fcd34d; border-radius: 4px;
+                padding: 8px 12px; font-size: 9pt; color: #92400e; margin: 10px 0; page-break-inside: avoid;
+            }
+            .o_pmg_alert-info { background: #e0f2fe; border-color: #7dd3fc; color: #075985; }
+            .o_pmg_alert-success { background: #d1fae5; border-color: #6ee7b7; color: #065f46; }
+            .o_pmg_alert-danger { background: #fee2e2; border-color: #fca5a5; color: #991b1b; }
+            .o_pmg_verdict { padding: 12px 16px; border-radius: 4px; font-size: 11pt; font-weight: 600; page-break-inside: avoid; }
+            .o_pmg_verdict-ok { background: #d1fae5; border: 1px solid #6ee7b7; color: #065f46; }
+            .o_pmg_verdict-fail { background: #fee2e2; border: 1px solid #fca5a5; color: #991b1b; }
+            .o_pmg_verdict-note { font-size: 9pt; font-weight: 400; margin-top: 4px; }
+            .o_pmg_hash { font-family: 'Courier New', monospace; font-size: 7.5pt; color: #475569; }
+            .o_pmg_clause { font-size: 9.5pt; line-height: 1.55; text-align: justify; margin: 0 0 8px; color: #1f2937; }
+            .o_pmg_clause:last-child { margin-bottom: 0; }
+            .o_pmg_clause strong { color: #0f172a; }
+            .o_pmg_note-box { background: #f8fafc; border-left: 3px solid #1e3a8a; padding: 7px 10px; font-size: 9pt; color: #334155; white-space: pre-line; }
+            .o_pmg_note-box-muted { border-left-color: #cbd5e1; }
+
+            /* ── Progress bars ───────────────────────────────────── */
+            .o_pmg_progress { background: #e2e8f0; border-radius: 5px; height: 9px; overflow: hidden; }
+            .o_pmg_progress > div { background: #1e3a8a; height: 9px; }
+            .o_pmg_bar { background: #e2e8f0; border-radius: 4px; height: 20px; overflow: hidden; }
+            .o_pmg_bar > div { float: left; height: 20px; line-height: 20px; text-align: right; padding-right: 8px; font-size: 8pt; font-weight: 600; color: #ffffff; box-sizing: border-box; }
+
+            /* ── Signatures (CSS-table) ──────────────────────────── */
+            .o_pmg_signatures {
+                display: table; width: 100%; table-layout: fixed; margin-top: 16px;
+                padding-top: 12px; border-top: 1px solid #cbd5e1; page-break-inside: avoid;
+            }
+            .o_pmg_sig-block { display: table-cell; width: 33%; text-align: center; padding: 0 10px; vertical-align: top; }
+            .o_pmg_sig-line { border-top: 1.5px solid #475569; margin: 34px 8px 6px; }
+            .o_pmg_sig-label { font-size: 8pt; font-weight: 600; color: #475569; text-transform: uppercase; letter-spacing: 0.4px; }
+            .o_pmg_sig-name { font-size: 9pt; color: #1e293b; margin-top: 2px; }
+            .o_pmg_sig-extra { font-size: 7.5pt; color: #475569; margin-top: 2px; }
+
+            /* ── Footer ──────────────────────────────────────────── */
+            .o_pmg_footer {
+                margin-top: 14px; padding-top: 8px; border-top: 1px solid #e2e8f0; page-break-inside: avoid;
+                text-align: center; font-size: 7.5pt; color: #64748b;
+            }
+            .o_pmg_footer p { margin: 0 0 2px; }
+
+            /* ── Page setup (mirrors the shared A4 Property Report
+                  paperformat: 14/14/15/15 mm) ───────────────────── */
+            @page { margin: 14mm 15mm 14mm 15mm; }
+            p, li { orphans: 2; widows: 2; }
+
+            /* ── Floor plans and reconciled payment-plan rows ─── */
+            .o_pmg_floorplan { max-width: 740px; max-height: 920px; display: block;
+                               margin: 10px auto 4px; border: 1px solid #dee2e6; }
+            .o_pmg_row-reconciled td { border-bottom: 2px solid #c9c9c9; }
+        </style>
+    </template>
+
+      <!--
+          Shared letterhead for every printable PM report.
+
+          Project logo resolution
+          ========================
+          The logo is taken from `docs`, which every report template always has in
+          scope. It deliberately does NOT read an optional variable: QWeb
+          expressions are evaluated in a sandbox that raises on an undefined name
+          and does not expose globals(), so a `report_project if 'report_project'
+          in globals() else None` guard is a KeyError at render time, not a
+          fallback.
+
+          Reports that iterate several projects must therefore narrow `docs` for
+          the letterhead. Use property_report_project_letterhead, which does it:
+
+              <t t-call="..._module.property_report_project_letterhead">
+                  <t t-set="project" t-value="o"/>
+              </t>
+
+          Cases:
+            - docs is exactly one property.project  -> that project's logo
+            - docs is exactly one record with a project_id (property.details,
+              escrow.allocation) -> its project's logo
+            - docs spans several projects           -> no logo, which is correct:
+              there is no single project to speak for
+            - the model has no project_id at all     -> no logo
+
+          image_data_uri() is the Odoo 19 QWeb builtin (ir_qweb.py registers
+          _get_converted_image_data_uri under that name), so the Binary field is
+          inlined and needs no /web/image round trip inside wkhtmltopdf.
+
+          Layout note: CSS tables only. wkhtmltopdf 0.12.6 (Qt WebKit) supports
+          neither display:flex nor display:grid - see the note at the top of this
+          file.
+      -->
+      <template id="property_report_letterhead">
+          <t t-set="_lp_one" t-value="docs if docs and len(docs) == 1 else False"/>
+          <t t-set="_lp_project"
+             t-value="(_lp_one if _lp_one._name == 'property.project'
+                        else (_lp_one.project_id if 'project_id' in _lp_one._fields
+                              else False)) if _lp_one else False"/>
+          <div class="o_pmg_letterhead">
+              <div class="o_pmg_letterhead-row">
+                  <div class="o_pmg_letterhead-brand">
+                      <div class="o_pmg_brand-name" t-out="company.name or ''"/>
+                      <div class="o_pmg_brand-tag" t-out="letterhead_tag or ''"/>
+                  </div>
+                  <div class="o_pmg_letterhead-logo"
+                       t-if="_lp_project and _lp_project.report_logo">
+                      <img class="o_pmg_logo_img"
+                           t-att-src="image_data_uri(_lp_project.report_logo)"
+                           t-att-alt="_lp_project.name"/>
+                  </div>
+              </div>
+              <div class="o_pmg_meta">
+                  <div t-if="report_ref"><span class="o_pmg_meta-label" t-out="report_ref_label or 'Ref:'"/> <span t-out="report_ref"/></div>
+                  <div t-if="report_date"><span class="o_pmg_meta-label">Date:</span> <span t-out="report_date"/></div>
+                  <div t-if="company.vat"><span class="o_pmg_meta-label">VAT:</span> <span t-out="company.vat"/></div>
+              </div>
+          </div>
+      </template>
+
+      <!--
+          Narrow `docs` to a single project before delegating to the letterhead, so
+          a report that loops over projects still gets the right logo on each page.
+          `project` is supplied by the caller's t-call body.
+      -->
+      <template id="property_report_project_letterhead">
+          <t t-set="docs" t-value="project"/>
+          <t t-call="sgc_offplan_rental_property_management.property_report_letterhead"/>
+      </template>
+
+    <template id="property_report_title">
+        <div class="o_pmg_title-bar">
+            <div class="o_pmg_title" t-out="report_title"/>
+            <div class="o_pmg_subtitle" t-if="report_subtitle" t-out="report_subtitle"/>
+        </div>
+    </template>
+
+    <template id="property_report_signatures">
+        <div class="o_pmg_signatures">
+            <t t-foreach="signature_slots or []" t-as="sig">
+                <div class="o_pmg_sig-block">
+                    <div class="o_pmg_sig-line"/>
+                    <div class="o_pmg_sig-label" t-out="sig.get('label', '')"/>
+                    <div class="o_pmg_sig-name" t-out="sig.get('name', '')"/>
+                    <t t-foreach="sig.get('lines', [])" t-as="sig_line">
+                        <div class="o_pmg_sig-extra" t-out="sig_line"/>
+                    </t>
+                </div>
+            </t>
+        </div>
+    </template>
+
+    <template id="property_report_footer">
+        <div class="o_pmg_footer">
+            <p t-out="report_footer_note or 'This is a computer-generated document.'"/>
+            <p><t t-out="report_name"/>  -  Generated on <span t-out="context_timestamp(datetime.datetime.now()).strftime('%d %b %Y at %H:%M')"/></p>
+            <p style="font-size:7px;letter-spacing:1.5px;color:#b9b2a5;text-transform:uppercase;">Powered by SGC TECH AI</p>
+        </div>
+    </template>
+</odoo>

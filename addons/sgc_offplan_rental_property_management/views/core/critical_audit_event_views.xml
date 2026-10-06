@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Critical-Change Audit (Rev 3 design §9) — event views.
+        Read-only window into the append-only audit trail.  Columns listed in
+        §9 only: Timestamp / Tier / Operation / Record / User / Company /
+        Tenant / Reason / Chain / Source / Correlation.  NO ip_address /
+        user_agent columns anywhere in the tree, and restricted metadata
+        (reason, correlation_uuid, ip_address, user_agent) is admin-only in
+        the form (sgc_audit_admin_group) [C3][§5.3].
+        No Reveal button [C4] — "Open Source Record" logs source_record_viewed.
+    -->
+
+    <!-- ============================================================ List -->
+    <record id="critical_audit_event_tree" model="ir.ui.view">
+        <field name="name">sgc.critical.audit.event.list</field>
+        <field name="model">sgc.critical.audit.event</field>
+        <field name="arch" type="xml">
+            <list string="Critical Audit Events" create="false" delete="false" edit="false">
+                <field name="timestamp"/>
+                <field name="tier"/>
+                <field name="operation"/>
+                <field name="res_display_name" string="Record" optional="hide"/>
+                <field name="model"/>
+                <field name="res_id" string="ID"/>
+                <field name="user_id" optional="hide"/>
+                <field name="company_id" optional="hide"/>
+                <field name="tenant_uuid" string="Tenant" optional="hide"/>
+                <field name="reason" optional="show"/>
+                <field name="chain_no" string="Chain" optional="hide"/>
+                <field name="source" optional="hide"/>
+                <field name="correlation_uuid" string="Correlation" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ============================================================ Form -->
+    <record id="critical_audit_event_form" model="ir.ui.view">
+        <field name="name">sgc.critical.audit.event.form</field>
+        <field name="model">sgc.critical.audit.event</field>
+        <field name="arch" type="xml">
+            <form string="Critical Audit Event" create="false" edit="false">
+                <header>
+                    <button name="action_open_source_record" string="Open Source Record"
+                            type="object" class="btn-primary"/>
+                </header>
+                <group>
+                    <group>
+                        <field name="name" readonly="1"/>
+                        <field name="timestamp" readonly="1"/>
+                        <field name="tier" readonly="1"/>
+                        <field name="operation" readonly="1"/>
+                        <field name="operation_label" readonly="1"/>
+                        <field name="source" readonly="1"/>
+                        <field name="correlation_uuid" readonly="1"
+                               groups="sgc_offplan_rental_property_management.sgc_audit_admin_group"/>
+                    </group>
+                    <group>
+                        <field name="model" readonly="1"/>
+                        <field name="res_id" readonly="1"/>
+                        <field name="res_display_name" readonly="1"/>
+                        <field name="user_id" readonly="1"/>
+                        <field name="company_id" readonly="1"/>
+                        <field name="tenant_uuid" readonly="1"/>
+                        <field name="request_id" readonly="1"
+                               groups="sgc_offplan_rental_property_management.sgc_audit_admin_group"/>
+                        <field name="ip_address" readonly="1"
+                               groups="sgc_offplan_rental_property_management.sgc_audit_admin_group"/>
+                        <field name="user_agent" readonly="1"
+                               groups="sgc_offplan_rental_property_management.sgc_audit_admin_group"/>
+                    </group>
+                </group>
+                <group string="Reason">
+                    <field name="reason" readonly="1"/>
+                    <field name="reason_secret_detected" readonly="1"
+                           groups="sgc_offplan_rental_property_management.sgc_audit_admin_group"/>
+                </group>
+                <group string="Values">
+                    <field name="old_value" readonly="1"/>
+                    <field name="new_value" readonly="1"/>
+                </group>
+                <group string="Field Changes">
+                    <field name="field_changes" readonly="1">
+                        <list string="Field Changes" create="false" delete="false" edit="false">
+                            <field name="field_name"/>
+                            <field name="field_label" optional="hide"/>
+                            <field name="old_value"/>
+                            <field name="new_value"/>
+                            <field name="redacted"/>
+                            <field name="secret_detected"/>
+                        </list>
+                    </field>
+                </group>
+                <group string="Integrity">
+                    <field name="chain_no" readonly="1"/>
+                    <field name="prev_hash" readonly="1"/>
+                    <field name="row_hash" readonly="1"/>
+                    <field name="policy_version" readonly="1"/>
+                    <field name="schema_version" readonly="1"/>
+                    <field name="redaction_applied" readonly="1"/>
+                    <field name="chatter_message_id" readonly="1"/>
+                </group>
+                <div class="oe_text_center text-muted">
+                    Historically redacted values are intentionally unrecoverable from
+                    the audit event. The current source record may be opened subject
+                    to your access rights.
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- ========================================================== Search -->
+    <record id="critical_audit_event_search" model="ir.ui.view">
+        <field name="name">sgc.critical.audit.event.search</field>
+        <field name="model">sgc.critical.audit.event</field>
+        <field name="arch" type="xml">
+            <search string="Critical Audit Events">
+                <field name="operation"/>
+                <field name="model"/>
+                <field name="res_id"/>
+                <field name="user_id"/>
+                <field name="tenant_uuid"/>
+                <field name="correlation_uuid"/>
+                <filter name="recent_90_days" string="Recent (90 days)"
+                        domain="[('timestamp', '>=', (context_today() - datetime.timedelta(days=90)).strftime('%Y-%m-%d'))]"/>
+                <filter name="tier1_reason_required" string="Tier 1 — Reason required"
+                        domain="[('tier', '=', '1'), ('reason', '!=', False)]"/>
+                <filter name="groupby_model" string="By Model"
+                        context="{'group_by': 'model'}"/>
+                <filter name="groupby_user" string="By User"
+                        context="{'group_by': 'user_id'}"/>
+                <filter name="groupby_operation" string="By Operation"
+                        context="{'group_by': 'operation'}"/>
+                <filter name="groupby_tier" string="By Tier"
+                        context="{'group_by': 'tier'}"/>
+                <filter name="groupby_company" string="By Company"
+                        context="{'group_by': 'company_id'}"/>
+                <filter name="groupby_timestamp" string="Timestamp"
+                        context="{'group_by': 'timestamp'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ======================================================== Actions -->
+    <record id="action_critical_audit_events" model="ir.actions.act_window">
+        <field name="name">Recent Critical Changes</field>
+        <field name="res_model">sgc.critical.audit.event</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'sequence': 1, 'view_mode': 'list', 'view_id': ref('critical_audit_event_tree')}),
+            (0, 0, {'sequence': 2, 'view_mode': 'form', 'view_id': ref('critical_audit_event_form')})]"/>
+        <field name="search_view_id" ref="critical_audit_event_search"/>
+        <field name="context">{'search_default_recent_90_days': 1}</field>
+        <field name="group_ids" eval="[(4, ref('sgc_audit_viewer_group'))]"/>
+    </record>
+
+    <record id="action_critical_audit_tier1" model="ir.actions.act_window">
+        <field name="name">Tier 1 — Reason Required</field>
+        <field name="res_model">sgc.critical.audit.event</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'sequence': 1, 'view_mode': 'list', 'view_id': ref('critical_audit_event_tree')}),
+            (0, 0, {'sequence': 2, 'view_mode': 'form', 'view_id': ref('critical_audit_event_form')})]"/>
+        <field name="search_view_id" ref="critical_audit_event_search"/>
+        <field name="domain">[('tier', '=', '1')]</field>
+        <field name="context">{'search_default_tier1_reason_required': 1}</field>
+        <field name="group_ids" eval="[(4, ref('sgc_audit_viewer_group'))]"/>
+    </record>
+
+    <record id="action_critical_audit_by_model" model="ir.actions.act_window">
+        <field name="name">By Model</field>
+        <field name="res_model">sgc.critical.audit.event</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'sequence': 1, 'view_mode': 'list', 'view_id': ref('critical_audit_event_tree')}),
+            (0, 0, {'sequence': 2, 'view_mode': 'form', 'view_id': ref('critical_audit_event_form')})]"/>
+        <field name="search_view_id" ref="critical_audit_event_search"/>
+        <field name="context">{'search_default_groupby_model': 1, 'search_default_recent_90_days': 1}</field>
+        <field name="group_ids" eval="[(4, ref('sgc_audit_viewer_group'))]"/>
+    </record>
+
+    <record id="action_critical_audit_by_user" model="ir.actions.act_window">
+        <field name="name">By User</field>
+        <field name="res_model">sgc.critical.audit.event</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'sequence': 1, 'view_mode': 'list', 'view_id': ref('critical_audit_event_tree')}),
+            (0, 0, {'sequence': 2, 'view_mode': 'form', 'view_id': ref('critical_audit_event_form')})]"/>
+        <field name="search_view_id" ref="critical_audit_event_search"/>
+        <field name="context">{'search_default_groupby_user': 1, 'search_default_recent_90_days': 1}</field>
+        <field name="group_ids" eval="[(4, ref('sgc_audit_viewer_group'))]"/>
+    </record>
+
+    <record id="action_critical_audit_by_operation" model="ir.actions.act_window">
+        <field name="name">By Operation</field>
+        <field name="res_model">sgc.critical.audit.event</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'sequence': 1, 'view_mode': 'list', 'view_id': ref('critical_audit_event_tree')}),
+            (0, 0, {'sequence': 2, 'view_mode': 'form', 'view_id': ref('critical_audit_event_form')})]"/>
+        <field name="search_view_id" ref="critical_audit_event_search"/>
+        <field name="context">{'search_default_groupby_operation': 1, 'search_default_recent_90_days': 1}</field>
+        <field name="group_ids" eval="[(4, ref('sgc_audit_viewer_group'))]"/>
+    </record>
+</odoo>

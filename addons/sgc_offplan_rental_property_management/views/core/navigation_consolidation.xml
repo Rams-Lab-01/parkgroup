@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2026 SGC TECH AI
+    Navigation Consolidation — Record 006, §4 Scope A
+
+    Implements the governed navigation redesign per:
+      - SGC_RENT_PROPOSED_NAVIGATION_MAP.md
+      - SGC_RENT_ROLE_BASED_MENU_MATRIX.csv
+      - SGC_RENT_NAVIGATION_BEFORE_AFTER.md
+      - SGC_RENT_GOVERNED_WORKFLOW_MATRIX.csv
+
+    Rules enforced:
+      1. Every menuitem carries groups= per the role matrix.
+      2. No role gains access it didn't have before.
+      3. No existing menu is deleted (entries are renamed / reparented / hidden).
+      4. No orphaned actions; no bypass of governed workflow steps.
+      5. Audit menus use sgc_audit_viewer_group (read-only) / sgc_audit_admin_group.
+
+    Phase C.4 (2026-09-14) — record-scoped report entries withdrawn from global
+    navigation.  The 3 commission summaries and the 9 sale/rent/maintenance/
+    property reports open onto a record, so from a menu they render an empty
+    document.  They stay reachable from each record's Print menu through their
+    existing binding_model_id, and their XMLIDs are preserved (hidden, not
+    deleted) so no external reference breaks.
+
+    Phase D (2026-09-14) — grouping.  With 18 top-level entries the web client
+    collapsed the tail (Reports, Configurations, Critical Audit, Payment
+    Schedules) into the "+" catch-all.  Related menus are now grouped so every
+    entry fits the bar:
+      * Rent Invoices & Bills  -> under Contracts
+      * RERA Forms             -> under Contracts
+      * Regions                -> under Configurations
+      * Payment Schedules      -> under Configurations (legacy entry, XMLID kept)
+      * Leads/Customers/Vendors-> single new "Contacts" dropdown
+    No menu's groups= is changed, so no role gains or loses access.
+
+    This file loads AFTER views/core/menus.xml, views/portal/menus.xml,
+    and views/core/critical_audit_event_menus.xml so that <record> overrides
+    take effect on already-defined menu items.
+-->
+<odoo>
+
+    <!-- ================================================================
+         1. NEW: Contracts parent menu (sequence 18)
+         ================================================================ -->
+    <menuitem
+        id="menu_contracts_root"
+        name="Contracts"
+        parent="sgc_offplan_rental_property_management.main_menu_rental_management"
+        sequence="18"
+        groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+
+    <!-- ================================================================
+         2. Reparent + Rename: Selling → Sale (under Contracts)
+         ================================================================ -->
+    <record id="menu_property_vendor" model="ir.ui.menu">
+        <field name="name">Sale</field>
+        <field name="parent_id" ref="menu_contracts_root"/>
+        <field name="sequence" eval="1"/>
+    </record>
+
+    <!-- ================================================================
+         3. Reparent + Rename: Renting → Rent (under Contracts)
+         ================================================================ -->
+    <record id="menu_tenancy_details" model="ir.ui.menu">
+        <field name="name">Rent</field>
+        <field name="parent_id" ref="menu_contracts_root"/>
+        <field name="sequence" eval="2"/>
+    </record>
+
+    <!-- ================================================================
+         4. Rename: Maintenances → Maintenance (label-only)
+         ================================================================ -->
+    <record id="menu_maintenance_root" model="ir.ui.menu">
+        <field name="name">Maintenance</field>
+    </record>
+
+    <!-- ================================================================
+         5. Rent Invoices & Bills — consolidated landing, now under
+            Contracts (Phase D, seq 3).  Two children linking to the
+            existing rent_invoice_action / rent_bill_action.
+         ================================================================ -->
+    <menuitem
+        id="menu_rent_invoices_bills"
+        name="Rent Invoices &amp; Bills"
+        parent="menu_contracts_root"
+        sequence="3"
+        groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer">
+        <menuitem
+            id="menu_consolidated_rent_invoices"
+            name="Rent Invoices"
+            action="rent_invoice_action"
+            sequence="1"
+            groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+        <menuitem
+            id="menu_consolidated_rent_bills"
+            name="Rent Bills"
+            action="rent_bill_action"
+            sequence="2"
+            groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+    </menuitem>
+
+    <!-- ================================================================
+         6. RERA Forms — now under Contracts (Phase D, seq 4).
+            Exposes action_rera_form_a (defined in rera_form_a_view.xml);
+            previously button-only on the property form.
+         ================================================================ -->
+    <menuitem
+        id="menu_rera_forms"
+        name="RERA Forms"
+        parent="menu_contracts_root"
+        action="action_rera_form_a"
+        sequence="4"
+        groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+
+    <!-- ================================================================
+         7. Move + Rename: Portal Syndication → Portal & Website (seq 28)
+            Children (Connectors, Leads, Sync Logs, Feed Config) stay
+            attached — only the parent changes.
+         ================================================================ -->
+    <record id="sgc_offplan_rental_property_management.menu_rps_root" model="ir.ui.menu">
+        <field name="name">Portal &amp; Website</field>
+        <field name="parent_id" ref="sgc_offplan_rental_property_management.main_menu_rental_management"/>
+        <field name="sequence" eval="28"/>
+    </record>
+
+    <!-- ================================================================
+         8. Commission (seq 29)
+            The three summary entries are record-scoped reports and are
+            hidden by Phase C.4 below; the parent therefore renders empty
+            and Odoo hides it.  Kept here so the XMLIDs and group scoping
+            survive for any later aggregate commission report.
+         ================================================================ -->
+    <menuitem
+        id="menu_commission_root"
+        name="Commission"
+        parent="sgc_offplan_rental_property_management.main_menu_rental_management"
+        sequence="29"
+        groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer">
+        <menuitem
+            id="menu_commission_summary_sale"
+            name="Sale Commission Summary"
+            action="action_print_commission_summary_sale"
+            sequence="3"
+            groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+        <menuitem
+            id="menu_commission_summary_rent"
+            name="Rent Commission Summary"
+            action="action_print_commission_summary_rent"
+            sequence="4"
+            groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+        <menuitem
+            id="menu_commission_summary_vendor"
+            name="Vendor Commission Summary"
+            action="action_print_commission_summary_vendor"
+            sequence="5"
+            groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+    </menuitem>
+
+    <!-- ================================================================
+         9. Reports (seq 88 — before Configurations at 90)
+            After Phase C.4 only the aggregate reports remain: Project
+            Summary and Portfolio Statistics.  Both render real data from
+            the active company (Phase C.5).
+         ================================================================ -->
+    <menuitem
+        id="menu_reports_root"
+        name="Reports"
+        parent="sgc_offplan_rental_property_management.main_menu_rental_management"
+        sequence="88"
+        groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer">
+        <menuitem
+            id="menu_report_rent_contract"
+            name="Rent Contract"
+            action="action_report_rent_contract"
+            sequence="1"
+            groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+        <menuitem
+            id="menu_report_sales_offer"
+            name="Sales Offer"
+            action="action_report_sales_offer"
+            sequence="2"
+            groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+        <menuitem
+            id="menu_report_sales_purchase_agreement"
+            name="Sales Purchase Agreement"
+            action="action_report_sales_purchase_agreement"
+            sequence="3"
+            groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+        <menuitem
+            id="menu_report_statement_of_account"
+            name="Statement of Account"
+            action="action_report_statement_of_account"
+            sequence="4"
+            groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+        <menuitem
+            id="menu_report_payment_schedule"
+            name="Payment Schedule"
+            action="action_report_payment_schedule"
+            sequence="5"
+            groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+        <menuitem
+            id="menu_report_maintenance_contract"
+            name="Maintenance Contract"
+            action="action_report_maintenance_contract"
+            sequence="6"
+            groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+        <menuitem
+            id="menu_report_booking_agreement"
+            name="Booking Agreement"
+            action="action_report_booking_agreement"
+            sequence="7"
+            groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+        <menuitem
+            id="menu_report_property_brochure"
+            name="Property Brochure"
+            action="action_report_property_brochure_luxury"
+            sequence="8"
+            groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+        <menuitem
+            id="menu_report_sale_contract_installment_plan"
+            name="Sale Contract Installment Plan"
+            action="action_report_sale_contract_installment_plan"
+            sequence="9"
+            groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer"/>
+    </menuitem>
+
+    <!-- Aggregate reports that remain reachable from the global menu -->
+    <menuitem id="menu_report_project_summary" name="Project Summary"
+        parent="menu_reports_root" sequence="91"
+        action="action_report_project_summary"
+        groups="property_rental_manager,property_rental_officer"/>
+
+    <menuitem id="menu_report_portfolio_statistics" name="Portfolio Statistics"
+        parent="menu_reports_root" sequence="92"
+        action="action_report_portfolio_statistics"
+        groups="property_rental_manager,property_rental_officer"/>
+
+    <!-- ================================================================
+         10. Critical Audit — moved from seq 7 to seq 95 so it sits last.
+            Chain Verification is an aggregate report (Phase C.5 makes it
+            render the whole-company chain).
+         ================================================================ -->
+    <record id="menu_critical_audit_root" model="ir.ui.menu">
+        <field name="sequence" eval="95"/>
+    </record>
+
+    <menuitem id="menu_critical_audit_chain_verification" name="Chain Verification Report"
+        parent="menu_critical_audit_root" sequence="96"
+        action="action_report_critical_audit_verification"
+        groups="sgc_audit_admin_group,sgc_audit_viewer_group"/>
+
+    <!-- ================================================================
+         11. Phase D — Contacts dropdown (seq 80)
+             Reparents the three partner-facing menus into one group so the
+             top bar stops overflowing.  The parent carries no groups= of its
+             own, so each child keeps exactly the visibility it had before.
+         ================================================================ -->
+    <menuitem
+        id="menu_contacts_root"
+        name="Contacts"
+        parent="sgc_offplan_rental_property_management.main_menu_rental_management"
+        sequence="80"/>
+
+    <record id="menu_property_lead" model="ir.ui.menu">
+        <field name="parent_id" ref="menu_contacts_root"/>
+        <field name="sequence" eval="1"/>
+    </record>
+
+    <record id="menu_customer_details" model="ir.ui.menu">
+        <field name="parent_id" ref="menu_contacts_root"/>
+        <field name="sequence" eval="2"/>
+    </record>
+
+    <record id="menu_property_broker_landlord" model="ir.ui.menu">
+        <field name="parent_id" ref="menu_contacts_root"/>
+        <field name="sequence" eval="3"/>
+    </record>
+
+    <!-- ================================================================
+         12. Phase D — Regions under Configurations.
+             Regions is a lookup table, not a daily workspace, so it belongs
+             with the other property configuration menus.
+         ================================================================ -->
+    <record id="menu_property_region" model="ir.ui.menu">
+        <field name="parent_id" ref="menu_configuration"/>
+        <field name="sequence" eval="6"/>
+    </record>
+
+    <!-- ================================================================
+         13. Phase D — legacy top-level Payment Schedules entry under
+             Configurations.  Its XMLID is preserved (payment_schedule_views
+             still declares it at seq 3); only the parent changes so it no
+             longer occupies a top-level slot ahead of the app menus.
+         ================================================================ -->
+    <record id="menu_payment_schedule" model="ir.ui.menu">
+        <field name="parent_id" ref="menu_configuration"/>
+        <field name="sequence" eval="7"/>
+    </record>
+
+    <!-- ================================================================
+         14. Phase C.4 — hide the twelve record-scoped report entries.
+             Hidden (active=False), not deleted: the records and XMLIDs stay
+             in place so nothing that references them breaks, and the reports
+             remain on each record's Print menu via binding_model_id.
+         ================================================================ -->
+    <record id="menu_commission_summary_sale" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="menu_commission_summary_rent" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="menu_commission_summary_vendor" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="menu_report_rent_contract" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="menu_report_sales_offer" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="menu_report_sales_purchase_agreement" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="menu_report_statement_of_account" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="menu_report_payment_schedule" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="menu_report_maintenance_contract" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="menu_report_booking_agreement" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="menu_report_property_brochure" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="menu_report_sale_contract_installment_plan" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+
+</odoo>

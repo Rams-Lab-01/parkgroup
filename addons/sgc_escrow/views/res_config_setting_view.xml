@@ -1,6 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--Copyright (C) 2026 SGC TECH AI (https://sgctech.ai)
- Part of SGC Odoo Suite. See LICENSE file for full copyright and licensing details.-->
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2026 SGC TECH AI (https://sgctech.ai)
+    Part of SGC Odoo Suite. See LICENSE file for full copyright and licensing details.
+-->
 <odoo>
 
     <record id="view_res_config_settings_escrow_form" model="ir.ui.view">
@@ -11,6 +13,11 @@
         <field name="arch" type="xml">
             <xpath expr="//app[@data-string='Property Management']" position="inside">
                 <block title="Escrow" name="escrow_container">
+                    <setting id="setting_escrow_posting_enabled"
+                             string="Allow Escrow Releases to Post"
+                             help="OFF (default): releases can be drafted, approved and printed, but posting is refused so no journal entry is ever created. Turn on only after the historic entries exist and the register is signed off.">
+                        <field name="sgc_escrow_posting_enabled"/>
+                    </setting>
                     <setting id="setting_escrow_policy"
                              string="Escrow Payment Policy"
                              help="What to do when a buyer receipt for an escrow-enabled project is booked to a bank other than that project's escrow account.">
@@ -23,11 +30,6 @@
                             <field name="sgc_escrow_default_retention_pct"/>
                             <span>%</span>
                         </div>
-                    </setting>
-                    <setting id="setting_escrow_guard_installments"
-                             string="Milestone Invoice Guard"
-                             help="Reserved for the construction-phase slices (A1). Leave off until payment-plan milestones exist on this database.">
-                        <field name="sgc_escrow_guard_installments"/>
                     </setting>
                 </block>
             </xpath>

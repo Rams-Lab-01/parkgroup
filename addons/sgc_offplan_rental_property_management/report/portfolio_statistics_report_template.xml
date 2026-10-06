@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Portfolio Statistics Report  -  unified property-management layout -->
+
+    <template id="report_portfolio_statistics_document">
+        <t t-call="web.html_container">
+            <t>
+                <div class="o_pmg_doc article" t-att-data-oe-model="docs[0]._name if docs else 'property.details'" t-att-data-oe-id="docs[0].id if docs else 0">
+                <t t-call="sgc_offplan_rental_property_management.property_report_styles"/>
+                <t t-set="company" t-value="env.company"/>
+                <t t-set="currency_symbol" t-value="company.currency_id.symbol or 'AED'"/>
+                <t t-set="all_properties" t-value="env['property.details'].search([('company_id','=',company.id)], order='name')"/>
+                <t t-set="available_props" t-value="all_properties.filtered(lambda p: p.state == 'available')"/>
+                <t t-set="booked_props" t-value="all_properties.filtered(lambda p: p.state == 'booked')"/>
+                <t t-set="sold_props" t-value="all_properties.filtered(lambda p: p.state == 'sold')"/>
+                <t t-set="rented_props" t-value="all_properties.filtered(lambda p: p.state == 'rented')"/>
+                <t t-set="total_sale_value" t-value="sum(p.sale_price for p in all_properties if p.sale_price)"/>
+                <t t-set="total_rent_value" t-value="sum(p.rent_price for p in all_properties if p.rent_price)"/>
+                <t t-set="total_area" t-value="sum(p.area for p in all_properties if p.area)"/>
+                <t t-set="all_bookings" t-value="env['property.vendor'].search([('company_id','=',company.id)])"/>
+                <t t-set="all_sale_contracts" t-value="env['sale.contract'].search([('company_id','=',company.id)])"/>
+                <t t-set="all_tenancies" t-value="env['tenancy.details'].search([('company_id','=',company.id)])"/>
+                <t t-set="all_projects" t-value="env['property.project'].search([('company_id','=',company.id)])"/>
+
+                <t t-set="report_ref" t-value="'%s properties / %s projects' % (len(all_properties), len(all_projects))"/>
+                <t t-set="report_date" t-value="context_timestamp(datetime.datetime.now()).strftime('%d %b %Y')"/>
+                <t t-set="letterhead_tag">Portfolio Statistics Report</t>
+                <t t-call="sgc_offplan_rental_property_management.property_report_letterhead"/>
+                <t t-set="report_title">Portfolio Statistics Dashboard</t>
+                <t t-set="report_subtitle">Comprehensive portfolio analytics across all properties</t>
+                <t t-call="sgc_offplan_rental_property_management.property_report_title"/>
+
+                <!-- Section 1: KPI Cards -->
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">1</span>Key Performance Indicators</div>
+                    <div class="o_pmg_section-body">
+                        <div class="o_pmg_grid-5">
+                            <div><div class="o_pmg_kpi-card">
+                                <div class="o_pmg_kpi-label">Total Properties</div>
+                                <div class="o_pmg_kpi-value" t-out="len(all_properties)"/>
+                                <div class="o_pmg_kpi-sub">across <t t-out="len(all_projects)"/> projects</div>
+                            </div></div>
+                            <div><div class="o_pmg_kpi-card">
+                                <div class="o_pmg_kpi-label">Portfolio Sale Value</div>
+                                <div class="o_pmg_kpi-value" style="font-size: 13pt;" t-out="f'{total_sale_value:,.0f}'"/>
+                                <div class="o_pmg_kpi-sub" t-out="currency_symbol"/>
+                            </div></div>
+                            <div><div class="o_pmg_kpi-card">
+                                <div class="o_pmg_kpi-label">Annual Rent Value</div>
+                                <div class="o_pmg_kpi-value" style="font-size: 13pt;" t-out="f'{total_rent_value:,.0f}'"/>
+                                <div class="o_pmg_kpi-sub" t-out="currency_symbol"/>
+                            </div></div>
+                            <div><div class="o_pmg_kpi-card">
+                                <div class="o_pmg_kpi-label">Total Area</div>
+                                <div class="o_pmg_kpi-value" style="font-size: 13pt;" t-out="f'{total_area:,.0f}'"/>
+                                <div class="o_pmg_kpi-sub">sqft</div>
+                            </div></div>
+                            <div><div class="o_pmg_kpi-card">
+                                <div class="o_pmg_kpi-label">Occupancy Rate</div>
+                                <div class="o_pmg_kpi-value" style="color: #065f46; font-size: 13pt;" t-out="f'{((len(booked_props) + len(sold_props) + len(rented_props)) / len(all_properties) * 100):.1f}%' if all_properties else '0.0%'"/>
+                                <div class="o_pmg_kpi-sub">booked + sold + rented</div>
+                            </div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Property Status Distribution -->
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">2</span>Property Status Distribution</div>
+                    <div class="o_pmg_section-body">
+                        <t t-set="total" t-value="len(all_properties)"/>
+                        <t t-set="avail_pct" t-value="(len(available_props) / total * 100) if total else 0"/>
+                        <t t-set="book_pct" t-value="(len(booked_props) / total * 100) if total else 0"/>
+                        <t t-set="sold_pct" t-value="(len(sold_props) / total * 100) if total else 0"/>
+                        <t t-set="rent_pct" t-value="(len(rented_props) / total * 100) if total else 0"/>
+
+                        <div style="margin-bottom: 10px;">
+                            <div style="font-size: 9pt; font-weight: 600; color: #475569; margin-bottom: 3px;">
+                                Available (<t t-out="len(available_props)"/> / <t t-out="f'{avail_pct:.1f}%'"/>)
+                            </div>
+                            <div class="o_pmg_bar">
+                                <div t-att-style="f'width: {avail_pct:.1f}%; background: #10b981;'" t-out="len(available_props)"/>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 10px;">
+                            <div style="font-size: 9pt; font-weight: 600; color: #475569; margin-bottom: 3px;">
+                                Booked (<t t-out="len(booked_props)"/> / <t t-out="f'{book_pct:.1f}%'"/>)
+                            </div>
+                            <div class="o_pmg_bar">
+                                <div t-att-style="f'width: {book_pct:.1f}%; background: #f59e0b;'" t-out="len(booked_props)"/>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 10px;">
+                            <div style="font-size: 9pt; font-weight: 600; color: #475569; margin-bottom: 3px;">
+                                Sold (<t t-out="len(sold_props)"/> / <t t-out="f'{sold_pct:.1f}%'"/>)
+                            </div>
+                            <div class="o_pmg_bar">
+                                <div t-att-style="f'width: {sold_pct:.1f}%; background: #3b82f6;'" t-out="len(sold_props)"/>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="font-size: 9pt; font-weight: 600; color: #475569; margin-bottom: 3px;">
+                                Rented (<t t-out="len(rented_props)"/> / <t t-out="f'{rent_pct:.1f}%'"/>)
+                            </div>
+                            <div class="o_pmg_bar">
+                                <div t-att-style="f'width: {rent_pct:.1f}%; background: #6366f1;'" t-out="len(rented_props)"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3: Property Type Breakdown -->
+                <div class="o_pmg_section">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">3</span>Property Type Breakdown</div>
+                    <div class="o_pmg_section-body" style="padding: 0; overflow: hidden;">
+                        <table class="o_pmg_table">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th class="text-center">Count</th>
+                                    <th class="text-center">% of Portfolio</th>
+                                    <th class="text-right">Total Sale Value</th>
+                                    <th class="text-right">Total Rent Value</th>
+                                    <th class="text-right">Avg Area</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="['residential','commercial','industrial','land']" t-as="ptype">
+                                    <t t-set="subset" t-value="all_properties.filtered(lambda p: p.property_type == ptype)"/>
+                                    <t t-if="subset">
+                                        <tr>
+                                            <td style="font-weight: 600; text-transform: capitalize;" t-out="ptype"/>
+                                            <td class="text-center" t-out="len(subset)"/>
+                                            <td class="text-center" t-out="f'{len(subset)/len(all_properties)*100:.1f}%'"/>
+                                            <td class="text-right"><t t-out="f'{sum(p.sale_price for p in subset if p.sale_price):,.0f}'"/> <t t-out="currency_symbol"/></td>
+                                            <td class="text-right"><t t-out="f'{sum(p.rent_price for p in subset if p.rent_price):,.0f}'"/> <t t-out="currency_symbol"/></td>
+                                            <td class="text-right"><t t-out="f'{(sum(p.area for p in subset if p.area)/len(subset)):,.0f}'"/> sqft</td>
+                                        </tr>
+                                    </t>
+                                </t>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td>TOTAL</td>
+                                    <td class="text-center" t-out="len(all_properties)"/>
+                                    <td class="text-center">100.0%</td>
+                                    <td class="text-right"><t t-out="f'{total_sale_value:,.0f}'"/> <t t-out="currency_symbol"/></td>
+                                    <td class="text-right"><t t-out="f'{total_rent_value:,.0f}'"/> <t t-out="currency_symbol"/></td>
+                                    <td class="text-right"><t t-out="f'{(total_area/len(all_properties) if all_properties else 0):,.0f}'"/> sqft</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Section 4: Commercial Activity -->
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">4</span>Commercial Activity Summary</div>
+                    <div class="o_pmg_section-body">
+                        <div class="o_pmg_grid-4">
+                            <div><div class="o_pmg_kpi-card">
+                                <div class="o_pmg_kpi-label">Sale Contracts</div>
+                                <div class="o_pmg_kpi-value" t-out="len(all_sale_contracts)"/>
+                                <div class="o_pmg_kpi-sub">
+                                    <t t-out="len(all_sale_contracts.filtered(lambda c: c.state == 'completed'))"/> completed /
+                                    <t t-out="len(all_sale_contracts.filtered(lambda c: c.state == 'signed'))"/> signed
+                                </div>
+                            </div></div>
+                            <div><div class="o_pmg_kpi-card">
+                                <div class="o_pmg_kpi-label">Bookings</div>
+                                <div class="o_pmg_kpi-value" t-out="len(all_bookings)"/>
+                                <div class="o_pmg_kpi-sub">
+                                    <t t-out="len(all_bookings.filtered(lambda b: b.state == 'confirmed'))"/> confirmed /
+                                    <t t-out="len(all_bookings.filtered(lambda b: b.state == 'draft'))"/> draft
+                                </div>
+                            </div></div>
+                            <div><div class="o_pmg_kpi-card">
+                                <div class="o_pmg_kpi-label">Tenancies</div>
+                                <div class="o_pmg_kpi-value" t-out="len(all_tenancies)"/>
+                                <div class="o_pmg_kpi-sub">active rental agreements</div>
+                            </div></div>
+                            <div><div class="o_pmg_kpi-card">
+                                <div class="o_pmg_kpi-label">Projects</div>
+                                <div class="o_pmg_kpi-value" t-out="len(all_projects)"/>
+                                <div class="o_pmg_kpi-sub">
+                                    <t t-out="len(all_projects.filtered(lambda p: p.state == 'in_progress'))"/> active /
+                                    <t t-out="len(all_projects.filtered(lambda p: p.state == 'completed'))"/> completed
+                                </div>
+                            </div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 5: Top Properties by Value -->
+                <div class="o_pmg_section" t-if="all_properties">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">5</span>Top Properties by Sale Value</div>
+                    <div class="o_pmg_section-body" style="padding: 0; overflow: hidden;">
+                        <table class="o_pmg_table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Property</th>
+                                    <th>Type</th>
+                                    <th>Area (sqft)</th>
+                                    <th>Sale Price</th>
+                                    <th>Price/sqft</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="sorted(all_properties, key=lambda p: p.sale_price or 0, reverse=True)[:15]" t-as="p">
+                                    <tr>
+                                        <td style="font-weight: 600; color: #64748b;" t-out="p_index + 1"/>
+                                        <td style="font-weight: 600;" t-out="p.name or ' - '"/>
+                                        <td style="text-transform: capitalize;" t-out="p.property_type or ' - '"/>
+                                        <td t-out="f'{p.area:,.0f}' if p.area else ' - '"/>
+                                        <td style="font-weight: 600;">
+                                            <t t-if="p.sale_price"><t t-out="f'{p.sale_price:,.0f}'"/> <t t-out="currency_symbol"/></t>
+                                        </td>
+                                        <td>
+                                            <t t-if="p.sale_price and p.area"><t t-out="f'{p.sale_price/p.area:,.0f}'"/> <t t-out="currency_symbol"/></t>
+                                        </td>
+                                        <td>
+                                            <t t-if="p.state == 'available'"><span class="o_pmg_badge o_pmg_badge-green">Available</span></t>
+                                            <t t-elif="p.state == 'booked'"><span class="o_pmg_badge o_pmg_badge-amber">Booked</span></t>
+                                            <t t-elif="p.state == 'sold'"><span class="o_pmg_badge o_pmg_badge-blue">Sold</span></t>
+                                            <t t-elif="p.state == 'rented'"><span class="o_pmg_badge o_pmg_badge-indigo">Rented</span></t>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                        <div t-if="len(all_properties) > 15" style="padding: 10px 14px; font-size: 9pt; color: #64748b; text-align: center; border-top: 1px solid #e2e8f0;">
+                            Showing top 15 of <t t-out="len(all_properties)"/> properties by sale value.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 6: Regional Distribution -->
+                <div class="o_pmg_section" t-if="all_properties">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">6</span>Regional Distribution</div>
+                    <div class="o_pmg_section-body" style="padding: 0; overflow: hidden;">
+                        <table class="o_pmg_table">
+                            <thead>
+                                <tr>
+                                    <th>Region</th>
+                                    <th class="text-center">Properties</th>
+                                    <th class="text-right">Total Sale Value</th>
+                                    <th class="text-right">Total Rent Value</th>
+                                    <th class="text-center">Available</th>
+                                    <th class="text-center">Sold</th>
+                                    <th class="text-center">Rented</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="sorted(set(p.region_id for p in all_properties if p.region_id), key=lambda r: r.name)" t-as="region">
+                                    <t t-set="region_props" t-value="all_properties.filtered(lambda p: p.region_id == region)"/>
+                                    <tr>
+                                        <td style="font-weight: 600;" t-out="region.name"/>
+                                        <td class="text-center" t-out="len(region_props)"/>
+                                        <td class="text-right"><t t-out="f'{sum(p.sale_price for p in region_props if p.sale_price):,.0f}'"/> <t t-out="currency_symbol"/></td>
+                                        <td class="text-right"><t t-out="f'{sum(p.rent_price for p in region_props if p.rent_price):,.0f}'"/> <t t-out="currency_symbol"/></td>
+                                        <td class="text-center" t-out="len(region_props.filtered(lambda p: p.state == 'available'))"/>
+                                        <td class="text-center" t-out="len(region_props.filtered(lambda p: p.state == 'sold'))"/>
+                                        <td class="text-center" t-out="len(region_props.filtered(lambda p: p.state == 'rented'))"/>
+                                    </tr>
+                                </t>
+                            </tbody>
+                            <tfoot t-if="all_properties">
+                                <tr>
+                                    <td>TOTAL</td>
+                                    <td class="text-center" t-out="len(all_properties)"/>
+                                    <td class="text-right"><t t-out="f'{total_sale_value:,.0f}'"/> <t t-out="currency_symbol"/></td>
+                                    <td class="text-right"><t t-out="f'{total_rent_value:,.0f}'"/> <t t-out="currency_symbol"/></td>
+                                    <td class="text-center" t-out="len(all_properties.filtered(lambda p: p.state == 'available'))"/>
+                                    <td class="text-center" t-out="len(all_properties.filtered(lambda p: p.state == 'sold'))"/>
+                                    <td class="text-center" t-out="len(all_properties.filtered(lambda p: p.state == 'rented'))"/>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <t t-set="report_name">Portfolio Statistics</t>
+                <t t-set="report_footer_note">Portfolio coverage: all properties across all projects in the active company portfolio.</t>
+                <t t-call="sgc_offplan_rental_property_management.property_report_footer"/>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_portfolio_statistics">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="docid">
+                <t t-call="sgc_offplan_rental_property_management.report_portfolio_statistics_document">
+                    <t t-set="docs" t-value="docid"/>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

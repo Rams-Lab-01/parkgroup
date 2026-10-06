@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Project Summary Report  -  unified property-management layout -->
+
+    <template id="report_project_summary_document">
+        <t t-call="web.html_container">
+            <t t-set="projects" t-value="docs or env['property.project'].search([('company_id', '=', env.company.id)], order='name')"/>
+            <t t-if="not projects">
+                <div class="o_pmg_doc article"><t t-call="sgc_offplan_rental_property_management.property_report_styles"/>
+                    <t t-set="company" t-value="env.company"/>
+                    <t t-set="report_ref" t-value="None"/>
+                    <t t-set="report_date" t-value="None"/>
+                    <t t-call="sgc_offplan_rental_property_management.property_report_letterhead"/>
+                    <t t-set="report_title">Project Summary</t>
+                    <t t-set="report_subtitle">No Projects Found</t>
+                    <t t-call="sgc_offplan_rental_property_management.property_report_title"/>
+                    <div class="o_pmg_alert o_pmg_alert-info">
+                        No projects found for the active company. Create a project to populate this report.
+                    </div>
+                </div>
+            </t>
+            <t t-foreach="projects" t-as="o">
+                <div class="o_pmg_doc article" t-att-data-oe-model="o._name" t-att-data-oe-id="o.id">
+                <t t-call="sgc_offplan_rental_property_management.property_report_styles"/>
+                <t t-set="company" t-value="o.company_id or env.company"/>
+                <t t-set="properties" t-value="env['property.details'].search([('project_id','=',o.id)], order='name')"/>
+                <t t-set="currency_symbol" t-value="properties[0].currency_id.symbol if properties else 'AED'"/>
+                <t t-set="total_sale_value" t-value="sum(p.sale_price for p in properties if p.sale_price)"/>
+                <t t-set="total_rent_value" t-value="sum(p.rent_price for p in properties if p.rent_price)"/>
+                <t t-set="total_area" t-value="sum(p.area for p in properties if p.area)"/>
+                <t t-set="fd" t-value="lambda d: d.strftime('%d %b %Y') if d else ' - '"/>
+                <t t-set="report_ref" t-value="o.name or ' - '"/>
+                <t t-set="report_date" t-value="context_timestamp(datetime.datetime.now()).strftime('%d %b %Y')"/>
+                <t t-set="letterhead_tag">Project Summary Report</t>
+                <t t-call="sgc_offplan_rental_property_management.property_report_project_letterhead">
+                    <t t-set="project" t-value="o"/>
+                </t>
+                <t t-set="report_title" t-value="o.name or 'Project Summary'"/>
+                <t t-set="report_subtitle">
+                    <t t-if="o.region_id">Region: <t t-out="o.region_id.name"/>  -  </t>Status: <t t-out="dict(o._fields['state'].selection).get(o.state, ' - ')"/>
+                </t>
+                <t t-call="sgc_offplan_rental_property_management.property_report_title"/>
+
+                <!-- Section 1: Project Overview -->
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">1</span>Project Overview</div>
+                    <div class="o_pmg_section-body">
+                        <div class="o_pmg_grid-2">
+                            <table class="o_pmg_dl">
+                                <tr><td class="o_pmg_dl-label">Project Name</td><td class="o_pmg_dl-value" t-out="o.name or ' - '"/></tr>
+                                <tr t-if="o.code"><td class="o_pmg_dl-label">Project Code</td><td class="o_pmg_dl-value" t-out="o.code"/></tr>
+                                <tr t-if="o.region_id"><td class="o_pmg_dl-label">Region</td><td class="o_pmg_dl-value" t-out="o.region_id.name"/></tr>
+                                <tr><td class="o_pmg_dl-label">Status</td><td class="o_pmg_dl-value" t-out="dict(o._fields['state'].selection).get(o.state, ' - ')"/></tr>
+                            </table>
+                            <table class="o_pmg_dl">
+                                <tr><td class="o_pmg_dl-label">Total Properties</td><td class="o_pmg_dl-value" t-out="o.property_count or len(properties)"/></tr>
+                                <tr t-if="o.sub_project_count"><td class="o_pmg_dl-label">Sub-Projects</td><td class="o_pmg_dl-value" t-out="o.sub_project_count"/></tr>
+                                <tr t-if="o.booking_count"><td class="o_pmg_dl-label">Total Bookings</td><td class="o_pmg_dl-value" t-out="o.booking_count"/></tr>
+                                <tr><td class="o_pmg_dl-label">Total Area</td><td class="o_pmg_dl-value"><t t-out="f'{total_area:,.0f}'"/> sqft</td></tr>
+                            </table>
+                        </div>
+                        <div t-if="o.description" class="o_pmg_note-box" t-raw="o.description"/>
+                    </div>
+                </div>
+
+                <!-- Section 2: Property Statistics -->
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">2</span>Property Statistics</div>
+                    <div class="o_pmg_section-body">
+                        <div class="o_pmg_grid-5">
+                            <div><div class="o_pmg_kpi-card">
+                                <div class="o_pmg_kpi-label">Total</div>
+                                <div class="o_pmg_kpi-value" t-out="len(properties)"/>
+                            </div></div>
+                            <div><div class="o_pmg_kpi-card">
+                                <div class="o_pmg_kpi-label">Available</div>
+                                <div class="o_pmg_kpi-value" style="color: #065f46;" t-out="len([p for p in properties if p.state == 'available'])"/>
+                            </div></div>
+                            <div><div class="o_pmg_kpi-card">
+                                <div class="o_pmg_kpi-label">Booked</div>
+                                <div class="o_pmg_kpi-value" style="color: #92400e;" t-out="len([p for p in properties if p.state == 'booked'])"/>
+                            </div></div>
+                            <div><div class="o_pmg_kpi-card">
+                                <div class="o_pmg_kpi-label">Sold</div>
+                                <div class="o_pmg_kpi-value" style="color: #1e40af;" t-out="len([p for p in properties if p.state == 'sold'])"/>
+                            </div></div>
+                            <div><div class="o_pmg_kpi-card">
+                                <div class="o_pmg_kpi-label">Rented</div>
+                                <div class="o_pmg_kpi-value" style="color: #3730a3;" t-out="len([p for p in properties if p.state == 'rented'])"/>
+                            </div></div>
+                        </div>
+
+                        <!-- Sales Progress -->
+                        <t t-set="sold_pct" t-value="(len([p for p in properties if p.state == 'sold']) / len(properties) * 100) if properties else 0"/>
+                        <t t-set="booked_pct" t-value="(len([p for p in properties if p.state == 'booked']) / len(properties) * 100) if properties else 0"/>
+                        <t t-set="avail_pct" t-value="(len([p for p in properties if p.state == 'available']) / len(properties) * 100) if properties else 0"/>
+                        <div style="margin-top: 14px;">
+                            <div style="font-size: 9pt; font-weight: 600; color: #475569; margin-bottom: 4px;">Sales Progress</div>
+                            <div class="o_pmg_bar">
+                                <div t-attf-style="width: #{sold_pct}%; background: #1e40af;"/>
+                                <div t-attf-style="width: #{booked_pct}%; background: #fbbf24;"/>
+                                <div t-attf-style="width: #{avail_pct}%; background: #6ee7b7;"/>
+                            </div>
+                            <div style="margin-top: 6px; font-size: 8pt; color: #64748b;">
+                                <span style="display: inline-block; margin-right: 14px;"><span style="display: inline-block; width: 10px; height: 10px; background: #1e40af; margin-right: 4px;"/>Sold <t t-out="f'{sold_pct:.1f}%'"/></span>
+                                <span style="display: inline-block; margin-right: 14px;"><span style="display: inline-block; width: 10px; height: 10px; background: #fbbf24; margin-right: 4px;"/>Booked <t t-out="f'{booked_pct:.1f}%'"/></span>
+                                <span style="display: inline-block;"><span style="display: inline-block; width: 10px; height: 10px; background: #6ee7b7; margin-right: 4px;"/>Available <t t-out="f'{avail_pct:.1f}%'"/></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3: Financial Summary -->
+                <div class="o_pmg_section o_pmg_keep">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">3</span>Financial Summary</div>
+                    <div class="o_pmg_section-body">
+                        <div class="o_pmg_grid-3">
+                            <div><div class="o_pmg_kpi-card">
+                                <div class="o_pmg_kpi-label">Total Sale Value</div>
+                                <div class="o_pmg_kpi-value"><t t-out="f'{total_sale_value:,.0f}'"/></div>
+                                <div class="o_pmg_kpi-sub"><span t-out="currency_symbol"/> across <t t-out="len([p for p in properties if p.sale_price])"/> properties</div>
+                            </div></div>
+                            <div><div class="o_pmg_kpi-card">
+                                <div class="o_pmg_kpi-label">Total Annual Rent</div>
+                                <div class="o_pmg_kpi-value"><t t-out="f'{total_rent_value:,.0f}'"/></div>
+                                <div class="o_pmg_kpi-sub"><span t-out="currency_symbol"/> across <t t-out="len([p for p in properties if p.rent_price])"/> properties</div>
+                            </div></div>
+                            <div><div class="o_pmg_kpi-card">
+                                <div class="o_pmg_kpi-label">Avg Price / sqft</div>
+                                <div class="o_pmg_kpi-value">
+                                    <t t-out="f'{(total_sale_value / total_area):,.0f}'" t-if="total_area > 0"/>
+                                    <t t-else=""> - </t>
+                                </div>
+                                <div class="o_pmg_kpi-sub">Based on <t t-out="f'{total_area:,.0f}'"/> sqft total area</div>
+                            </div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 4: Property List -->
+                <div class="o_pmg_section" t-if="properties">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">4</span>Property List</div>
+                    <div class="o_pmg_section-body" style="padding: 0; overflow: hidden;">
+                        <table class="o_pmg_table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Area (sqft)</th>
+                                    <th>Bed/Bath</th>
+                                    <th>Sale Price</th>
+                                    <th>Rent Price</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="properties" t-as="p">
+                                    <tr>
+                                        <td style="font-weight: 600;" t-out="p.name or ' - '"/>
+                                        <td t-out="dict(p._fields['property_type'].selection).get(p.property_type, ' - ') if p.property_type else ' - '"/>
+                                        <td t-out="f'{p.area:,.0f}' if p.area else ' - '"/>
+                                        <td><t t-out="p.bedrooms or ' - '"/>/<t t-out="p.bathrooms or ' - '"/></td>
+                                        <td><t t-out="f'{p.sale_price:,.0f}'" t-if="p.sale_price"/><span t-if="p.sale_price"> </span><t t-out="currency_symbol" t-if="p.sale_price"/></td>
+                                        <td><t t-out="f'{p.rent_price:,.0f}'" t-if="p.rent_price"/><span t-if="p.rent_price"> </span><t t-out="currency_symbol" t-if="p.rent_price"/></td>
+                                        <td>
+                                            <t t-if="p.state == 'available'"><span class="o_pmg_badge o_pmg_badge-green">Available</span></t>
+                                            <t t-elif="p.state == 'booked'"><span class="o_pmg_badge o_pmg_badge-amber">Booked</span></t>
+                                            <t t-elif="p.state == 'sold'"><span class="o_pmg_badge o_pmg_badge-blue">Sold</span></t>
+                                            <t t-elif="p.state == 'rented'"><span class="o_pmg_badge o_pmg_badge-indigo">Rented</span></t>
+                                            <t t-elif="p.state == 'maintenance'"><span class="o_pmg_badge o_pmg_badge-rose">Maintenance</span></t>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td>TOTAL</td>
+                                    <td></td>
+                                    <td t-out="f'{total_area:,.0f}'"/>
+                                    <td></td>
+                                    <td><t t-out="f'{total_sale_value:,.0f}'"/> <t t-out="currency_symbol"/></td>
+                                    <td><t t-out="f'{total_rent_value:,.0f}'"/> <t t-out="currency_symbol"/></td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <t t-set="report_name">Project Summary</t>
+                <t t-set="report_footer_note">This is a computer-generated Project Summary document.</t>
+                <t t-call="sgc_offplan_rental_property_management.property_report_footer"/>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_project_summary">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="docid">
+                <t t-call="sgc_offplan_rental_property_management.report_project_summary_document">
+                    <t t-set="docs" t-value="docid"/>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

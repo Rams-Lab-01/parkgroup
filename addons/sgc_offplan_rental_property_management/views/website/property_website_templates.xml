@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Base Assets -->
+    <template id="property_website_assets" name="Property Website Assets">
+        <!-- This template is loaded via assets in manifest -->
+    </template>
+
+    <!-- Snippets (can be added later for drag-and-drop) -->
+    <template id="property_snippets" inherit_id="website.snippets">
+        <!-- Property snippets will be added here -->
+    </template>
+
+</odoo>

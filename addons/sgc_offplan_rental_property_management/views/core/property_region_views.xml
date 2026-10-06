@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2025 SGC TECH AI (https://sgctech.ai)
+    Part of SGC Odoo Suite. See LICENSE file for full copyright and licensing details.
+-->
+<odoo>
+    <record id="property_region_view_form" model="ir.ui.view">
+        <field name="name">property.region.view.form</field>
+        <field name="model">property.region</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_project" type="object" class="oe_stat_button"
+                            icon="fa-home">
+                            <field name="project_count" string="Projects" widget="statinfo" />
+                        </button>
+                        <button name="action_view_sub_project" type="object" class="oe_stat_button"
+                            icon="fa-home">
+                            <field name="subproject_count" string="Sub Projects" widget="statinfo" />
+                        </button>
+                        <button name="action_view_properties" type="object" class="oe_stat_button"
+                            icon="fa-home">
+                            <field name="unit_count" string="Units" widget="statinfo" />
+                        </button>
+                    </div>
+                    <group>
+                        <group class="h2">
+                            <field name="name" required="1" />
+                            <field name="city_ids" required="1" widget="many2many_tags"
+                                options="{'color_field': 'color'}" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="property_region_view_tree" model="ir.ui.view">
+        <field name="name">property.region.view.tree</field>
+        <field name="model">property.region</field>
+        <field name="arch" type="xml">
+            <list string="Regions" sample="1">
+                <field name="name" />
+                <field name="city_ids" widget="many2many_tags" options="{'color_field': 'color'}" />
+            </list>
+        </field>
+    </record>
+    <record id="action_property_region" model="ir.actions.act_window">
+        <field name="name">Regions</field>
+        <field name="res_model">property.region</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add Regions for Properties
+            </p>
+        </field>
+    </record>
+</odoo>

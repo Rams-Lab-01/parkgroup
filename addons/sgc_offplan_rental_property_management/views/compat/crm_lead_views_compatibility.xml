@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 
+        Compatibility View - Only loads if ai_enrichment_report field is missing
+        This prevents OwlError on production
+    -->
+
+    <record id="view_crm_lead_form_compatibility_note" model="ir.ui.view">
+        <field name="name">crm.lead.form.compatibility.note</field>
+        <field name="model">crm.lead</field>
+        <field name="priority">1000</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="alert alert-info" role="alert" style="margin: 10px;">
+                        <i class="fa fa-info-circle" title="Info"/>
+                        <strong>AI Enrichment Compatibility Mode</strong>
+                        <p>
+                            The ai_enrichment_report field is being provided by compatibility module.
+                            For full AI lead scoring capabilities, ensure 'llm_lead_scoring' module is installed and upgraded.
+                        </p>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+</odoo>

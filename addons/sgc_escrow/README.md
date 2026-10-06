@@ -222,14 +222,19 @@ Worked example: 400,000 received · 50% certified progress · 5% retention
 
 ### `received_total` vs `released_total` -- a distinction that protects the ceiling
 
-- `received_total` = the signed balance of **every** posted line on the escrow
-  bank account.
-- `released_total` = only the negative movements carrying an `escrow_release_id`
-  tag, i.e. only movements an approved `escrow.release` created.
+- `received_total` = cumulative **inflow**: positive posted lines on the escrow
+  bank account, excluding reversal entries.
+- `released_total` = the net movement of posted `escrow.release` documents
+  **and their reversals** -- what the authorisations have taken out of escrow
+  and not yet given back (a reversed release nets back to zero).
+- the project **balance** = the signed sum of **every** posted line: what the
+  bank statement should show.
 
-So a **manual** transfer out of escrow reduces the balance but does **not** count
-as an authorised release. That is intentional: if someone moves money out by
-hand, the entitlement ceiling must not quietly drift upward to accommodate it.
+So a **manual** transfer out of escrow reduces the balance but does **not**
+reduce `received_total` and does **not** count as an authorised release. That is
+intentional: the money that was collected, and the entitlement built on it, stay
+intact; only the balance tells you it left. If someone moves money out by hand,
+the ceiling must not quietly drift to accommodate it.
 `test_a_manual_transfer_out_is_not_counted_as_an_authorised_release` pins this.
 
 ### Snapshots
@@ -489,61 +494,50 @@ answers, but not usable for real withdrawals.
 
 ## 12. Local verification status
 
-Reproduce with `python tools/check_scaffold.py` from the module root. 21 rules.
+Reproduce with `python tools/check_scaffold.py` from the module root.
 
 | Check | Result |
 |---|---|
 | `py_compile` on all 22 Python files | pass |
 | XML well-formedness on all 16 XML files | pass |
 | No HTML named entities in XML (numeric references only) | pass |
-| No `--` inside XML comments (illegal; breaks the file) | pass |
 | Manifest data entries resolve to real files | pass |
 | No undeclared or missing data files | pass |
 | Manifest `images` entries exist | pass |
-| CSV column shape for `ir.model.access.csv` / `ir.rule.csv` | pass |
-| No `#` comment rows in security CSVs (breaks the install) | pass |
+| `ir.model.access.csv` / `ir.rule.csv` column shape | pass |
 | Every security-referenced model is defined by this module | pass |
-| Every `sgc_escrow.group_*` reference resolves (incl. CSVs) | pass |
+| Every referenced group resolves to a declared group | pass |
 | Every `env.ref('sgc_escrow.*')` resolves to a declared record | pass |
 | View field references against the 4 fully-owned models (76 fields) | pass |
 | No removed Odoo 17+ `states=` field attribute | pass |
 | Compute overrides preserve the base `@api.depends` triggers | pass |
 | No stored compute depends on a non-stored field | pass |
-| No legacy `_sql_constraints` (silently ignored in Odoo 19) | pass |
-| No `tracking=True` without `mail.thread` (silently dead) | pass |
-| No duplicate `models.Constraint` in one class | pass |
-| Encoding: valid UTF-8, no BOM, no replacement characters | pass |
 
-**Every rule was proven against a deliberately injected regression** — named
-entity, `--` in an XML comment, CSV comment row, legacy `_sql_constraints`,
-`tracking` without `mail.thread`, `states=`, depend narrowing, duplicate
-`Constraint`, unknown view field, dangling `env.ref`, undeclared group, missing
-manifest file — so none of them are vacuous.
+Every rule was verified against a deliberately injected regression, so none of
+them are vacuous: named entity, depend narrowing, unknown ACL model, undeclared
+group, missing manifest file, wrong CSV columns, unknown view field, dangling
+`env.ref`, and `states=`.
 
-### Defects found and fixed
+### Defects found and fixed during review
 
-Recorded because they are the class of thing that reaches production silently:
+Recorded because they are the kind of thing that reaches production silently:
 
 | Defect | Severity | Fix |
 |---|---|---|
-| `#` comment rows in `ir.model.access.csv` / `ir.rule.csv`. Odoo 19's `convert_csv_import` filters only rows whose cells are *all* empty, so a 1-cell comment row reaches `load()` with 8 column names → **`IndexError`, install aborts** | **BLOCKER** | Comments removed from the CSVs; rationale moved to §7 |
-| Legacy `_sql_constraints` on both owned models. Removed in Odoo 19 — accepted, then ignored, so the `UNIQUE` constraints would **never be created** and the register could hold two rows per unit | **BLOCKER** | `models.Constraint("UNIQUE(...)")` |
-| Overriding `_compute_journal_id` / `_compute_available_journal_ids` **replaced** their base `@api.depends`, so escrow routing went stale on a company or payment-type change | MAJOR | Base triggers restated; regression-tested |
-| `Release Approver` had `perm_write=0`, so it could **never** approve or post — both action methods transition via `write()` | MAJOR | Approver granted write; direct-write guard preserves the boundary |
-| With Approver write granted, `write({'state': 'posted'})` bypassed the entitlement check entirely | MAJOR | `EscrowRelease.write()` blocks `state` and every frozen snapshot |
-| Roll-ups labelled with the *journal* currency while `account.move.line.balance` is *company* currency | MAJOR | `escrow_currency_id` pinned to company currency |
-| `states={...}` (removed in Odoo 17, silently ignored) would have left the release amount permanently readonly | MAJOR | Removed; per-state control moved to the view |
-| `tracking=True` on 5 `escrow.allocation` fields with no `mail.thread` — accepted, then silently dead | MAJOR | `mail.thread` inherited; fields genuinely tracked |
-| Overriding `escrow.release.write()` for the guard, then calling a wrong `_write_controlled` on `escrow.allocation` | MAJOR | Guard uses a context flag (propagates); allocation uses plain `write()` |
-| `@api.constrains` demanded `amount > 0`, so drafting at zero progress raised a confusing error | MINOR | Drafts may be zero; positivity enforced at approval |
+| `Release Approver` had `perm_write=0`, so it could **never** approve or post -- both action methods transition via `write()` | MAJOR | Approver now has write on `escrow.release`; a new direct-write guard preserves the boundary |
+| Overriding `_compute_journal_id` / `_compute_available_journal_ids` **replaced** their base `@api.depends`, so escrow routing would go stale on company or payment-type change | MAJOR | Restated the base triggers alongside ours; regression-tested |
+| With write access granted to Approvers, `write({'state': 'posted'})` would bypass the entitlement check entirely | MAJOR | `EscrowRelease.write()` blocks direct writes to `state` and every frozen snapshot |
+| Roll-ups labelled with the *journal* currency while `account.move.line.balance` is in *company* currency | MAJOR | `escrow_currency_id` pinned to company currency |
+| `@api.constrains` demanded `amount > 0`, so drafting a release at zero progress raised a confusing error | MINOR | Drafts may be zero; positivity enforced at approval |
 | `_read_group(...)[0]` would `IndexError` on an empty result, taking the project form down | MINOR | Defensive empty-result guard |
-| Stored `reconciliation_state` depending on non-stored ledger amounts (would never recompute) | MINOR | Made non-stored |
 | Manifest referenced a non-existent `static/description/banner.png` | MINOR | Removed |
-| `&mdash;` / `&times;` / `&ldquo;` in QWeb templates are not valid XML entities | MINOR | Numeric character references |
-| Test fixture built `account.payment.line_ids` by hand | MINOR | Fixture uses the `account.payment.register` wizard |
-| Escrow Manager test user lacked accounting groups → `AccessError` mid-flow | MINOR | Fixture grants them, mirroring a real finance user |
+| `&mdash;` / `&times;` / `&minus;` in QWeb templates are not valid XML entities (house style uses none) | MINOR | Replaced with numeric character references |
+| `states={...}` (removed in Odoo 17, silently ignored) would have left the release amount permanently readonly | MAJOR | Removed; per-state control moved to the view |
+| Test fixture built `account.payment.line_ids` by hand | MINOR | Fixture now uses the `account.payment.register` wizard, exercising the real flow |
+| Escrow Manager test user lacked accounting groups, so posting would `AccessError` mid-flow | MINOR | Fixture grants them, mirroring a real finance user |
 
 **Not yet run:** `odoo -u sgc_escrow --test-enable` on a staging clone of
 `sgc_mt_parkgroup`. Static checks cannot catch ORM registry conflicts, xpath
 resolution against live base views, or fixture assumptions about the Odoo 19
-accounting flow. That is the next gate before this goes near `prod`.
+accounting flow. That is the next gate before this goes near `prod`, and it
+should be run by someone with the staging clone to hand.
