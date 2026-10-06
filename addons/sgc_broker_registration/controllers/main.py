@@ -23,7 +23,6 @@ DETAIL_FIELDS = ['company_name', 'full_name', 'phone', 'street', 'city', 'po_box
                  'emirates_id', 'passport_no', 'signatory_name', 'signatory_title',
                  'bank_name', 'iban', 'account_holder']
 DATE_FIELDS = ['trade_license_issue_date', 'trade_license_expiry', 'regulator_expiry']
-MAX_REGISTRATIONS_PER_IP_PER_HOUR = 10
 PARAM_MAX_PER_IP = 'sgc_broker.max_registrations_per_ip_hour'
 
 CODE_MESSAGES = {
@@ -122,7 +121,7 @@ class BrokerRegistration(http.Controller):
             now = fields.Datetime.now()
             if Application.search_count([('create_ip', '=', self._ip()),
                                          ('create_date', '>', now - timedelta(hours=1))]) \
-                    >= Application._param_int(PARAM_MAX_PER_IP, MAX_REGISTRATIONS_PER_IP_PER_HOUR, minimum=1):
+                    >= Application._param_int(PARAM_MAX_PER_IP, 10, minimum=1):
                 raise ValidationError(_('Too many registrations from your network. Try again later.'))
 
             existing = Application.search([('email', '=', values['email']), ('state', '!=', 'rejected')],

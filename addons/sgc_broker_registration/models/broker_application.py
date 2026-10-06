@@ -277,11 +277,12 @@ class SgcBrokerApplication(models.Model):
     def _lock_row(self):
         """Serialise concurrent requests on one application (code requests, guesses, uploads).
 
-        Odoo runs on REPEATABLE READ, so a plain row lock would not show us what the other request
-        just committed. Rewriting the row instead makes the second writer fail with a serialization
-        error, and Odoo transparently retries that request on a fresh snapshot."""
+        Acquires a row-level lock via SELECT ... FOR UPDATE so concurrent requests on the same
+        application are serialized. Under PostgreSQL REPEATABLE READ, the second transaction
+        blocks until the first commits, then re-reads the fresh values (or retries on a
+        serialization failure). This prevents lost updates on code_attempts / code_hash."""
         self.ensure_one()
-        self.env.cr.execute('UPDATE sgc_broker_application SET id = id WHERE id = %s', [self.id])
+        self.env.cr.execute('SELECT id FROM sgc_broker_application WHERE id = %s FOR UPDATE', [self.id])
         self.invalidate_recordset()
 
     def action_send_code(self):
@@ -311,7 +312,7 @@ class SgcBrokerApplication(models.Model):
         })
         template = self.env.ref('sgc_broker_registration.mail_template_verification_code')
         template.with_context(code=code, ttl=CODE_TTL_MINUTES).send_mail(
-            self.id, force_send=True, raise_exception=False)
+            self.id, force_send=False, raise_exception=False)
         return 'ok', 0
 
     def verify_code(self, code):
