@@ -110,4 +110,4 @@ class TestPdcCheque(TransactionCase):
         for direction in ('inbound', 'outbound'):
             chq = self._cheque(direction=direction)
             html, _fmt = report._render_qweb_html(report.report_name, chq.ids)
-            self.assertIn(b'PDC RECEIPT' if direction == 'inbound' else b'PAYMENT VOUCHER', html)
+            self.assertIn(b'CHEQUE RECEIPT' if direction == 'inbound' else b'PAYMENT VOUCHER', html)

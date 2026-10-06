@@ -2,36 +2,60 @@
 <odoo>
     <template id="report_pdc_receipt_document">
         <t t-set="o" t-value="doc"/>
+        <t t-set="is_in" t-value="doc.direction == 'inbound'"/>
         <t t-call="web.external_layout">
-            <t t-set="is_in" t-value="doc.direction == 'inbound'"/>
-            <div class="page">
-                <h2 class="text-center mb-1">
-                    <t t-if="is_in">PDC RECEIPT</t><t t-else="">PDC PAYMENT VOUCHER</t>
-                </h2>
-                <p class="text-center text-muted">
-                    <t t-if="is_in">Post-dated cheque received</t><t t-else="">Post-dated cheque issued</t>
-                </p>
+            <div class="page" style="font-size: 13px;">
 
-                <div class="row mb-3">
-                    <div class="col-6">
-                        <strong>Receipt No.:</strong> <span t-field="doc.name"/><br/>
-                        <strong>Date:</strong> <span t-field="doc.received_date"/><br/>
-                        <strong>Status:</strong> <span t-field="doc.state"/>
-                    </div>
-                    <div class="col-6">
-                        <strong><t t-if="is_in">Received from</t><t t-else="">Paid to</t>:</strong>
-                        <span t-field="doc.partner_id"/><br/>
-                        <t t-if="doc.partner_id.phone"><span t-field="doc.partner_id.phone"/><br/></t>
-                        <t t-if="doc.property_id"><strong>Property:</strong> <span t-field="doc.property_id"/><br/></t>
-                        <t t-if="doc.sale_contract_id"><strong>Sale contract:</strong> <span t-field="doc.sale_contract_id"/><br/></t>
-                        <t t-if="doc.tenancy_id"><strong>Tenancy:</strong> <span t-field="doc.tenancy_id"/><br/></t>
+                <!-- Title block -->
+                <div class="text-center mb-3">
+                    <h2 class="mb-0" style="letter-spacing: 1px;">
+                        <t t-if="is_in">POST-DATED CHEQUE RECEIPT</t>
+                        <t t-else="">POST-DATED CHEQUE PAYMENT VOUCHER</t>
+                    </h2>
+                    <div class="text-muted">
+                        <t t-if="is_in">Acknowledgement of cheque received</t>
+                        <t t-else="">Record of cheque issued</t>
                     </div>
                 </div>
 
-                <table class="table table-sm table-bordered">
-                    <thead>
+                <!-- Reference block -->
+                <table class="table table-sm table-borderless mb-3">
+                    <tr>
+                        <td style="width: 50%;"><strong>
+                            <t t-if="is_in">Receipt No.</t><t t-else="">Voucher No.</t>:</strong>
+                            <span t-field="doc.name"/></td>
+                        <td class="text-end"><strong>Date:</strong>
+                            <span t-field="doc.received_date"/></td>
+                    </tr>
+                </table>
+
+                <!-- Parties -->
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <div style="font-weight: bold; border-bottom: 1px solid #999; margin-bottom: 4px;">
+                            <t t-if="is_in">RECEIVED FROM</t><t t-else="">PAID TO</t>
+                        </div>
+                        <div t-field="doc.partner_id"
+                             t-options='{"widget": "contact", "fields": ["name", "address", "phone", "email"], "no_marker": true}'/>
+                        <div t-if="doc.partner_id.vat"><strong>TRN / VAT:</strong> <span t-field="doc.partner_id.vat"/></div>
+                    </div>
+                    <div class="col-6">
+                        <div style="font-weight: bold; border-bottom: 1px solid #999; margin-bottom: 4px;">
+                            <t t-if="is_in">RECEIVED BY</t><t t-else="">ISSUED BY</t>
+                        </div>
+                        <div><span t-field="doc.company_id.name"/></div>
+                        <div t-if="doc.user_id">Officer: <span t-field="doc.user_id.name"/></div>
+                    </div>
+                </div>
+
+                <!-- Cheque details -->
+                <div style="font-weight: bold; border-bottom: 1px solid #999; margin-bottom: 4px;">CHEQUE DETAILS</div>
+                <table class="table table-sm table-bordered mb-2">
+                    <thead style="background-color: #f0f0f0;">
                         <tr>
-                            <th>Cheque No.</th><th>Drawee Bank</th><th>Maturity Date</th>
+                            <th>Cheque No.</th>
+                            <th>Drawee Bank</th>
+                            <th>Cheque Date (Maturity)</th>
                             <th class="text-end">Amount</th>
                         </tr>
                     </thead>
@@ -39,50 +63,83 @@
                         <tr>
                             <td><span t-field="doc.cheque_number"/></td>
                             <td><span t-field="doc.bank_name"/></td>
-                            <td><span t-field="doc.cheque_date"/></td>
-                            <td class="text-end"><span t-field="doc.amount"
-                                t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
+                            <td><strong><span t-field="doc.cheque_date"/></strong></td>
+                            <td class="text-end"><strong><span t-field="doc.amount"
+                                t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></strong></td>
                         </tr>
                     </tbody>
                 </table>
-                <p><strong>Amount in words:</strong>
-                   <span t-out="doc.currency_id.amount_to_text(doc.amount)"/></p>
-                <p t-if="doc.invoice_id"><strong>Against invoice:</strong> <span t-field="doc.invoice_id"/></p>
+                <p class="mb-3"><strong>Amount in words:</strong>
+                    <span t-out="doc.currency_id.amount_to_text(doc.amount)"/></p>
 
-                <h5 class="mt-4">Cheque history</h5>
-                <table class="table table-sm table-bordered">
-                    <thead><tr><th>Stage</th><th>Date</th></tr></thead>
+                <!-- Purpose / references -->
+                <t t-if="doc.installment_id or doc.sale_contract_id or doc.tenancy_id or doc.rent_invoice_id or doc.invoice_id or doc.property_id">
+                    <div style="font-weight: bold; border-bottom: 1px solid #999; margin-bottom: 4px;">IN RESPECT OF</div>
+                    <table class="table table-sm table-borderless mb-3">
+                        <tr t-if="doc.property_id"><td style="width: 30%;">Property / Unit</td>
+                            <td><span t-field="doc.property_id.display_name"/></td></tr>
+                        <tr t-if="doc.sale_contract_id"><td>Sale contract</td>
+                            <td><span t-field="doc.sale_contract_id.display_name"/></td></tr>
+                        <tr t-if="doc.installment_id"><td>Installment</td>
+                            <td><span t-field="doc.installment_id.name"/></td></tr>
+                        <tr t-if="doc.tenancy_id"><td>Tenancy</td>
+                            <td><span t-field="doc.tenancy_id.display_name"/></td></tr>
+                        <tr t-if="doc.rent_invoice_id"><td>Rent invoice</td>
+                            <td><span t-field="doc.rent_invoice_id.display_name"/></td></tr>
+                        <tr t-if="doc.invoice_id"><td>Invoice / bill</td>
+                            <td><span t-field="doc.invoice_id.name"/></td></tr>
+                    </table>
+                </t>
+
+                <!-- Lifecycle -->
+                <div style="font-weight: bold; border-bottom: 1px solid #999; margin-bottom: 4px;">CHEQUE STATUS</div>
+                <table class="table table-sm table-bordered mb-3">
+                    <thead style="background-color: #f0f0f0;">
+                        <tr><th>Received / Issued</th><th>Maturity</th><th>Deposited</th>
+                            <th>Cleared</th><th>Bounced</th><th>Current Status</th></tr>
+                    </thead>
                     <tbody>
-                        <tr><td><t t-if="is_in">Received</t><t t-else="">Issued</t></td>
-                            <td><span t-field="doc.received_date"/></td></tr>
-                        <tr><td>Maturity date</td><td><span t-field="doc.cheque_date"/></td></tr>
-                        <tr><td>Deposited</td>
-                            <td><span t-if="doc.deposit_date" t-field="doc.deposit_date"/><span t-else="">-</span></td></tr>
-                        <tr><td>Cleared</td>
-                            <td><span t-if="doc.clear_date" t-field="doc.clear_date"/><span t-else="">-</span></td></tr>
-                        <tr t-if="doc.bounce_date"><td>Bounced</td>
-                            <td><span t-field="doc.bounce_date"/> - <span t-field="doc.bounce_reason"/></td></tr>
-                        <tr t-if="doc.returned_date"><td>Returned</td>
-                            <td><span t-field="doc.returned_date"/></td></tr>
+                        <tr>
+                            <td><span t-field="doc.received_date"/></td>
+                            <td><span t-field="doc.cheque_date"/></td>
+                            <td><t t-if="doc.deposit_date"><span t-field="doc.deposit_date"/></t><t t-else="">-</t></td>
+                            <td><t t-if="doc.clear_date"><span t-field="doc.clear_date"/></t><t t-else="">-</t></td>
+                            <td><t t-if="doc.bounce_date"><span t-field="doc.bounce_date"/></t><t t-else="">-</t></td>
+                            <td><strong><span t-field="doc.state"/></strong></td>
+                        </tr>
                     </tbody>
                 </table>
+                <p t-if="doc.bounce_reason"><strong>Bounce reason:</strong> <span t-field="doc.bounce_reason"/></p>
 
-                <p class="text-muted small mt-3">
-                    This is an acknowledgement of the cheque above only. It is not a payment receipt
-                    until the cheque is cleared by the bank.
+                <!-- Terms -->
+                <p class="small text-muted mb-4" style="border-top: 1px solid #ddd; padding-top: 6px;">
+                    <t t-if="is_in">
+                        This receipt acknowledges receipt of the post-dated cheque described above. It is
+                        not a receipt for payment: the amount is credited only when the cheque is
+                        honoured by the bank. If the cheque is dishonoured, this receipt is void and the
+                        amount remains due.
+                    </t>
+                    <t t-else="">
+                        This voucher records the issue of the post-dated cheque described above. The
+                        payment is complete only when the cheque is presented and honoured by the bank.
+                    </t>
                 </p>
 
-                <div class="row mt-5">
-                    <div class="col-6">
-                        <div style="border-top: 1px solid #000; width: 80%; padding-top: 4px;">
-                            <t t-if="is_in">Received by (<span t-out="doc.user_id.name"/>)</t>
-                            <t t-else="">Issued by (<span t-out="doc.user_id.name"/>)</t>
+                <!-- Signatures -->
+                <div class="row" style="margin-top: 40px;">
+                    <div class="col-4">
+                        <div style="border-top: 1px solid #000; padding-top: 4px;">
+                            <t t-if="is_in">Received by</t><t t-else="">Prepared by</t>
+                            <t t-if="doc.user_id"> (<span t-out="doc.user_id.name"/>)</t>
                         </div>
                     </div>
-                    <div class="col-6">
-                        <div style="border-top: 1px solid #000; width: 80%; padding-top: 4px;">
-                            <t t-if="is_in">Customer signature</t><t t-else="">Vendor / payee signature</t>
+                    <div class="col-4">
+                        <div style="border-top: 1px solid #000; padding-top: 4px;">
+                            <t t-if="is_in">Customer signature</t><t t-else="">Payee signature</t>
                         </div>
+                    </div>
+                    <div class="col-4">
+                        <div style="border-top: 1px solid #000; padding-top: 4px;">Company stamp</div>
                     </div>
                 </div>
             </div>
