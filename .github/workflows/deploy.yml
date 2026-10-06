@@ -14,12 +14,13 @@ jobs:
       - name: Deploy to VPS
         run: |
           echo "Auto-deploy triggered by push to master"
-          echo "Add your deployment commands here, e.g.:"
-          echo "  ssh vps-root 'docker compose pull && docker compose up -d'"
+          echo "Deploying to ${VPS_HOST} as ${VPS_USER}"
+          ssh -o StrictHostKeyChecking=no -p 22 ${VPS_USER}@${VPS_HOST} "cd ${WORKTREE_FOLDER} && git pull && docker compose pull && docker compose up -d"
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_USER: ${{ secrets.VPS_USER }}
           VPS_KEY: ${{ secrets.VPS_SSH_KEY }}
+          WORKTREE_FOLDER: ${{ secrets.WORKTREE_FOLDER }}
 
       - name: Notify
         run: |
