@@ -11,20 +11,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -p 22 ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
+
       - name: Deploy to VPS
         run: |
           echo "Auto-deploy triggered by push to master"
-          echo "Deploying to ${VPS_HOST} as ${VPS_USER}"
-          ssh -o StrictHostKeyChecking=no -p 22 ${VPS_USER}@${VPS_HOST} "cd ${WORKTREE_FOLDER} && git pull && docker compose pull && docker compose up -d"
-        env:
-          VPS_HOST: ${{ secrets.VPS_HOST }}
-          VPS_USER: ${{ secrets.VPS_USER }}
-          VPS_KEY: ${{ secrets.VPS_SSH_KEY }}
-          WORKTREE_FOLDER: ${{ secrets.WORKTREE_FOLDER }}
+          echo "Deploying to ${{ secrets.VPS_HOST }} as ${{ secrets.VPS_USER }}"
+          ssh -o StrictHostKeyChecking=no -p 22 -i ~/.ssh/deploy_key ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "cd ${{ secrets.WORKTREE_FOLDER }} && git pull && docker compose pull && docker compose up -d"
 
-      - name: Notify
+      - name: Notify Telegram
         run: |
-          echo "Deployment complete! Commit: ${{ github.sha }}"
-          echo "Pushed by: ${{ github.actor }}"
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+            -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
+            -d text="✅ Deploy complete! Commit: ${{ github.sha }} by ${{ github.actor }}"
