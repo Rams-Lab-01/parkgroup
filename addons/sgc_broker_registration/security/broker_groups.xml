@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="module_category_broker_registration" model="ir.module.category">
+            <field name="name">Broker Registration</field>
+        </record>
+        <record id="res_groups_privilege_broker_registration" model="res.groups.privilege">
+            <field name="name">Broker Registration</field>
+            <field name="category_id" ref="module_category_broker_registration"/>
+        </record>
+        <record id="group_broker_officer" model="res.groups">
+            <field name="name">Compliance Officer</field>
+            <field name="privilege_id" ref="res_groups_privilege_broker_registration"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+        <record id="group_broker_manager" model="res.groups">
+            <field name="name">Compliance Manager</field>
+            <field name="privilege_id" ref="res_groups_privilege_broker_registration"/>
+            <field name="implied_ids" eval="[(4, ref('group_broker_officer'))]"/>
+        </record>
+
+        <!-- The administrator can use the app straight after installation -->
+        <record id="base.user_admin" model="res.users">
+            <field name="group_ids" eval="[(4, ref('group_broker_manager'))]"/>
+        </record>
+        <record id="base.user_root" model="res.users">
+            <field name="group_ids" eval="[(4, ref('group_broker_manager'))]"/>
+        </record>
+    </data>
+</odoo>
