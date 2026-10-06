@@ -1,0 +1,92 @@
+from datetime import timedelta
+
+from odoo import fields
+from odoo.exceptions import UserError
+from odoo.tests import TransactionCase, tagged
+
+
+@tagged('post_install', '-at_install')
+class TestPdcCheque(TransactionCase):
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.partner = cls.env['res.partner'].create({'name': 'PDC Tenant'})
+        cls.journal = cls.env['account.journal'].search(
+            [('type', '=', 'bank'), ('company_id', '=', cls.env.company.id)], limit=1)
+        cls.today = fields.Date.context_today(cls.env['sgc.pdc.cheque'])
+
+    def _cheque(self, days=0, **kw):
+        vals = {
+            'partner_id': self.partner.id,
+            'cheque_number': 'CHQ%s' % self.env['sgc.pdc.cheque'].search_count([]),
+            'bank_name': 'Test Bank',
+            'cheque_date': self.today + timedelta(days=days),
+            'amount': 1000.0,
+            'journal_id': self.journal.id,
+        }
+        vals.update(kw)
+        return self.env['sgc.pdc.cheque'].create(vals)
+
+    def test_workflow_and_payment(self):
+        chq = self._cheque()
+        self.assertNotEqual(chq.name, 'New')
+        chq.action_register()
+        chq.action_deposit()
+        self.assertEqual(chq.state, 'deposited')
+        chq.action_clear()
+        self.assertEqual(chq.state, 'cleared')
+        self.assertTrue(chq.payment_id)
+        self.assertEqual(chq.payment_id.amount, 1000.0)
+
+    def test_clear_registers_payment_on_invoice(self):
+        inv = self.env['account.move'].create({
+            'move_type': 'out_invoice', 'partner_id': self.partner.id,
+            'invoice_date': self.today,
+            'invoice_line_ids': [(0, 0, {'name': 'Rent', 'quantity': 1, 'price_unit': 1000.0})],
+        })
+        inv.action_post()
+        chq = self._cheque(invoice_id=inv.id)
+        chq.action_register()
+        chq.action_clear()
+        self.assertIn(inv.payment_state, ('paid', 'in_payment'))
+
+    def test_bounce_requires_reason_flow(self):
+        chq = self._cheque()
+        chq.action_register()
+        chq._do_bounce('Insufficient funds')
+        self.assertEqual(chq.state, 'bounced')
+        self.assertTrue(chq.activity_ids)
+
+    def test_invalid_transitions(self):
+        chq = self._cheque()
+        with self.assertRaises(UserError):
+            chq.action_deposit()
+
+    def test_cron_notifies_once(self):
+        up = self._cheque(days=3)
+        mat = self._cheque(days=-1)
+        far = self._cheque(days=60)
+        (up | mat | far).action_register()
+        self.env['sgc.pdc.cheque']._cron_notify_cheques()
+        self.assertTrue(up.upcoming_notified)
+        self.assertTrue(mat.matured_notified)
+        self.assertFalse(far.upcoming_notified or far.matured_notified)
+        self.assertTrue(up.activity_ids and mat.activity_ids)
+        n = len(up.activity_ids)
+        self.env['sgc.pdc.cheque']._cron_notify_cheques()
+        self.assertEqual(len(up.activity_ids), n)
+
+    def test_date_change_rearms_notification(self):
+        chq = self._cheque(days=3)
+        chq.action_register()
+        self.env['sgc.pdc.cheque']._cron_notify_cheques()
+        self.assertTrue(chq.upcoming_notified)
+        chq.cheque_date = self.today + timedelta(days=5)
+        self.assertFalse(chq.upcoming_notified)
+
+    def test_delete_only_draft(self):
+        chq = self._cheque()
+        chq.action_register()
+        with self.assertRaises(UserError):
+            chq.unlink()
