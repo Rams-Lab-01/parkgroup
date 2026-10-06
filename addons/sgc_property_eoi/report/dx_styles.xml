@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Shared design system for EOI + Booking documents. wkhtmltopdf-safe: tables only, no flex/grid. -->
+    <template id="dx_styles">
+        <style>
+            .dx { font-family: 'Helvetica Neue', Helvetica, Arial, 'DejaVu Sans', sans-serif; font-size: 9.5pt; color: #2b2f36; line-height: 1.4; }
+            .dx table { width: 100%; border-collapse: collapse; }
+            .dx td, .dx th { vertical-align: top; border: 0; background: transparent; }
+            .dx table { border: 0; margin: 0; }
+            .dx .dx-head { border-bottom: 2px solid #1b2a41; padding-bottom: 8px; }
+            .dx .dx-brand { font-size: 15pt; font-weight: bold; color: #1b2a41; letter-spacing: 0.5px; }
+            .dx .dx-sub { color: #6b7280; font-size: 8pt; }
+            .dx .dx-title { text-align: center; margin: 14px 0 4px 0; font-size: 17pt; letter-spacing: 3px; font-weight: bold; color: #1b2a41; }
+            .dx .dx-rule { height: 0; border-top: 1px solid #b08d57; margin: 0 auto 12px auto; width: 120px; }
+            .dx .dx-meta td { padding: 2px 6px; font-size: 9pt; }
+            .dx .dx-meta .k { color: #6b7280; width: 28%; }
+            .dx .dx-card { border: 1px solid #d5d9e0; border-top: 3px solid #1b2a41; padding: 8px 10px; margin-bottom: 10px; page-break-inside: avoid; }
+            .dx .dx-card h4 { margin: 0 0 6px 0; font-size: 9.5pt; letter-spacing: 1.5px; text-transform: uppercase; color: #b08d57; }
+            .dx table.dx-kv td { padding: 2px 0; border-bottom: 1px solid #eef0f3; }
+            .dx .dx-kv .k { color: #6b7280; width: 38%; padding-right: 6px; }
+            .dx .dx-kv .v { color: #111827; font-weight: 600; word-wrap: break-word; }
+            .dx .dx-two { width: 100%; }
+            .dx .dx-two > tbody > tr > td { width: 50%; }
+            .dx .dx-amount { background: #f4f1ea; border: 1px solid #e2d9c5; padding: 8px 10px; margin-bottom: 10px; page-break-inside: avoid; }
+            .dx .dx-amount .big { font-size: 15pt; font-weight: bold; color: #1b2a41; }
+            .dx .dx-break { page-break-inside: auto; }
+            .dx .dx-notice { border-left: 3px solid #b08d57; background: #faf8f3; padding: 6px 10px; margin-bottom: 10px; font-size: 8.5pt; page-break-inside: avoid; }
+            .dx ol.dx-terms { margin: 4px 0 0 18px; padding: 0; font-size: 8.5pt; }
+            .dx ol.dx-terms li { margin-bottom: 3px; }
+            .dx .dx-sign td { width: 50%; padding-top: 34px; }
+            .dx .dx-sign .line { border-top: 1px solid #1b2a41; padding-top: 3px; font-size: 8.5pt; color: #6b7280; margin-right: 24px; }
+            .dx .dx-badge { display: inline-block; padding: 2px 10px; border: 1px solid #1b2a41; color: #1b2a41; font-size: 8pt; letter-spacing: 1px; text-transform: uppercase; }
+            .dx .dx-void { color: #9b1c1c; border-color: #9b1c1c; }
+            .dx .r { text-align: right; }
+            .dx table.dx-grid th { background: #1b2a41; color: #fff; font-size: 8.5pt; padding: 4px 6px; text-align: left; }
+            .dx table.dx-grid td { padding: 4px 6px; border-bottom: 1px solid #e5e7eb; }
+            .dx-foot table td { border: 0; }
+            .dx-foot { font-family: 'Helvetica Neue', Helvetica, Arial, 'DejaVu Sans', sans-serif; font-size: 7.5pt; color: #6b7280; border-top: 1px solid #b08d57; padding-top: 4px; }
+        </style>
+    </template>
+
+    <template id="dx_header">
+        <div class="header dx">
+            <t t-call="sgc_property_eoi.dx_styles"/>
+            <table class="dx-head"><tr>
+                <td style="width:60%">
+                    <div class="dx-brand"><t t-out="company.name"/></div>
+                    <div class="dx-sub">
+                        <t t-out="', '.join([x for x in [company.street, company.city, company.country_id.name] if x])"/>
+                    </div>
+                </td>
+                <td class="r dx-sub">
+                    <div t-if="company.phone"><t t-out="company.phone"/></div>
+                    <div t-if="company.email"><t t-out="company.email"/></div>
+                    <div t-if="company.website"><t t-out="company.website"/></div>
+                </td>
+            </tr></table>
+        </div>
+    </template>
+
+    <template id="dx_footer">
+        <div class="footer dx">
+            <t t-call="sgc_property_eoi.dx_styles"/>
+            <div class="dx-foot">
+                <table><tr>
+                    <td><t t-out="footer"/></td>
+                    <td class="r" style="width:90px; white-space:nowrap">Page <span class="page"/> / <span class="topage"/></td>
+                </tr></table>
+            </div>
+        </div>
+    </template>
+</odoo>

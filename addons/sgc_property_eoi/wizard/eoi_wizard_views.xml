@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="property_eoi_cancel_wizard_form" model="ir.ui.view">
+        <field name="name">property.eoi.cancel.wizard.form</field>
+        <field name="model">property.eoi.cancel.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Cancel / Release EOI">
+                <field name="eoi_id" invisible="1"/>
+                <field name="currency_id" invisible="1"/>
+                <div class="alert alert-info" role="alert">
+                    Cancelling releases the unit back to Available. Any payment already received stays in
+                    Accounting and must be refunded or re-allocated there.
+                </div>
+                <group>
+                    <field name="paid" widget="monetary"/>
+                    <field name="reason" placeholder="Why is this EOI being cancelled / released?"/>
+                </group>
+                <footer>
+                    <button string="Cancel EOI" type="object" name="action_confirm" class="btn btn-danger"/>
+                    <button string="Discard" special="cancel" class="btn btn-outline-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="property_eoi_payment_wizard_form" model="ir.ui.view">
+        <field name="name">property.eoi.payment.wizard.form</field>
+        <field name="model">property.eoi.payment.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Record EOI Payment">
+                <field name="eoi_id" invisible="1"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="company_id" invisible="1"/>
+                <group>
+                    <group>
+                        <field name="amount" widget="monetary"/>
+                        <field name="date"/>
+                        <field name="journal_id" options="{'no_create': True}"/>
+                    </group>
+                    <group>
+                        <field name="payment_mode"/>
+                        <field name="reference"/>
+                    </group>
+                </group>
+                <footer>
+                    <button string="Record Payment" type="object" name="action_record" class="btn btn-primary"/>
+                    <button string="Discard" special="cancel" class="btn btn-outline-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="property_sale_cancel_wizard_form" model="ir.ui.view">
+        <field name="name">property.sale.cancel.wizard.form</field>
+        <field name="model">property.sale.cancel.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Cancel Confirmed Sale">
+                <field name="booking_id" invisible="1"/>
+                <field name="currency_id" invisible="1"/>
+                <div class="alert alert-danger" role="alert">
+                    This unit is a Confirmed Sale. Cancelling returns it to Available and cancels the contract.
+                    Payments are not reversed - handle any refund in Accounting.
+                </div>
+                <group>
+                    <field name="paid" widget="monetary"/>
+                    <field name="reason" placeholder="Mandatory reason (audited)"/>
+                </group>
+                <footer>
+                    <button string="Cancel Confirmed Sale" type="object" name="action_confirm" class="btn btn-danger"/>
+                    <button string="Discard" special="cancel" class="btn btn-outline-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="sale_record_payment_wizard_form_eoi" model="ir.ui.view">
+        <field name="name">sale.record.payment.wizard.form.eoi</field>
+        <field name="model">sale.record.payment.wizard</field>
+        <field name="inherit_id" ref="sgc_offplan_rental_property_management.sale_record_payment_wizard_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='payment_date']" position="after">
+                <field name="company_id" invisible="1"/>
+                <field name="journal_id" options="{'no_create': True}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

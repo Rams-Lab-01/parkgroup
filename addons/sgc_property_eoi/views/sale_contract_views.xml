@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sale_contract_form_view_eoi" model="ir.ui.view">
+        <field name="name">sale.contract.form.eoi</field>
+        <field name="model">sale.contract</field>
+        <field name="inherit_id" ref="sgc_offplan_rental_property_management.sale_contract_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_sign']" position="before">
+                <button name="action_issue_spa" string="Issue SPA" type="object" class="btn-primary"
+                        invisible="state not in ('confirmed','draft')"/>
+            </xpath>
+            <xpath expr="//button[@name='action_sign']" position="attributes">
+                <attribute name="string">Mark SPA Signed</attribute>
+                <attribute name="invisible">state not in ('spa_issued','draft')</attribute>
+            </xpath>
+            <xpath expr="//field[@name='state'][@widget='statusbar']" position="attributes">
+                <attribute name="statusbar_visible">eoi,booked,confirmed,spa_issued,signed,completed</attribute>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="after">
+                <group invisible="not eoi_id and not booking_id">
+                    <group>
+                        <field name="eoi_id"/>
+                        <field name="booking_id"/>
+                    </group>
+                    <group><field name="unit_state"/></group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>
