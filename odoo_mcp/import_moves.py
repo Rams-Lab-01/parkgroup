@@ -101,7 +101,7 @@ class Ctx:
         self.mapping = json.loads((ROOT / "target_mapping_2026-10-06.json").read_text(encoding="utf-8"))
         self.creation = json.loads((ROOT / args.creation).read_text(encoding="utf-8"))
         self.readiness = json.loads((ROOT / "readiness_2026-10-06.json").read_text(encoding="utf-8"))
-        self.state_path = ROOT / f"import_map_{args.db}.json"
+        self.state_path = ROOT / (args.state or f"import_map_{args.db}.json")
         self.state = json.loads(self.state_path.read_text(encoding="utf-8")) if self.state_path.exists() else {}
         self.state.setdefault("maps", {})
         self.state.setdefault("verified", {})
@@ -597,6 +597,7 @@ def main():
     ap.add_argument("--tax-mode", choices=["recompute", "raw"], default="recompute")
     ap.add_argument("--old-ids", default="")
     ap.add_argument("--creation", default="creation_map_rehearsal.json")
+    ap.add_argument("--state", default="", help="state file override (parallel runs)")
     ap.add_argument("--payments", action="store_true", help="include payments")
     ap.add_argument("--all", action="store_true", help="moves + payments")
     args = ap.parse_args()
