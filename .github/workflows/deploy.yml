@@ -1,0 +1,29 @@
+name: Deploy & Notify
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy to VPS
+        run: |
+          echo "Auto-deploy triggered by push to master"
+          echo "Add your deployment commands here, e.g.:"
+          echo "  ssh vps-root 'docker compose pull && docker compose up -d'"
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_KEY: ${{ secrets.VPS_SSH_KEY }}
+
+      - name: Notify
+        run: |
+          echo "Deployment complete! Commit: ${{ github.sha }}"
+          echo "Pushed by: ${{ github.actor }}"
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
