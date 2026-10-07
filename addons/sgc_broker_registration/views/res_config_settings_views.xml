@@ -17,6 +17,7 @@
                     <field name="sgc_broker_extra_notify_emails" placeholder="compliance@company.com"/>
                 </group>
                 <group string="Portal">
+                    <field name="sgc_broker_open_signup"/>
                     <field name="sgc_broker_max_upload_mb"/>
                     <field name="sgc_broker_max_registrations_per_ip_hour"/>
                 </group>

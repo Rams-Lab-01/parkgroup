@@ -155,6 +155,7 @@ class SgcBrokerApplication(models.Model):
     code_expiry = fields.Datetime(copy=False)
     code_attempts = fields.Integer(copy=False)
     code_last_sent = fields.Datetime(copy=False)
+    resume_last_sent = fields.Datetime(copy=False)
     code_window_start = fields.Datetime(copy=False)
     code_sends_in_window = fields.Integer(copy=False)
 
