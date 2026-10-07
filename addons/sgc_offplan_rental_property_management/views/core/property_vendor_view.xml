@@ -65,6 +65,7 @@
                             <field name="customer_id"/>
                             <field name="vendor_id"/>
                             <field name="broker_id"/>
+                            <field name="salesperson_id"/>
                             <field name="contract_date"/>
                             <field name="sale_type" widget="radio" options="{'horizontal': true}"/>
                         </group>
