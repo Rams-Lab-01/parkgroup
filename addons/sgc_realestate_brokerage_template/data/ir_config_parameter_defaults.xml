@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    SGC Realestate Brokerage Template — ir.config_parameter defaults
+
+    These defaults are **placeholders**, intentionally not real values.
+
+    They exist so a fresh tenant gets a *deterministic, audit-safe* starting
+    state. Real values are set by the per-tenant onboarding wizard (sibling
+    addon `sgc_realestate_brokerage_onboarding`) before the tenant is
+    activated.
+
+    The names follow the convention documented in
+    `docs/audit/HARDCODED_COUPLING.md`.
+-->
+<odoo>
+    <data noupdate="1">
+
+        <!-- M1 — `web.base.url` is no longer hardcoded; here we ship an
+             empty placeholder so `tools/audit_coupling_lint.py` does not
+             complain about its absence on a fresh install.
+             IMPORTANT: do NOT set the placeholder to a loopback URL. -->
+        <!-- audit-lint: disable=tier1/localhost -->
+        <record id="default_base_url" model="ir.config_parameter">
+            <field name="key">sgc.brokerage.default.base_url</field>
+            <field name="value"></field>
+        </record>
+
+        <!-- M5 — meeting AI workspace account placeholder.
+             IMPORTANT: do NOT set this to a real workspace email here. -->
+        <!-- audit-lint: disable=tier1/email, tier1/meeting_ai_workspace -->
+        <record id="default_meeting_workspace" model="ir.config_parameter">
+            <field name="key">sgc.meeting_ai.workspace_account</field>
+            <field name="value"></field>
+        </record>
+
+        <!-- M1 — lead-scoring endpoint placeholder. -->
+        <record id="default_lead_score_endpoint" model="ir.config_parameter">
+            <field name="key">sgc.lead_scoring.endpoint</field>
+            <field name="value"></field>
+        </record>
+
+        <!-- Tenant-level namespaced placeholders (per-tenant). -->
+        <record id="default_contact_email" model="ir.config_parameter">
+            <field name="key">sgc.brokerage.default.contact_email</field>
+            <field name="value"></field>
+        </record>
+        <record id="default_compliance_email" model="ir.config_parameter">
+            <field name="key">sgc.brokerage.default.compliance_email</field>
+            <field name="value"></field>
+        </record>
+
+        <!-- Compliance keys (explicit no-default for sensitive
+             credential-bearing parameters). -->
+        <record id="default_aml_quiet" model="ir.config_parameter">
+            <field name="key">sgc.aml_compliance.quiet_log</field>
+            <field name="value">False</field>
+        </record>
+        <record id="default_kyc_require_2fa" model="ir.config_parameter">
+            <field name="key">sgc.kyc_management.require_2fa</field>
+            <field name="value">True</field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,27 @@
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+access_sgc_brokerage_tenant_manager,"sgc.brokerage.tenant manager",model_sgc_brokerage_tenant,group_realestate_brokerage_manager,1,1,1,1
+access_sgc_brokerage_tenant_user,"sgc.brokerage.tenant user",model_sgc_brokerage_tenant,group_realestate_brokerage_user,1,0,0,0
+access_sgc_brokerage_tenant_audit,"sgc.brokerage.tenant audit",model_sgc_brokerage_tenant,group_realestate_audit_reviewer,1,0,0,0
+access_sgc_brokerage_kit_manager,"sgc.brokerage.kit manager",model_sgc_brokerage_kit,group_realestate_brokerage_manager,1,1,1,1
+access_sgc_brokerage_kit_user,"sgc.brokerage.kit user",model_sgc_brokerage_kit,group_realestate_brokerage_user,1,0,0,0
+access_sgc_brokerage_kit_line_manager,"sgc.brokerage.kit.line manager",model_sgc_brokerage_kit_line,group_realestate_brokerage_manager,1,1,1,1
+access_sgc_brokerage_kit_line_user,"sgc.brokerage.kit.line user",model_sgc_brokerage_kit_line,group_realestate_brokerage_user,1,0,0,0
+access_re_unit_manager,"re.unit manager",model_re_unit,group_realestate_brokerage_manager,1,1,1,1
+access_re_unit_user,"re.unit user",model_re_unit,group_realestate_brokerage_user,1,1,1,0
+access_re_unit_audit,"re.unit audit",model_re_unit,group_realestate_audit_reviewer,1,0,0,0
+access_sgc_integration_source_manager,"sgc.integration.source manager",model_sgc_integration_source,group_realestate_brokerage_manager,1,1,1,1
+access_sgc_integration_source_user,"sgc.integration.source user",model_sgc_integration_source,group_realestate_brokerage_user,1,0,0,0
+access_sgc_migration_source_map_manager,"sgc.migration.source_map manager",model_sgc_migration_source_map,group_realestate_brokerage_manager,1,1,1,1
+access_sgc_migration_run_manager,"sgc.migration.run manager",model_sgc_migration_run,group_realestate_brokerage_manager,1,1,1,1
+access_sgc_migration_run_log_manager,"sgc.migration.run.log manager",model_sgc_migration_run_log,group_realestate_brokerage_manager,1,1,1,1
+access_sgc_strategy_layer_priority_manager,"sgc.strategy.layer_priority manager",model_sgc_strategy_layer_priority,group_realestate_brokerage_manager,1,1,1,1
+access_sgc_strategy_layer_priority_audit,"sgc.strategy.layer_priority audit",model_sgc_strategy_layer_priority,group_realestate_audit_reviewer,1,0,0,0
+access_sgc_compliance_event_manager,"sgc.compliance.event manager",model_sgc_compliance_event,group_realestate_brokerage_manager,1,1,1,1
+access_sgc_compliance_event_user,"sgc.compliance.event user",model_sgc_compliance_event,group_realestate_brokerage_user,1,1,1,0
+access_sgc_compliance_event_audit,"sgc.compliance.event audit",model_sgc_compliance_event,group_realestate_audit_reviewer,1,0,0,0
+access_sgc_brokerage_incident_manager,"sgc.brokerage.incident manager",model_sgc_brokerage_incident,group_realestate_brokerage_manager,1,1,1,1
+access_sgc_brokerage_incident_user,"sgc.brokerage.incident user",model_sgc_brokerage_incident,group_realestate_brokerage_user,1,1,1,0
+access_sgc_brokerage_incident_audit,"sgc.brokerage.incident audit",model_sgc_brokerage_incident,group_realestate_audit_reviewer,1,0,0,0
+access_sgc_wa_log_manager,"sgc.wa_log manager",model_sgc_wa_log,group_realestate_brokerage_manager,1,1,1,1
+access_sgc_wa_log_user,"sgc.wa_log user",model_sgc_wa_log,group_realestate_brokerage_user,1,1,1,0
+access_sgc_wa_log_audit,"sgc.wa_log audit",model_sgc_wa_log,group_realestate_audit_reviewer,1,0,0,0

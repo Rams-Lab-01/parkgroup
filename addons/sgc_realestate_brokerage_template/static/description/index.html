@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>SGC Realestate Brokerage Template</title>
+    <style>
+        body { font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+               max-width: 920px; margin: 2em auto; padding: 0 1em;
+               color: #1f2937; }
+        h1, h2 { color: #0f172a; }
+        .kit { background: #f1f5f9; padding: 1em; border-radius: 0.5em;
+               margin: 0.5em 0; }
+        .hold { color: #b91c1c; font-weight: bold; }
+        code { background: #e2e8f0; padding: 0.1em 0.4em; border-radius: 0.2em; }
+    </style>
+</head>
+<body>
+
+<h1>SGC Realestate Brokerage Template</h1>
+
+<p>Reusable, audit-driven template for real-estate brokerage tenants. The
+template is a <em>tenant skeleton</em> (per-tenant record, kit selection,
+preflight, audit-safe defaults) — not a full ERP.</p>
+
+<h2>What it gives you</h2>
+<ul>
+    <li>Per-tenant <code>sgc.brokerage.tenant</code> with enablement flags.</li>
+    <li>Three pre-baked kits:
+        <code>brokerage_core</code>, <code>offplan_rental</code>,
+        <code>growth</code>.</li>
+    <li>Audit-driven preflight (M1, M3, M5, M0) gating tenant activation.</li>
+    <li>Audit-safe <code>ir.config_parameter</code> defaults — no hardcoded
+        tenant workspace-account, contact email, or
+        localhost fallback values.</li> <!-- audit-lint: disable=tier1/localhost, tier1/meeting_ai_workspace, tier1/email -->
+</ul>
+
+<h2>What it does <em>not</em> depend on</h2>
+<p>Per the SGC audit <em>30_QUARANTINE/</em> hold list, the template's
+<code>depends</code> list explicitly <em>excludes</em>:</p>
+<ul class="hold">
+    <li><code>ks_dynamic_financial_report</code></li>
+    <li><code>sgc_crm_dashboard</code></li>
+    <li><code>sgc_lead_scoring</code></li>
+    <li><code>sgc_rental_management</code></li>
+    <li><code>sgc_construction_management</code></li>
+</ul>
+
+<h2>Companion documents</h2>
+<ul>
+    <li><code>docs/REAL_ESTATE_BROKERAGE_ROLLOUT.md</code></li>
+    <li><code>docs/audit/MODULE_PROVENANCE.md</code></li>
+    <li><code>docs/audit/MULTI_TENANT_BLOCKERS.md</code></li>
+    <li><code>docs/audit/HARDCODED_COUPLING.md</code></li>
+    <li><code>tools/audit_coupling_lint.py</code></li>
+</ul>
+
+<p>License: LGPL-3.</p>
+
+</body>
+</html>

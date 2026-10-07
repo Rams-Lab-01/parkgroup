@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    SGC Realestate Brokerage Template — pre-baked brokerage kits
+
+    These kits are the **menus-of-options** the rollout playbook
+    (`docs/REAL_ESTATE_BROKERAGE_ROLLOUT.md`) references per phase.
+-->
+<odoo>
+    <data noupdate="1">
+
+        <!-- Kit: brokerage-core (default) -->
+        <record id="kit_brokerage_core" model="sgc.brokerage.kit">
+            <field name="name">Brokerage core</field>
+            <field name="code">brokerage_core</field>
+            <field name="sequence">10</field>
+            <field name="vertical">brokerage</field>
+            <field name="doc_url">docs/REAL_ESTATE_BROKERAGE_ROLLOUT.md#phase-2-foundation</field>
+            <field name="description"><![CDATA[
+                <p>Default-kit for any real-estate brokerage tenant. Foundation
+                addons + sale / CRM / listing / appraisal / commission / report.
+                Excludes all held modules.</p>
+            ]]></field>
+        </record>
+        <record id="kit_line_brokerage_core_crm" model="sgc.brokerage.kit.line">
+            <field name="kit_id" ref="kit_brokerage_core"/>
+            <field name="sequence">10</field>
+            <field name="addon">crm</field>
+            <field name="purpose">foundation</field>
+            <field name="rollover_note">Standard CRM — community-supported.</field>
+        </record>
+        <record id="kit_line_brokerage_core_sale" model="sgc.brokerage.kit.line">
+            <field name="kit_id" ref="kit_brokerage_core"/>
+            <field name="sequence">20</field>
+            <field name="addon">sale_management</field>
+            <field name="purpose">foundation</field>
+        </record>
+        <record id="kit_line_brokerage_core_appraisal" model="sgc.brokerage.kit.line">
+            <field name="kit_id" ref="kit_brokerage_core"/>
+            <field name="sequence">30</field>
+            <field name="addon">sgc_appraisal</field>
+            <field name="purpose">vertical</field>
+            <field name="rollover_note">Audit-cleared (see docs/audit/MODULE_PROVENANCE.md).</field>
+        </record>
+        <record id="kit_line_brokerage_core_deals" model="sgc.brokerage.kit.line">
+            <field name="kit_id" ref="kit_brokerage_core"/>
+            <field name="sequence">40</field>
+            <field name="addon">sgc_deals_management</field>
+            <field name="purpose">vertical</field>
+        </record>
+        <record id="kit_line_brokerage_core_report" model="sgc.brokerage.kit.line">
+            <field name="kit_id" ref="kit_brokerage_core"/>
+            <field name="sequence">50</field>
+            <field name="addon">sgc_dynamic_financial_report</field>
+            <field name="purpose">reporting</field>
+            <field name="rollover_note">Use `sgc_dynamic_financial_report` — NOT
+            `ks_dynamic_financial_report` (quarantined).</field>
+        </record>
+        <record id="kit_line_brokerage_core_aml" model="sgc.brokerage.kit.line">
+            <field name="kit_id" ref="kit_brokerage_core"/>
+            <field name="sequence">60</field>
+            <field name="addon">aml_compliance</field>
+            <field name="purpose">compliance</field>
+        </record>
+        <record id="kit_line_brokerage_core_kyc" model="sgc.brokerage.kit.line">
+            <field name="kit_id" ref="kit_brokerage_core"/>
+            <field name="sequence">70</field>
+            <field name="addon">kyc_management</field>
+            <field name="purpose">compliance</field>
+            <field name="rollover_note">Parameterise contact / compliance email
+            per docs/audit/HARDCODED_COUPLING.md before activating.</field>
+        </record>
+        <record id="kit_line_brokerage_core_commission" model="sgc.brokerage.kit.line">
+            <field name="kit_id" ref="kit_brokerage_core"/>
+            <field name="sequence">80</field>
+            <field name="addon">sgc_commission</field>
+            <field name="purpose">vertical</field>
+            <field name="rollover_note">Required by sgc_offplan_rental_property_management.</field>
+        </record>
+        <record id="kit_line_brokerage_core_broker_reg" model="sgc.brokerage.kit.line">
+            <field name="kit_id" ref="kit_brokerage_core"/>
+            <field name="sequence">90</field>
+            <field name="addon">sgc_broker_registration</field>
+            <field name="purpose">vertical</field>
+            <field name="rollover_note">Only install for broker tenants. Omit if tenant_type is 'developer'.</field>
+        </record>
+        <record id="kit_line_brokerage_core_theme" model="sgc.brokerage.kit.line">
+            <field name="kit_id" ref="kit_brokerage_core"/>
+            <field name="sequence">100</field>
+            <field name="addon">sgc_ui_brand_palette</field>
+            <field name="purpose">foundation</field>
+        </record>
+        <record id="kit_line_brokerage_core_tokens" model="sgc.brokerage.kit.line">
+            <field name="kit_id" ref="kit_brokerage_core"/>
+            <field name="sequence">110</field>
+            <field name="addon">sgc_design_tokens</field>
+            <field name="purpose">foundation</field>
+        </record>
+
+        <!-- Kit: developer core -->
+        <record id="kit_developer_core" model="sgc.brokerage.kit">
+            <field name="name">Developer core</field>
+            <field name="code">developer_core</field>
+            <field name="sequence">20</field>
+            <field name="vertical">developer</field>
+            <field name="description"><![CDATA[
+                <p>Complete developer vertical: off-plan inventory, escrow bridge,
+                PDC &cheque management, EOI workflow, and land-authority
+                registration tracking. Requires the OPR dataset to be
+                pre-migrated.</p>
+            ]]></field>
+        </record>
+        <record id="kit_line_developer_opr" model="sgc.brokerage.kit.line">
+            <field name="kit_id" ref="kit_developer_core"/>
+            <field name="sequence">10</field>
+            <field name="addon">sgc_offplan_rental_property_management</field>
+            <field name="purpose">vertical</field>
+            <field name="rollover_note">Largest single module in the estate.
+            Verify OPR dataset is pre-migrated before installing.</field>
+        </record>
+        <record id="kit_line_developer_escrow" model="sgc.brokerage.kit.line">
+            <field name="kit_id" ref="kit_developer_core"/>
+            <field name="sequence">20</field>
+            <field name="addon">sgc_escrow</field>
+            <field name="purpose">vertical</field>
+        </record>
+        <record id="kit_line_developer_pdc" model="sgc.brokerage.kit.line">
+            <field name="kit_id" ref="kit_developer_core"/>
+            <field name="sequence">30</field>
+            <field name="addon">sgc_pdc_management</field>
+            <field name="purpose">vertical</field>
+        </record>
+        <record id="kit_line_developer_eoi" model="sgc.brokerage.kit.line">
+            <field name="kit_id" ref="kit_developer_core"/>
+            <field name="sequence">40</field>
+            <field name="addon">sgc_property_eoi_workflow</field>
+            <field name="purpose">vertical</field>
+        </record>
+        <record id="kit_line_developer_offplan_reg" model="sgc.brokerage.kit.line">
+            <field name="kit_id" ref="kit_developer_core"/>
+            <field name="sequence">50</field>
+            <field name="addon">sgc_offplan_registration</field>
+            <field name="purpose">vertical</field>
+            <field name="rollover_note">Requires EOI workflow as a dependency.</field>
+        </record>
+
+        <!-- Kit: growth -->
+        <record id="kit_growth" model="sgc.brokerage.kit">
+            <field name="name">Growth / broker portal</field>
+            <field name="code">growth</field>
+            <field name="sequence">30</field>
+            <field name="vertical">growth</field>
+            <field name="description"><![CDATA[
+                <p>Brochure lead-capture, scroll-hero, and brochure landing
+                pages for direct-to-broker growth campaigns.</p>
+            ]]></field>
+        </record>
+        <record id="kit_line_growth_leadcapture" model="sgc.brokerage.kit.line">
+            <field name="kit_id" ref="kit_growth"/>
+            <field name="sequence">10</field>
+            <field name="addon">sgc_brochure_leadcapture</field>
+            <field name="purpose">growth</field>
+        </record>
+        <record id="kit_line_growth_scroll_hero" model="sgc.brokerage.kit.line">
+            <field name="kit_id" ref="kit_growth"/>
+            <field name="sequence">20</field>
+            <field name="addon">sgc_scroll_hero_homepage</field>
+            <field name="purpose">growth</field>
+            <field name="rollover_note">Bundles GSAP — clear third-party
+            attribution in static/description/index.html.</field>
+        </record>
+
+    </data>
+</odoo>

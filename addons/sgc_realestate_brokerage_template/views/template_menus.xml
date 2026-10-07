@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <menuitem id="menu_realestate_root" name="Real Estate"
+                  groups="sgc_realestate_brokerage_template.group_realestate_brokerage_user"
+                  web_icon="sgc_realestate_brokerage_template,static/description/icon.png"
+                  sequence="20"/>
+
+        <menuitem id="menu_realestate_tenants"
+                  name="Tenants"
+                  parent="menu_realestate_root"
+                  groups="sgc_realestate_brokerage_template.group_realestate_brokerage_user"
+                  sequence="10"/>
+        <menuitem id="menu_realestate_tenants_action"
+                  name="Tenants"
+                  action="action_sgc_brokerage_tenant"
+                  parent="menu_realestate_tenants"
+                  groups="sgc_realestate_brokerage_template.group_realestate_brokerage_user"
+                  sequence="10"/>
+
+        <menuitem id="menu_realestate_kits"
+                  name="Kits"
+                  parent="menu_realestate_root"
+                  groups="sgc_realestate_brokerage_template.group_realestate_brokerage_manager"
+                  sequence="20"/>
+        <menuitem id="menu_realestate_kits_action"
+                  name="Kits"
+                  action="action_sgc_brokerage_kit"
+                  parent="menu_realestate_kits"
+                  groups="sgc_realestate_brokerage_template.group_realestate_brokerage_manager"
+                  sequence="10"/>
+
+        <menuitem id="menu_realestate_audit"
+                  name="Audit / Provenance"
+                  parent="menu_realestate_root"
+                  groups="sgc_realestate_brokerage_template.group_realestate_audit_reviewer"
+                  sequence="99"/>
+
+        <menuitem id="menu_realestate_audit_holds"
+                  name="Quarantined modules"
+                  action="action_realestate_audit_holds"
+                  parent="menu_realestate_audit"
+                  groups="sgc_realestate_brokerage_template.group_realestate_audit_reviewer"
+                  sequence="10"/>
+
+        <!-- Reconciled 33-unknowns containers, per
+             docs/research/DATA_EXTRACTION_NEXTGEN_PLATFORM_2026-08-31.md -->
+        <menuitem id="menu_realestate_units"
+                  name="Units"
+                  action="action_re_unit"
+                  parent="menu_realestate_root"
+                  groups="sgc_realestate_brokerage_template.group_realestate_brokerage_user"
+                  sequence="30"/>
+        <menuitem id="menu_realestate_integration_sources"
+                  name="Integration sources"
+                  action="action_sgc_integration_source"
+                  parent="menu_realestate_root"
+                  groups="sgc_realestate_brokerage_template.group_realestate_brokerage_manager"
+                  sequence="40"/>
+        <menuitem id="menu_realestate_migration_sources"
+                  name="Migration source maps"
+                  action="action_sgc_migration_source_map"
+                  parent="menu_realestate_root"
+                  groups="sgc_realestate_brokerage_template.group_realestate_brokerage_manager"
+                  sequence="41"/>
+        <menuitem id="menu_realestate_migration_runs"
+                  name="Migration runs"
+                  action="action_sgc_migration_run"
+                  parent="menu_realestate_root"
+                  groups="sgc_realestate_brokerage_template.group_realestate_brokerage_manager"
+                  sequence="42"/>
+        <menuitem id="menu_realestate_strategy_layers"
+                  name="Strategy layers"
+                  action="action_sgc_strategy_layer_priority"
+                  parent="menu_realestate_audit"
+                  groups="sgc_realestate_brokerage_template.group_realestate_brokerage_manager"
+                  sequence="20"/>
+        <menuitem id="menu_realestate_compliance_events"
+                  name="Compliance events"
+                  action="action_sgc_compliance_event"
+                  parent="menu_realestate_root"
+                  groups="sgc_realestate_brokerage_template.group_realestate_brokerage_user"
+                  sequence="50"/>
+        <menuitem id="menu_realestate_incidents"
+                  name="Incidents"
+                  action="action_sgc_brokerage_incident"
+                  parent="menu_realestate_root"
+                  groups="sgc_realestate_brokerage_template.group_realestate_brokerage_user"
+                  sequence="60"/>
+        <menuitem id="menu_realestate_wa_log"
+                  name="WhatsApp log"
+                  action="action_sgc_wa_log"
+                  parent="menu_realestate_root"
+                  groups="sgc_realestate_brokerage_template.group_realestate_brokerage_user"
+                  sequence="70"/>
+
+    </data>
+</odoo>

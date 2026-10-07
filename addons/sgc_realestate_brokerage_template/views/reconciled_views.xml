@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    SGC Realestate Brokerage Template — reconciled views.
+    See modules/sgc_brokerage_tenant_reconcile.py, re_unit.py,
+    ir_attachment_reconcile.py, and the six KPI/config model files
+    in models/. All views are tree+form (basic), grouped under the
+    Real Estate audit menu per template_menus.xml.
+-->
+<odoo>
+    <data>
+
+        <!-- ============== re.unit ============== -->
+        <!-- action_re_unit moved below view_re_unit_search — its
+             search_view_id ref must resolve before the action loads
+             (same class of bug fixed in template_views.xml, verified
+             via clean-room install test, 2026-08-31). -->
+        <record id="view_re_unit_search" model="ir.ui.view">
+            <field name="name">re.unit.search</field>
+            <field name="model">re.unit</field>
+            <field name="arch" type="xml">
+                <search string="Units">
+                    <field name="name"/>
+                    <field name="community"/>
+                    <field name="city"/>
+                    <field name="unit_type"/>
+                    <field name="state"/>
+                    <filter name="available" string="Available"
+                            domain="[('state', '=', 'available')]"/>
+                    <filter name="leased_or_sold" string="Leased or Sold"
+                            domain="[('state', 'in', ('leased','sold'))]"/>
+                </search>
+            </field>
+        </record>
+        <record id="action_re_unit" model="ir.actions.act_window">
+            <field name="name">Units</field>
+            <field name="res_model">re.unit</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="view_re_unit_search"/>
+            <field name="help" type="html"><p>Property/unit inventory per tenant.</p></field>
+        </record>
+        <record id="view_re_unit_list" model="ir.ui.view">
+            <field name="name">re.unit.list</field>
+            <field name="model">re.unit</field>
+            <field name="arch" type="xml">
+                <list string="Units" multi_edit="1">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="unit_type"/>
+                    <field name="community"/>
+                    <field name="city"/>
+                    <field name="area_sqft"/>
+                    <field name="bedrooms"/>
+                    <field name="list_price_aed"/>
+                    <field name="rent_monthly_aed"/>
+                    <field name="state" widget="badge"
+                           decoration-success="state in ('sold','leased')"
+                           decoration-info="state in ('reserved','under_offer')"
+                           decoration-warning="state == 'off_market'"
+                           decoration-muted="state == 'archived'"/>
+                    <field name="tenant_id" groups="base.group_multi_company"/>
+                </list>
+            </field>
+        </record>
+        <record id="view_re_unit_form" model="ir.ui.view">
+            <field name="name">re.unit.form</field>
+            <field name="model">re.unit</field>
+            <field name="arch" type="xml">
+                <form string="Unit">
+                    <header>
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="available,reserved,under_offer,sold,leased,off_market,archived"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only"/>
+                            <h1><field name="name" placeholder="e.g. Marina Heights — Unit 1204"/></h1>
+                        </div>
+                        <group>
+                            <group name="id" string="Identification">
+                                <field name="active"/>
+                                <field name="tenant_id" groups="base.group_multi_company"/>
+                                <field name="company_id" groups="base.group_multi_company"/>
+                                <field name="currency_id"/>
+                            </group>
+                            <group name="type" string="Type and area">
+                                <field name="unit_type"/>
+                                <field name="area_sqft"/>
+                                <field name="area_sqm"/>
+                                <field name="bedrooms"/>
+                                <field name="bathrooms"/>
+                            </group>
+                        </group>
+                        <group name="geo" string="Location">
+                            <field name="community"/>
+                            <field name="city"/>
+                            <field name="country_id"/>
+                        </group>
+                        <group name="pricing" string="Pricing">
+                            <field name="list_price_aed"/>
+                            <field name="rent_monthly_aed"/>
+                            <field name="list_date"/>
+                        </group>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <!-- ============== sgc.integration.source ============== -->
+        <record id="action_sgc_integration_source" model="ir.actions.act_window">
+            <field name="name">Integration sources</field>
+            <field name="res_model">sgc.integration.source</field>
+            <field name="view_mode">list,form</field>
+        </record>
+        <record id="view_sgc_integration_source_list" model="ir.ui.view">
+            <field name="name">sgc.integration.source.list</field>
+            <field name="model">sgc.integration.source</field>
+            <field name="arch" type="xml">
+                <list string="Integration sources">
+                    <field name="sequence" widget="handle"/>
+                    <field name="tenant_id"/>
+                    <field name="system"/>
+                    <field name="vendor_name"/>
+                    <field name="version"/>
+                    <field name="last_synced_at"/>
+                </list>
+            </field>
+        </record>
+        <record id="view_sgc_integration_source_form" model="ir.ui.view">
+            <field name="name">sgc.integration.source.form</field>
+            <field name="model">sgc.integration.source</field>
+            <field name="arch" type="xml">
+                <form string="Integration source">
+                    <sheet>
+                        <group>
+                            <field name="tenant_id"/>
+                            <field name="system"/>
+                            <field name="vendor_name"/>
+                            <field name="version"/>
+                            <field name="data_owner_field"/>
+                            <field name="last_synced_at"/>
+                            <field name="notes"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- ============== sgc.migration.source_map + run + log ============== -->
+        <record id="action_sgc_migration_source_map" model="ir.actions.act_window">
+            <field name="name">Migration source maps</field>
+            <field name="res_model">sgc.migration.source_map</field>
+            <field name="view_mode">list,form</field>
+        </record>
+        <record id="view_sgc_migration_source_map_list" model="ir.ui.view">
+            <field name="name">sgc.migration.source_map.list</field>
+            <field name="model">sgc.migration.source_map</field>
+            <field name="arch" type="xml">
+                <list string="Migration source maps">
+                    <field name="sequence" widget="handle"/>
+                    <field name="tenant_id"/>
+                    <field name="integration_source_id"/>
+                    <field name="source_table"/>
+                    <field name="target_model"/>
+                    <field name="estimated_row_count"/>
+                </list>
+            </field>
+        </record>
+        <record id="action_sgc_migration_run" model="ir.actions.act_window">
+            <field name="name">Migration runs</field>
+            <field name="res_model">sgc.migration.run</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <!-- ============== sgc.strategy.layer_priority ============== -->
+        <record id="action_sgc_strategy_layer_priority" model="ir.actions.act_window">
+            <field name="name">Strategy layer priorities</field>
+            <field name="res_model">sgc.strategy.layer_priority</field>
+            <field name="view_mode">list,form</field>
+        </record>
+        <record id="view_sgc_strategy_layer_priority_list" model="ir.ui.view">
+            <field name="name">sgc.strategy.layer_priority.list</field>
+            <field name="model">sgc.strategy.layer_priority</field>
+            <field name="arch" type="xml">
+                <list string="Strategy layer priorities" decoration-muted="priority &gt;= 8">
+                    <field name="display_name"/>
+                    <field name="tenant_id"/>
+                    <field name="layer_id"/>
+                    <field name="priority"/>
+                    <field name="target_phase"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- ============== sgc.compliance.event ============== -->
+        <record id="action_sgc_compliance_event" model="ir.actions.act_window">
+            <field name="name">Compliance events</field>
+            <field name="res_model">sgc.compliance.event</field>
+            <field name="view_mode">list,form</field>
+        </record>
+        <record id="view_sgc_compliance_event_list" model="ir.ui.view">
+            <field name="name">sgc.compliance.event.list</field>
+            <field name="model">sgc.compliance.event</field>
+            <field name="arch" type="xml">
+                <list string="Compliance events">
+                    <field name="display_name"/>
+                    <field name="tenant_id"/>
+                    <field name="event_type"/>
+                    <field name="transaction_ref"/>
+                    <field name="opened_at"/>
+                    <field name="closed_at"/>
+                    <field name="duration_hours"/>
+                    <field name="outcome" widget="badge"
+                           decoration-success="outcome == 'closed_ok'"
+                           decoration-danger="outcome == 'closed_failed'"
+                           decoration-warning="outcome == 'open'"
+                           decoration-muted="outcome == 'closed_cancelled'"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- ============== sgc.brokerage.incident ============== -->
+        <record id="action_sgc_brokerage_incident" model="ir.actions.act_window">
+            <field name="name">Incidents</field>
+            <field name="res_model">sgc.brokerage.incident</field>
+            <field name="view_mode">list,form</field>
+        </record>
+        <record id="view_sgc_brokerage_incident_list" model="ir.ui.view">
+            <field name="name">sgc.brokerage.incident.list</field>
+            <field name="model">sgc.brokerage.incident</field>
+            <field name="arch" type="xml">
+                <list string="Incidents">
+                    <field name="sequence" widget="handle"/>
+                    <field name="summary"/>
+                    <field name="tenant_id"/>
+                    <field name="category"/>
+                    <field name="severity" widget="badge"
+                           decoration-success="severity == 'low'"
+                           decoration-info="severity == 'medium'"
+                           decoration-warning="severity == 'high'"
+                           decoration-danger="severity == 'critical'"/>
+                    <field name="recurrence_count"/>
+                    <field name="last_seen_at"/>
+                    <field name="is_resolved" widget="boolean_toggle"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- ============== sgc.wa_log ============== -->
+        <record id="action_sgc_wa_log" model="ir.actions.act_window">
+            <field name="name">WhatsApp log</field>
+            <field name="res_model">sgc.wa_log</field>
+            <field name="view_mode">list,form</field>
+        </record>
+        <record id="view_sgc_wa_log_list" model="ir.ui.view">
+            <field name="name">sgc.wa_log.list</field>
+            <field name="model">sgc.wa_log</field>
+            <field name="arch" type="xml">
+                <list string="WhatsApp log">
+                    <field name="display_name"/>
+                    <field name="tenant_id"/>
+                    <field name="partner_id"/>
+                    <field name="direction"/>
+                    <field name="bsp_provider"/>
+                    <field name="lead_id"/>
+                    <field name="timestamp"/>
+                </list>
+            </field>
+        </record>
+
+    </data>
+</odoo>

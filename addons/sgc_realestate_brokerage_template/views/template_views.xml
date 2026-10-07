@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- action_sgc_brokerage_tenant moved below view_sgc_brokerage_tenant_search
+             (verified via clean-room install test, 2026-08-31: XML records
+             within a single file load top-to-bottom, and the action's
+             `search_view_id` ref must resolve before the action itself
+             loads — a prior ordering broke installation with
+             `ValueError: External ID not found in the system:
+             ...view_sgc_brokerage_tenant_search`). -->
+
+        <record id="view_sgc_brokerage_tenant_search" model="ir.ui.view">
+            <field name="name">sgc.brokerage.tenant.search</field>
+            <field name="model">sgc.brokerage.tenant</field>
+            <field name="arch" type="xml">
+                <search string="Tenants">
+                    <field name="name" string="Name"/>
+                    <field name="code" string="Code"/>
+                    <field name="state" string="State"/>
+                    <field name="tenant_type" string="Tenant Type"/>
+                    <filter name="active" string="Active"
+                            domain="[('state', '=', 'active')]"/>
+                    <filter name="onboarding" string="Onboarding"
+                            domain="[('state', '=', 'onboarding')]"/>
+                    <filter name="broker" string="Broker"
+                            domain="[('tenant_type', '=', 'broker')]"/>
+                    <filter name="developer" string="Developer"
+                            domain="[('tenant_type', '=', 'developer')]"/>
+                    <filter name="mixed" string="Mixed"
+                            domain="[('tenant_type', '=', 'mixed')]"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_sgc_brokerage_tenant" model="ir.actions.act_window">
+            <field name="name">Brokerage Tenants</field>
+            <field name="res_model">sgc.brokerage.tenant</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="view_sgc_brokerage_tenant_search"/>
+            <field name="help" type="html">
+                <p>Per-tenant records for real-estate brokerage tenants. Each
+                tenant carries its own enablement matrix, kit selection, and
+                audit-driven preflight.</p>
+            </field>
+        </record>
+
+        <record id="view_sgc_brokerage_tenant_list" model="ir.ui.view">
+            <field name="name">sgc.brokerage.tenant.list</field>
+            <field name="model">sgc.brokerage.tenant</field>
+            <field name="arch" type="xml">
+                <list string="Tenants" multi_edit="0">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="tenant_type"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                    <field name="kit_id"/>
+                    <field name="enable_core"/>
+                    <field name="enable_growth"/>
+                    <field name="enable_broker_registration"
+                           invisible="tenant_type == 'developer'"/>
+                    <field name="enable_escrow"
+                           invisible="tenant_type == 'broker'"/>
+                    <field name="enable_pdc"
+                           invisible="tenant_type == 'broker'"/>
+                    <field name="enable_eoi"
+                           invisible="tenant_type == 'broker'"/>
+                    <field name="enable_offplan_registration"
+                           invisible="tenant_type == 'broker'"/>
+                    <field name="enable_offplan"
+                           invisible="tenant_type == 'broker'"/>
+                    <field name="enable_construction" widget="boolean_toggle"
+                           invisible="tenant_type == 'broker'"/>
+                    <field name="state" widget="badge"
+                           decoration-info="state in ('draft','onboarding')"
+                           decoration-success="state == 'active'"
+                           decoration-warning="state == 'paused'"
+                           decoration-muted="state == 'archived'"/>
+                    <field name="preflight_status"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_sgc_brokerage_tenant_form" model="ir.ui.view">
+            <field name="name">sgc.brokerage.tenant.form</field>
+            <field name="model">sgc.brokerage.tenant</field>
+            <field name="arch" type="xml">
+                <form string="Tenant">
+                    <header>
+                        <button name="action_start_onboarding" type="object"
+                                string="Start onboarding"
+                                class="btn-primary"
+                                invisible="state != 'draft'"
+                                groups="sgc_realestate_brokerage_template.group_realestate_brokerage_manager"/>
+                        <button name="action_activate" type="object"
+                                string="Activate (preflight)"
+                                class="btn-primary"
+                                invisible="state != 'onboarding'"
+                                groups="sgc_realestate_brokerage_template.group_realestate_brokerage_manager"/>
+                        <button name="action_pause" type="object"
+                                string="Pause"
+                                invisible="state not in ('active','onboarding')"
+                                groups="sgc_realestate_brokerage_template.group_realestate_brokerage_manager"/>
+                        <button name="action_archive" type="object"
+                                string="Archive"
+                                invisible="state == 'archived'"
+                                groups="sgc_realestate_brokerage_template.group_realestate_brokerage_manager"/>
+                        <button name="action_install_enabled_addons" type="object"
+                                string="Install Enabled Modules"
+                                invisible="state != 'active'"
+                                groups="sgc_realestate_brokerage_template.group_realestate_brokerage_manager"/>
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,onboarding,active,paused,archived"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name"/>
+                            <h1><field name="name" placeholder="e.g. Abu Dhabi Brokerage 001"/></h1>
+                            <label for="code"/>
+                            <h2><field name="code" placeholder="e.g. AD_BRK_001"/></h2>
+                        </div>
+                        <group name="id" string="Identification">
+                            <field name="sequence"/>
+                            <field name="partner_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id"/>
+                            <field name="tenant_type"/>
+                            <field name="kit_id"/>
+                        </group>
+                        <group name="urls" string="Audit-driven per-tenant URLs">
+                            <field name="base_url" placeholder="https://tenants.example.ae"/>
+                            <field name="contact_email"/>
+                            <field name="compliance_email"/>
+                            <field name="workspace_account"/>
+                            <field name="default_score_endpoint"/>
+                        </group>
+                        <group name="enable_shared" string="Shared enablement">
+                            <field name="enable_core"/>
+                            <field name="enable_growth"/>
+                            <field name="enable_aml"/>
+                            <field name="enable_kyc"/>
+                            <field name="enable_hr_payroll"/>
+                            <field name="enable_reports"/>
+                        </group>
+                        <group name="enable_broker" string="Brokerage features"
+                               invisible="tenant_type == 'developer'">
+                            <field name="enable_broker_registration"/>
+                            <field name="enable_kartatap_crm"/>
+                        </group>
+                        <group name="enable_developer" string="Developer features"
+                               invisible="tenant_type == 'broker'">
+                            <field name="enable_offplan"/>
+                            <field name="enable_escrow"/>
+                            <field name="enable_pdc"/>
+                            <field name="enable_eoi"/>
+                            <field name="enable_offplan_registration"/>
+                            <field name="enable_construction"/>
+                        </group>
+                        <group name="preflight" string="Audit preflight">
+                            <field name="last_preflight_pass"/>
+                            <field name="preflight_status" widget="badge"
+                                   decoration-success="preflight_status == 'pass'"
+                                   decoration-danger="preflight_status == 'fail'"/>
+                        </group>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_sgc_brokerage_kit_list" model="ir.ui.view">
+            <field name="name">sgc.brokerage.kit.list</field>
+            <field name="model">sgc.brokerage.kit</field>
+            <field name="arch" type="xml">
+                <list string="Kits">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="vertical"/>
+                    <field name="doc_url" widget="url"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_sgc_brokerage_kit_form" model="ir.ui.view">
+            <field name="name">sgc.brokerage.kit.form</field>
+            <field name="model">sgc.brokerage.kit</field>
+            <field name="arch" type="xml">
+                <form string="Kit">
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name"/>
+                            <h1><field name="name"/></h1>
+                            <label for="code"/>
+                            <h2><field name="code"/></h2>
+                        </div>
+                        <group>
+                            <field name="vertical"/>
+                            <field name="doc_url" widget="url"
+                                   placeholder="docs/REAL_ESTATE_BROKERAGE_ROLLOUT.md#phase-2-foundation"/>
+                        </group>
+                        <notebook>
+                            <page string="Module bundle">
+                                <field name="addon_line_ids">
+                                    <list editable="bottom">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="addon"/>
+                                        <field name="purpose"/>
+                                        <field name="quarantined"
+                                               widget="boolean_toggle"
+                                               decoration-danger="quarantined"/>
+                                        <field name="rollover_note"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Description">
+                                <field name="description"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_sgc_brokerage_kit" model="ir.actions.act_window">
+            <field name="name">Brokerage Kits</field>
+            <field name="res_model">sgc.brokerage.kit</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <!-- Audit / quarantined-modules reporting view -->
+        <record id="action_realestate_audit_holds" model="ir.actions.act_window">
+            <field name="name">Quarantined modules (audit hold-list)</field>
+            <field name="res_model">sgc.brokerage.tenant</field>
+            <field name="view_mode">list</field>
+            <field name="domain">[]</field>
+            <field name="context">{'search_default_archived': 0}</field>
+            <field name="help" type="html">
+                <p>Read-only reference to the audit's
+                <code>30_QUARANTINE/</code> hold-list. The audit lint tool's
+                findings are summarised here for the counsel / audit-team
+                review.</p>
+            </field>
+        </record>
+
+    </data>
+</odoo>
