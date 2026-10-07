@@ -238,6 +238,7 @@ class PropertyEoi(models.Model):
             'company_id': self.company_id.id,
             'sale_contract_id': contract.id,
             'eoi_id': self.id,
+            'salesperson_id': self.user_id.id or self.env.user.id,
             'payment_ids': [(6, 0, self.payment_ids.ids)],
             'notes': self.notes,
             'date': fields.Date.context_today(self),

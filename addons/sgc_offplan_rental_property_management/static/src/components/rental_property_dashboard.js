@@ -36,8 +36,13 @@ export class RentalPropertyDashboard extends Component {
             watchlist: [],
             currency_symbol: "AED", company_name: "Park Group",
             cards: [], aging_undated: 0,
-            theme: "light", loading: true, error: null,
+            theme: "light", loading: true, refreshing: false, error: null,
+            filters: { preset: "all", date_from: "", date_to: "", project_id: "", broker_id: "", salesperson_id: "" },
+            options: { projects: [], brokers: [], salespeople: [] },
+            rankings: { brokers: [], salespeople: [] },
+            rank_batch: { brokers: 0, salespeople: 0 },
         });
+        this._rankPaused = false;
         this._dead = false;
         this._retryCount = 0;
         this._renderRetries = {};
@@ -50,6 +55,9 @@ export class RentalPropertyDashboard extends Component {
             } catch (_) { this.state.theme = "light"; }
             // Theme is applied reactively by the template via t-att-data-theme on
             // the dashboard root — nothing to set on <html> (which other apps share).
+            try {
+                this.state.options = await this.orm.call("property.details", "get_dashboard_filter_options", []);
+            } catch (_) { /* filter lists are optional: the dashboard still works without them */ }
             await this.loadData();
         });
 
@@ -57,10 +65,12 @@ export class RentalPropertyDashboard extends Component {
             this.renderUnitMixChart(); this.renderSellThroughChart();
             this.renderCollectionsChart(); this.renderEscrowChart();
             this.renderAgingChart(); this.renderMap();
+            this._startRankLoop();
         });
 
         onWillUnmount(() => {
             this._dead = true;
+            if (this._rankTimer) { clearInterval(this._rankTimer); this._rankTimer = null; }
             if (this._leafletMap) { this._leafletMap.remove(); this._leafletMap = null; }
             ["_unitMixChart","_sellThroughChart","_collectionsChart","_escrowChart","_agingChart"].forEach(k => { if (this[k]) { this[k].dispose(); this[k]=null; } });
             ["_resizeUnitMix","_resizeSellThrough","_resizeCollections","_resizeEscrow","_resizeAging"].forEach(k => { if (this[k]) window.removeEventListener("resize", this[k]); });
@@ -68,7 +78,12 @@ export class RentalPropertyDashboard extends Component {
     }
     async loadData() {
         try {
-            const payload = await this.orm.call("property.details", "get_development_kpis", []);
+            const filters = this._filterPayload();
+            const payload = await this.orm.call("property.details", "get_development_kpis", [], { filters });
+            try {
+                this.state.rankings = await this.orm.call("property.details", "get_sales_rankings", [], { filters, limit: 10 });
+                this.state.rank_batch = { brokers: 0, salespeople: 0 };
+            } catch (_) { this.state.rankings = { brokers: [], salespeople: [] }; }
             // NOTE: this.env.company is undefined in the Odoo 19 web client
             // (there is no company in the action environment), which used to throw
             // here and abort the whole dashboard into an empty state. The server
@@ -118,7 +133,7 @@ export class RentalPropertyDashboard extends Component {
                 // formatted_read_group returns dicts; the month groupby key is
                 // "payment_date:month" and its value is a pair
                 // ["2024-04-01", "April 2024"] — not a plain date under "payment_date".
-                const cols = await this.orm.call("sale.contract.installment", "formatted_read_group", [[["state","=","paid"],["payment_date","!=",false]], ["payment_date:month"], ["amount:sum"]]);
+                const cols = await this.orm.call("sale.contract.installment", "formatted_read_group", [this._collectionsDomain(), ["payment_date:month"], ["amount:sum"]]);
                 const collMap = new Map();
                 for (const r of cols) {
                     const pair = r["payment_date:month"] ?? r.payment_date;
@@ -139,7 +154,7 @@ export class RentalPropertyDashboard extends Component {
                 // formatted_read_group returns project_id as [id, display_name] —
                 // use the display name directly (a name lookup keyed on p.id broke
                 // because p.id is the whole [id, name] array).
-                const escRows = await this.orm.call("escrow.allocation", "formatted_read_group", [[], ["project_id"], ["required_amount:sum","allocated_amount:sum"]]);
+                const escRows = await this.orm.call("escrow.allocation", "formatted_read_group", [this._escrowDomain(), ["project_id"], ["required_amount:sum","allocated_amount:sum"]]);
                 const escMap = {};
                 for (const r of escRows) {
                     const proj = r.project_id;
@@ -173,6 +188,7 @@ export class RentalPropertyDashboard extends Component {
             this.state.cards = this._buildCards(payload);
             this.state.error = null;
             this.state.loading = false;
+            this.state.refreshing = false;
             this._retryCount = 0;
             this._renderRetries = {};
             this.renderUnitMixChart(); this.renderSellThroughChart(); this.renderCollectionsChart(); this.renderEscrowChart(); this.renderAgingChart();
@@ -180,6 +196,7 @@ export class RentalPropertyDashboard extends Component {
         } catch(e) {
             console.error("[Property Dashboard] loadData error:", e);
             this.state.loading = false;
+            this.state.refreshing = false;
             this.state.error = (e && (e.data?.message || e.message)) || "Dashboard data could not be loaded.";
             if (!this._dead) this._scheduleRetry();
         }
@@ -276,7 +293,7 @@ export class RentalPropertyDashboard extends Component {
         const labels=this.state.unit_mix_labels.length?this.state.unit_mix_labels:["Studio","1BR","2BR","3BR","N-A"];
         const values=this.state.unit_mix_values.length?this.state.unit_mix_values:[0,0,0,0,0];
         chart.setOption({tooltip:{trigger:"item",backgroundColor:dark?"#131b35":"#ffffff",borderColor:dark?"#243157":"#d6dae6",textStyle:{color:dark?"#f1f5f9":"#0f172a"}},legend:{bottom:0,textStyle:{color:dark?"#94a3b8":"#475569"}},series:[{type:"pie",radius:["40%","70%"],center:["50%","50%"],data:labels.map((l,i)=>({name:l,value:values[i]||0,itemStyle:{color:colors[i]||"#94a3b8"}})),label:{show:false},emphasis:{itemStyle:{shadowBlur:10,shadowColor:"rgba(0,0,0,0.2)"}}}]});
-        this._unitMixChart=chart; this._resizeUnitMix=()=>chart.resize(); window.addEventListener("resize",this._resizeUnitMix);
+        this._unitMixChart=chart; if(this._resizeUnitMix) window.removeEventListener("resize",this._resizeUnitMix); this._resizeUnitMix=()=>chart.resize(); window.addEventListener("resize",this._resizeUnitMix);
     }
     renderSellThroughChart(){
         if(this._dead) return;
@@ -286,7 +303,7 @@ export class RentalPropertyDashboard extends Component {
         const chart=window.echarts.init(this.sellThroughChartRef.el,null,{renderer:"canvas"});
         const colors={sold:dark?"#f87171":"#ef4444",available:dark?"#60a5fa":"#1e40af"};
         chart.setOption({tooltip:{trigger:"axis",axisPointer:{type:"shadow"},backgroundColor:dark?"#131b35":"#ffffff",borderColor:dark?"#243157":"#d6dae6",textStyle:{color:dark?"#f1f5f9":"#0f172a"}},legend:{data:["Sold","Available"],bottom:0,textStyle:{color:dark?"#94a3b8":"#475569"}},xAxis:{type:"category",data:this.state.sell_through_labels,axisLabel:{color:dark?"#94a3b8":"#64748b"}},yAxis:{type:"value",minInterval:1,axisLabel:{color:dark?"#94a3b8":"#64748b"}},series:[{name:"Sold",type:"bar",data:this.state.sell_through_series.sold,itemStyle:{color:colors.sold,borderRadius:[4,4,0,0]}},{name:"Available",type:"bar",data:this.state.sell_through_series.available,itemStyle:{color:colors.available,borderRadius:[4,4,0,0]}}],grid:{left:40,right:16,top:16,bottom:40}});
-        this._sellThroughChart=chart; this._resizeSellThrough=()=>chart.resize(); window.addEventListener("resize",this._resizeSellThrough);
+        this._sellThroughChart=chart; if(this._resizeSellThrough) window.removeEventListener("resize",this._resizeSellThrough); this._resizeSellThrough=()=>chart.resize(); window.addEventListener("resize",this._resizeSellThrough);
     }
 
     renderCollectionsChart(){
@@ -297,7 +314,7 @@ export class RentalPropertyDashboard extends Component {
         const chart=window.echarts.init(this.collectionsChartRef.el,null,{renderer:"canvas"});
         const months=this.state.collections.map(c=>c[0]); const paid=this.state.collections.map(c=>c[1]);
         chart.setOption({tooltip:{trigger:"axis",axisPointer:{type:"shadow"},backgroundColor:dark?"#131b35":"#ffffff",borderColor:dark?"#243157":"#d6dae6",textStyle:{color:dark?"#f1f5f9":"#0f172a"}},xAxis:{type:"category",data:months,axisLabel:{color:dark?"#94a3b8":"#64748b"}},yAxis:{type:"value",axisLabel:{color:dark?"#94a3b8":"#64748b",formatter:v=>this._shortNum(v)}},series:[{name:"Paid Collections",type:"bar",data:paid,itemStyle:{color:dark?"#34d399":"#10b981",borderRadius:[4,4,0,0]}}],grid:{left:56,right:16,top:16,bottom:40}});
-        this._collectionsChart=chart; this._resizeCollections=()=>chart.resize(); window.addEventListener("resize",this._resizeCollections);
+        this._collectionsChart=chart; if(this._resizeCollections) window.removeEventListener("resize",this._resizeCollections); this._resizeCollections=()=>chart.resize(); window.addEventListener("resize",this._resizeCollections);
     }
 
     renderEscrowChart(){
@@ -307,7 +324,7 @@ export class RentalPropertyDashboard extends Component {
         if(this._escrowChart) this._escrowChart.dispose();
         const chart=window.echarts.init(this.escrowChartRef.el,null,{renderer:"canvas"});
         chart.setOption({tooltip:{trigger:"axis",axisPointer:{type:"shadow"},backgroundColor:dark?"#131b35":"#ffffff",borderColor:dark?"#243157":"#d6dae6",textStyle:{color:dark?"#f1f5f9":"#0f172a"}},legend:{data:["Required","Allocated"],bottom:0,textStyle:{color:dark?"#94a3b8":"#475569"}},xAxis:{type:"category",data:this.state.escrow_labels,axisLabel:{color:dark?"#94a3b8":"#64748b"}},yAxis:{type:"value",minInterval:1000000,axisLabel:{color:dark?"#94a3b8":"#64748b",formatter:v=>this._shortNum(v)}},series:[{name:"Required",type:"bar",data:this.state.escrow_series.required,itemStyle:{color:dark?"#fbbf24":"#f59e0b",borderRadius:[4,4,0,0]}},{name:"Allocated",type:"bar",data:this.state.escrow_series.allocated,itemStyle:{color:dark?"#60a5fa":"#1e40af",borderRadius:[4,4,0,0]}}],grid:{left:56,right:16,top:16,bottom:40}});
-        this._escrowChart=chart; this._resizeEscrow=()=>chart.resize(); window.addEventListener("resize",this._resizeEscrow);
+        this._escrowChart=chart; if(this._resizeEscrow) window.removeEventListener("resize",this._resizeEscrow); this._resizeEscrow=()=>chart.resize(); window.addEventListener("resize",this._resizeEscrow);
     }
 
     renderAgingChart(){
@@ -318,7 +335,7 @@ export class RentalPropertyDashboard extends Component {
         const chart=window.echarts.init(this.agingChartRef.el,null,{renderer:"canvas"});
         const labels=this.state.aging_labels; const data=this.state.aging_data.map(d=>d.count);
         chart.setOption({tooltip:{trigger:"axis",axisPointer:{type:"shadow"},backgroundColor:dark?"#131b35":"#ffffff",borderColor:dark?"#243157":"#d6dae6",textStyle:{color:dark?"#f1f5f9":"#0f172a"}},xAxis:{type:"category",data:labels,axisLabel:{color:dark?"#94a3b8":"#64748b"}},yAxis:{type:"value",minInterval:1,axisLabel:{color:dark?"#94a3b8":"#64748b"}},series:[{name:"Units",type:"bar",data:data,itemStyle:{color:dark?"#fbbf24":"#f59e0b",borderRadius:[4,4,0,0]}}],grid:{left:56,right:16,top:16,bottom:40}});
-        this._agingChart=chart; this._resizeAging=()=>chart.resize(); window.addEventListener("resize",this._resizeAging);
+        this._agingChart=chart; if(this._resizeAging) window.removeEventListener("resize",this._resizeAging); this._resizeAging=()=>chart.resize(); window.addEventListener("resize",this._resizeAging);
     }
 
     _shortNum(v){if(v>=1_000_000) return(v/1_000_000).toFixed(0)+"M"; if(v>=1_000) return(v/1_000).toFixed(0)+"K"; return String(v);}
@@ -424,6 +441,118 @@ export class RentalPropertyDashboard extends Component {
             ev.preventDefault();
             this.viewProjects();
         }
+    }
+
+
+    // ------------------------------------------------------------------
+    // Filters (date range, project, broker, sales person)
+    // ------------------------------------------------------------------
+    _isoDate(d) {
+        const z = (n) => String(n).padStart(2, "0");
+        return `${d.getFullYear()}-${z(d.getMonth() + 1)}-${z(d.getDate())}`;
+    }
+    _filterPayload() {
+        const f = this.state.filters;
+        const id = (v) => (v ? parseInt(v, 10) || 0 : 0);
+        return {
+            date_from: f.date_from || false, date_to: f.date_to || false,
+            project_ids: f.project_id ? [id(f.project_id)] : [],
+            broker_id: id(f.broker_id), salesperson_id: id(f.salesperson_id),
+        };
+    }
+    _collectionsDomain() {
+        const f = this.state.filters;
+        const dom = [["state", "=", "paid"], ["payment_date", "!=", false]];
+        if (f.date_from) dom.push(["payment_date", ">=", f.date_from]);
+        if (f.date_to) dom.push(["payment_date", "<=", f.date_to]);
+        if (f.project_id) dom.push(["contract_id.property_id.project_id", "=", parseInt(f.project_id, 10)]);
+        return dom;
+    }
+    _escrowDomain() {
+        const f = this.state.filters;
+        return f.project_id ? [["project_id", "=", parseInt(f.project_id, 10)]] : [];
+    }
+    setPreset(preset) {
+        const now = new Date();
+        const f = this.state.filters;
+        f.preset = preset;
+        if (preset === "month") {
+            f.date_from = this._isoDate(new Date(now.getFullYear(), now.getMonth(), 1));
+            f.date_to = this._isoDate(new Date(now.getFullYear(), now.getMonth() + 1, 0));
+        } else if (preset === "quarter") {
+            const q = Math.floor(now.getMonth() / 3) * 3;
+            f.date_from = this._isoDate(new Date(now.getFullYear(), q, 1));
+            f.date_to = this._isoDate(new Date(now.getFullYear(), q + 3, 0));
+        } else if (preset === "ytd") {
+            f.date_from = this._isoDate(new Date(now.getFullYear(), 0, 1));
+            f.date_to = this._isoDate(now);
+        } else if (preset === "last30") {
+            const d = new Date(now); d.setDate(d.getDate() - 30);
+            f.date_from = this._isoDate(d); f.date_to = this._isoDate(now);
+        } else {
+            f.date_from = ""; f.date_to = "";
+        }
+        this.applyFilters();
+    }
+    onFilterInput(ev) {
+        const name = ev.currentTarget.dataset.filter;
+        this.state.filters[name] = ev.currentTarget.value;
+        if (name === "date_from" || name === "date_to") this.state.filters.preset = "custom";
+        this.applyFilters();
+    }
+    applyFilters() {
+        const f = this.state.filters;
+        if (f.date_from && f.date_to && f.date_from > f.date_to) {
+            [f.date_from, f.date_to] = [f.date_to, f.date_from];
+        }
+        this.state.refreshing = true;       // keep the dashboard on screen; only dim it while reloading
+        this.loadData();
+    }
+    resetFilters() {
+        Object.assign(this.state.filters, { preset: "all", date_from: "", date_to: "", project_id: "", broker_id: "", salesperson_id: "" });
+        this.applyFilters();
+    }
+    get filtersActive() {
+        const f = this.state.filters;
+        return !!(f.date_from || f.date_to || f.project_id || f.broker_id || f.salesperson_id);
+    }
+
+    // ------------------------------------------------------------------
+    // Leaderboards: top 10 shown five at a time, flashing to the next five
+    // ------------------------------------------------------------------
+    _startRankLoop() {
+        if (this._rankTimer) return;
+        this._rankTimer = setInterval(() => {
+            if (this._dead || this._rankPaused || document.hidden) return;
+            for (const board of ["brokers", "salespeople"]) this.nextRankBatch(board);
+        }, 6000);
+    }
+    rankBatches(board) {
+        return Math.max(1, Math.ceil((this.state.rankings[board] || []).length / 5));
+    }
+    rankBatchList(board) { return Array.from({ length: this.rankBatches(board) }, (_, i) => i); }
+    rankTone(rank) { return `sgc-board__rank sgc-board__rank--${rank <= 3 ? rank : 'n'}`; }
+    isSel(a, b) { return String(a) === String(b); }
+    nextRankBatch(board) {
+        this.state.rank_batch[board] = (this.state.rank_batch[board] + 1) % this.rankBatches(board);
+    }
+    showRankBatch(board, index) { this.state.rank_batch[board] = index; }
+    rankRows(board) {
+        const batch = this.state.rank_batch[board] || 0;
+        const rows = this.state.rankings[board] || [];
+        const top = rows.length ? rows[0].value || 1 : 1;
+        return rows.slice(batch * 5, batch * 5 + 5).map((r, i) => ({
+            ...r, pct: Math.max(4, Math.round(((r.value || 0) / (top || 1)) * 100)), idx: i,
+        }));
+    }
+    pauseRank() { this._rankPaused = true; }
+    resumeRank() { this._rankPaused = false; }
+    onRankKey(ev, board, row) {
+        if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); this.openRankedBooking(board, row); }
+    }
+    openRankedBooking(board, row) {
+        const key = board === "brokers" ? "broker_id" : "salesperson_id";
+        this.open("property.vendor", row.name, [[key, "=", row.id], ["state", "!=", "cancelled"]]);
     }
 
     viewAllProperties(){this.open("property.details","Properties",[]);}
