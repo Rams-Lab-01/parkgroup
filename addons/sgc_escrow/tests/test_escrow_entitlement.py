@@ -242,7 +242,7 @@ class TestEscrowEntitlement(EscrowCommon):
         self.assertEqual(len(names), 4)
         self.assertEqual(len(set(names)), 4, names)
         for name in names:
-            self.assertTrue(name.startswith('ESCR/'), name)
+            self.assertTrue(name.startswith('ESC/REL/'), name)
 
     def test_cannot_cancel_a_posted_release(self):
         self.pay_into_escrow(self.invoice, 400000.0)

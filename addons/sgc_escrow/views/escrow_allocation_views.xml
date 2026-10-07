@@ -14,7 +14,7 @@
                 <field name="project_id"/>
                 <field name="unit_id"/>
                 <field name="partner_id"/>
-                <field name="sold_id"/>
+                <field name="contract_id"/>
                 <field name="escrow_pct"/>
                 <field name="sale_price_snapshot"/>
                 <field name="required_amount"/>
@@ -39,7 +39,7 @@
                             <field name="project_id"/>
                             <field name="unit_id"/>
                             <field name="partner_id"/>
-                            <field name="sold_id"/>
+                            <field name="contract_id"/>
                             <field name="company_id" groups="base.group_multi_company"/>
                             <field name="currency_id" invisible="1"/>
                         </group>
