@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="sgc_realestate_dashboard.Dashboard">
+        <div class="o_sgc_red p-3">
+            <t t-if="state.error">
+                <div class="alert alert-danger" t-esc="state.error"/>
+            </t>
+            <t t-elif="state.loading">
+                <div class="text-center p-5 text-muted">Loading dashboard…</div>
+            </t>
+            <t t-else="">
+                <div class="o_sgc_red_header mb-3">
+                    <h2 class="mb-0">Real Estate Dashboard</h2>
+                    <small class="text-muted"><t t-esc="state.data.company"/>
+                        · updated <t t-esc="state.data.updated_at"/></small>
+                </div>
+
+                <!-- Inventory -->
+                <div class="o_sgc_red_section">Inventory</div>
+                <div class="o_sgc_red_grid">
+                    <div class="o_sgc_red_card" t-on-click="() => this.openRecords('units', {state: 'available'})">
+                        <div class="o_label">Available Units</div>
+                        <div class="o_value" t-esc="state.data.units.available"/>
+                    </div>
+                    <div class="o_sgc_red_card" t-on-click="() => this.openRecords('units', {state: 'booked'})">
+                        <div class="o_label">Booked Units</div>
+                        <div class="o_value" t-esc="state.data.units.booked"/>
+                    </div>
+                    <div class="o_sgc_red_card" t-on-click="() => this.openRecords('units', {state: 'sold'})">
+                        <div class="o_label">Sold Units</div>
+                        <div class="o_value" t-esc="state.data.units.sold"/>
+                    </div>
+                    <div class="o_sgc_red_card" t-on-click="() => this.openRecords('units', {})">
+                        <div class="o_label">Total Units</div>
+                        <div class="o_value" t-esc="state.data.units.total"/>
+                    </div>
+                </div>
+
+                <!-- Money -->
+                <div class="o_sgc_red_section">Sales &amp; Collections (AED)</div>
+                <div class="o_sgc_red_grid">
+                    <div class="o_sgc_red_card" t-on-click="() => this.openRecords('contracts_open', {})">
+                        <div class="o_label">Sales Value</div>
+                        <div class="o_value" t-esc="this.fmt(state.data.money.sales_value)"/>
+                    </div>
+                    <div class="o_sgc_red_card" t-on-click="() => this.openRecords('collected', {})">
+                        <div class="o_label">Collected</div>
+                        <div class="o_value text-success" t-esc="this.fmt(state.data.money.collected)"/>
+                    </div>
+                    <div class="o_sgc_red_card" t-on-click="() => this.openRecords('outstanding', {})">
+                        <div class="o_label">Outstanding</div>
+                        <div class="o_value text-danger" t-esc="this.fmt(state.data.money.outstanding)"/>
+                    </div>
+                    <div class="o_sgc_red_card" t-on-click="() => this.openRecords('escrow', {})">
+                        <div class="o_label">Escrow Funded</div>
+                        <div class="o_value" t-esc="state.data.escrow.funded_pct + '%'"/>
+                    </div>
+                </div>
+
+                <!-- Journey funnel -->
+                <div class="o_sgc_red_section">Customer Journey Funnel</div>
+                <div class="o_sgc_red_grid">
+                    <div class="o_sgc_red_card" t-on-click="() => this.openRecords('leads', {})">
+                        <div class="o_label">Leads</div>
+                        <div class="o_value" t-esc="state.data.funnel.leads"/>
+                    </div>
+                    <div class="o_sgc_red_card" t-on-click="() => this.openRecords('opportunities', {})">
+                        <div class="o_label">Open Opportunities</div>
+                        <div class="o_value" t-esc="state.data.funnel.open_opportunities"/>
+                    </div>
+                    <div class="o_sgc_red_card" t-on-click="() => this.openRecords('contracts', {state: 'eoi'})">
+                        <div class="o_label">EOIs</div>
+                        <div class="o_value" t-esc="state.data.funnel.eoi"/>
+                    </div>
+                    <div class="o_sgc_red_card" t-on-click="() => this.openRecords('contracts', {state: 'booked'})">
+                        <div class="o_label">Bookings</div>
+                        <div class="o_value" t-esc="state.data.funnel.booked"/>
+                    </div>
+                    <div class="o_sgc_red_card" t-on-click="() => this.openRecords('contracts_signed', {})">
+                        <div class="o_label">SPAs Signed</div>
+                        <div class="o_value" t-esc="state.data.funnel.spa_signed"/>
+                    </div>
+                </div>
+
+                <!-- Aging + projects -->
+                <div class="o_sgc_red_grid2">
+                    <div class="o_sgc_red_panel">
+                        <div class="o_sgc_red_section">Pipeline Aging</div>
+                        <table class="table table-sm mb-0">
+                            <tbody>
+                                <tr t-foreach="state.data.aging" t-as="row" t-key="row.bucket"
+                                    class="o_sgc_red_row"
+                                    t-on-click="() => this.openRecords('aging', {bucket: row.bucket})">
+                                    <td t-esc="row.bucket"/>
+                                    <td class="text-end fw-bold" t-esc="row.count"/>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="o_sgc_red_panel">
+                        <div class="o_sgc_red_section">Inventory by Project</div>
+                        <table class="table table-sm mb-0">
+                            <thead>
+                                <tr><th>Project</th><th class="text-end">Units</th><th class="text-end">Sold</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="state.data.projects" t-as="p" t-key="p.project"
+                                    class="o_sgc_red_row"
+                                    t-on-click="() => this.openRecords('project', {project: p.project})">
+                                    <td t-esc="p.project"/>
+                                    <td class="text-end" t-esc="p.units"/>
+                                    <td class="text-end" t-esc="p.sold"/>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="o_sgc_red_panel mt-3">
+                    <div class="o_sgc_red_section">Leads by Source</div>
+                    <table class="table table-sm mb-0">
+                        <thead>
+                            <tr><th>Source</th><th class="text-end">Leads</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="state.data.sources" t-as="s" t-key="s.source">
+                                <td t-esc="s.source"/>
+                                <td class="text-end fw-bold" t-esc="s.count"/>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </div>
+    </t>
+</templates>

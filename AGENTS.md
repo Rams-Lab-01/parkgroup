@@ -14,11 +14,15 @@ addons/
   sgc_broker_registration/     — UAE broker onboarding portal + compliance
   sgc_escrow/                  — Escrow management
   sgc_offplan_rental_property_management/  — Base property/tenancy module (dependency)
+  sgc_property_lead_journey/   — CRM lead spine for property sales (lead → EOI → booking → SPA)
+  sgc_realestate_dashboard/    — SGC-owned real-estate dashboard (inventory/sales/collections/escrow)
 ```
 
 ## Key Dependencies
 - `sgc_pdc_management` depends on `sgc_offplan_rental_property_management` (sale.contract, tenancy.details, rent.invoice, property.details)
 - `sgc_broker_registration` depends on `base`, `mail`, `contacts`, `portal`, `website`
+- `sgc_property_lead_journey` depends on `crm`, `sale_management`, `website`, `sgc_offplan_rental_property_management`, `sgc_property_eoi_workflow` — links `sale.contract.lead_id` to `crm.lead` and drives the lead stage from the contract state
+- `sgc_realestate_dashboard` depends on `sgc_property_lead_journey`, `sgc_escrow` — SGC-owned replacement for the audit-quarantined `sgc_crm_dashboard` (Cybrosys); stages resolved by name, never hardcoded
 
 ## Testing
 Tests are tagged `post_install` (`-at_install`), so they run after all modules are installed.
