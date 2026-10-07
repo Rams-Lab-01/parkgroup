@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="property_vendor_form_view_eoi" model="ir.ui.view">
+        <field name="name">property.vendor.form.eoi</field>
+        <field name="model">property.vendor</field>
+        <field name="inherit_id" ref="sgc_offplan_rental_property_management.property_vendor_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_cancel']" position="before">
+                <button name="action_print_booking_confirmation" string="Print Booking Confirmation"
+                        type="object" icon="fa-print" invisible="state == 'draft'"/>
+                <button name="action_open_cancel_confirmed_wizard" string="Cancel Confirmed Sale" type="object"
+                        class="btn-danger" invisible="not sale_confirmed or state == 'cancelled'"
+                        groups="sgc_offplan_rental_property_management.property_rental_manager"/>
+            </xpath>
+            <xpath expr="//button[@name='action_cancel']" position="attributes">
+                <attribute name="invisible">state == 'cancelled' or sale_confirmed</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_record_payment']" position="attributes">
+                <attribute name="invisible">state != 'confirmed' or sale_confirmed or booking_payment_state in ('paid','confirmed')</attribute>
+            </xpath>
+            <xpath expr="//field[@name='sale_price']" position="after">
+                <field name="eoi_id"/>
+                <field name="booking_amount" widget="monetary" readonly="sale_confirmed"/>
+                <field name="booking_paid_amount" widget="monetary"/>
+                <field name="booking_outstanding" widget="monetary"/>
+                <field name="booking_payment_state" widget="badge"/>
+                <field name="payment_verified" invisible="1"/>
+                <field name="legacy_payment" readonly="1" invisible="not legacy_payment"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Booking Payments" name="booking_payments">
+                    <field name="payment_ids" readonly="1">
+                        <list>
+                            <field name="name"/>
+                            <field name="date"/>
+                            <field name="journal_id"/>
+                            <field name="amount" sum="Total"/>
+                            <field name="currency_id" column_invisible="1"/>
+                            <field name="state" widget="badge"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

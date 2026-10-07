@@ -1,0 +1,32 @@
+{
+    "name": "SGC Property EOI -> Booking -> Confirmed Sale",
+    "version": "19.0.1.0.0",
+    "category": "Real Estate/Sales",
+    "summary": "Expression of Interest stage before booking, verified booking payment, "
+               "contract stages (EOI / Booked / Confirmed / SPA Issued / SPA Signed) and premium EOI "
+               "and Booking Confirmation reports.",
+    "author": "SGC TECH AI",
+    "license": "OPL-1",
+    "depends": ["sgc_offplan_rental_property_management", "account", "mail", "utm"],
+    "data": [
+        "security/ir.model.access.csv",
+        "security/eoi_security.xml",
+        "data/ir_sequence.xml",
+        "data/ir_cron.xml",
+        "report/dx_styles.xml",
+        "report/eoi_report_template.xml",
+        "report/booking_report_template.xml",
+        "report/report_actions.xml",
+        "wizard/eoi_wizard_views.xml",
+        "views/property_eoi_views.xml",
+        "views/property_details_views.xml",
+        "views/property_vendor_views.xml",
+        "views/sale_contract_views.xml",
+        "views/res_company_views.xml",
+        "views/menus.xml",
+    ],
+    "post_init_hook": "post_init_hook",
+    "installable": True,
+    "application": False,
+    "auto_install": False,
+}

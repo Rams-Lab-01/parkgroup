@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_booking_confirmation">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="company" t-value="o.company_id"/>
+                <t t-set="data" t-value="o._report_data()"/>
+                <t t-set="footer" t-value="data['footer']"/>
+                <t t-set="prop" t-value="o.property_id"/>
+                <t t-set="eoi" t-value="o.eoi_id"/>
+                <t t-set="cur" t-value="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                <t t-call="sgc_property_eoi.dx_header"/>
+                <t t-call="sgc_property_eoi.dx_footer"/>
+                <div class="article dx" t-att-data-oe-model="o._name" t-att-data-oe-id="o.id">
+                    <t t-call="sgc_property_eoi.dx_styles"/>
+                    <div class="dx-title">PROPERTY BOOKING CONFIRMATION</div>
+                    <div class="dx-rule"/>
+                    <table style="margin-bottom:10px"><tr>
+                        <td>
+                            <table class="dx-meta">
+                                <tr><td class="k">Booking Ref.</td><td><b><t t-out="o.name"/></b></td></tr>
+                                <tr t-if="o.contract_date"><td class="k">Booking Date</td><td><span t-field="o.contract_date" t-options='{"format": "dd MMM yyyy"}'/></td></tr>
+                                <tr t-if="eoi"><td class="k">EOI Ref.</td><td><t t-out="eoi.name"/></td></tr>
+                            </table>
+                        </td>
+                        <td class="r">
+                            <span t-attf-class="dx-badge #{'dx-void' if o.state == 'cancelled' else ''}">
+                                <t t-if="o.state == 'cancelled'">Cancelled</t>
+                                <t t-elif="o.sale_confirmed">Confirmed Sale</t>
+                                <t t-else="">Booked</t>
+                            </span>
+                        </td>
+                    </tr></table>
+
+                    <table class="dx-two"><tr>
+                        <td style="padding-right:5px">
+                            <div class="dx-card">
+                                <h4>Purchaser</h4>
+                                <table class="dx-kv">
+                                    <tr><td class="k">Name</td><td class="v"><t t-out="o.customer_id.name"/></td></tr>
+                                    <tr t-if="eoi and eoi.purchaser_nationality"><td class="k">Nationality</td><td class="v"><t t-out="eoi.purchaser_nationality"/></td></tr>
+                                    <tr t-if="eoi and eoi.purchaser_passport_no"><td class="k">Passport No.</td><td class="v"><t t-out="eoi.purchaser_passport_no"/></td></tr>
+                                    <tr t-if="o.customer_id.phone"><td class="k">Phone</td><td class="v"><t t-out="o.customer_id.phone"/></td></tr>
+                                    <tr t-if="o.customer_id.email"><td class="k">Email</td><td class="v"><t t-out="o.customer_id.email"/></td></tr>
+                                    <tr t-if="eoi and eoi.joint_partner_id"><td class="k">Joint Purchaser</td><td class="v"><t t-out="eoi.joint_partner_id.name"/></td></tr>
+                                </table>
+                            </div>
+                        </td>
+                        <td style="padding-left:5px">
+                            <div class="dx-card">
+                                <h4>Unit Details</h4>
+                                <table class="dx-kv">
+                                    <tr t-if="prop.project_id"><td class="k">Project</td><td class="v"><t t-out="prop.project_id.name"/></td></tr>
+                                    <tr><td class="k">Unit</td><td class="v"><t t-out="prop.unit_number or prop.name"/></td></tr>
+                                    <tr t-if="prop.property_type"><td class="k">Type</td><td class="v"><t t-out="dict(prop._fields['property_type']._description_selection(prop.env)).get(prop.property_type)"/></td></tr>
+                                    <tr t-if="prop.bedrooms"><td class="k">Bedrooms</td><td class="v"><t t-out="prop.bedrooms"/></td></tr>
+                                    <tr t-if="prop.area"><td class="k">Area</td><td class="v"><t t-out="'{:,.2f}'.format(prop.area)"/> sq ft</td></tr>
+                                    <tr t-if="prop.parking"><td class="k">Parking</td><td class="v"><t t-out="prop.parking"/></td></tr>
+                                </table>
+                            </div>
+                        </td>
+                    </tr></table>
+
+                    <div class="dx-card">
+                        <h4>Price and Booking Payment</h4>
+                        <table class="dx-kv">
+                            <tr t-if="data['price']"><td class="k">Unit Price</td><td class="v"><span t-out="data['price']" t-options="cur"/></td></tr>
+                            <tr t-foreach="data['fees']" t-as="fee"><td class="k"><t t-out="fee[0]"/></td><td class="v"><span t-out="fee[1]" t-options="cur"/></td></tr>
+                            <tr><td class="k">Booking Amount</td><td class="v"><span t-out="o.booking_amount" t-options="cur"/></td></tr>
+                            <tr><td class="k">Booking Amount Received</td><td class="v"><span t-out="o.booking_paid_amount" t-options="cur"/></td></tr>
+                            <tr t-if="o.booking_outstanding"><td class="k">Outstanding</td><td class="v"><span t-out="o.booking_outstanding" t-options="cur"/></td></tr>
+                            <tr t-if="eoi and eoi.amount_paid"><td class="k">Credited from EOI <t t-out="eoi.name"/></td><td class="v"><span t-out="eoi.amount_paid" t-options="cur"/></td></tr>
+                        </table>
+                    </div>
+
+                    <table class="dx-grid" t-if="o.payment_ids" style="margin-bottom:10px">
+                        <thead><tr><th>Receipt</th><th>Date</th><th>Journal</th><th class="r">Amount</th></tr></thead>
+                        <tbody>
+                            <tr t-foreach="o.payment_ids" t-as="pay">
+                                <td><t t-out="pay.name"/></td>
+                                <td><span t-field="pay.date"/></td>
+                                <td><t t-out="pay.journal_id.name"/></td>
+                                <td class="r"><span t-out="pay.amount" t-options="{'widget': 'monetary', 'display_currency': pay.currency_id}"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="dx-card" t-if="data['steps']">
+                        <h4>Next Steps</h4>
+                        <ol class="dx-terms"><li t-foreach="data['steps']" t-as="s"><t t-out="s"/></li></ol>
+                    </div>
+                    <div class="dx-card" t-if="data['documents']">
+                        <h4>Documents Required</h4>
+                        <ol class="dx-terms"><li t-foreach="data['documents']" t-as="d"><t t-out="d"/></li></ol>
+                    </div>
+                    <div class="dx-card dx-break" t-if="data['terms']">
+                        <h4>Terms and Conditions</h4>
+                        <ol class="dx-terms"><li t-foreach="data['terms']" t-as="term"><t t-out="term"/></li></ol>
+                    </div>
+
+                    <table class="dx-sign"><tr>
+                        <td><div class="line">Purchaser signature</div></td>
+                        <td><div class="line">For <t t-out="company.name"/> - authorised signatory</div></td>
+                    </tr></table>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

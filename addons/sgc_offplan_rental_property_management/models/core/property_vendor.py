@@ -19,6 +19,9 @@ class PropertyVendor(models.Model):
     customer_id = fields.Many2one('res.partner', string='Customer')
     broker_id = fields.Many2one('res.partner', string='Broker',
                                 domain=[('user_type', '=', 'broker')])
+    salesperson_id = fields.Many2one(
+        'res.users', string='Salesperson', default=lambda self: self.env.user, copy=False, index=True,
+        help='Credited with the sale in the dashboard ranking. Empty = the user who created the record.')
     sale_price = fields.Monetary(string='Sale Price', currency_field='currency_id')
     currency_id = fields.Many2one(
         'res.currency', string='Currency',

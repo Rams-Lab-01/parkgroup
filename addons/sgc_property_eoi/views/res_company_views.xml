@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_company_form_view_eoi" model="ir.ui.view">
+        <field name="name">res.company.form.eoi</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="EOI / Booking Documents" name="sgc_eoi_docs">
+                    <group>
+                        <field name="sgc_eoi_validity_days"/>
+                        <field name="sgc_doc_footer"/>
+                    </group>
+                    <group string="EOI document">
+                        <field name="sgc_eoi_notice"/>
+                        <field name="sgc_eoi_terms"/>
+                    </group>
+                    <group string="Booking confirmation document">
+                        <field name="sgc_booking_terms"/>
+                        <field name="sgc_booking_next_steps"/>
+                        <field name="sgc_booking_documents"/>
+                    </group>
+                    <p class="text-muted">Leave a text empty to use the built-in default wording. One clause per line.</p>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -24,6 +24,8 @@ DETAIL_FIELDS = ['company_name', 'full_name', 'phone', 'street', 'city', 'po_box
                  'bank_name', 'iban', 'account_holder']
 DATE_FIELDS = ['trade_license_issue_date', 'trade_license_expiry', 'regulator_expiry']
 PARAM_MAX_PER_IP = 'sgc_broker.max_registrations_per_ip_hour'
+PARAM_OPEN_SIGNUP = 'sgc_broker.open_signup'
+RESUME_COOLDOWN_MINUTES = 5
 
 CODE_MESSAGES = {
     'bad': _lt('That code is not correct. Please try again.'),
@@ -91,13 +93,56 @@ class BrokerRegistration(http.Controller):
     # ------------------------------------------------------------------
     # 1. Registration form
     # ------------------------------------------------------------------
+    def _signup_open(self):
+        value = request.env['ir.config_parameter'].sudo().get_param(PARAM_OPEN_SIGNUP)
+        return value in (False, None, '', 'True', 'true', '1')   # unset = open
+
+    @http.route('/brokers', type='http', auth='public', website=True, sitemap=True)
+    def landing(self, **kw):
+        types = request.env['sgc.broker.document.type'].sudo().search([('active', '=', True)])
+        return request.render('sgc_broker_registration.landing_page', {
+            'signup_open': self._signup_open(),
+            'individual_docs': types.filtered(lambda t: t.applicant_type in ('both', 'individual')),
+            'company_docs': types.filtered(lambda t: t.applicant_type in ('both', 'company')),
+            'emirates': EMIRATES,
+        })
+
+    @http.route('/broker/resume', type='http', auth='public', website=True, methods=['GET', 'POST'],
+                sitemap=False)
+    def resume(self, email='', **kw):
+        """Applicants who lost their link: the link is only ever mailed to the address on the application, and
+        the answer is identical whether or not an application exists (no account enumeration)."""
+        if request.httprequest.method != 'POST':
+            return request.render('sgc_broker_registration.resume_page', {'sent': False})
+        try:
+            address = normalize_email((email or '').strip())
+        except Exception:
+            address = ''
+        if address:
+            app = request.env['sgc.broker.application'].sudo().search(
+                [('email', '=', address), ('state', '!=', 'rejected')], limit=1)
+            now = fields.Datetime.now()
+            if app and (not app.resume_last_sent
+                        or app.resume_last_sent < now - timedelta(minutes=RESUME_COOLDOWN_MINUTES)):
+                app.resume_last_sent = now
+                if app.state == 'draft':
+                    app.action_send_code()
+                elif app.state != 'approved':
+                    app.env.ref('sgc_broker_registration.mail_template_resume_link').sudo().send_mail(
+                        app.id, force_send=True, raise_exception=False)
+        return request.render('sgc_broker_registration.resume_page', {'sent': True})
+
     @http.route('/broker/register', type='http', auth='public', website=True, sitemap=True)
     def register_form(self, **kw):
+        if not self._signup_open():
+            return request.render('sgc_broker_registration.closed_page', {})
         return request.render('sgc_broker_registration.register_page', self._register_values())
 
     @http.route('/broker/register/submit', type='http', auth='public', website=True,
                 methods=['POST'], sitemap=False)
     def register_submit(self, **post):
+        if not self._signup_open():
+            return request.render('sgc_broker_registration.closed_page', {})
         values = _clean(post, REGISTER_FIELDS)
         if post.get('website_hp'):        # honeypot: bots fill hidden fields
             return request.redirect('/broker/register')

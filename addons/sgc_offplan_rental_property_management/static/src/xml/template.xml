@@ -35,6 +35,43 @@
             <!-- ============================= MAIN ============================= -->
             <main class="sgc-main">
 
+                <!-- ===================== FILTER BAR ===================== -->
+                <section class="sgc-filters" aria-label="Dashboard filters">
+                    <div class="sgc-filters__presets" role="group" aria-label="Date range presets">
+                        <button type="button" class="sgc-chip" t-att-class="{'is-active': state.filters.preset === 'all'}" t-on-click="() => this.setPreset('all')">All time</button>
+                        <button type="button" class="sgc-chip" t-att-class="{'is-active': state.filters.preset === 'month'}" t-on-click="() => this.setPreset('month')">This month</button>
+                        <button type="button" class="sgc-chip" t-att-class="{'is-active': state.filters.preset === 'quarter'}" t-on-click="() => this.setPreset('quarter')">This quarter</button>
+                        <button type="button" class="sgc-chip" t-att-class="{'is-active': state.filters.preset === 'ytd'}" t-on-click="() => this.setPreset('ytd')">Year to date</button>
+                        <button type="button" class="sgc-chip" t-att-class="{'is-active': state.filters.preset === 'last30'}" t-on-click="() => this.setPreset('last30')">Last 30 days</button>
+                    </div>
+                    <div class="sgc-filters__fields">
+                        <label class="sgc-field"><span>From</span>
+                            <input type="date" data-filter="date_from" t-att-value="state.filters.date_from" t-on-change="onFilterInput"/></label>
+                        <label class="sgc-field"><span>To</span>
+                            <input type="date" data-filter="date_to" t-att-value="state.filters.date_to" t-on-change="onFilterInput"/></label>
+                        <label class="sgc-field"><span>Project</span>
+                            <select data-filter="project_id" t-on-change="onFilterInput">
+                                <option value="" t-att-selected="!state.filters.project_id">All projects</option>
+                                <option t-foreach="state.options.projects" t-as="o" t-key="o.id" t-att-value="o.id"
+                                        t-att-selected="isSel(o.id, state.filters.project_id)"><t t-esc="o.name"/></option>
+                            </select></label>
+                        <label class="sgc-field"><span>Broker</span>
+                            <select data-filter="broker_id" t-on-change="onFilterInput">
+                                <option value="" t-att-selected="!state.filters.broker_id">All brokers</option>
+                                <option t-foreach="state.options.brokers" t-as="o" t-key="o.id" t-att-value="o.id"
+                                        t-att-selected="isSel(o.id, state.filters.broker_id)"><t t-esc="o.name"/></option>
+                            </select></label>
+                        <label class="sgc-field"><span>Sales person</span>
+                            <select data-filter="salesperson_id" t-on-change="onFilterInput">
+                                <option value="" t-att-selected="!state.filters.salesperson_id">All sales people</option>
+                                <option t-foreach="state.options.salespeople" t-as="o" t-key="o.id" t-att-value="o.id"
+                                        t-att-selected="isSel(o.id, state.filters.salesperson_id)"><t t-esc="o.name"/></option>
+                            </select></label>
+                        <button type="button" class="sgc-chip sgc-chip--reset" t-if="filtersActive" t-on-click="resetFilters">Reset</button>
+                        <span class="sgc-filters__busy" t-if="state.refreshing" role="status">Updating...</span>
+                    </div>
+                </section>
+
                 <div class="sgc-loading" role="status" aria-live="polite" t-if="state.loading">
                     <div class="sgc-spinner" aria-hidden="true"/>
                     <span>Loading dashboard data...</span>
@@ -46,7 +83,7 @@
                     <button class="sgc-error__retry" type="button" t-on-click="retryLoad">Retry</button>
                 </div>
 
-                <div class="sgc-dash-body" t-if="!state.loading and !state.error">
+                <div class="sgc-dash-body" t-att-class="{'is-refreshing': state.refreshing}" t-if="!state.loading and !state.error">
 
                     <!-- ===================== ROW A - INVENTORY &amp; SALES ===================== -->
                     <section class="sgc-section">
@@ -67,6 +104,67 @@
                                 <div class="sgc-kpi__value"><t t-esc="card.value"/></div>
                                 <div class="sgc-kpi__sub"><t t-esc="card.sub"/></div>
                             </div>
+                        </div>
+                    </section>
+
+
+                    <!-- ===================== LEADERBOARDS ===================== -->
+                    <section class="sgc-section">
+                        <div class="sgc-section__head">
+                            <h2 class="sgc-section__title">Sales Leaderboards</h2>
+                            <span class="sgc-section__hint">Top 10 by booked value, shown five at a time</span>
+                        </div>
+                        <div class="sgc-two-col">
+                        <div class="sgc-panel sgc-board" t-on-mouseenter="pauseRank" t-on-mouseleave="resumeRank">
+                            <div class="sgc-panel__head">
+                                <h3 class="sgc-panel__title">Top 10 Brokers</h3>
+                                <div class="sgc-board__dots" role="group" aria-label="Show ranks">
+                                    <button type="button" class="sgc-dot" t-foreach="rankBatchList('brokers')" t-as="b" t-key="b"
+                                            t-att-class="{'is-active': state.rank_batch.brokers === b}"
+                                            t-att-aria-label="'Ranks ' + (b * 5 + 1) + ' to ' + (b * 5 + 5)"
+                                            t-on-click="() => this.showRankBatch('brokers', b)"><t t-esc="(b * 5 + 1) + '-' + (b * 5 + 5)"/></button>
+                                </div>
+                            </div>
+                            <div class="sgc-board__empty" t-if="!state.rankings.brokers.length">No bookings in this selection yet.</div>
+                            <ol class="sgc-board__list" t-key="'brokers-' + state.rank_batch.brokers + '-' + state.rankings.brokers.length" aria-live="polite">
+                                <li class="sgc-board__row" t-foreach="rankRows('brokers')" t-as="row" t-key="row.id"
+                                    t-att-style="'--i:' + row_index + ';--w:' + row.pct + '%'" tabindex="0" role="button"
+                                    t-att-aria-label="'Rank ' + row.rank + ' ' + row.name"
+                                    t-on-click="() => this.openRankedBooking('brokers', row)"
+                                    t-on-keydown="(ev) => this.onRankKey(ev, 'brokers', row)">
+                                    <span t-att-class="rankTone(row.rank)"><t t-esc="row.rank"/></span>
+                                    <span class="sgc-board__name"><t t-esc="row.name"/>
+                                        <small><t t-esc="row.deals"/> deal<t t-if="row.deals != 1">s</t>, <t t-esc="row.confirmed"/> confirmed</small></span>
+                                    <span class="sgc-board__value"><t t-esc="formatCurrency(row.value)"/></span>
+                                    <span class="sgc-board__bar"><i/></span>
+                                </li>
+                            </ol>
+                        </div>
+                        <div class="sgc-panel sgc-board" t-on-mouseenter="pauseRank" t-on-mouseleave="resumeRank">
+                            <div class="sgc-panel__head">
+                                <h3 class="sgc-panel__title">Top 10 Sales People</h3>
+                                <div class="sgc-board__dots" role="group" aria-label="Show ranks">
+                                    <button type="button" class="sgc-dot" t-foreach="rankBatchList('salespeople')" t-as="b" t-key="b"
+                                            t-att-class="{'is-active': state.rank_batch.salespeople === b}"
+                                            t-att-aria-label="'Ranks ' + (b * 5 + 1) + ' to ' + (b * 5 + 5)"
+                                            t-on-click="() => this.showRankBatch('salespeople', b)"><t t-esc="(b * 5 + 1) + '-' + (b * 5 + 5)"/></button>
+                                </div>
+                            </div>
+                            <div class="sgc-board__empty" t-if="!state.rankings.salespeople.length">No bookings in this selection yet.</div>
+                            <ol class="sgc-board__list" t-key="'salespeople-' + state.rank_batch.salespeople + '-' + state.rankings.salespeople.length" aria-live="polite">
+                                <li class="sgc-board__row" t-foreach="rankRows('salespeople')" t-as="row" t-key="row.id"
+                                    t-att-style="'--i:' + row_index + ';--w:' + row.pct + '%'" tabindex="0" role="button"
+                                    t-att-aria-label="'Rank ' + row.rank + ' ' + row.name"
+                                    t-on-click="() => this.openRankedBooking('salespeople', row)"
+                                    t-on-keydown="(ev) => this.onRankKey(ev, 'salespeople', row)">
+                                    <span t-att-class="rankTone(row.rank)"><t t-esc="row.rank"/></span>
+                                    <span class="sgc-board__name"><t t-esc="row.name"/>
+                                        <small><t t-esc="row.deals"/> deal<t t-if="row.deals != 1">s</t>, <t t-esc="row.confirmed"/> confirmed</small></span>
+                                    <span class="sgc-board__value"><t t-esc="formatCurrency(row.value)"/></span>
+                                    <span class="sgc-board__bar"><i/></span>
+                                </li>
+                            </ol>
+                        </div>
                         </div>
                     </section>
 

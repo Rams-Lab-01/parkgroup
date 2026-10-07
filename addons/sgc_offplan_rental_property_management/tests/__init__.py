@@ -12,3 +12,4 @@ from . import test_prop_d12_property_fee_autocalc
 from . import test_payment_plan_dates
 from . import test_audit_delete_workflow
 from . import test_totals_visibility
+from . import test_dashboard_filters

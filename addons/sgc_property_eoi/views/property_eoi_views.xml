@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="property_eoi_list_view" model="ir.ui.view">
+        <field name="name">property.eoi.list</field>
+        <field name="model">property.eoi</field>
+        <field name="arch" type="xml">
+            <list string="Expressions of Interest" decoration-muted="state in ('cancelled','expired')"
+                  decoration-info="state == 'converted'" decoration-danger="is_expired">
+                <field name="name"/>
+                <field name="eoi_date"/>
+                <field name="property_id"/>
+                <field name="project_id" optional="show"/>
+                <field name="partner_id"/>
+                <field name="amount" sum="Total" widget="monetary" optional="show"/>
+                <field name="amount_paid" sum="Paid" widget="monetary" optional="show"/>
+                <field name="payment_state" widget="badge" optional="show"/>
+                <field name="valid_until"/>
+                <field name="user_id" widget="many2one_avatar_user" optional="hide"/>
+                <field name="is_expired" column_invisible="1"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="state" widget="badge" decoration-success="state == 'active'"
+                       decoration-info="state == 'converted'" decoration-danger="state in ('cancelled','expired')"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="property_eoi_form_view" model="ir.ui.view">
+        <field name="name">property.eoi.form</field>
+        <field name="model">property.eoi</field>
+        <field name="arch" type="xml">
+            <form string="Expression of Interest">
+                <header>
+                    <button name="action_confirm" string="Register EOI / Reserve Unit" type="object"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_record_payment" string="Record Payment" type="object"
+                            class="btn-info" invisible="state not in ('draft','active')"/>
+                    <button name="action_convert_to_booking" string="Convert to Booking" type="object"
+                            class="btn-success" invisible="state != 'active'"/>
+                    <button name="action_print_eoi" string="Print EOI" type="object" icon="fa-print"
+                            invisible="state == 'draft'"/>
+                    <button name="action_open_cancel_wizard" string="Cancel / Release" type="object"
+                            class="btn-danger" invisible="state not in ('draft','active')"/>
+                    <button name="action_set_draft" string="Set to Draft" type="object"
+                            invisible="state not in ('cancelled','expired')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,converted"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Cancelled" bg_color="text-bg-danger"
+                            invisible="state != 'cancelled'"/>
+                    <widget name="web_ribbon" title="Expired" bg_color="text-bg-warning"
+                            invisible="state != 'expired'"/>
+                    <widget name="web_ribbon" title="Converted" bg_color="text-bg-success"
+                            invisible="state != 'converted'"/>
+                    <div name="button_box" class="oe_button_box">
+                        <button name="action_view_booking" type="object" class="oe_stat_button" icon="fa-bookmark"
+                                invisible="not booking_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Booking</span></div>
+                        </button>
+                        <button name="action_view_contract" type="object" class="oe_stat_button" icon="fa-file-text-o"
+                                invisible="not contract_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Contract</span></div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group string="Unit">
+                            <field name="company_id" invisible="1"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="is_expired" invisible="1"/>
+                            <field name="property_id" readonly="state != 'draft'" options="{'no_create': True}"/>
+                            <field name="project_id"/>
+                            <field name="unit_price" widget="monetary" readonly="state != 'draft'"/>
+                        </group>
+                        <group string="EOI">
+                            <field name="eoi_date" readonly="state != 'draft'"/>
+                            <field name="valid_until" readonly="state not in ('draft','active')"/>
+                            <field name="user_id"/>
+                            <field name="source_id"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Purchaser">
+                            <field name="partner_id" readonly="state not in ('draft','active')"/>
+                            <field name="purchaser_nationality"/>
+                            <field name="purchaser_passport_no"/>
+                            <field name="purchaser_phone"/>
+                            <field name="purchaser_email"/>
+                            <field name="purchaser_address"/>
+                        </group>
+                        <group string="Joint Purchaser (optional)">
+                            <field name="joint_partner_id"/>
+                            <field name="joint_nationality"/>
+                            <field name="joint_passport_no"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="EOI Amount">
+                            <field name="amount" widget="monetary" readonly="state not in ('draft','active')"/>
+                            <field name="payment_mode"/>
+                            <field name="payment_reference"/>
+                        </group>
+                        <group string="Payment Status">
+                            <field name="amount_paid" widget="monetary"/>
+                            <field name="amount_outstanding" widget="monetary"/>
+                            <field name="payment_state" widget="badge"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Payments" name="payments">
+                            <field name="payment_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="date"/>
+                                    <field name="journal_id"/>
+                                    <field name="memo"/>
+                                    <field name="amount" sum="Total"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="state" widget="badge"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Traceability" name="trace">
+                            <group>
+                                <group>
+                                    <field name="contract_id"/>
+                                    <field name="booking_id"/>
+                                    <field name="converted_date"/>
+                                </group>
+                                <group>
+                                    <field name="cancel_date"/>
+                                    <field name="cancel_user_id"/>
+                                    <field name="cancel_amount_paid" widget="monetary"/>
+                                    <field name="cancel_reason"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Notes" name="notes"><field name="notes"/></page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="property_eoi_search_view" model="ir.ui.view">
+        <field name="name">property.eoi.search</field>
+        <field name="model">property.eoi</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="property_id"/>
+                <field name="project_id"/>
+                <filter name="active" string="Active" domain="[('state','=','active')]"/>
+                <filter name="converted" string="Converted" domain="[('state','=','converted')]"/>
+                <filter name="cancelled" string="Cancelled / Expired" domain="[('state','in',('cancelled','expired'))]"/>
+                <filter name="overdue" string="Past Validity" domain="[('state','=','active'),('valid_until','&lt;',context_today().strftime('%Y-%m-%d'))]"/>
+                <group>
+                    <filter name="g_project" string="Project" context="{'group_by':'project_id'}"/>
+                    <filter name="g_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="g_user" string="Salesperson" context="{'group_by':'user_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_property_eoi" model="ir.actions.act_window">
+        <field name="name">Expressions of Interest</field>
+        <field name="res_model">property.eoi</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="property_eoi_search_view"/>
+    </record>
+</odoo>

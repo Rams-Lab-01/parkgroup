@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="property_details_form_view_eoi" model="ir.ui.view">
+        <field name="name">property.details.form.eoi</field>
+        <field name="model">property.details</field>
+        <field name="inherit_id" ref="sgc_offplan_rental_property_management.property_details_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='state'][@widget='statusbar']" position="attributes">
+                <attribute name="statusbar_visible">available,eoi,booked,confirmed_sale</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_create_booking']" position="before">
+                <button name="action_register_eoi" type="object" string="Register EOI" class="btn-primary"
+                        invisible="state != 'available'"/>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_eois" type="object" class="oe_stat_button" icon="fa-handshake-o">
+                    <field name="eoi_count" widget="statinfo" string="EOIs"/>
+                </button>
+                <button name="action_view_bookings" type="object" class="oe_stat_button" icon="fa-bookmark">
+                    <field name="booking_count" widget="statinfo" string="Bookings"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="property_details_search_view_eoi" model="ir.ui.view">
+        <field name="name">property.details.search.eoi</field>
+        <field name="model">property.details</field>
+        <field name="inherit_id" ref="sgc_offplan_rental_property_management.property_details_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <filter name="filter_eoi" string="EOI" domain="[('state','=','eoi')]"/>
+                <filter name="filter_confirmed_sale" string="Confirmed Sale" domain="[('state','=','confirmed_sale')]"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

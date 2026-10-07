@@ -700,21 +700,147 @@ class PropertyDetails(models.Model):
     # ------------------------------------------------------------------
     # Development KPI method (real-data-only dashboard)
     # ------------------------------------------------------------------
+
+    # ------------------------------------------------------------------
+    # Dashboard filters + rankings
+    # ------------------------------------------------------------------
     @api.model
-    def get_development_kpis(self):
-        """Real-data KPIs for the Executive Dashboard, fully drillable."""
+    def _sgc_dash_filters(self, filters):
+        """Whitelist and type-check the filter dict coming from the browser."""
+        filters = filters if isinstance(filters, dict) else {}
+
+        def _date(key):
+            value = filters.get(key)
+            try:
+                return fields.Date.to_date(value) if value else False
+            except Exception:
+                return False
+
+        def _int(key):
+            try:
+                return int(filters.get(key) or 0)
+            except (TypeError, ValueError):
+                return 0
+
+        projects = filters.get('project_ids') or []
+        if isinstance(projects, int):
+            projects = [projects]
+        project_ids = [int(x) for x in projects if str(x).isdigit()][:200]
+        date_from, date_to = _date('date_from'), _date('date_to')
+        if date_from and date_to and date_from > date_to:
+            date_from, date_to = date_to, date_from
+        return {'date_from': date_from, 'date_to': date_to, 'project_ids': project_ids,
+                'broker_id': _int('broker_id'), 'salesperson_id': _int('salesperson_id')}
+
+    @api.model
+    def _sgc_dash_booking_domain(self, flt, with_dates=True):
+        domain = [('state', '!=', 'cancelled'), ('company_id', 'in', self.env.companies.ids)]
+        if flt['project_ids']:
+            domain.append(('property_id.project_id', 'in', flt['project_ids']))
+        if flt['broker_id']:
+            domain.append(('broker_id', '=', flt['broker_id']))
+        if flt['salesperson_id']:
+            domain += ['|', ('salesperson_id', '=', flt['salesperson_id']),
+                       '&', ('salesperson_id', '=', False), ('create_uid', '=', flt['salesperson_id'])]
+        if with_dates:
+            if flt['date_from']:
+                domain.append(('contract_date', '>=', flt['date_from']))
+            if flt['date_to']:
+                domain.append(('contract_date', '<=', flt['date_to']))
+        return domain
+
+    @api.model
+    def _sgc_dash_contracts_for_people(self, flt):
+        bookings = self.env['property.vendor'].sudo().search(
+            self._sgc_dash_booking_domain({**flt, 'date_from': False, 'date_to': False}, with_dates=False))
+        return bookings.sale_contract_id
+
+    @api.model
+    def _sgc_dash_contract_domain(self, flt):
+        domain = []
+        if flt['date_from']:
+            domain.append(('contract_date', '>=', flt['date_from']))
+        if flt['date_to']:
+            domain.append(('contract_date', '<=', flt['date_to']))
+        if flt['project_ids']:
+            domain.append(('property_id.project_id', 'in', flt['project_ids']))
+        if flt['broker_id'] or flt['salesperson_id']:
+            domain.append(('id', 'in', self._sgc_dash_contracts_for_people(flt).ids))
+        return domain
+
+    @api.model
+    def get_dashboard_filter_options(self):
+        """Choices for the dashboard filter bar (names only, company-scoped)."""
+        companies = self.env.companies.ids
+        projects = self.env['property.project'].sudo().search([('company_id', 'in', companies)], order='name')
+        bookings = self.env['property.vendor'].sudo().search([('company_id', 'in', companies)])
+        brokers = bookings.broker_id.sorted('name')
+        people = (bookings.salesperson_id | bookings.create_uid).sorted('name')
+        return {
+            'projects': [{'id': p.id, 'name': p.name or p.code or str(p.id)} for p in projects],
+            'brokers': [{'id': b.id, 'name': b.name} for b in brokers],
+            'salespeople': [{'id': u.id, 'name': u.name} for u in people],
+        }
+
+    @api.model
+    def get_sales_rankings(self, filters=None, limit=10):
+        """Top brokers and top sales people by booked value (cancelled bookings excluded)."""
+        flt = self._sgc_dash_filters(filters)
+        limit = max(1, min(int(limit or 10), 50))
+        bookings = self.env['property.vendor'].sudo().search(self._sgc_dash_booking_domain(flt))
+
+        def rank(key_fn, name_fn):
+            totals = {}
+            for b in bookings:
+                key = key_fn(b)
+                if not key:
+                    continue
+                row = totals.setdefault(key.id, {'id': key.id, 'name': name_fn(key), 'deals': 0, 'confirmed': 0,
+                                                 'value': 0.0})
+                row['deals'] += 1
+                row['confirmed'] += 1 if b.sale_confirmed else 0
+                row['value'] += b.sale_price or 0.0
+            rows = sorted(totals.values(), key=lambda r: (-r['value'], -r['deals'], r['name']))[:limit]
+            for i, r in enumerate(rows, 1):
+                r['rank'] = i
+                r['value'] = round(r['value'], 2)
+            return rows
+
+        return {
+            'brokers': rank(lambda b: b.broker_id, lambda r: r.name),
+            'salespeople': rank(lambda b: b.salesperson_id or b.create_uid, lambda r: r.name),
+            'currency_symbol': self.env.company.currency_id.symbol or 'AED',
+        }
+
+    @api.model
+    def get_development_kpis(self, filters=None):
+        """Real-data KPIs for the Executive Dashboard, fully drillable.
+
+        ``filters`` (all optional): date_from / date_to (contract and payment dates), project_ids,
+        broker_id (res.partner on the booking), salesperson_id (res.users on the booking).
+        """
         company_domain = [('company_id', 'in', self.env.companies.ids)]
         from datetime import timedelta, date
+        flt = self._sgc_dash_filters(filters)
+        contract_extra = self._sgc_dash_contract_domain(flt)
+        project_ids = flt['project_ids']
 
         # --- Inventory & sales ---
         # Units total / sold / available, per project, for mapping & per-project table
-        inv_domain = company_domain
+        inv_domain = company_domain + ([('project_id', 'in', project_ids)] if project_ids else [])
         total_units = self.env['property.details'].sudo().search_count(inv_domain)
 
         # NOTE: property.details states are 'available' / 'sold' (NOT the
         # sale.contract states). Keeping the two vocabularies separate.
         unit_sold_states = ('sold', 'completed')
+        sale_model = self.env['sale.contract']
+        contract_sold_states = ('signed', 'completed')
+        sold_contracts = sale_model.sudo().search(
+            [('state', 'in', contract_sold_states), ('company_id', 'in', self.env.companies.ids)] + contract_extra)
         sold_domain = inv_domain + [('state', 'in', unit_sold_states)]
+        if flt['broker_id'] or flt['salesperson_id'] or flt['date_from'] or flt['date_to']:
+            # a person/date filter narrows "sold" to the units of the matching contracts
+            sold_domain += [('id', 'in', sold_contracts.property_id.ids)]
         sold_units = self.env['property.details'].sudo().search_count(sold_domain)
         avail_units = self.env['property.details'].sudo().search_count(inv_domain + [('state', '=', 'available')])
 
@@ -734,9 +860,6 @@ class PropertyDetails(models.Model):
         unit_mix = [unit_mix_labels, unit_mix_values]
 
         # Sales value (sum of sale_price for sold contracts)
-        sale_model = self.env['sale.contract']
-        contract_sold_states = ('signed', 'completed')
-        sold_contracts = sale_model.sudo().search([('state', 'in', contract_sold_states), ('company_id', 'in', self.env.companies.ids)])
         sold_total = sum(sc.sale_price or 0.0 for sc in sold_contracts)
 
         # Avg PSF on sold units = total sale price / total area (NOT price per unit).
@@ -746,7 +869,8 @@ class PropertyDetails(models.Model):
         avg_psf_sold = (sold_total / sold_area_total) if sold_area_total else 0.0
 
         # Units per project (real data)
-        projects = self.env['property.project'].sudo().search(company_domain)
+        projects = self.env['property.project'].sudo().search(
+            company_domain + ([('id', 'in', project_ids)] if project_ids else []))
         units_by_project = {}
         sold_by_project = {}
         for pr in projects:
@@ -758,8 +882,16 @@ class PropertyDetails(models.Model):
         # --- Collections & receivables ---
         # Collected: sum of paid installments
         installment_model = self.env['sale.contract.installment']
-        paid_installments = installment_model.sudo().search([
-            ('state', '=', 'paid'), ('contract_id.company_id', 'in', self.env.companies.ids)])
+        inst_domain = [('state', '=', 'paid'), ('contract_id.company_id', 'in', self.env.companies.ids)]
+        if flt['date_from']:
+            inst_domain.append(('payment_date', '>=', flt['date_from']))
+        if flt['date_to']:
+            inst_domain.append(('payment_date', '<=', flt['date_to']))
+        if project_ids:
+            inst_domain.append(('contract_id.property_id.project_id', 'in', project_ids))
+        if flt['broker_id'] or flt['salesperson_id']:
+            inst_domain.append(('contract_id', 'in', self._sgc_dash_contracts_for_people(flt).ids))
+        paid_installments = installment_model.sudo().search(inst_domain)
         collected_total = sum(inst.amount or 0.0 for inst in paid_installments)
 
         # Balance due: all contracts minus collected (including over-collected credits)
@@ -833,12 +965,17 @@ class PropertyDetails(models.Model):
 
         # Admin fees
         admin_fees = self.env['property.details'].sudo().search([
-            ('admin_fee', '>', 0), ('company_id', 'in', self.env.companies.ids)])
+            ('admin_fee', '>', 0), ('company_id', 'in', self.env.companies.ids)]
+            + ([('project_id', 'in', project_ids)] if project_ids else []))
         admin_fees_total = sum(pd.admin_fee for pd in admin_fees)
 
         # --- Escrow compliance ---
-        escrow_model = self.env['escrow.allocation']
-        escrow_records = escrow_model.sudo().search(company_domain)
+        # The escrow app is optional: without it the escrow tiles read zero instead of the dashboard crashing.
+        if 'escrow.allocation' in self.env:
+            escrow_records = self.env['escrow.allocation'].sudo().search(
+                company_domain + ([('project_id', 'in', project_ids)] if project_ids else []))
+        else:
+            escrow_records = []
         required_escrow = sum(rec.required_amount for rec in escrow_records if rec.required_amount)
         allocated_escrow = sum(rec.allocated_amount for rec in escrow_records if rec.allocated_amount)
         escrow_shortfall = required_escrow - allocated_escrow

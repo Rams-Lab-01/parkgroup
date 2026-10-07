@@ -18,6 +18,8 @@
                     <h1 class="mb-1">Broker Registration</h1>
                     <p class="text-muted">Register as a real estate broker or brokerage company. You will verify your
                         email, upload the compliance documents and sign the brokerage agreement online.</p>
+                    <div class="alert alert-secondary small" role="note">Applications are reviewed by our compliance team. You become a registered broker only after approval.
+                        <a href="/broker/resume">Already applied? Continue here</a>.</div>
                     <t t-call="sgc_broker_registration.broker_steps"><t t-set="step" t-value="1"/></t>
                     <div t-if="error" class="alert alert-danger" role="alert"><t t-out="error"/></div>
                     <form action="/broker/register/submit" method="post" class="row g-3">
