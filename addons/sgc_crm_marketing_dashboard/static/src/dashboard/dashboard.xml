@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="sgc_crm_marketing_dashboard.Dashboard">
+        <div class="o_sgc_crmd p-3">
+            <t t-if="state.error">
+                <div class="alert alert-danger" t-esc="state.error"/>
+            </t>
+            <t t-elif="state.loading">
+                <div class="text-center p-5 text-muted">Loading dashboard…</div>
+            </t>
+            <t t-else="">
+                <div class="o_sgc_crmd_header mb-3">
+                    <div>
+                        <h2 class="mb-0">CRM Dashboard — Potential Buyers &amp; Marketing ROI</h2>
+                        <small class="text-muted"><t t-esc="state.data.company"/> ·
+                            updated <t t-esc="state.data.updated_at"/></small>
+                    </div>
+                    <div class="o_periods btn-group">
+                        <button class="btn btn-sm"
+                                t-attf-class="btn btn-sm #{state.period === 'month' ? 'btn-primary' : 'btn-outline-primary'}"
+                                t-on-click="() => this.setPeriod('month')">Month</button>
+                        <button class="btn btn-sm"
+                                t-attf-class="btn btn-sm #{state.period === 'quarter' ? 'btn-primary' : 'btn-outline-primary'}"
+                                t-on-click="() => this.setPeriod('quarter')">Quarter</button>
+                        <button class="btn btn-sm"
+                                t-attf-class="btn btn-sm #{state.period === 'year' ? 'btn-primary' : 'btn-outline-primary'}"
+                                t-on-click="() => this.setPeriod('year')">Year</button>
+                        <button class="btn btn-sm"
+                                t-attf-class="btn btn-sm #{state.period === 'all' ? 'btn-primary' : 'btn-outline-primary'}"
+                                t-on-click="() => this.setPeriod('all')">All</button>
+                    </div>
+                </div>
+
+                <!-- Potential buyers -->
+                <div class="o_sgc_crmd_section">Potential Buyers</div>
+                <div class="o_sgc_crmd_grid">
+                    <div class="o_sgc_crmd_card" t-on-click="() => this.openRecords('open')">
+                        <div class="o_label">Open Opportunities</div>
+                        <div class="o_value" t-esc="state.data.pipeline.open"/>
+                    </div>
+                    <div class="o_sgc_crmd_card" t-on-click="() => this.openRecords('open')">
+                        <div class="o_label">Pipeline Value</div>
+                        <div class="o_value" t-esc="this.fmt(state.data.pipeline.pipeline_value)"/>
+                        <div class="o_sub">AED</div>
+                    </div>
+                    <div class="o_sgc_crmd_card" t-on-click="() => this.openRecords('open')">
+                        <div class="o_label">Weighted Pipeline</div>
+                        <div class="o_value" t-esc="this.fmt(state.data.pipeline.weighted_value)"/>
+                        <div class="o_sub">AED (prob-adjusted)</div>
+                    </div>
+                    <div class="o_sgc_crmd_card" t-on-click="() => this.openRecords('won')">
+                        <div class="o_label">Win Rate</div>
+                        <div class="o_value" t-esc="this.pct(state.data.pipeline.win_rate)"/>
+                    </div>
+                    <div class="o_sgc_crmd_card">
+                        <div class="o_label">New Leads (period)</div>
+                        <div class="o_value" t-esc="state.data.pipeline.new_leads"/>
+                    </div>
+                    <div class="o_sgc_crmd_card" t-on-click="() => this.openRecords('won')">
+                        <div class="o_label">Won (period)</div>
+                        <div class="o_value text-success" t-esc="state.data.pipeline.new_won"/>
+                    </div>
+                </div>
+
+                <!-- Marketing ROI -->
+                <div class="o_sgc_crmd_section">Marketing ROI</div>
+                <div class="o_sgc_crmd_grid">
+                    <div class="o_sgc_crmd_card">
+                        <div class="o_label">Marketing Spend</div>
+                        <div class="o_value" t-esc="this.fmt(state.data.roi.total_spend)"/>
+                    </div>
+                    <div class="o_sgc_crmd_card" t-on-click="() => this.openRecords('campaign_revenue')">
+                        <div class="o_label">Attributed Revenue</div>
+                        <div class="o_value text-success" t-esc="this.fmt(state.data.roi.attributed_revenue)"/>
+                    </div>
+                    <div class="o_sgc_crmd_card">
+                        <div class="o_label">ROAS</div>
+                        <div class="o_value" t-esc="state.data.roi.roas == null ? '—' : state.data.roi.roas + 'x'"/>
+                    </div>
+                    <div class="o_sgc_crmd_card">
+                        <div class="o_label">Net (Rev − Spend)</div>
+                        <div class="o_value" t-esc="this.fmt(state.data.roi.net)"/>
+                    </div>
+                    <div class="o_sgc_crmd_card">
+                        <div class="o_label">Cost / Lead</div>
+                        <div class="o_value" t-esc="state.data.roi.cpl == null ? '—' : this.fmt(state.data.roi.cpl)"/>
+                    </div>
+                    <div class="o_sgc_crmd_card">
+                        <div class="o_label">Cost / Acquisition</div>
+                        <div class="o_value" t-esc="state.data.roi.cac == null ? '—' : this.fmt(state.data.roi.cac)"/>
+                    </div>
+                </div>
+
+                <!-- Campaigns -->
+                <div class="o_sgc_crmd_panel">
+                    <div class="o_sgc_crmd_section">Campaign Performance</div>
+                    <table class="table table-sm mb-0">
+                        <thead>
+                            <tr>
+                                <th>Campaign</th>
+                                <th class="text-end">Leads</th>
+                                <th class="text-end">Opps</th>
+                                <th class="text-end">Won</th>
+                                <th class="text-end">Revenue</th>
+                                <th class="text-end">Cost</th>
+                                <th class="text-end">CPL</th>
+                                <th class="text-end">CPA</th>
+                                <th class="text-end">ROAS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="state.data.campaigns" t-as="c" t-key="c.id"
+                                class="o_sgc_crmd_row"
+                                t-on-click="() => this.openRecords('campaign', {id: c.id})">
+                                <td t-esc="c.name"/>
+                                <td class="text-end" t-esc="c.leads"/>
+                                <td class="text-end" t-esc="c.opportunities"/>
+                                <td class="text-end" t-esc="c.won"/>
+                                <td class="text-end text-success" t-esc="this.fmt(c.revenue)"/>
+                                <td class="text-end" t-esc="this.fmt(c.cost)"/>
+                                <td class="text-end" t-esc="c.cpl == null ? '—' : this.fmt(c.cpl)"/>
+                                <td class="text-end" t-esc="c.cpa == null ? '—' : this.fmt(c.cpa)"/>
+                                <td class="text-end fw-bold" t-esc="c.roas == null ? '—' : c.roas + 'x'"/>
+                            </tr>
+                            <tr t-if="!state.data.campaigns.length">
+                                <td colspan="9" class="text-center text-muted">No campaigns yet</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Biggest live buyers -->
+                <div class="o_sgc_crmd_panel">
+                    <div class="o_sgc_crmd_section">Biggest Live Potential Buyers</div>
+                    <table class="table table-sm mb-0">
+                        <thead>
+                            <tr>
+                                <th>Opportunity</th><th>Property</th><th>Stage</th>
+                                <th>Source</th><th>Campaign</th><th>Owner</th>
+                                <th class="text-end">Value</th><th class="text-end">Prob.</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="state.data.buyers" t-as="b" t-key="b.id"
+                                class="o_sgc_crmd_row"
+                                t-on-click="() => this.openRecords('open')">
+                                <td t-esc="b.name"/>
+                                <td t-esc="b.property"/>
+                                <td t-esc="b.stage"/>
+                                <td t-esc="b.source"/>
+                                <td t-esc="b.campaign"/>
+                                <td t-esc="b.owner"/>
+                                <td class="text-end" t-esc="this.fmt(b.expected_revenue)"/>
+                                <td class="text-end" t-esc="b.probability + '%'"/>
+                            </tr>
+                            <tr t-if="!state.data.buyers.length">
+                                <td colspan="8" class="text-center text-muted">No open opportunities</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pipeline breakdown -->
+                <div class="o_sgc_crmd_grid2" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-top:1rem;">
+                    <div class="o_sgc_crmd_panel" style="margin-top:0;">
+                        <div class="o_sgc_crmd_section">By Stage</div>
+                        <table class="table table-sm mb-0"><tbody>
+                            <tr t-foreach="state.data.by_stage" t-as="s" t-key="s.name"
+                                class="o_sgc_crmd_row"
+                                t-on-click="() => this.openRecords('stage', {id: s.id})">
+                                <td t-esc="s.name"/><td class="text-end fw-bold" t-esc="s.count"/>
+                            </tr>
+                        </tbody></table>
+                    </div>
+                    <div class="o_sgc_crmd_panel" style="margin-top:0;">
+                        <div class="o_sgc_crmd_section">By Source</div>
+                        <table class="table table-sm mb-0"><tbody>
+                            <tr t-foreach="state.data.by_source" t-as="s" t-key="s.name"
+                                class="o_sgc_crmd_row"
+                                t-on-click="() => this.openRecords('source', {id: s.id})">
+                                <td t-esc="s.name"/><td class="text-end fw-bold" t-esc="s.count"/>
+                            </tr>
+                        </tbody></table>
+                    </div>
+                    <div class="o_sgc_crmd_panel" style="margin-top:0;">
+                        <div class="o_sgc_crmd_section">By Owner</div>
+                        <table class="table table-sm mb-0"><tbody>
+                            <tr t-foreach="state.data.by_owner" t-as="o" t-key="o.name"
+                                class="o_sgc_crmd_row"
+                                t-on-click="() => this.openRecords('owner', {id: o.id})">
+                                <td t-esc="o.name"/><td class="text-end fw-bold" t-esc="o.count"/>
+                            </tr>
+                        </tbody></table>
+                    </div>
+                </div>
+
+                <!-- Aging -->
+                <div class="o_sgc_crmd_panel">
+                    <div class="o_sgc_crmd_section">Pipeline Aging (days in stage)</div>
+                    <table class="table table-sm mb-0"><tbody>
+                        <tr t-foreach="state.data.aging" t-as="a" t-key="a.bucket"
+                            class="o_sgc_crmd_row"
+                            t-on-click="() => this.openRecords('aging', {bucket: a.bucket})">
+                            <td t-esc="a.bucket"/><td class="text-end fw-bold" t-esc="a.count"/>
+                        </tr>
+                    </tbody></table>
+                </div>
+            </t>
+        </div>
+    </t>
+</templates>
