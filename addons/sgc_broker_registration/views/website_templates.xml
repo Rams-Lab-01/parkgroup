@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Public landing page: /brokers -->
+    <template id="landing_page" name="Broker programme">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+                <div class="container py-5" style="max-width: 960px;">
+                    <h1 class="mb-2">Become a Registered Broker</h1>
+                    <p class="lead text-muted">Open to licensed individual brokers and brokerage companies in the UAE.
+                        Anyone can apply online; you are registered only after our compliance team approves your application.</p>
+                    <div class="my-4">
+                        <a t-if="signup_open" href="/broker/register" class="btn btn-primary btn-lg me-2">Apply now</a>
+                        <div t-else="" class="alert alert-info d-inline-block">New registrations are currently closed.</div>
+                        <a href="/broker/resume" class="btn btn-outline-secondary btn-lg">Already applied? Continue</a>
+                    </div>
+
+                    <h2 class="h4 mt-5">How it works</h2>
+                    <ol class="list-group list-group-numbered mb-4">
+                        <li class="list-group-item"><b>Register</b> - tell us who you are and which emirate regulator you are licensed with.</li>
+                        <li class="list-group-item"><b>Verify your email</b> - we send a 6-digit code.</li>
+                        <li class="list-group-item"><b>Upload your documents</b> - trade licence, broker card / regulator registration and the other compliance documents below.</li>
+                        <li class="list-group-item"><b>Sign the brokerage agreement online</b> and submit.</li>
+                        <li class="list-group-item"><b>Our team reviews</b> every document. We may ask for corrections. On approval you become a Registered Broker; the agreement runs for one year and we remind you before it expires.</li>
+                    </ol>
+
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <h3 class="h5">Individual brokers - documents</h3>
+                            <ul>
+                                <li t-foreach="individual_docs" t-as="dt">
+                                    <t t-out="dt.name"/>
+                                    <span t-if="not dt.required" class="text-muted">(optional)</span>
+                                    <span t-if="dt.emirate != 'all'" class="text-muted small"> - <t t-out="dict(dt._fields['emirate']._description_selection(dt.env)).get(dt.emirate)"/></span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h3 class="h5">Brokerage companies - documents</h3>
+                            <ul>
+                                <li t-foreach="company_docs" t-as="dt">
+                                    <t t-out="dt.name"/>
+                                    <span t-if="not dt.required" class="text-muted">(optional)</span>
+                                    <span t-if="dt.emirate != 'all'" class="text-muted small"> - <t t-out="dict(dt._fields['emirate']._description_selection(dt.env)).get(dt.emirate)"/></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <p class="text-muted small mt-4">Accepted files: PDF, JPG or PNG. Registration does not authorise you to act as
+                        our broker until your application has been approved and the agreement is active.</p>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="closed_page" name="Broker registrations closed">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+                <div class="container py-5" style="max-width: 720px;">
+                    <h1>Registrations are closed</h1>
+                    <p class="text-muted">We are not accepting new broker applications right now. If you already applied,
+                        you can continue your application with the link we emailed you.</p>
+                    <a href="/broker/resume" class="btn btn-outline-secondary">Continue my application</a>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="resume_page" name="Resume broker application">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+                <div class="container py-5" style="max-width: 560px;">
+                    <h1 class="h3">Continue your application</h1>
+                    <div t-if="sent" class="alert alert-success" role="alert">
+                        If an application exists for that email, we have sent a link to continue it.
+                    </div>
+                    <form action="/broker/resume" method="post">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <label class="form-label" for="resume_email">Email used on your application</label>
+                        <input type="email" name="email" id="resume_email" class="form-control mb-3" required="required" maxlength="200"/>
+                        <button type="submit" class="btn btn-primary">Email me the link</button>
+                    </form>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Website menu entry -->
+    <record id="menu_brokers" model="website.menu">
+        <field name="name">Brokers</field>
+        <field name="url">/brokers</field>
+        <field name="parent_id" ref="website.main_menu"/>
+        <field name="sequence" eval="60"/>
+    </record>
+</odoo>

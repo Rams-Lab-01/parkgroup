@@ -21,3 +21,7 @@ class ResConfigSettings(models.TransientModel):
         string='Max registrations per IP per hour', config_parameter='sgc_broker.max_registrations_per_ip_hour',
         default=10, help='Anti-abuse limit. Behind a reverse proxy Odoo must run with proxy_mode, '
                          'otherwise every visitor shares the proxy address.')
+    sgc_broker_open_signup = fields.Boolean(
+        string='Open broker sign-up on the website', config_parameter='sgc_broker.open_signup', default=True,
+        help='When off, /broker/register shows a "registrations closed" page. Applicants already in progress '
+             'can still resume with their emailed link. Nobody becomes a registered broker without approval.')
