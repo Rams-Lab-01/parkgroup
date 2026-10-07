@@ -15,14 +15,17 @@ addons/
   sgc_escrow/                  — Escrow management
   sgc_offplan_rental_property_management/  — Base property/tenancy module (dependency)
   sgc_property_lead_journey/   — CRM lead spine for property sales (lead → EOI → booking → SPA)
-  sgc_crm_marketing_dashboard/ — CRM/marketing dashboard (potential buyers, campaigns, ROI)
+  sgc_crm_dashboard/           — CRM dashboard (pipeline / aging / source / owner / leaderboard)
+  sgc_employee_badges/         — gamification badges + leaderboard (dependency of sgc_crm_dashboard)
 ```
 
 ## Key Dependencies
 - `sgc_pdc_management` depends on `sgc_offplan_rental_property_management` (sale.contract, tenancy.details, rent.invoice, property.details)
 - `sgc_broker_registration` depends on `base`, `mail`, `contacts`, `portal`, `website`
 - `sgc_property_lead_journey` depends on `crm`, `sale_management`, `website`, `sgc_offplan_rental_property_management`, `sgc_property_eoi_workflow` — links `sale.contract.lead_id` to `crm.lead` and drives the lead stage from the contract state
-- `sgc_crm_marketing_dashboard` depends on `crm`, `utm`, `sgc_property_lead_journey` — CRM/marketing analytics (pipeline, campaigns, ROI); adds `utm.campaign.marketing_cost`. Complementary to the property-operations dashboard in `sgc_offplan_rental_property_management` (`Property Management → Statistics`); the old `sgc_realestate_dashboard` was retired as a duplicate of that one
+- `sgc_crm_dashboard` depends on `crm`, `sale_management`, `website`, `sgc_employee_badges` — the CRM dashboard used in `odoo19-sgc`; stage ids are resolved by name so it also fits this tenant's New/Qualified/Proposition/Won pipeline. Requires `sgc_realestate_brokerage_template.excludes` to be overridden (it is listed there as an audit-quarantined module)
+- `sgc_employee_badges` depends on `gamification`, `hr_gamification`, `crm` and extends `hr.attendance` → requires `hr_attendance` installed
+- Retired (superseded): `sgc_crm_marketing_dashboard` (bespoke board) and `sgc_realestate_dashboard`
 
 ## Testing
 Tests are tagged `post_install` (`-at_install`), so they run after all modules are installed.

@@ -1,0 +1,543 @@
+/* CRM Dashboard — Premium Executive Dark (Gold accents) */
+/* Scoped under .o_crm_dashboard so it only affects the dashboard view */
+
+$_bg-primary: #07111F;
+$_bg-secondary: #0E1B2E;
+$_bg-tertiary: #13263F;
+$_text-primary: #F5F7FA;
+$_text-secondary: #A7B4C6;
+$_text-muted: #708090;
+$_border-soft: rgba(199, 162, 58, 0.25);
+$_border-gold: #C7A23A;
+$_gold: #C7A23A;
+$_gold-light: rgba(199, 162, 58, 0.15);
+$_amber: #F4B740;
+$_emerald: #00B67A;
+$_coral: #FF5A5F;
+$_blue-info: #4DA3FF;
+
+$_glass-blur: 24px;
+$_radius-lg: 22px;
+$_radius-md: 14px;
+$_radius-sm: 10px;
+
+.o_crm_dashboard {
+    background: transparent !important;
+    color: $_text-primary;
+    font-family: inherit;
+
+    // Scorecard: guarantee exactly 5 cards per row from md up, even if the
+    // backend bundle ships without Bootstrap's row-cols-* utilities.
+    @media (min-width: 768px) {
+        .row-cols-md-5 > .col {
+            flex: 0 0 auto;
+            width: 20%;
+            max-width: 20%;
+        }
+
+        .row-cols-md-6 > .col {
+            flex: 0 0 auto;
+            width: 16.6667%;
+            max-width: 16.6667%;
+        }
+    }
+
+    .o_kpi_card {
+        background: $_bg-secondary !important;
+        backdrop-filter: blur($_glass-blur) saturate(160%);
+        border: 1px solid $_border-soft !important;
+        border-radius: $_radius-lg !important;
+        transition: all 0.3s ease;
+        overflow: hidden;
+        position: relative;
+
+        &::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: linear-gradient(135deg, rgba(199,162,58,0.06) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        &:hover {
+            border-color: $_gold !important;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-body {
+            background: transparent !important;
+        }
+
+        .o_kpi_label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: $_text-muted;
+        }
+
+        .o_kpi_value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: $_text-primary;
+        }
+
+        .o_kpi_icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        &.o_kpi-leads { border-left: 4px solid $_gold !important; }
+        &.o_kpi-pipeline { border-left: 4px solid $_gold !important; }
+        &.o_kpi-follow-up { border-left: 4px solid $_amber !important; }
+        &.o_kpi-booked { border-left: 5px solid $_gold !important; }
+        &.o_kpi-activity { border-left: 4px solid $_blue-info !important; }
+
+        &.o_kpi-lost { border-left: 4px solid $_coral !important; }
+    }
+
+    // Leaderboard panel - beside the (now compact) Qualification & Gate
+    // Compliance card, given real vertical room (col-lg-4) instead of being
+    // squeezed into a single KPI-card slot.
+    .o_lb_panel {
+        cursor: pointer;
+        transition: all 0.3s ease;
+
+        &:hover {
+            border-color: $_gold !important;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-header {
+            align-items: flex-start;
+        }
+    }
+
+    .o_lb_panel_badge {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba($_gold, 0.15);
+        color: $_gold;
+        flex: 0 0 auto;
+    }
+
+    // Shared column template across the header row and every data row so
+    // rank / avatar / name / meetings / pipeline / score all line up like a
+    // compact table rather than a stacked list.
+    $_lb-cols: 26px 28px minmax(0, 1fr) 44px 96px 48px;
+
+    .o_lb_panel_colheads {
+        display: grid;
+        grid-template-columns: $_lb-cols;
+        gap: 10px;
+        align-items: center;
+        padding: 0 0 6px;
+        font-size: 0.62rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: $_text-muted;
+        border-bottom: 1px solid $_border-soft;
+        margin-bottom: 8px;
+    }
+
+    .o_lb_panel_list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .o_lb_panel_row,
+    .o_lb_panel_me_row {
+        display: grid;
+        grid-template-columns: $_lb-cols;
+        gap: 10px;
+        align-items: center;
+        font-size: 0.82rem;
+        line-height: 1.3;
+    }
+
+    .o_lb_panel_rank {
+        width: 26px;
+        height: 26px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: $_text-muted;
+        background: rgba(255, 255, 255, 0.06);
+
+        &[data-rank="1"] { background: rgba($_gold, 0.22); font-size: 1rem; }
+        &[data-rank="2"] { background: rgba(199, 199, 199, 0.18); font-size: 1rem; }
+        &[data-rank="3"] { background: rgba(205, 127, 50, 0.2); font-size: 1rem; }
+    }
+
+    .o_lb_panel_avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 1px solid $_border-soft;
+    }
+
+    .o_lb_panel_name {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: $_text-secondary;
+        font-weight: 500;
+    }
+
+    .o_lb_panel_meetings {
+        font-weight: 600;
+        color: $_text-secondary;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .o_lb_panel_pipeline {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-weight: 600;
+        color: $_text-primary;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .o_lb_panel_score {
+        font-weight: 700;
+        color: $_gold;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .o_lb_panel_row.o_lb_panel_me {
+        background: rgba($_gold, 0.08);
+        border-radius: $_radius-md;
+        padding: 4px 8px;
+        margin: -4px -8px;
+
+        .o_lb_panel_name { color: $_text-primary; font-weight: 700; }
+    }
+
+    .o_lb_panel_me_row {
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px dashed $_border-soft;
+
+        .o_lb_panel_name { color: $_text-primary; font-weight: 700; }
+    }
+
+    .o_lb_panel_footer {
+        padding: 10px 20px;
+        text-align: center;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: $_gold;
+        border-top: 1px solid $_border-soft;
+    }
+
+    .o_dash_card {
+        background: $_bg-secondary !important;
+        backdrop-filter: blur($_glass-blur) saturate(160%);
+        border: 1px solid $_border-soft !important;
+        border-radius: $_radius-lg !important;
+        transition: all 0.3s ease;
+        overflow: hidden;
+
+        &::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: linear-gradient(135deg, rgba(199,162,58,0.04) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .card-header {
+            background: transparent !important;
+            border-bottom: 1px solid $_border-soft !important;
+            padding: 14px 20px;
+
+            h6 {
+                color: $_text-primary !important;
+                font-weight: 600;
+                margin: 0;
+            }
+
+            small {
+                color: $_text-muted !important;
+            }
+        }
+
+        .card-body {
+            background: transparent !important;
+            color: $_text-secondary;
+        }
+    }
+
+    .o_detail_panel {
+        background: $_bg-tertiary !important;
+        backdrop-filter: blur($_glass-blur) saturate(160%);
+        border: 1px solid $_border-gold !important;
+        border-left: 4px solid $_gold !important;
+        border-radius: $_radius-lg !important;
+        color: $_text-secondary;
+
+        .card-header {
+            background: transparent !important;
+            border-bottom: 1px solid $_border-soft !important;
+
+            h5 { color: $_text-primary !important; }
+        }
+
+        .card-body {
+            background: transparent !important;
+        }
+    }
+
+    // Compact card: tighter header/body padding, used by Qualification &
+    // Gate Compliance now that it shares its row with the Leaderboard panel.
+    .o_dash_card_compact {
+        .card-header { padding: 10px 16px; }
+        .card-body { padding: 12px 16px; }
+    }
+
+    .o_stat_box {
+        text-align: center;
+        padding: 16px 12px;
+        border-radius: $_radius-md;
+        transition: all 0.3s ease;
+
+        &.o_stat_box_compact {
+            padding: 10px 8px;
+
+            .o_stat_value { font-size: 1.15rem; }
+            .o_stat_label { font-size: 0.68rem; }
+        }
+
+        .o_stat_value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: $_text-primary;
+        }
+
+        .o_stat_label {
+            font-size: 0.75rem;
+            color: $_text-muted;
+            margin-top: 2px;
+        }
+
+        &.o_stat-green  { background: rgba(0, 182, 122, 0.12) !important; .o_stat_value { color: $_emerald; } }
+        &.o_stat-yellow { background: rgba(244, 183, 64, 0.12) !important; .o_stat_value { color: $_amber; } }
+        &.o_stat-red    { background: rgba(255, 90, 95, 0.12) !important;   .o_stat_value { color: $_coral; } }
+        &.o_stat-mauve  { background: rgba(199, 162, 58, 0.12) !important; .o_stat_value { color: $_gold; } }
+        &.o_stat-pink   { background: rgba(199, 162, 58, 0.12) !important; .o_stat_value { color: $_gold; } }
+        &.o_stat-info   { background: rgba(77, 163, 255, 0.12) !important; .o_stat_value { color: $_blue-info; } }
+        &.o_stat-muted  { background: rgba(255, 255, 255, 0.04) !important; }
+    }
+
+    .table {
+        color: $_text-secondary !important;
+        --table-bg: transparent;
+        --table-border-color: $_border-soft;
+
+        thead {
+            background: $_bg-tertiary !important;
+
+            th {
+                color: $_text-muted !important;
+                font-weight: 600;
+                font-size: 0.75rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                border-bottom: 1px solid $_border-soft !important;
+                background: transparent !important;
+            }
+        }
+
+        tbody {
+            tr {
+                transition: background 0.2s;
+
+                &:hover {
+                    background: rgba(199, 162, 58, 0.06) !important;
+                }
+            }
+
+            td {
+                border-top: 1px solid $_border-soft !important;
+                vertical-align: middle;
+                color: $_text-secondary;
+            }
+        }
+    }
+
+    .o_row_selected {
+        background: rgba(199, 162, 58, 0.10) !important;
+    }
+
+    .cursor-pointer {
+        cursor: pointer;
+    }
+
+    // KPI cards, qualification tiles and chart segments that open the
+    // records behind their number. Cards/tiles are plain divs made
+    // interactive (role="button" + tabindex in the template), so they need
+    // their own visible focus treatment — the browser default outline is
+    // suppressed by the surrounding glass-card styling otherwise.
+    .o_kpi_clickable,
+    .o_stat_clickable {
+        cursor: pointer;
+
+        &:hover {
+            filter: brightness(1.08);
+        }
+
+        &:focus-visible {
+            outline: 2px solid $_gold;
+            outline-offset: 2px;
+        }
+    }
+
+    canvas {
+        // Chart.js already swaps the cursor per-segment via onHover; this
+        // is just the resting state so the whole chart doesn't look
+        // draggable/selectable before the first hover event fires.
+        cursor: default;
+    }
+
+    .badge {
+        font-weight: 500;
+        font-size: 0.78rem;
+
+        &.bg-success-subtle { background: rgba(0, 182, 122, 0.15) !important; color: $_emerald !important; }
+        &.bg-danger-subtle  { background: rgba(255, 90, 95, 0.15) !important;   color: $_coral !important; }
+        &.bg-primary-subtle { background: rgba(199, 162, 58, 0.15) !important; color: $_gold !important; }
+        &.bg-secondary-subtle { background: rgba(255, 255, 255, 0.06) !important; color: $_text-muted !important; }
+        &.bg-light { background: rgba(255, 255, 255, 0.06) !important; color: $_text-secondary !important; }
+    }
+
+    .o_team_row {
+        background: $_bg-tertiary !important;
+        border-radius: $_radius-sm;
+        padding: 10px 14px;
+        margin-bottom: 8px;
+        transition: all 0.2s ease;
+        border: 1px solid transparent;
+
+        &:hover {
+            background: rgba(199, 162, 58, 0.06) !important;
+            border-color: $_border-soft;
+        }
+
+        .o_team_name {
+            font-weight: 600;
+            color: $_text-primary;
+        }
+
+        .o_team_stats {
+            font-size: 0.8rem;
+            color: $_text-muted;
+        }
+
+        .o_team_target {
+            font-size: 0.78rem;
+        }
+    }
+
+    .o_dash_filter {
+        .form-select {
+            background: $_bg-secondary !important;
+            border: 1px solid $_border-soft !important;
+            border-radius: $_radius-sm;
+            color: $_text-primary !important;
+
+            option {
+                background: $_bg-primary !important;
+                color: $_text-primary;
+            }
+        }
+    }
+
+    h4, h5, h6 {
+        color: $_text-primary !important;
+    }
+
+    h4.fw-bold {
+        font-weight: 700;
+        font-size: 1.25rem;
+    }
+
+    canvas {
+        max-width: 100%;
+    }
+
+    .o_activity_type_row {
+        background: $_bg-tertiary !important;
+        border-radius: $_radius-sm;
+        padding: 8px 12px;
+        margin-bottom: 6px;
+        border: 1px solid $_border-soft;
+        color: $_text-secondary;
+    }
+
+    .btn-outline-secondary {
+        border-color: $_border-soft !important;
+        color: $_text-muted !important;
+        background: transparent !important;
+
+        &:hover {
+            background: rgba(199, 162, 58, 0.10) !important;
+            border-color: $_gold !important;
+            color: $_text-primary !important;
+        }
+    }
+
+    .btn-outline-secondary .fa-times {
+        color: $_text-muted;
+    }
+
+    .o_days-indicator {
+        font-weight: 700;
+        font-size: 0.9rem;
+    }
+
+    .text-primary {
+        color: $_gold !important;
+    }
+
+    .text-dark { color: $_text-primary !important; }
+    .text-muted { color: $_text-muted !important; }
+    .text-success { color: $_emerald !important; }
+    .text-danger { color: $_coral !important; }
+    .text-info { color: $_blue-info !important; }
+
+    .table-hover tbody tr:hover {
+        background: rgba(199, 162, 58, 0.06) !important;
+    }
+
+    .spinner-border {
+        border-color: rgba(199, 162, 58, 0.2);
+        border-top-color: $_gold;
+    }
+
+    .o_nocontent_help {
+        color: $_text-muted;
+    }
+}

@@ -1,0 +1,37 @@
+/* =====================================
+   CRM Dashboard — Premium Executive Colors
+   Dark command-center palette with gold accents
+   ===================================== */
+
+:root {
+    /* Backgrounds */
+    --color-bg-primary: #07111F;
+    --color-bg-secondary: #0E1B2E;
+    --color-bg-tertiary: #13263F;
+
+    /* Text */
+    --color-text-primary: #F5F7FA;
+    --color-text-secondary: #A7B4C6;
+    --color-text-muted: #708090;
+
+    /* Borders */
+    --color-border: rgba(199, 162, 58, 0.25);
+    --color-border-primary: #C7A23A;
+
+    /* Accent — Gold */
+    --color-accent: #C7A23A;
+    --color-accent-hover: #D4AF37;
+    --color-accent-light: rgba(199, 162, 58, 0.15);
+
+    /* Semantic */
+    --color-success: #00B67A;
+    --color-warning: #F4B740;
+    --color-danger: #FF5A5F;
+    --color-info: #4DA3FF;
+
+    /* Radius */
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --radius-xl: 20px;
+}

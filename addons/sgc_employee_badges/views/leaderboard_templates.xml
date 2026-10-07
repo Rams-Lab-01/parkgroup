@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_sgc_leaderboard" model="ir.actions.act_url">
+        <field name="name">SGC Leaderboard</field>
+        <field name="url">/sgc/leaderboard</field>
+        <field name="target">self</field>
+    </record>
+
+    <!-- Leaderboard menu visible to EVERY internal user. Kept top-level (no
+         parent) on purpose: the gamification menu is gated by the Gamification
+         User group, which would hide this entry from sales users who do not
+         hold that group. base.group_user covers all internal accounts. -->
+    <record id="menu_sgc_leaderboard" model="ir.ui.menu">
+        <field name="name">SGC Leaderboard</field>
+        <field name="sequence">60</field>
+        <field name="action" ref="action_sgc_leaderboard"/>
+        <field name="group_ids" eval="[]"/>
+    </record>
+
+    <template id="sgc_leaderboard_template" name="SGC Leaderboard">
+        <t t-call="web.layout">
+            <t t-set="head">
+                <link rel="stylesheet" href="/sgc_employee_badges/static/src/scss/sgc_leaderboard.css"/>
+            </t>
+            <div class="o_action_manager">
+                <div class="sgc-lb">
+                    <header class="sgc-lb__header">
+                        <div class="sgc-lb__brand">
+                            <span class="sgc-lb__brand-mark">SGC</span>
+                            <h1 class="sgc-lb__title">Leaderboard</h1>
+                        </div>
+                        <div class="sgc-lb__period">
+                            <div class="sgc-lb__period-label">Quarterly Period</div>
+                            <div class="sgc-lb__period-value">
+                                <t t-esc="quarter_start" t-options="{'widget': 'date'}"/>
+                                &#160;–&#160;
+                                <t t-esc="today" t-options="{'widget': 'date'}"/>
+                            </div>
+                        </div>
+                        <div class="sgc-lb__prize">
+                            <div class="sgc-lb__prize-label">Prize Pool</div>
+                            <div class="sgc-lb__prize-value">
+                                <t t-esc="total_prize_pool" t-options="{'widget': 'monetary', 'display_currency': currency}"/>
+                                <small>&#160;·&#160;
+                                    <t t-esc="podium and len(podium) or 0"/> eligible
+                                </small>
+                            </div>
+                        </div>
+                    </header>
+
+                    <section class="sgc-lb__programs">
+                        <h2 class="sgc-lb__section-title">Active Gamification Programs</h2>
+                        <p class="sgc-lb__section-sub">
+                            What's running right now, and which ones carry the biggest revenue weight.
+                        </p>
+                        <div class="sgc-lb__program-grid">
+                            <article class="sgc-lb__program-card sgc-lb__program-card--priority">
+                                <span class="sgc-lb__program-tag sgc-lb__program-tag--priority">Revenue Priority</span>
+                                <h3 class="sgc-lb__program-name">Quarterly Prize Podium</h3>
+                                <p class="sgc-lb__program-desc">
+                                    Top 3 by quarter-to-date revenue split a cash prize pool. Requires at
+                                    least one closed deal this quarter to qualify.
+                                </p>
+                                <div class="sgc-lb__program-meta">
+                                    Ends <t t-esc="quarter_end" t-options="{'widget': 'date'}"/>
+                                    &#160;·&#160; Pool <t t-esc="total_prize_pool" t-options="{'widget': 'monetary', 'display_currency': currency}"/>
+                                </div>
+                            </article>
+                            <article class="sgc-lb__program-card sgc-lb__program-card--priority">
+                                <span class="sgc-lb__program-tag sgc-lb__program-tag--priority">Revenue Priority</span>
+                                <h3 class="sgc-lb__program-name">Top Earner</h3>
+                                <p class="sgc-lb__program-desc">
+                                    Highest won-deal revenue this calendar month earns the Top Earner badge.
+                                </p>
+                                <div class="sgc-lb__program-meta">
+                                    Resets <t t-esc="month_end" t-options="{'widget': 'date'}"/>
+                                </div>
+                            </article>
+                            <article class="sgc-lb__program-card sgc-lb__program-card--priority">
+                                <span class="sgc-lb__program-tag sgc-lb__program-tag--priority">Revenue Priority</span>
+                                <h3 class="sgc-lb__program-name">Revenue Generator</h3>
+                                <p class="sgc-lb__program-desc">
+                                    Ongoing tiered badge — cross AED 1,000 / 50,000 / 100,000 / 150,000 /
+                                    200,000+ in cumulative won-deal revenue to climb a tier.
+                                </p>
+                                <div class="sgc-lb__program-meta">Always running</div>
+                            </article>
+                            <article class="sgc-lb__program-card">
+                                <span class="sgc-lb__program-tag">Retention</span>
+                                <h3 class="sgc-lb__program-name">Growth Driver</h3>
+                                <p class="sgc-lb__program-desc">
+                                    Confirming at least one lead revival this quarter (a real follow-up
+                                    within 14 days) earns the Growth Driver badge.
+                                </p>
+                                <div class="sgc-lb__program-meta">
+                                    Ends <t t-esc="quarter_end" t-options="{'widget': 'date'}"/>
+                                </div>
+                            </article>
+                        </div>
+                    </section>
+
+                    <section class="sgc-lb__podium" t-if="podium">
+                        <h2 class="sgc-lb__section-title">Quarterly Sales &amp; Revenue Podium</h2>
+                        <p class="sgc-lb__section-sub">
+                            Only reps who closed at least one deal this quarter qualify for the prize.
+                        </p>
+                        <div class="sgc-lb__podium-grid">
+                            <t t-foreach="podium" t-as="slot">
+                                <article class="sgc-lb__podium-card sgc-lb__podium-card--rank" t-att-data-rank="slot['rank']">
+                                    <div class="sgc-lb__podium-medal">
+                                        <t t-if="slot['rank'] == 1">&#9733;</t>
+                                        <t t-elif="slot['rank'] == 2">&#9678;</t>
+                                        <t t-else="">&#9671;</t>
+                                    </div>
+                                    <div class="sgc-lb__podium-place">
+                                        <t t-esc="slot['rank']"/><sup t-if="slot['rank'] == 1">st</sup><sup t-elif="slot['rank'] == 2">nd</sup><sup t-else="">rd</sup>
+                                    </div>
+                                    <img class="sgc-lb__avatar"
+                                         t-att-src="'data:image/png;base64,' + (slot['user']['image_128'].decode('utf-8') if isinstance(slot['user']['image_128'], bytes) else slot['user']['image_128']) if slot['user']['image_128'] else '/web/static/src/img/placeholder.png'"
+                                         t-att-alt="slot['user']['display_name']"/>
+                                    <div class="sgc-lb__podium-name" t-esc="slot['user']['display_name']"/>
+                                    <div class="sgc-lb__podium-meta">
+                                        <span class="sgc-lb__metric">
+                                            <span class="sgc-lb__metric-value">
+                                                <t t-esc="'{0:,.0f}'.format(slot['revenue_qtd'])"/>
+                                            </span>
+                                            <span class="sgc-lb__metric-label">AED revenue</span>
+                                        </span>
+                                        <span class="sgc-lb__metric">
+                                            <span class="sgc-lb__metric-value" t-esc="slot['deals_qtd']"/>
+                                            <span class="sgc-lb__metric-label">deals closed</span>
+                                        </span>
+                                    </div>
+                                    <div class="sgc-lb__podium-prize">
+                                        <t t-esc="slot['prize_aed']" t-options="{'widget': 'monetary', 'display_currency': currency}"/>
+                                        <small>&#160;·&#160;<t t-esc="currency.name"/></small>
+                                    </div>
+                                </article>
+                            </t>
+                        </div>
+                    </section>
+
+                    <section class="sgc-lb__board">
+                        <h2 class="sgc-lb__section-title">Monthly Leaderboard</h2>
+                        <p class="sgc-lb__section-sub">
+                            Ranked by karma. Supporting metrics are MTD revenue &amp; deals, this week's meetings, and MTD revivals.
+                        </p>
+                        <table class="sgc-lb__table">
+                            <thead>
+                                <tr>
+                                    <th class="sgc-lb__col-rank">#</th>
+                                    <th class="sgc-lb__col-name">Rep</th>
+                                    <th class="sgc-lb__col-num">Karma</th>
+                                    <th class="sgc-lb__col-num">Revenue (MTD)</th>
+                                    <th class="sgc-lb__col-num">Deals</th>
+                                    <th class="sgc-lb__col-num">Meetings (W)</th>
+                                    <th class="sgc-lb__col-num">Revivals</th>
+                                    <th class="sgc-lb__col-num">Badges</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="rows" t-as="row"
+                                    t-att-class="'sgc-lb__me' if row['id'] == current_user_id else ''"
+                                    t-att-data-rank="row['rank']">
+                                    <td class="sgc-lb__col-rank">
+                                        <span class="sgc-lb__rank-pill" t-esc="row['rank']"/>
+                                    </td>
+                                    <td class="sgc-lb__col-name">
+                                        <div class="sgc-lb__rep">
+                                            <img class="sgc-lb__avatar sgc-lb__avatar--sm"
+                                                 t-att-src="'/web/image/res.users/' + str(row['id']) + '/avatar_128/40x40'"
+                                                 t-att-alt="row['display_name']"/>
+                                            <span t-esc="row['display_name']"
+                                                  t-att-class="'sgc-lb__rep-name sgc-lb__rep-name--me' if row['id'] == current_user_id else 'sgc-lb__rep-name'"/>
+                                        </div>
+                                    </td>
+                                    <td class="sgc-lb__col-num sgc-lb__num--karma" t-esc="row['karma']"/>
+                                    <td class="sgc-lb__col-num sgc-lb__num--money">
+                                        <t t-esc="row['revenue_mtd']" t-options="{'widget': 'monetary', 'display_currency': currency}"/>
+                                    </td>
+                                    <td class="sgc-lb__col-num" t-esc="row['deals_mtd']"/>
+                                    <td class="sgc-lb__col-num" t-esc="row['meetings_w']"/>
+                                    <td class="sgc-lb__col-num" t-esc="row['revivals_mtd']"/>
+                                    <td class="sgc-lb__col-num" t-esc="row['badges_total']"/>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+
+                    <section class="sgc-lb__revivals" t-if="rows">
+                        <h2 class="sgc-lb__section-title">Top Revivals (MTD)</h2>
+                        <p class="sgc-lb__section-sub">
+                            Confirmed revivals — only those who booked a meeting or closed the deal within 14 days count.
+                        </p>
+                        <ol class="sgc-lb__rev-list">
+                            <t t-set="revivals_ranked" t-value="sorted([r for r in rows if r['revivals_mtd'] > 0], key=lambda r: r['revivals_mtd'], reverse=True)[:5]"/>
+                            <t t-if="revivals_ranked">
+                                <li t-foreach="revivals_ranked" t-as="r" class="sgc-lb__rev-item">
+                                    <span class="sgc-lb__rev-name" t-esc="r['display_name']"/>
+                                    <span class="sgc-lb__rev-count" t-esc="r['revivals_mtd']"/>
+                                </li>
+                            </t>
+                            <t t-else="">
+                                <li class="sgc-lb__empty">No revived deals yet this month.</li>
+                            </t>
+                        </ol>
+                    </section>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="crm_objection_view_tree" model="ir.ui.view">
+        <field name="name">crm.objection.tree</field>
+        <field name="model">crm.objection</field>
+        <field name="arch" type="xml">
+            <list string="Objections">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="crm_objection_view_form" model="ir.ui.view">
+        <field name="name">crm.objection.form</field>
+        <field name="model">crm.objection</field>
+        <field name="arch" type="xml">
+            <form string="Objection">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="sequence"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_crm_objection" model="ir.actions.act_window">
+        <field name="name">Objections</field>
+        <field name="res_model">crm.objection</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first objection
+            </p>
+            <p>Define common sales objections to track them on leads.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_crm_objection"
+              name="Objections"
+              action="action_crm_objection"
+              parent="crm.crm_menu_config"
+              sequence="30"/>
+
+</odoo>

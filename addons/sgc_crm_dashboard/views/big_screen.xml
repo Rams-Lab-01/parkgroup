@@ -1,0 +1,520 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <template id="big_screen_template" name="SGC Big Screen Dashboard">
+        <t t-call="website.layout">
+            <t t-set="head">
+                <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+                <meta http-equiv="Pragma" content="no-cache"/>
+                <meta http-equiv="Expires" content="0"/>
+                <style>
+                    @keyframes bsPulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+                </style>
+                <script src="/web/static/lib/Chart/Chart.js"/>
+            </t>
+            <div id="wrap" class="oe_structure oe_empty">
+                <div class="container-fluid py-0"
+                     style="background:linear-gradient(135deg,#0a0e1a 0%,#1a1f35 40%,#0d1520 100%);min-height:100vh;color:#e8eaf0;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;">
+
+                    <!-- Header -->
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:18px 32px;background:rgba(255,255,255,0.04);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,0.12);">
+                        <div style="display:flex;align-items:center;gap:12px;">
+                            <h1 style="font-size:1.5rem;font-weight:700;margin:0;">
+                                <span style="background:linear-gradient(135deg,#7D7EAF,#1EC198);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">SGC CRM — Live Dashboard</span>
+                            </h1>
+                            <span style="display:flex;align-items:center;font-size:0.75rem;opacity:0.6;">
+                                <span id="bs-live-dot" style="width:8px;height:8px;border-radius:50%;background:#1EC198;display:inline-block;margin-right:6px;animation:bsPulse 2s ease infinite;"/>LIVE
+                            </span>
+                        </div>
+                        <div id="bs-clock" style="font-size:0.95rem;opacity:0.6;"/>
+                    </div>
+
+                    <!-- KPI Cards -->
+                    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:16px;padding:20px 32px;">
+                        <div style="background:rgba(255,255,255,0.06);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:20px 22px;border-top:3px solid #7D7EAF;">
+                            <div style="font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;opacity:0.55;margin-bottom:6px;">Total Leads</div>
+                            <div id="bs-kpi-leads" style="font-size:2rem;font-weight:800;color:#7D7EAF;">—</div>
+                        </div>
+                        <div style="background:rgba(255,255,255,0.06);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:20px 22px;border-top:3px solid #BD85BA;">
+                            <div style="font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;opacity:0.55;margin-bottom:6px;">For Follow Up</div>
+                            <div id="bs-kpi-followup" style="font-size:2rem;font-weight:800;color:#BD85BA;">—</div>
+                        </div>
+                        <div style="background:rgba(255,255,255,0.06);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:20px 22px;border-top:3px solid #00B67A;">
+                            <div style="font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;opacity:0.55;margin-bottom:6px;">Research Done</div>
+                            <div id="bs-kpi-research" style="font-size:2rem;font-weight:800;color:#00B67A;">—</div>
+                        </div>
+                        <div style="background:rgba(255,255,255,0.06);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:20px 22px;border-top:3px solid #4DA3FF;">
+                            <div style="font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;opacity:0.55;margin-bottom:6px;">Email Outreach</div>
+                            <div id="bs-kpi-outreach" style="font-size:2rem;font-weight:800;color:#4DA3FF;">—</div>
+                        </div>
+                        <div style="background:rgba(255,255,255,0.06);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:20px 22px;border-top:3px solid #1EC198;">
+                            <div style="font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;opacity:0.55;margin-bottom:6px;">Meeting Booked</div>
+                            <div id="bs-kpi-booked" style="font-size:2rem;font-weight:800;color:#1EC198;">—</div>
+                        </div>
+                        <div style="background:rgba(255,255,255,0.06);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:20px 22px;border-top:3px solid #FFCA71;">
+                            <div style="font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;opacity:0.55;margin-bottom:6px;">Total Won</div>
+                            <div id="bs-kpi-won" style="font-size:2rem;font-weight:800;color:#FFCA71;">—</div>
+                        </div>
+                        <div style="background:rgba(255,255,255,0.06);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:20px 22px;border-top:3px solid #E74C3C;">
+                            <div style="font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;opacity:0.55;margin-bottom:6px;">Estimated Revenue</div>
+                            <div id="bs-kpi-revenue" style="font-size:2rem;font-weight:800;color:#E74C3C;">—</div>
+                        </div>
+                    </div>
+
+                    <!-- 6 Rankings -->
+                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;padding:0 32px 20px;">
+                        <div style="background:rgba(255,255,255,0.06);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:18px 20px;">
+                            <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:12px;color:#7D7EAF;">
+                                <i class="fa fa-users"/> Lead Activity Ranking
+                            </div>
+                            <div id="bs-rank-leads-list"></div>
+                        </div>
+                        <div style="background:rgba(255,255,255,0.06);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:18px 20px;">
+                            <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:12px;color:#00B67A;">
+                                <i class="fa fa-search"/> Research Done Ranking
+                            </div>
+                            <div id="bs-rank-research-list"></div>
+                        </div>
+                        <div style="background:rgba(255,255,255,0.06);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:18px 20px;">
+                            <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:12px;color:#4DA3FF;">
+                                <i class="fa fa-envelope"/> Email Outreach Ranking
+                            </div>
+                            <div id="bs-rank-outreach-list"></div>
+                        </div>
+                        <div style="background:rgba(255,255,255,0.06);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:18px 20px;">
+                            <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:12px;color:#1EC198;">
+                                <i class="fa fa-calendar-check-o"/> Meeting Booked Ranking
+                            </div>
+                            <div id="bs-rank-booking-list"></div>
+                        </div>
+                        <div style="background:rgba(255,255,255,0.06);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:18px 20px;">
+                            <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:12px;color:#FFCA71;">
+                                <i class="fa fa-trophy"/> Won Ranking
+                            </div>
+                            <div id="bs-rank-won-list"></div>
+                        </div>
+                        <div style="background:rgba(255,255,255,0.06);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:18px 20px;">
+                            <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:12px;color:#0dcaf0;">
+                                <i class="fa fa-tasks"/> Activity Ranking
+                            </div>
+                            <div id="bs-rank-activity-list"></div>
+                        </div>
+                    </div>
+
+                    <!-- Charts -->
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:0 32px 32px;">
+                        <div style="background:rgba(255,255,255,0.06);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:20px;">
+                            <div style="font-size:0.85rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:14px;color:#1EC198;">
+                                <i class="fa fa-bar-chart"/> Sales Team Performance
+                            </div>
+                            <div style="position:relative;width:100%;height:280px;">
+                                <canvas id="bs-team-chart"></canvas>
+                            </div>
+                        </div>
+                        <div style="background:rgba(255,255,255,0.06);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:20px;">
+                            <div style="font-size:0.85rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:14px;color:#0dcaf0;">
+                                <i class="fa fa-line-chart"/> Daily Activity (30 Days)
+                            </div>
+                            <div style="position:relative;width:100%;height:280px;">
+                                <canvas id="bs-daily-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Objection Ranking -->
+                    <div id="bs-objection-section" style="display:none;padding:0 32px 20px;">
+                        <div style="background:rgba(255,255,255,0.06);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:18px 24px;">
+                            <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:14px;color:#FF5F66;">
+                                <i class="fa fa-exclamation-triangle"/> Top Objections
+                            </div>
+                            <div id="bs-objection-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Sales Funnel -->
+                    <div style="padding:0 32px 24px;">
+                        <div style="background:rgba(255,255,255,0.06);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:24px 28px;">
+                            <div style="font-size:0.85rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:18px;color:#BD85BA;">
+                                <i class="fa fa-filter"/> Sales Funnel
+                            </div>
+                            <div id="bs-funnel" style="display:flex;flex-direction:column;align-items:center;gap:0;"></div>
+                        </div>
+                    </div>
+
+                    <div style="text-align:center;padding:12px;font-size:0.7rem;opacity:0.35;">SGC Technologies — Auto-refreshes every 2 minutes</div>
+                </div>
+            </div>
+
+            <script>
+            //<![CDATA[
+            (function() {
+                var COLORS = ['#594E90','#BC4C96','#1EC198','#FFA600','#FF5F66','#0dcaf0','#28a745','#7D7EAF'];
+                var teamChart = null;
+                var dailyChart = null;
+
+                function fmtNum(n) { return n != null ? Number(n).toLocaleString('en-US') : '\u2014'; }
+                function fmtMoney(n) { return n != null ? Number(n).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}) : '\u2014'; }
+
+                function updateClock() {
+                    var el = document.getElementById('bs-clock');
+                    if (el) el.textContent = new Date().toLocaleString('en-US', {weekday:'short',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+                }
+
+                function renderRanking(containerId, items, valueLabel) {
+                    var el = document.getElementById(containerId);
+                    if (!el) return;
+                    if (!items || !items.length) { el.innerHTML = '<div style="opacity:0.4;font-size:0.8rem;">No data</div>'; return; }
+                    var maxVal = Math.max.apply(null, items.map(function(i){return i.count||0;}));
+                    var html = '';
+                    items.forEach(function(item, idx) {
+                        var pct = maxVal > 0 ? ((item.count / maxVal) * 100) : 0;
+                        var color = COLORS[idx % COLORS.length];
+                        html += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">' +
+                            '<div style="width:24px;text-align:right;font-size:0.8rem;font-weight:700;opacity:0.5;">' + (idx+1) + '</div>' +
+                            '<div style="flex:1;">' +
+                                '<div style="display:flex;justify-content:space-between;margin-bottom:3px;">' +
+                                    '<span style="font-size:0.82rem;font-weight:600;">' + (item.name||'Unknown') + '</span>' +
+                                    '<span style="font-size:0.82rem;font-weight:700;color:' + color + ';">' + (item.count||0) + ' ' + valueLabel + '</span>' +
+                                '</div>' +
+                                '<div style="height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;">' +
+                                    '<div style="height:100%;width:' + pct + '%;background:' + color + ';border-radius:3px;transition:width 0.6s ease;"></div>' +
+                                '</div>' +
+                            '</div>' +
+                        '</div>';
+                    });
+                    el.innerHTML = html;
+                }
+
+                function renderTeamChart(data) {
+                    var ctx = document.getElementById('bs-team-chart');
+                    if (!ctx || !data || !data.length) return;
+                    if (teamChart) teamChart.destroy();
+                    teamChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: data.map(function(d){return d.name;}),
+                            datasets: [
+                                {label:'Won', data:data.map(function(d){return d.won||0;}), backgroundColor:'#BC4C96', borderRadius:4},
+                                {label:'Lost', data:data.map(function(d){return d.lost||0;}), backgroundColor:'#FF5F66', borderRadius:4}
+                            ]
+                        },
+                        options: {
+                            responsive:true, maintainAspectRatio:false,
+                            plugins:{legend:{labels:{color:'#e8eaf0',font:{size:11}}}},
+                            scales:{
+                                x:{ticks:{color:'#e8eaf0',font:{size:10}},grid:{color:'rgba(255,255,255,0.06)'}},
+                                y:{ticks:{color:'#e8eaf0',font:{size:10}},grid:{color:'rgba(255,255,255,0.06)'}}
+                            }
+                        }
+                    });
+                }
+
+                function hex2(c){return c.toString(16).padStart(2,'0');}
+                function lerpColor(c1, c2, r) {
+                    var p=function(s){return parseInt(s,16);};
+                    return '#'+['','',''].map(function(_,i){
+                        return hex2(Math.round(p(c1.substr(1+i*2,2),16)+(p(c2.substr(1+i*2,2),16)-p(c1.substr(1+i*2,2),16))*r));
+                    }).join('');
+                }
+                function esc(t){return (t||'Unknown').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+                function renderFunnel(stages) {
+                    // BS-FUNNEL v4.0 — true trapezoid funnel (2026-06-11)
+                    console.log('[BS-FUNNEL v4.0] Loading with', stages && stages.length, 'stages');
+                    var el = document.getElementById('bs-funnel');
+                    if (!el || !stages || !stages.length) {
+                        if (el) el.innerHTML = '<div style="text-align:center;padding:40px;opacity:0.4;font-size:0.9rem;">No funnel data</div>';
+                        return;
+                    }
+                    stages.sort(function(a,b){return (a.sequence||0)-(b.sequence||0);});
+                    var n = stages.length;
+                    var maxC = Math.max.apply(null, stages.map(function(s){return s.count||0;}));
+                    if (maxC === 0) maxC = 1;
+
+                    // ─── COLORS (retained) ────────────────────────────
+                    var P='#594E90', M='#BC4C96', A='#FFA600';
+                    function colorFor(i) {
+                        if (stages[i].is_won) return A;
+                        if (n < 2) return P;
+                        var t = i/(n-1);
+                        return t < 0.5 ? lerpColor(P,M,t*2) : lerpColor(M,A,(t-0.5)*2);
+                    }
+
+                    // ─── ICONS (Font Awesome 4) ───────────────────────
+                    var ICONS = {
+                        'new':              'fa-user-plus',
+                        'valid contact':    'fa-phone',
+                        'invalid contact':  'fa-times-circle',
+                        'no answer':        'fa-phone-slash',
+                        'not interested':   'fa-thumbs-down',
+                        'follow up':        'fa-refresh',
+                        'research done':    'fa-search',
+                        'research':         'fa-search',
+                        'meeting booked':   'fa-calendar',
+                        'meeting':          'fa-calendar',
+                        'proposal':         'fa-file-text-o',
+                        'won':              'fa-trophy',
+                    };
+                    function iconFor(name) {
+                        var k = (name||'').toLowerCase();
+                        for (var key in ICONS) { if (k.indexOf(key) !== -1) return ICONS[key]; }
+                        return 'fa-circle';
+                    }
+
+                    // ─── STATS ────────────────────────────────────────
+                    var totalEntered = stages[0].count || 0;
+                    var totalWon = 0;
+                    for (var sIdx=0; sIdx<n; sIdx++) { if (stages[sIdx].is_won) totalWon += stages[sIdx].count||0; }
+                    var overallRate = totalEntered>0 ? (totalWon/totalEntered*100) : 0;
+                    var totalDropoff = totalEntered - totalWon;
+                    var dropoffRate = totalEntered>0 ? (totalDropoff/totalEntered*100) : 0;
+                    var avgRateSum = 0, avgCount = 0;
+                    for (var r=1; r<n; r++) {
+                        var prevC = stages[r-1].count || 0;
+                        if (prevC > 0) { avgRateSum += (stages[r].count||0) / prevC * 100; avgCount++; }
+                    }
+                    var avgRate = avgCount > 0 ? avgRateSum / avgCount : 0;
+
+                    // ─── SVG FUNNEL (true trapezoid) ──────────────────
+                    // Funnel: W wide, each row is a trapezoid that narrows.
+                    // Text is anchored to LEFT edge (x1+pad) and RIGHT edge (x2-pad)
+                    // so the text never overlaps in the middle as the funnel narrows.
+                    var W = 700;
+                    var ROW_H = 52;
+                    var PAD_TOP = 20;
+                    var H = n * ROW_H + PAD_TOP * 2;
+                    var CX = W / 2;
+                    var TOP_W = W * 0.96;
+                    var BOT_W = W * 0.28;
+                    var SH = ROW_H - 3;
+
+                    // Each row's top width interpolates linearly
+                    function widthAt(i) {
+                        if (n < 2) return TOP_W;
+                        var t = i / (n - 1);
+                        return TOP_W - (TOP_W - BOT_W) * t;
+                    }
+
+                    var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;max-width:700px;height:auto;display:block;margin:0 auto;font-family:Segoe UI,system-ui,sans-serif;">';
+                    svg += '<defs>';
+                    svg += '<filter id="bsShadow"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.25"/></filter>';
+                    svg += '<filter id="bsWonShadow"><feDropShadow dx="0" dy="2" stdDeviation="6" flood-color="' + A + '" flood-opacity="0.5"/></filter>';
+                    svg += '</defs>';
+
+                    for (var i=0; i<n; i++) {
+                        var y1 = PAD_TOP + i * ROW_H;
+                        var y2 = y1 + SH;
+                        var wt = widthAt(i);
+                        var wb = (i < n-1) ? widthAt(i+1) : widthAt(n-1) * 0.7;
+                        var x1 = CX - wt/2, x2 = CX + wt/2;
+                        var x3 = CX + wb/2, x4 = CX - wb/2;
+                        var col = colorFor(i);
+                        var flt = stages[i].is_won ? 'url(#bsWonShadow)' : 'url(#bsShadow)';
+
+                        // Trapezoid
+                        svg += '<polygon points="' + x1.toFixed(1) + ',' + y1 + ' ' + x2.toFixed(1) + ',' + y1 + ' ' +
+                                x3.toFixed(1) + ',' + y2 + ' ' + x4.toFixed(1) + ',' + y2 +
+                                '" fill="' + col + '" filter="' + flt + '" opacity="0.95"/>';
+                        // Top highlight line
+                        svg += '<line x1="' + x1.toFixed(1) + '" y1="' + y1 + '" x2="' + x2.toFixed(1) + '" y2="' + y1 +
+                                '" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>';
+
+                        var yText = y1 + SH/2 + 5;
+                        var pad = 16;
+                        var name = esc(stages[i].name);
+                        var count = (stages[i].count || 0).toLocaleString();
+                        var icon = iconFor(stages[i].name);
+
+                        // Number circle (anchored to LEFT edge of trapezoid)
+                        var numX = x1 + pad + 13;
+                        svg += '<circle cx="' + numX.toFixed(1) + '" cy="' + (y1 + SH/2).toFixed(1) + '" r="13" fill="rgba(0,0,0,0.5)"/>';
+                        svg += '<text x="' + numX.toFixed(1) + '" y="' + (y1 + SH/2 + 5).toFixed(1) +
+                                '" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">' + (i+1) + '</text>';
+
+                        // Icon
+                        var iconX = numX + 24;
+                        svg += '<text x="' + iconX.toFixed(1) + '" y="' + yText +
+                                '" text-anchor="middle" fill="#fff" font-size="14" font-weight="700" ' +
+                                'style="font-family:FontAwesome,FontAwesome4;">' +
+                                iconToChar(icon) + '</text>';
+
+                        // Count as a circular badge on the RIGHT edge of the trapezoid.
+                        // Drawing it as a circle (not a free-floating number) gives the
+                        // stage name a hard right-edge to anchor against, so they can
+                        // never overlap as the funnel narrows.
+                        var countRadius = 16;
+                        var countCX = x2 - pad - countRadius;
+                        svg += '<circle cx="' + countCX.toFixed(1) + '" cy="' + (y1 + SH/2).toFixed(1) +
+                                '" r="' + countRadius + '" fill="rgba(0,0,0,0.55)" stroke="rgba(255,255,255,0.35)" stroke-width="1.5"/>';
+                        // Shrink count font if the number is long (e.g. 4+ digits)
+                        var countFontSize = count.length >= 4 ? 10 : (count.length === 3 ? 11 : 13);
+                        svg += '<text x="' + countCX.toFixed(1) + '" y="' + (y1 + SH/2 + 4).toFixed(1) +
+                                '" text-anchor="middle" fill="#fff" font-size="' + countFontSize + '" font-weight="800">' + count + '</text>';
+
+                        // Name (anchored to END — right-aligned, just to the left of
+                        // the count badge). Compress with textLength so a long name
+                        // fits between the icon and the count badge without overlap.
+                        var nameEndX = countCX - countRadius - 8;
+                        var nameStartX = iconX + 14;
+                        var availNameW = Math.max(20, nameEndX - nameStartX);
+                        svg += '<text x="' + nameEndX.toFixed(1) + '" y="' + yText +
+                                '" text-anchor="end" fill="#fff" font-size="14" font-weight="600" ' +
+                                'textLength="' + availNameW.toFixed(1) + '" lengthAdjust="spacingAndGlyphs" ' +
+                                'style="text-shadow:0 1px 2px rgba(0,0,0,0.6);">' + name + '</text>';
+
+                        // Conversion rate (OUTSIDE the funnel, to the RIGHT of the right edge)
+                        if (i > 0) {
+                            var prevC2 = stages[i-1].count || 0;
+                            var conv = prevC2 > 0 ? (stages[i].count || 0) / prevC2 * 100 : 0;
+                            var convStr = conv.toFixed(1) + '%';
+                            // Dot connector
+                            svg += '<line x1="' + (x2 + 2) + '" y1="' + (y1 + SH/2) + '" x2="' + (x2 + 28) + '" y2="' + (y1 + SH/2) +
+                                    '" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>';
+                            svg += '<circle cx="' + (x2 + 32) + '" cy="' + (y1 + SH/2) + '" r="3" fill="' + col + '"/>';
+                            svg += '<text x="' + (x2 + 42) + '" y="' + yText +
+                                    '" text-anchor="start" fill="rgba(255,255,255,0.55)" font-size="11" font-weight="600">' + convStr + '</text>';
+                        }
+                    }
+                    svg += '</svg>';
+
+                    // ─── SIDE LEGEND (right column) ────────────────────
+                    var legend = '<div style="display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-top:20px;align-items:start;">';
+
+                    // Bottom stats bar
+                    var stats = '<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:18px 12px;">';
+                    stats += '<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;text-align:center;">';
+                    var statItems = [
+                        {label:'TOTAL ENTERED',         value:totalEntered.toLocaleString(),  color:'#BC4C96', icon:'fa-users'},
+                        {label:'TOTAL WON',             value:totalWon.toLocaleString(),      color:'#FFA600', icon:'fa-trophy'},
+                        {label:'OVERALL CONV. RATE',    value:overallRate.toFixed(2)+'%',     color:'#1EC198', icon:'fa-percentage'},
+                        {label:'AVG CONV. (PER STAGE)', value:avgRate.toFixed(2)+'%',         color:'#7D7EAF', icon:'fa-filter'},
+                        {label:'TOTAL DROP-OFF',        value:totalDropoff.toLocaleString(),  color:'#FF5F66', icon:'fa-arrow-down', sub:dropoffRate.toFixed(2)+'%'},
+                    ];
+                    statItems.forEach(function(S){
+                        stats += '<div>' +
+                            '<i class="fa ' + S.icon + '" style="color:' + S.color + ';font-size:1.1rem;display:block;margin-bottom:4px;"></i>' +
+                            '<div style="font-size:0.58rem;font-weight:700;letter-spacing:0.5px;color:' + S.color + ';text-transform:uppercase;margin-bottom:4px;line-height:1.2;">' + S.label + '</div>' +
+                            '<div style="font-size:1.3rem;font-weight:800;color:#fff;line-height:1.1;">' + S.value + '</div>' +
+                            (S.sub ? '<div style="font-size:0.65rem;color:rgba(255,255,255,0.5);margin-top:2px;">(' + S.sub + ')</div>' : '') +
+                        '</div>';
+                    });
+                    stats += '</div></div>';
+
+                    // Right column: legend with breakdown
+                    var rightCol = '<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px;">';
+                    rightCol += '<div style="font-size:0.65rem;font-weight:700;letter-spacing:0.8px;color:#BC4C96;text-transform:uppercase;margin-bottom:12px;">LEGEND</div>';
+                    rightCol += '<div style="font-size:0.72rem;color:rgba(255,255,255,0.55);margin-bottom:14px;line-height:1.4;">' +
+                        '<span style="display:inline-block;width:18px;border-top:1px dashed rgba(255,255,255,0.3);vertical-align:middle;margin-right:6px;"></span>Conversion Rate (%)</div>';
+                    rightCol += '<div style="font-size:0.7rem;color:rgba(255,255,255,0.5);margin-top:14px;line-height:1.5;border-top:1px solid rgba(255,255,255,0.06);padding-top:10px;">' +
+                        '<i class="fa fa-info-circle" style="margin-right:4px;"></i>Each row narrows toward the bottom of the funnel.</div>';
+                    rightCol += '</div>';
+
+                    legend += stats + rightCol + '</div>';
+
+                    el.innerHTML = svg + legend;
+                }
+
+                // Map FontAwesome class names to Unicode characters (since SVG
+                // text doesn't render FontAwesome fonts reliably).
+                function iconToChar(cls) {
+                    var map = {
+                        'fa-user-plus':      '👤+',
+                        'fa-phone':          '☎',
+                        'fa-times-circle':   '✕',
+                        'fa-phone-slash':    '☎',
+                        'fa-thumbs-down':    '👎',
+                        'fa-refresh':        '↻',
+                        'fa-search':         '🔍',
+                        'fa-calendar':       '📅',
+                        'fa-file-text-o':    '📄',
+                        'fa-trophy':         '🏆',
+                        'fa-circle':         '●',
+                    };
+                    return map[cls] || '●';
+                }
+
+                function renderDailyChart(data) {
+                    var ctx = document.getElementById('bs-daily-chart');
+                    if (!ctx || !data) return;
+                    if (dailyChart) dailyChart.destroy();
+                    var datasets = (data.datasets||[]).map(function(ds, idx) {
+                        return {
+                            label: ds.label, data: ds.data,
+                            borderColor: ds.borderColor || COLORS[idx%COLORS.length],
+                            backgroundColor: ds.backgroundColor || (COLORS[idx%COLORS.length]+'20'),
+                            tension:0.3, fill:false, pointRadius:2
+                        };
+                    });
+                    dailyChart = new Chart(ctx, {
+                        type:'line',
+                        data:{labels:data.labels||[], datasets:datasets},
+                        options:{
+                            responsive:true, maintainAspectRatio:false,
+                            plugins:{legend:{labels:{color:'#e8eaf0',font:{size:10}}}},
+                            scales:{
+                                x:{ticks:{color:'#e8eaf0',font:{size:9},maxRotation:45},grid:{color:'rgba(255,255,255,0.06)'}},
+                                y:{ticks:{color:'#e8eaf0',font:{size:10}},grid:{color:'rgba(255,255,255,0.06)'}}
+                            }
+                        }
+                    });
+                }
+
+                function loadData() {
+                    fetch('/dashboard/big-screen/data')
+                        .then(function(r){return r.json();})
+                        .then(function(d){
+                            var kpi = d.kpi||{};
+                            var el;
+                            el=document.getElementById('bs-kpi-leads'); if(el) el.textContent=fmtNum(kpi.total_leads);
+                            el=document.getElementById('bs-kpi-followup'); if(el) el.textContent=fmtNum(kpi.follow_up);
+                            el=document.getElementById('bs-kpi-research'); if(el) el.textContent=fmtNum(kpi.research_done);
+                            el=document.getElementById('bs-kpi-outreach'); if(el) el.textContent=fmtNum(kpi.outreach_email);
+                            el=document.getElementById('bs-kpi-booked'); if(el) el.textContent=fmtNum(kpi.booked);
+                            el=document.getElementById('bs-kpi-won'); if(el) el.textContent=fmtNum(kpi.won);
+                            el=document.getElementById('bs-kpi-revenue'); if(el) el.textContent=fmtMoney(kpi.est_revenue);
+                            renderRanking('bs-rank-leads-list', d.rank_leads, 'leads');
+                            renderRanking('bs-rank-research-list', d.rank_research, 'researched');
+                            renderRanking('bs-rank-outreach-list', d.rank_outreach, 'outreached');
+                            renderRanking('bs-rank-booking-list', d.rank_booking, 'booked');
+                            renderRanking('bs-rank-won-list', d.rank_won, 'won');
+                            renderRanking('bs-rank-activity-list', d.rank_activity, 'activities');
+                            renderTeamChart(d.teams);
+                            renderDailyChart(d.daily_chart);
+                            renderFunnel(d.funnel);
+
+                            // Objection ranking
+                            var objSection = document.getElementById('bs-objection-section');
+                            var objList = document.getElementById('bs-objection-list');
+                            if (objList && d.objection_ranking && d.objection_ranking.length) {
+                                if (objSection) objSection.style.display = '';
+                                var maxObj = Math.max.apply(null, d.objection_ranking.map(function(o){return o.count||0;}));
+                                var oHtml = '';
+                                d.objection_ranking.forEach(function(obj, idx) {
+                                    var pct = maxObj > 0 ? ((obj.count / maxObj) * 100) : 0;
+                                    oHtml += '<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px 14px;">' +
+                                        '<div style="display:flex;justify-content:space-between;margin-bottom:6px;">' +
+                                            '<span style="font-size:0.8rem;font-weight:600;color:#e8eaf0;">' + esc(obj.objection) + '</span>' +
+                                            '<span style="font-size:0.85rem;font-weight:800;color:#FF5F66;">' + (obj.count||0) + '</span>' +
+                                        '</div>' +
+                                        '<div style="height:4px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden;">' +
+                                            '<div style="height:100%;width:' + pct + '%;background:#FF5F66;border-radius:2px;"></div>' +
+                                        '</div>' +
+                                    '</div>';
+                                });
+                                objList.innerHTML = oHtml;
+                            }
+                        })
+                        .catch(function(e){console.error('Big screen load failed:',e);});
+                }
+
+                updateClock();
+                setInterval(updateClock, 1000);
+                loadData();
+                setInterval(loadData, 60000);
+            })();
+            //]]>
+            </script>
+
+        </t>
+    </template>
+
+</odoo>

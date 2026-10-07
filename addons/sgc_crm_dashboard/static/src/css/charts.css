@@ -1,0 +1,38 @@
+/* Chart styling — Premium Executive (Dark + Gold) */
+/* ===================================== */
+
+/* Chart containers should inherit dark background */
+.chart-container {
+    background: transparent;
+    position: relative;
+}
+
+/* Chart canvas overrides (Chart.js draws on canvas, but parent cards matter) */
+.chart-card {
+    background: #0E1B2E;
+    border: 1px solid rgba(199, 162, 58, 0.25);
+    border-radius: var(--radius-md, 10px);
+    padding: 20px;
+}
+
+.chart-card .chart-title {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+    color: #708090;
+    margin-bottom: 16px;
+}
+
+/* Big-screen chart overrides */
+.big-screen .chart-card {
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+
+/* Chart legend text color (targets Chart.js generated legends) */
+.chart-container canvas + .chartjs-legend,
+.chart-container .chartjs-legend ul li span {
+    color: #A7B4C6;
+}

@@ -1,0 +1,369 @@
+/* SGC Leaderboard — navy + gold, manually expanded from the SCSS source.
+   Variables are inlined so the file can be served as plain CSS without a
+   SCSS compiler. Keep this in sync with the design intent. */
+
+.sgc-lb {
+    font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    color: #1C2240;
+    background: linear-gradient(180deg, #FBF9F4 0%, #F4F1E8 100%);
+    min-height: 100vh;
+    padding: 32px 40px 56px;
+    box-sizing: border-box;
+}
+
+.sgc-lb__header {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 40px;
+    align-items: center;
+    padding: 24px 32px;
+    background: linear-gradient(135deg, #0F1B3D 0%, #1A2B5E 100%);
+    border-radius: 16px;
+    box-shadow: 0 12px 32px rgba(15, 27, 61, 0.08);
+    color: white;
+    margin-bottom: 28px;
+    border: 1px solid rgba(201, 162, 75, 0.18);
+}
+
+.sgc-lb__brand {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.sgc-lb__brand-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #C9A24B 0%, #E5C782 100%);
+    color: #0F1B3D;
+    font-weight: 800;
+    font-size: 14px;
+    letter-spacing: 0.04em;
+    box-shadow: 0 12px 32px rgba(201, 162, 75, 0.18);
+}
+
+.sgc-lb__title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+.sgc-lb__period, .sgc-lb__prize {
+    text-align: right;
+    line-height: 1.2;
+}
+
+.sgc-lb__period-label, .sgc-lb__prize-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #E5C782;
+    opacity: 0.85;
+}
+
+.sgc-lb__period-value, .sgc-lb__prize-value {
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 4px;
+    color: white;
+}
+
+.sgc-lb__period-value small, .sgc-lb__prize-value small {
+    font-weight: 400;
+    color: #E5C782;
+    opacity: 0.85;
+}
+
+.sgc-lb__prize-value {
+    font-size: 22px;
+    color: #E5C782;
+}
+
+.sgc-lb__section-title {
+    margin: 0 0 4px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #0F1B3D;
+    letter-spacing: -0.005em;
+}
+
+.sgc-lb__section-sub {
+    margin: 0 0 18px;
+    font-size: 13px;
+    color: #5A6188;
+}
+
+.sgc-lb__podium { margin-bottom: 32px; }
+
+.sgc-lb__podium-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+}
+
+.sgc-lb__podium-card {
+    position: relative;
+    background: white;
+    border-radius: 16px;
+    padding: 28px 22px 22px;
+    text-align: center;
+    box-shadow: 0 12px 32px rgba(15, 27, 61, 0.08);
+    border: 1px solid rgba(15, 27, 61, 0.08);
+    overflow: hidden;
+    transition: transform 0.18s ease;
+}
+
+.sgc-lb__podium-card:hover { transform: translateY(-2px); }
+
+.sgc-lb__podium-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #C9A24B 0%, #E5C782 100%);
+}
+
+.sgc-lb__podium-card[data-rank="1"] {
+    background: linear-gradient(160deg, white 0%, #FFF9EE 100%);
+    border-color: rgba(201, 162, 75, 0.35);
+    box-shadow: 0 12px 32px rgba(201, 162, 75, 0.18);
+}
+
+.sgc-lb__podium-card[data-rank="1"] .sgc-lb__podium-medal { color: #C9A24B; }
+.sgc-lb__podium-card[data-rank="1"] .sgc-lb__podium-place { color: #C9A24B; }
+.sgc-lb__podium-card[data-rank="2"] .sgc-lb__podium-medal { color: #A9B3C9; }
+.sgc-lb__podium-card[data-rank="2"] .sgc-lb__podium-place { color: #6B7595; }
+.sgc-lb__podium-card[data-rank="3"] .sgc-lb__podium-medal { color: #C99A6B; }
+.sgc-lb__podium-card[data-rank="3"] .sgc-lb__podium-place { color: #A36B43; }
+
+.sgc-lb__podium-medal {
+    font-size: 28px;
+    line-height: 1;
+    margin-bottom: 2px;
+}
+
+.sgc-lb__podium-place {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+}
+
+.sgc-lb__podium-place sup {
+    font-size: 10px;
+    margin-left: 1px;
+}
+
+.sgc-lb__avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid white;
+    box-shadow: 0 0 0 1px rgba(15, 27, 61, 0.08);
+    margin: 0 auto 12px;
+    display: block;
+}
+
+.sgc-lb__avatar--sm {
+    width: 32px;
+    height: 32px;
+    border-width: 1px;
+    box-shadow: none;
+    margin: 0 10px 0 0;
+}
+
+.sgc-lb__podium-name {
+    font-weight: 700;
+    font-size: 15px;
+    color: #0F1B3D;
+    margin-bottom: 14px;
+}
+
+.sgc-lb__podium-meta {
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    margin-bottom: 14px;
+}
+
+.sgc-lb__metric {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1.1;
+}
+
+.sgc-lb__metric-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0F1B3D;
+    font-variant-numeric: tabular-nums;
+}
+
+.sgc-lb__metric-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #5A6188;
+    margin-top: 2px;
+}
+
+.sgc-lb__podium-prize {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: rgba(15, 27, 61, 0.06);
+    color: #0F1B3D;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.sgc-lb__podium-prize small {
+    font-weight: 500;
+    color: #5A6188;
+    font-size: 11px;
+}
+
+.sgc-lb__board {
+    background: white;
+    border-radius: 16px;
+    padding: 24px 24px 20px;
+    box-shadow: 0 12px 32px rgba(15, 27, 61, 0.08);
+    border: 1px solid rgba(15, 27, 61, 0.08);
+    margin-bottom: 28px;
+}
+
+.sgc-lb__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+}
+
+.sgc-lb__table thead th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #5A6188;
+    padding: 8px 12px;
+    border-bottom: 1px solid rgba(15, 27, 61, 0.08);
+}
+
+.sgc-lb__table tbody td {
+    padding: 12px;
+    border-bottom: 1px solid rgba(15, 27, 61, 0.08);
+    font-size: 14px;
+}
+
+.sgc-lb__table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.sgc-lb__table tbody tr:hover {
+    background: rgba(15, 27, 61, 0.02);
+}
+
+.sgc-lb__col-rank { width: 56px; }
+.sgc-lb__col-name { width: auto; }
+.sgc-lb__col-num { width: 110px; text-align: right; }
+
+.sgc-lb__rank-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 28px;
+    padding: 0 8px;
+    border-radius: 8px;
+    background: rgba(15, 27, 61, 0.06);
+    color: #0F1B3D;
+    font-weight: 700;
+    font-size: 13px;
+}
+
+.sgc-lb__table tr[data-rank="1"] .sgc-lb__rank-pill { background: #C9A24B; color: white; }
+.sgc-lb__table tr[data-rank="2"] .sgc-lb__rank-pill { background: rgba(201, 162, 75, 0.45); color: #0F1B3D; }
+.sgc-lb__table tr[data-rank="3"] .sgc-lb__rank-pill { background: rgba(201, 162, 75, 0.22); color: #0F1B3D; }
+
+.sgc-lb__rep { display: flex; align-items: center; }
+
+.sgc-lb__rep-name {
+    font-weight: 600;
+    color: #1C2240;
+}
+
+.sgc-lb__rep-name--me {
+    color: #0F1B3D;
+    font-weight: 700;
+}
+
+.sgc-lb__num--karma { font-weight: 700; color: #0F1B3D; }
+.sgc-lb__num--money { font-weight: 600; color: #0F1B3D; }
+
+.sgc-lb__me { background: rgba(201, 162, 75, 0.08); }
+
+.sgc-lb__revivals {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 12px 32px rgba(15, 27, 61, 0.08);
+    border: 1px solid rgba(15, 27, 61, 0.08);
+}
+
+.sgc-lb__rev-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px;
+}
+
+.sgc-lb__rev-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-radius: 10px;
+    background: linear-gradient(180deg, #FBF9F4 0%, #F4F1E8 100%);
+    border: 1px solid rgba(15, 27, 61, 0.08);
+}
+
+.sgc-lb__rev-name {
+    font-weight: 600;
+    color: #0F1B3D;
+}
+
+.sgc-lb__rev-count {
+    background: #0F1B3D;
+    color: white;
+    border-radius: 999px;
+    padding: 2px 10px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.sgc-lb__empty {
+    color: #5A6188;
+    font-style: italic;
+    padding: 12px 16px;
+}
+
+@media (max-width: 900px) {
+    .sgc-lb { padding: 16px; }
+    .sgc-lb__header { grid-template-columns: 1fr; gap: 14px; }
+    .sgc-lb__period, .sgc-lb__prize { text-align: left; }
+    .sgc-lb__podium-grid { grid-template-columns: 1fr; }
+    .sgc-lb__col-num { width: auto; }
+    .sgc-lb__table { font-size: 12px; }
+    .sgc-lb__table thead th, .sgc-lb__table tbody td { padding: 8px 6px; }
+}

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="crm_lead_view_form_objection" model="ir.ui.view">
+        <field name="name">crm.lead.form.objection</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <field name="tag_ids" position="after">
+                <field name="objection_ids"
+                       widget="many2many_tags"
+                       string="Objections"
+                       options="{'no_create_edit': True}"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

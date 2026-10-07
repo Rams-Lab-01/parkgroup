@@ -1,0 +1,671 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+<t t-name="sgc_crm_dashboard.Dashboard">
+    <div class="o_crm_dashboard d-flex flex-column h-100 overflow-auto">
+        <t t-if="state.loading">
+            <div class="d-flex justify-content-center align-items-center h-100">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </t>
+        <t t-else="">
+
+            <!-- Header with filter -->
+            <div class="d-flex justify-content-between align-items-center mb-3 px-3 pt-3">
+                <h4 class="mb-0 fw-bold">
+                    <t t-if="state.isAdmin and !state.selectedUserId">CRM Dashboard — All Users</t>
+                    <t t-elif="state.isAdmin and state.selectedUserId">CRM Dashboard — <t t-esc="state.allUsers.find(u => u.id === state.selectedUserId)?.name || 'User'"/></t>
+                    <t t-else="">My Pipeline</t>
+                </h4>
+                <t t-if="state.isAdmin">
+                    <div class="d-flex align-items-center gap-2 o_dash_filter">
+                        <label class="small fw-semibold">Filter by:</label>
+                        <select class="form-select form-select-sm" t-on-change="onFilterChange">
+                            <option value="">All Users</option>
+                            <t t-foreach="state.allUsers" t-as="u" t-key="u.id">
+                                <option t-att-value="u.id" t-att-selected="state.selectedUserId === u.id ? 'selected' : undefined" t-esc="u.name"/>
+                            </t>
+                        </select>
+                    </div>
+                </t>
+            </div>
+
+            <!-- Detail Panel -->
+            <t t-if="state.selectedSalesperson">
+                <div class="mx-3 o_detail_panel mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 fw-bold">
+                            <i class="fa fa-user-circle me-2" style="color:#C7A23A;"/>
+                            <t t-esc="state.salesperson?.find(p => p.id === state.selectedSalesperson)?.name || 'Salesperson'"/>
+                        </h5>
+                        <button class="btn btn-sm btn-outline-secondary" t-on-click="closeDetail">
+                            <i class="fa fa-times"/> Close
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <t t-if="state.detailLoading">
+                            <div class="text-center py-3"><div class="spinner-border spinner-border-sm"/></div>
+                        </t>
+                        <t t-if="!state.detailLoading and state.salespersonDetail">
+                            <!-- Days Without Booking (detail) -->
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-3">
+                                    <div class="o_stat_box" t-att-class="{
+                                        'o_stat-green': state.salespersonDetail.leads.days_without_booking !== null and state.salespersonDetail.leads.days_without_booking &lt;= 3,
+                                        'o_stat-yellow': state.salespersonDetail.leads.days_without_booking !== null and state.salespersonDetail.leads.days_without_booking &gt; 3 and state.salespersonDetail.leads.days_without_booking &lt;= 7,
+                                        'o_stat-red': state.salespersonDetail.leads.days_without_booking !== null and state.salespersonDetail.leads.days_without_booking &gt; 7,
+                                        'o_stat-muted': state.salespersonDetail.leads.days_without_booking === null
+                                    }">
+                                        <div class="o_stat_value">
+                                            <t t-if="state.salespersonDetail.leads.days_without_booking !== null">
+                                                <t t-esc="state.salespersonDetail.leads.days_without_booking"/>d
+                                            </t>
+                                            <t t-else="">N/A</t>
+                                        </div>
+                                        <div class="o_stat_label">Days Without Booking</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="o_stat_box o_stat-muted">
+                                        <div class="o_stat_value" t-esc="formatNumber(state.salespersonDetail.leads.total)"/>
+                                        <div class="o_stat_label">Total Leads</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="o_stat_box o_stat-green">
+                                        <div class="o_stat_value" t-esc="formatNumber(state.salespersonDetail.leads.won)"/>
+                                        <div class="o_stat_label">Won</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="o_stat_box o_stat-red">
+                                        <div class="o_stat_value" t-esc="formatNumber(state.salespersonDetail.leads.lost)"/>
+                                        <div class="o_stat_label">Lost</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-3">
+                                    <div class="o_stat_box o_stat-mauve">
+                                        <div class="o_stat_value" t-esc="formatNumber(state.salespersonDetail.leads.last_30d)"/>
+                                        <div class="o_stat_label">Last 30 Days</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="o_stat_box o_stat-pink">
+                                        <div class="o_stat_value" t-esc="formatNumber(state.salespersonDetail.leads.last_7d)"/>
+                                        <div class="o_stat_label">Last 7 Days</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="o_stat_box o_stat-info">
+                                        <div class="o_stat_value" t-esc="state.salespersonDetail.leads.avg_days_to_close + 'd'"/>
+                                        <div class="o_stat_label">Avg Days to Close</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="o_stat_box o_stat-muted">
+                                        <div class="o_stat_label mb-1">
+                                            <t t-if="state.salespersonDetail.leads.days_since_win !== null">
+                                                Last win: <t t-esc="state.salespersonDetail.leads.days_since_win"/>d ago
+                                            </t>
+                                            <t t-else="">No wins yet</t>
+                                        </div>
+                                        <div class="o_stat_label">
+                                            <t t-if="state.salespersonDetail.leads.days_since_activity !== null">
+                                                Last activity: <t t-esc="state.salespersonDetail.leads.days_since_activity"/>d ago
+                                            </t>
+                                            <t t-else="">No activity</t>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Activities -->
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-12">
+                                    <h6 class="fw-semibold mb-2"><i class="fa fa-tasks me-2"/>Activities</h6>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="o_stat_box o_stat-mauve">
+                                        <div class="o_stat_value" t-esc="formatNumber(state.salespersonDetail.activities.total)"/>
+                                        <div class="o_stat_label">Total</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="o_stat_box o_stat-green">
+                                        <div class="o_stat_value" t-esc="formatNumber(state.salespersonDetail.activities.done)"/>
+                                        <div class="o_stat_label">Done</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="o_stat_box o_stat-yellow">
+                                        <div class="o_stat_value" t-esc="formatNumber(state.salespersonDetail.activities.pending)"/>
+                                        <div class="o_stat_label">Pending</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="o_stat_box o_stat-red">
+                                        <div class="o_stat_value" t-esc="formatNumber(state.salespersonDetail.activities.overdue)"/>
+                                        <div class="o_stat_label">Overdue</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Activity Types & Recent Leads -->
+                            <div class="row g-3">
+                                <div class="col-md-5">
+                                    <h6 class="fw-semibold mb-2">Activity Types</h6>
+                                    <t t-if="state.salespersonDetail.activity_types.length === 0">
+                                        <div class="small" style="opacity:0.5;">No activities recorded</div>
+                                    </t>
+                                    <t t-foreach="state.salespersonDetail.activity_types" t-as="at" t-key="at.type">
+                                        <div class="d-flex justify-content-between align-items-center o_activity_type_row">
+                                            <span t-esc="at.type"/>
+                                            <span>
+                                                <span class="badge bg-success-subtle" t-esc="at.done + ' done'"/>
+                                                <span class="badge bg-secondary-subtle ms-1" t-esc="at.total + ' total'"/>
+                                            </span>
+                                        </div>
+                                    </t>
+                                </div>
+                                <div class="col-md-7">
+                                    <h6 class="fw-semibold mb-2">Recent Leads</h6>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover align-middle mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Lead</th>
+                                                    <th>Created</th>
+                                                    <th>Stage</th>
+                                                    <th class="text-center">Prob %</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="state.salespersonDetail.recent_leads" t-as="l" t-key="l.name">
+                                                    <tr>
+                                                        <td class="fw-medium" t-esc="l.name.length > 40 ? l.name.substring(0,40) + '...' : l.name"/>
+                                                        <td t-esc="l.create_date"/>
+                                                        <td><span class="badge bg-light" t-esc="l.stage"/></td>
+                                                        <td class="text-center" t-esc="l.probability + '%'"/>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </t>
+
+            <!-- KPI Scorecard — 10 cards in two rows of 5.
+                 row-cols-md-5 (not col-md-2) is what actually yields 5 equal cards
+                 filling the row: 5 × col-md-2 only spans 10 of the 12 columns and
+                 leaves a dead gutter on the right. -->
+            <!-- Row 1: In Pipeline · New Leads Today · Moved Out of New Today · Won · Lost -->
+            <div class="row row-cols-2 row-cols-md-5 g-3 mb-4 px-3">
+                <div class="col">
+                    <div class="card o_kpi_card o_kpi_clickable o_kpi-pipeline h-100" role="button" tabindex="0"
+                         t-on-click="() => this.openRecords('kpi_pipeline')"
+                         t-on-keydown="(ev) => this.onClickableKeydown(ev, 'kpi_pipeline')">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="o_kpi_label">In Pipeline</div>
+                                    <div class="o_kpi_value" t-esc="formatNumber(state.kpi.pipeline)"/>
+                                </div>
+                                <div class="o_kpi_icon" style="background:rgba(199,162,58,0.15);">
+                                    <i class="fa fa-line-chart fa-lg" style="color:#C7A23A;"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card o_kpi_card o_kpi_clickable o_kpi-new-today h-100" role="button" tabindex="0"
+                         t-on-click="() => this.openRecords('kpi_new_leads_today')"
+                         t-on-keydown="(ev) => this.onClickableKeydown(ev, 'kpi_new_leads_today')">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="o_kpi_label">Pipeline on New</div>
+                                    <div class="o_kpi_value" style="color:#4DA3FF;" t-esc="formatNumber(state.kpi.new_leads_today)"/>
+                                    <div class="o_kpi_sublabel" style="font-size:0.7rem;opacity:0.55;margin-top:2px;">currently in New stage</div>
+                                </div>
+                                <div class="o_kpi_icon" style="background:rgba(77,163,255,0.15);">
+                                    <i class="fa fa-user-plus fa-lg" style="color:#4DA3FF;"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card o_kpi_card o_kpi_clickable o_kpi-moved-out h-100" role="button" tabindex="0"
+                         t-on-click="() => this.openRecords('kpi_moved_out_of_new')"
+                         t-on-keydown="(ev) => this.onClickableKeydown(ev, 'kpi_moved_out_of_new')">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="o_kpi_label">Moved Out of New</div>
+                                    <div class="o_kpi_value" style="color:#1EC198;" t-esc="formatNumber(state.kpi.moved_out_of_new_today)"/>
+                                    <div class="o_kpi_sublabel" style="font-size:0.7rem;opacity:0.55;margin-top:2px;">progressed today</div>
+                                </div>
+                                <div class="o_kpi_icon" style="background:rgba(30,193,152,0.15);">
+                                    <i class="fa fa-arrow-right fa-lg" style="color:#1EC198;"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card o_kpi_card o_kpi_clickable o_kpi-won h-100" role="button" tabindex="0"
+                         t-on-click="() => this.openRecords('kpi_won')"
+                         t-on-keydown="(ev) => this.onClickableKeydown(ev, 'kpi_won')">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="o_kpi_label">Won</div>
+                                    <div class="o_kpi_value" t-esc="formatNumber(state.kpi.won)"/>
+                                </div>
+                                <div class="o_kpi_icon" style="background:rgba(244,183,64,0.15);">
+                                    <i class="fa fa-trophy fa-lg" style="color:#F4B740;"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card o_kpi_card o_kpi_clickable o_kpi-lost h-100" role="button" tabindex="0"
+                         t-on-click="() => this.openRecords('kpi_lost')"
+                         t-on-keydown="(ev) => this.onClickableKeydown(ev, 'kpi_lost')">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="o_kpi_label">Lost</div>
+                                    <div class="o_kpi_value" t-esc="formatNumber(state.kpi.lost)"/>
+                                </div>
+                                <div class="o_kpi_icon" style="background:rgba(255,90,95,0.15);">
+                                    <i class="fa fa-times-circle fa-lg" style="color:#FF5A5F;"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row 2: Follow Up · Research Done · Email Outreach · Meeting Booked · Revenue -->
+            <div class="row row-cols-2 row-cols-md-5 g-3 mb-4 px-3">
+                <div class="col">
+                    <div class="card o_kpi_card o_kpi_clickable o_kpi-follow-up h-100" role="button" tabindex="0"
+                         t-on-click="() => this.openRecords('kpi_follow_up')"
+                         t-on-keydown="(ev) => this.onClickableKeydown(ev, 'kpi_follow_up')">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="o_kpi_label">Follow Up</div>
+                                    <div class="o_kpi_value" t-esc="formatNumber(state.kpi.follow_up)"/>
+                                </div>
+                                <div class="o_kpi_icon" style="background:rgba(244,183,64,0.15);">
+                                    <i class="fa fa-bell fa-lg" style="color:#F4B740;"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card o_kpi_card o_kpi_clickable h-100" style="border-top:3px solid #00B67A;" role="button" tabindex="0"
+                         t-on-click="() => this.openRecords('kpi_research_done')"
+                         t-on-keydown="(ev) => this.onClickableKeydown(ev, 'kpi_research_done')">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="o_kpi_label">Qualified</div>
+                                    <div class="o_kpi_value" style="color:#00B67A;" t-esc="formatNumber(state.kpi.research_done)"/>
+                                </div>
+                                <div class="o_kpi_icon" style="background:rgba(0,182,122,0.15);">
+                                    <i class="fa fa-search fa-lg" style="color:#00B67A;"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card o_kpi_card o_kpi_clickable h-100" style="border-top:3px solid #4DA3FF;" role="button" tabindex="0"
+                         t-on-click="() => this.openRecords('kpi_outreach_email')"
+                         t-on-keydown="(ev) => this.onClickableKeydown(ev, 'kpi_outreach_email')">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="o_kpi_label">Email Outreach</div>
+                                    <div class="o_kpi_value" style="color:#4DA3FF;" t-esc="formatNumber(state.kpi.outreach_email)"/>
+                                </div>
+                                <div class="o_kpi_icon" style="background:rgba(77,163,255,0.15);">
+                                    <i class="fa fa-envelope fa-lg" style="color:#4DA3FF;"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card o_kpi_card o_kpi_clickable o_kpi-booked h-100" role="button" tabindex="0"
+                         t-on-click="() => this.openRecords('kpi_booked')"
+                         t-on-keydown="(ev) => this.onClickableKeydown(ev, 'kpi_booked')">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="o_kpi_label">Proposition</div>
+                                    <div class="o_kpi_value" t-esc="formatNumber(state.kpi.booked)"/>
+                                </div>
+                                <div class="o_kpi_icon" style="background:rgba(199,162,58,0.15);">
+                                    <i class="fa fa-calendar-check fa-lg" style="color:#C7A23A;"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card o_kpi_card o_kpi_clickable o_kpi-revenue h-100" role="button" tabindex="0"
+                         t-on-click="() => this.openRecords('kpi_revenue')"
+                         t-on-keydown="(ev) => this.onClickableKeydown(ev, 'kpi_revenue')">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="o_kpi_label">Proposal/Revenue</div>
+                                    <div class="o_kpi_value" style="color:#C7A23A;font-size:1.5rem;line-height:1.15;" t-esc="formatAbbrev(state.kpi.revenue_proposal) + ' / ' + formatAbbrev(state.kpi.revenue_converted)"/>
+                                    <div class="o_kpi_sublabel" style="font-size:0.65rem;opacity:0.55;margin-top:2px;">proposal / converted</div>
+                                </div>
+                                <div class="o_kpi_icon" style="background:rgba(199,162,58,0.15);">
+                                    <i class="fa fa-money fa-lg" style="color:#C7A23A;"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Qualification &amp; Gate Compliance (sgc_sales_playbook) · Leaderboard.
+                 Even 6/6 split - both get equal, readable space instead of the
+                 leaderboard being squeezed into a KPI-card slot. -->
+            <div class="row g-3 mb-4 px-3">
+                <div class="col-lg-6">
+                    <div class="card o_dash_card o_dash_card_compact h-100">
+                        <div class="card-header">
+                            <h6 class="mb-0 fw-semibold"><i class="fa fa-check-square-o me-2" style="color:#C7A23A;"/>Qualification &amp; Gate Compliance</h6>
+                            <small>Are deals being properly qualified before advancing? (Playbook Phase 4)</small>
+                        </div>
+                        <div class="card-body">
+                            <div class="text-muted small mb-2" t-if="!state.qualification.enabled">
+                                <i class="fa fa-info-circle me-1"/>
+                                Install sgc_sales_playbook to track gate pass rate, stalled deals and objection conversion.
+                            </div>
+                            <div class="alert alert-warning small mb-2 py-2" t-if="state.qualification.enabled and !state.qualification.gate_stage_configured">
+                                <i class="fa fa-exclamation-triangle me-1"/>
+                                sgc_sales_playbook.gate_stage_id does not resolve to a real stage — the Proposal
+                                gate is currently failing OPEN (not enforced) until this is corrected in
+                                Settings &gt; Technical &gt; System Parameters.
+                            </div>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <div class="o_stat_box o_stat_box_compact o_stat_clickable" role="button" tabindex="0"
+                                         t-on-click="() => this.openRecords('qual_gate_pass_rate')"
+                                         t-on-keydown="(ev) => this.onClickableKeydown(ev, 'qual_gate_pass_rate')"
+                                         t-att-class="{
+                                        'o_stat-green': state.qualification.gate_pass_rate !== null and state.qualification.gate_pass_rate !== undefined and state.qualification.gate_pass_rate &gt;= 70,
+                                        'o_stat-yellow': state.qualification.gate_pass_rate !== null and state.qualification.gate_pass_rate !== undefined and state.qualification.gate_pass_rate &gt;= 40 and state.qualification.gate_pass_rate &lt; 70,
+                                        'o_stat-red': state.qualification.gate_pass_rate !== null and state.qualification.gate_pass_rate !== undefined and state.qualification.gate_pass_rate &lt; 40,
+                                        'o_stat-muted': state.qualification.gate_pass_rate === null or state.qualification.gate_pass_rate === undefined
+                                    }">
+                                        <div class="o_stat_value" t-esc="state.qualification.gate_pass_rate === null or state.qualification.gate_pass_rate === undefined ? 'N/A' : state.qualification.gate_pass_rate + '%'"/>
+                                        <div class="o_stat_label">Gate Pass Rate</div>
+                                        <div class="small text-muted" style="font-size:0.65rem;">
+                                            n=<t t-esc="formatNumber(state.qualification.gate_pass_rate_n)"/>
+                                            <t t-if="state.qualification.gate_pass_rate_ai_n or state.qualification.gate_pass_rate_human_n">
+                                                · AI <t t-esc="state.qualification.gate_pass_rate_ai === null ? 'N/A' : state.qualification.gate_pass_rate_ai + '%'"/> (n=<t t-esc="formatNumber(state.qualification.gate_pass_rate_ai_n)"/>)
+                                                · Human <t t-esc="state.qualification.gate_pass_rate_human === null ? 'N/A' : state.qualification.gate_pass_rate_human + '%'"/> (n=<t t-esc="formatNumber(state.qualification.gate_pass_rate_human_n)"/>)
+                                            </t>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="o_stat_box o_stat_box_compact o_stat_clickable" role="button" tabindex="0"
+                                         t-on-click="() => this.openRecords('qual_stalled')"
+                                         t-on-keydown="(ev) => this.onClickableKeydown(ev, 'qual_stalled')"
+                                         t-att-class="state.qualification.stalled_deals_count === null or state.qualification.stalled_deals_count === undefined ? 'o_stat-muted' : 'o_stat-red'">
+                                        <div class="o_stat_value" t-esc="state.qualification.stalled_deals_count === null or state.qualification.stalled_deals_count === undefined ? 'N/A' : formatNumber(state.qualification.stalled_deals_count)"/>
+                                        <div class="o_stat_label">Stalled 3+ Weeks</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="o_stat_box o_stat_box_compact o_stat_clickable" role="button" tabindex="0"
+                                         t-on-click="() => this.openRecords('qual_objection_conversion')"
+                                         t-on-keydown="(ev) => this.onClickableKeydown(ev, 'qual_objection_conversion')"
+                                         t-att-class="state.qualification.objection_conversion_rate === null or state.qualification.objection_conversion_rate === undefined ? 'o_stat-muted' : 'o_stat-mauve'">
+                                        <div class="o_stat_value" t-esc="state.qualification.objection_conversion_rate === null or state.qualification.objection_conversion_rate === undefined ? 'N/A' : state.qualification.objection_conversion_rate + '%'"/>
+                                        <div class="o_stat_label">Objection → Meeting</div>
+                                        <div class="small text-muted" style="font-size:0.65rem;">n=<t t-esc="formatNumber(state.qualification.objection_conversion_rate_n)"/></div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="o_stat_box o_stat_box_compact o_stat_clickable o_stat-yellow" role="button" tabindex="0"
+                                         t-on-click="() => this.openRecords('qual_stale')"
+                                         t-on-keydown="(ev) => this.onClickableKeydown(ev, 'qual_stale')">
+                                        <div class="o_stat_value" t-esc="formatNumber(state.qualification.stale_lead_count)"/>
+                                        <div class="o_stat_label">Stale, Pending Cleanup</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card o_dash_card o_lb_panel h-100" role="button" tabindex="0"
+                         t-on-click="() => this.openLeaderboard()"
+                         t-on-keydown="(ev) => this.onLeaderboardKeydown(ev)">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-0 fw-semibold"><i class="fa fa-trophy me-2" style="color:#C7A23A;"/>Leaderboard</h6>
+                                <small>Ranked by meetings booked &amp; Proposal-stage pipeline</small>
+                            </div>
+                            <span class="o_lb_panel_badge">
+                                <i class="fa fa-star"/>
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <div class="o_lb_panel_colheads" t-if="state.leaderboard.top.length">
+                                <span/>
+                                <span/>
+                                <span>Rep</span>
+                                <span class="text-center">Mtgs</span>
+                                <span class="text-end">Pipeline (Proposal)</span>
+                                <span class="text-end">Score</span>
+                            </div>
+                            <ol class="o_lb_panel_list" t-if="state.leaderboard.top.length">
+                                <li t-foreach="state.leaderboard.top" t-as="row" t-key="row.id"
+                                    class="o_lb_panel_row" t-att-class="{ o_lb_panel_me: row.id === state.currentUserId }"
+                                    t-att-data-rank="row.rank &lt;= 3 ? row.rank : ''">
+                                    <span class="o_lb_panel_rank" t-att-data-rank="row.rank">
+                                        <t t-if="row.rank === 1">🥇</t>
+                                        <t t-elif="row.rank === 2">🥈</t>
+                                        <t t-elif="row.rank === 3">🥉</t>
+                                        <t t-else=""><t t-esc="row.rank"/></t>
+                                    </span>
+                                    <img class="o_lb_panel_avatar"
+                                         t-attf-src="/web/image/res.users/{{row.id}}/avatar_128/32x32"
+                                         t-att-alt="row.name"/>
+                                    <span class="o_lb_panel_name" t-esc="row.name"/>
+                                    <span class="o_lb_panel_meetings text-center" t-esc="row.meetings_booked"/>
+                                    <span class="o_lb_panel_pipeline text-end" t-esc="formatCurrency(row.pipeline_value)"/>
+                                    <span class="o_lb_panel_score text-end" t-esc="row.score"/>
+                                </li>
+                            </ol>
+                            <div class="o_lb_panel_me_row" t-if="state.leaderboard.me">
+                                <span class="o_lb_panel_rank" t-esc="'#' + state.leaderboard.me.rank"/>
+                                <img class="o_lb_panel_avatar"
+                                     t-attf-src="/web/image/res.users/{{state.leaderboard.me.id}}/avatar_128/32x32"
+                                     alt="You"/>
+                                <span class="o_lb_panel_name">You</span>
+                                <span class="o_lb_panel_meetings text-center" t-esc="state.leaderboard.me.meetings_booked"/>
+                                <span class="o_lb_panel_pipeline text-end" t-esc="formatCurrency(state.leaderboard.me.pipeline_value)"/>
+                                <span class="o_lb_panel_score text-end" t-esc="state.leaderboard.me.score"/>
+                            </div>
+                            <div class="text-muted small text-center py-3" t-if="!state.leaderboard.top.length">
+                                No ranked activity yet
+                            </div>
+                        </div>
+                        <div class="o_lb_panel_footer">
+                            View Full Leaderboard <i class="fa fa-arrow-right ms-1"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pipeline Health Row: Aging + Stage donut -->
+            <div class="row g-3 mb-4 px-3">
+                <div class="col-md-6">
+                    <div class="card o_dash_card h-100">
+                        <div class="card-header">
+                            <h6 class="mb-0 fw-semibold"><i class="fa fa-hourglass-half me-2" style="color:#C7A23A;"/>Pipeline Aging</h6>
+                            <small>Active leads by age since create_date — red = rotting. Click a bar to view those leads.</small>
+                        </div>
+                        <div class="card-body" style="height: 300px;">
+                            <canvas t-ref="agingChart"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card o_dash_card h-100">
+                        <div class="card-header">
+                            <h6 class="mb-0 fw-semibold"><i class="fa fa-pie-chart me-2" style="color:#C7A23A;"/>Pipeline by Stage (Active)</h6>
+                            <small>Click a slice to view leads in that stage.</small>
+                        </div>
+                        <div class="card-body d-flex align-items-center justify-content-center" style="height: 300px;">
+                            <canvas t-ref="stageChart"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pipeline Movement: Conversion Funnel + Monthly Activity -->
+            <div class="row g-3 mb-4 px-3">
+                <div class="col-md-6">
+                    <div class="card o_dash_card h-100">
+                        <div class="card-header">
+                            <h6 class="mb-0 fw-semibold"><i class="fa fa-filter me-2" style="color:#C7A23A;"/>Conversion Funnel</h6>
+                            <small>All-time leads per stage (active + archived). Click a bar to view them.</small>
+                        </div>
+                        <div class="card-body" style="height: 300px;">
+                            <canvas t-ref="funnelChart"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card o_dash_card h-100">
+                        <div class="card-header">
+                            <h6 class="mb-0 fw-semibold"><i class="fa fa-chart-bar me-2" style="color:#C7A23A;"/>Pipeline Movement (6 months)</h6>
+                            <small>Created vs Won vs Archived per month. Click a bar to view those leads.</small>
+                        </div>
+                        <div class="card-body" style="height: 300px;">
+                            <canvas t-ref="monthlyChart"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Concentration Row: Owner + Source -->
+            <div class="row g-3 mb-4 px-3">
+                <div class="col-md-7">
+                    <div class="card o_dash_card h-100">
+                        <div class="card-header">
+                            <h6 class="mb-0 fw-semibold"><i class="fa fa-user-tie me-2" style="color:#C7A23A;"/>Pipeline by Owner</h6>
+                            <small>Active leads per salesperson — flag concentration risk. Click a bar to view them.</small>
+                        </div>
+                        <div class="card-body" style="height: 300px;">
+                            <canvas t-ref="ownerChart"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="card o_dash_card h-100">
+                        <div class="card-header">
+                            <h6 class="mb-0 fw-semibold"><i class="fa fa-bullhorn me-2" style="color:#C7A23A;"/>Pipeline by Source</h6>
+                            <small t-if="state.pipeline_by_source.length === 0" class="text-muted">No UTM source data — populate campaign tracking</small>
+                            <small t-else="">Click a slice to view leads from that source.</small>
+                        </div>
+                        <div class="card-body d-flex align-items-center justify-content-center" style="height: 300px;">
+                            <canvas t-if="state.pipeline_by_source.length > 0" t-ref="sourceChart"/>
+                            <div t-else="" class="text-center text-muted">
+                                <i class="fa fa-info-circle fa-2x mb-2 d-block"/>
+                                <div class="small">No source attribution on active leads.<br/>Add UTM source to track campaign ROI.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Salesperson Performance -->
+            <div class="row g-3 px-3 pb-4">
+                <div class="col-md-12">
+                    <div class="card o_dash_card">
+                        <div class="card-header">
+                            <h6 class="mb-0 fw-semibold"><i class="fa fa-user-secret me-2" style="color:#C7A23A;"/>Salesperson Performance</h6>
+                            <small>Click a row to view individual activity &amp; productivity</small>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th class="ps-3">Salesperson</th>
+                                            <th class="text-center">Leads</th>
+                                            <th class="text-center">Won</th>
+                                            <th class="text-center">Lost</th>
+                                            <th class="text-center">Days W/O Booking</th>
+                                            <th class="text-center pe-3">Win Rate</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="state.salesperson" t-as="p" t-key="p.id">
+                                            <tr t-on-click="selectSalesperson" class="cursor-pointer" t-attf-data-user-id="{{p.id}}"
+                                                t-attf-class="{{state.selectedSalesperson === p.id ? 'o_row_selected' : ''}}">
+                                                <td class="ps-3">
+                                                    <i class="fa fa-user-circle me-1" style="opacity:0.5;"/>
+                                                    <span class="fw-medium" t-esc="p.name"/>
+                                                </td>
+                                                <td class="text-center" t-esc="formatNumber(p.leads)"/>
+                                                <td class="text-center">
+                                                    <span class="badge rounded-pill bg-success-subtle" t-esc="formatNumber(p.won)"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span class="badge rounded-pill bg-danger-subtle" t-esc="formatNumber(p.lost)"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span class="o_days-indicator" t-att-style="'color:' + daysColor(p.days_without_booking) + ';'"
+                                                          t-esc="daysLabel(p.days_without_booking)"/>
+                                                </td>
+                                                <td class="text-center pe-3">
+                                                    <t t-if="p.leads > 0">
+                                                        <span t-esc="((p.won / p.leads) * 100).toFixed(1) + '%'"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <span style="opacity:0.4;">-</span>
+                                                    </t>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </div>
+</t>
+
+</templates>

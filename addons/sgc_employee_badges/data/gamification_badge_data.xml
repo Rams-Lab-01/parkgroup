@@ -1,0 +1,510 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- SGC Employee Achievement Badges — 72 milestone badges -->
+        <record id="badge_champion_trophy" model="gamification.badge">
+            <field name="name">Champion</field>
+            <field name="level">gold</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Won a company-wide competition or achieved #1 KPI ranking</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/01_champion-trophy.png"/>
+        </record>
+        <record id="badge_star_of_excellence" model="gamification.badge">
+            <field name="name">Star of Excellence</field>
+            <field name="level">silver</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Consistently outstanding results over a quarter</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/02_star-of-excellence.png"/>
+        </record>
+        <record id="badge_diamond_elite" model="gamification.badge">
+            <field name="name">Diamond Elite</field>
+            <field name="level">gold</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Reached elite, top-tier performer status</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/03_diamond-elite.png"/>
+        </record>
+        <record id="badge_trusted_partner" model="gamification.badge">
+            <field name="name">Trusted Partner</field>
+            <field name="level">silver</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Recognised for dependable partnership &amp; collaboration</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/04_trusted-partner.png"/>
+        </record>
+        <record id="badge_on_target" model="gamification.badge">
+            <field name="name">On Target</field>
+            <field name="level">bronze</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Met the assigned target for the period</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/05_on-target.png"/>
+        </record>
+        <record id="badge_bullseye_goal_hit" model="gamification.badge">
+            <field name="name">Goal Achiever</field>
+            <field name="level">silver</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Hit a defined stretch goal</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/06_bullseye-goal-hit.png"/>
+        </record>
+        <record id="badge_employee_of_the_month" model="gamification.badge">
+            <field name="name">Employee of the Month</field>
+            <field name="level">gold</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Voted top performer of the month</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/07_employee-of-the-month.png"/>
+        </record>
+        <record id="badge_five_star_performer" model="gamification.badge">
+            <field name="name">Five-Star Performer</field>
+            <field name="level">gold</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Earned the highest performance rating</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/08_five-star-performer.png"/>
+        </record>
+        <record id="badge_speed_demon" model="gamification.badge">
+            <field name="name">Speed Demon</field>
+            <field name="level">bronze</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Fastest turnaround / on-time delivery streak</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/09_speed-demon.png"/>
+        </record>
+        <record id="badge_great_communicator" model="gamification.badge">
+            <field name="name">Great Communicator</field>
+            <field name="level">bronze</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Exceptional client &amp; team communication</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/10_great-communicator.png"/>
+        </record>
+        <record id="badge_strategic_thinker" model="gamification.badge">
+            <field name="name">Strategic Thinker</field>
+            <field name="level">silver</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Delivered a high-impact strategic contribution</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/11_strategic-thinker.png"/>
+        </record>
+        <record id="badge_deal_closer" model="gamification.badge">
+            <field name="name">Deal Closer</field>
+            <field name="level">silver</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Closed a first or major deal</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/12_deal-closer.png"/>
+        </record>
+        <record id="badge_task_master" model="gamification.badge">
+            <field name="name">Task Master</field>
+            <field name="level">bronze</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Completed a milestone number of tasks</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/13_task-master.png"/>
+        </record>
+        <record id="badge_certified_pro" model="gamification.badge">
+            <field name="name">Certified Pro</field>
+            <field name="level">silver</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Completed a professional certification</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/14_certified-pro.png"/>
+        </record>
+        <record id="badge_quality_guardian" model="gamification.badge">
+            <field name="name">Quality Guardian</field>
+            <field name="level">silver</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Maintained a zero-defect quality record</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/15_quality-guardian.png"/>
+        </record>
+        <record id="badge_revenue_generator" model="gamification.badge">
+            <field name="name">Revenue Generator</field>
+            <field name="level">silver</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Crossed a revenue contribution target</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/16_revenue-generator.png"/>
+        </record>
+        <record id="badge_top_earner" model="gamification.badge">
+            <field name="name">Top Earner</field>
+            <field name="level">gold</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Ranked #1 on the sales leaderboard</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/17_top-earner.png"/>
+        </record>
+        <record id="badge_sales_milestone" model="gamification.badge">
+            <field name="name">Sales Milestone</field>
+            <field name="level">silver</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Reached a cumulative sales figure</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/18_sales-milestone.png"/>
+        </record>
+        <record id="badge_numbers_wizard" model="gamification.badge">
+            <field name="name">Numbers Wizard</field>
+            <field name="level">bronze</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Excellence in financial / numerical accuracy</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/19_numbers-wizard.png"/>
+        </record>
+        <record id="badge_sharp_analyst" model="gamification.badge">
+            <field name="name">Sharp Analyst</field>
+            <field name="level">bronze</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Delivered a sharp, actionable analysis</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/20_sharp-analyst.png"/>
+        </record>
+        <record id="badge_insight_analyst" model="gamification.badge">
+            <field name="name">Insight Master</field>
+            <field name="level">silver</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Turned data into valuable business insight</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/21_insight-analyst.png"/>
+        </record>
+        <record id="badge_growth_driver" model="gamification.badge">
+            <field name="name">Growth Driver</field>
+            <field name="level">silver</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Drove measurable business growth</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/22_growth-driver.png"/>
+        </record>
+        <record id="badge_enterprise_builder" model="gamification.badge">
+            <field name="name">Enterprise Builder</field>
+            <field name="level">gold</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Built or scaled a key business function</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/23_enterprise-builder.png"/>
+        </record>
+        <record id="badge_brand_ambassador" model="gamification.badge">
+            <field name="name">Brand Ambassador</field>
+            <field name="level">silver</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Represented the brand with distinction</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/24_brand-ambassador.png"/>
+        </record>
+        <record id="badge_compliance_champion" model="gamification.badge">
+            <field name="name">Compliance Champion</field>
+            <field name="level">silver</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Passed audit / upheld compliance standards</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/25_compliance-champion.png"/>
+        </record>
+        <record id="badge_operations_pro" model="gamification.badge">
+            <field name="name">Operations Pro</field>
+            <field name="level">silver</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Excellence in operational delivery</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/26_operations-pro.png"/>
+        </record>
+        <record id="badge_logistics_hero" model="gamification.badge">
+            <field name="name">Logistics Hero</field>
+            <field name="level">bronze</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Outstanding logistics / delivery performance</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/27_logistics-hero.png"/>
+        </record>
+        <record id="badge_process_optimizer" model="gamification.badge">
+            <field name="name">Process Optimizer</field>
+            <field name="level">silver</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Improved a process for efficiency gains</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/28_process-optimizer.png"/>
+        </record>
+        <record id="badge_award_of_merit" model="gamification.badge">
+            <field name="name">Award of Merit</field>
+            <field name="level">silver</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Formal recognition of merit</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/29_award-of-merit.png"/>
+        </record>
+        <record id="badge_production_star" model="gamification.badge">
+            <field name="name">Production Star</field>
+            <field name="level">silver</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Top production / output performance</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/30_production-star.png"/>
+        </record>
+        <record id="badge_excellence_award" model="gamification.badge">
+            <field name="name">Excellence Award</field>
+            <field name="level">gold</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Highest recognition for overall excellence</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/31_excellence-award.png"/>
+        </record>
+        <record id="badge_workflow_master" model="gamification.badge">
+            <field name="name">Workflow Master</field>
+            <field name="level">silver</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Streamlined an end-to-end workflow</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/32_workflow-master.png"/>
+        </record>
+        <record id="badge_safety_first" model="gamification.badge">
+            <field name="name">Safety First</field>
+            <field name="level">bronze</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Safety milestone / incident-free record</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/33_safety-first.png"/>
+        </record>
+        <record id="badge_quality_inspector" model="gamification.badge">
+            <field name="name">Quality Inspector</field>
+            <field name="level">bronze</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Diligence in quality inspection</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/34_quality-inspector.png"/>
+        </record>
+        <record id="badge_automation_engineer" model="gamification.badge">
+            <field name="name">Automation Engineer</field>
+            <field name="level">silver</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Delivered an automation solution</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/35_automation-engineer.png"/>
+        </record>
+        <record id="badge_innovation_bot" model="gamification.badge">
+            <field name="name">Innovation Bot</field>
+            <field name="level">silver</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Introduced an innovative tool or bot</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/36_innovation-bot.png"/>
+        </record>
+        <record id="badge_tech_pioneer" model="gamification.badge">
+            <field name="name">Tech Pioneer</field>
+            <field name="level">gold</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Pioneered a new technology adoption</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/37_tech-pioneer.png"/>
+        </record>
+        <record id="badge_cloud_architect" model="gamification.badge">
+            <field name="name">Cloud Architect</field>
+            <field name="level">silver</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Designed / delivered a cloud solution</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/38_cloud-architect.png"/>
+        </record>
+        <record id="badge_security_guardian" model="gamification.badge">
+            <field name="name">Security Guardian</field>
+            <field name="level">silver</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Strengthened security / prevented a breach</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/39_security-guardian.png"/>
+        </record>
+        <record id="badge_key_contributor" model="gamification.badge">
+            <field name="name">Key Contributor</field>
+            <field name="level">silver</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Played a critical role in a key project</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/40_key-contributor.png"/>
+        </record>
+        <record id="badge_problem_solver" model="gamification.badge">
+            <field name="name">Problem Solver</field>
+            <field name="level">bronze</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Solved a difficult problem</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/41_problem-solver.png"/>
+        </record>
+        <record id="badge_north_star_navigator" model="gamification.badge">
+            <field name="name">Navigator</field>
+            <field name="level">silver</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Set clear direction for the team</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/42_north-star-navigator.png"/>
+        </record>
+        <record id="badge_rising_star" model="gamification.badge">
+            <field name="name">Rising Star</field>
+            <field name="level">silver</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Fast-rising, high-potential talent</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/43_rising-star.png"/>
+        </record>
+        <record id="badge_leadership_crown" model="gamification.badge">
+            <field name="name">Leadership Crown</field>
+            <field name="level">gold</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Demonstrated exceptional leadership</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/44_leadership-crown.png"/>
+        </record>
+        <record id="badge_recognition_ribbon" model="gamification.badge">
+            <field name="name">Recognition Ribbon</field>
+            <field name="level">bronze</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">General recognition of a job well done</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/45_recognition-ribbon.png"/>
+        </record>
+        <record id="badge_bright_idea" model="gamification.badge">
+            <field name="name">Bright Idea</field>
+            <field name="level">bronze</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Submitted an accepted improvement idea</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/46_bright-idea.png"/>
+        </record>
+        <record id="badge_high_voltage_performer" model="gamification.badge">
+            <field name="name">High-Impact Performer</field>
+            <field name="level">silver</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">High-energy, high-impact contribution</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/47_high-voltage-performer.png"/>
+        </record>
+        <record id="badge_mission_accomplished" model="gamification.badge">
+            <field name="name">Mission Accomplished</field>
+            <field name="level">gold</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Successfully completed a major mission / project</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/48_mission-accomplished.png"/>
+        </record>
+        <record id="badge_business_leader" model="gamification.badge">
+            <field name="name">Business Leader</field>
+            <field name="level">gold</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Outstanding business leadership</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/49_business-leader.png"/>
+        </record>
+        <record id="badge_pillar_of_the_company" model="gamification.badge">
+            <field name="name">Pillar of the Company</field>
+            <field name="level">gold</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">10+ years of dedicated service</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/50_pillar-of-the-company.png"/>
+        </record>
+        <record id="badge_contract_champion" model="gamification.badge">
+            <field name="name">Contract Champion</field>
+            <field name="level">silver</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Secured a key contract</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/51_contract-champion.png"/>
+        </record>
+        <record id="badge_data_presenter" model="gamification.badge">
+            <field name="name">Data Presenter</field>
+            <field name="level">bronze</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Delivered an outstanding presentation / report</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/52_data-presenter.png"/>
+        </record>
+        <record id="badge_org_builder" model="gamification.badge">
+            <field name="name">Org Builder</field>
+            <field name="level">silver</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Built or strengthened team structure</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/53_org-builder.png"/>
+        </record>
+        <record id="badge_network_connector" model="gamification.badge">
+            <field name="name">Network Connector</field>
+            <field name="level">bronze</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Built valuable cross-team connections</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/54_network-connector.png"/>
+        </record>
+        <record id="badge_research_guru" model="gamification.badge">
+            <field name="name">Research Guru</field>
+            <field name="level">silver</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Excellence in research &amp; discovery</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/55_research-guru.png"/>
+        </record>
+        <record id="badge_veteran_loyalty" model="gamification.badge">
+            <field name="name">Loyalty — Years of Service</field>
+            <field name="level">silver</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Reached a work-anniversary milestone</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/56_veteran-loyalty.png"/>
+        </record>
+        <record id="badge_policy_enforcer" model="gamification.badge">
+            <field name="name">Policy Enforcer</field>
+            <field name="level">bronze</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Upheld company policy &amp; governance</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/57_policy-enforcer.png"/>
+        </record>
+        <record id="badge_project_builder" model="gamification.badge">
+            <field name="name">Project Builder</field>
+            <field name="level">silver</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Delivered a build / construction project</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/58_project-builder.png"/>
+        </record>
+        <record id="badge_fair_and_balanced" model="gamification.badge">
+            <field name="name">Fair &amp; Balanced</field>
+            <field name="level">bronze</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Fairness and sound judgement</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/59_fair-and-balanced.png"/>
+        </record>
+        <record id="badge_steady_anchor" model="gamification.badge">
+            <field name="name">Steady Anchor</field>
+            <field name="level">silver</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Dependable stability under pressure</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/60_steady-anchor.png"/>
+        </record>
+        <record id="badge_rank_promotion" model="gamification.badge">
+            <field name="name">Rank Promotion</field>
+            <field name="level">silver</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Promoted to the next level</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/61_rank-promotion.png"/>
+        </record>
+        <record id="badge_performance_growth" model="gamification.badge">
+            <field name="name">Performance Growth</field>
+            <field name="level">bronze</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Notable improvement in performance</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/62_performance-growth.png"/>
+        </record>
+        <record id="badge_data_master" model="gamification.badge">
+            <field name="name">Data Master</field>
+            <field name="level">silver</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Mastery of data / IT systems</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/63_data-master.png"/>
+        </record>
+        <record id="badge_accredited_expert" model="gamification.badge">
+            <field name="name">Accredited Expert</field>
+            <field name="level">gold</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Achieved expert accreditation</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/64_accredited-expert.png"/>
+        </record>
+        <record id="badge_evergreen_growth" model="gamification.badge">
+            <field name="name">Evergreen Growth</field>
+            <field name="level">silver</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Sustained year-over-year growth</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/65_evergreen-growth.png"/>
+        </record>
+        <record id="badge_visionary" model="gamification.badge">
+            <field name="name">Visionary</field>
+            <field name="level">gold</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Exceptional vision and foresight</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/66_visionary.png"/>
+        </record>
+        <record id="badge_goal_crusher" model="gamification.badge">
+            <field name="name">Goal Crusher</field>
+            <field name="level">silver</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Exceeded quota / goals</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/67_goal-crusher.png"/>
+        </record>
+        <record id="badge_lifelong_learner" model="gamification.badge">
+            <field name="name">Lifelong Learner</field>
+            <field name="level">bronze</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Completed training &amp; continuous learning</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/68_lifelong-learner.png"/>
+        </record>
+        <record id="badge_medal_of_honor" model="gamification.badge">
+            <field name="name">Medal of Honor</field>
+            <field name="level">gold</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Highest single-achievement honour</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/69_medal-of-honor.png"/>
+        </record>
+        <record id="badge_distinguished_service" model="gamification.badge">
+            <field name="name">Distinguished Service</field>
+            <field name="level">gold</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Distinguished long-term service</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/70_distinguished-service.png"/>
+        </record>
+        <record id="badge_team_player" model="gamification.badge">
+            <field name="name">Team Player</field>
+            <field name="level">bronze</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Outstanding team contribution</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/71_team-player.png"/>
+        </record>
+        <record id="badge_perfect_fit" model="gamification.badge">
+            <field name="name">Perfect Fit</field>
+            <field name="level">bronze</field>
+            <field name="rule_auth">everyone</field>
+            <field name="description">Perfectly fit a critical role / culture</field>
+            <field name="image_1920" type="base64" file="sgc_employee_badges/static/src/img/72_perfect-fit.png"/>
+        </record>
+    </data>
+</odoo>
