@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2026 SGC TECH AI -->
+<odoo>
+
+    <!-- Surface the lead on the sale instrument (the reverse link) -->
+    <record id="sale_contract_form_view_journey" model="ir.ui.view">
+        <field name="name">sale.contract.form.journey</field>
+        <field name="model">sale.contract</field>
+        <field name="inherit_id" ref="sgc_offplan_rental_property_management.sale_contract_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='buyer_id']" position="after">
+                <field name="lead_id"
+                       options="{'no_create': True, 'no_quick_create': True}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Lead column on the contract list -->
+    <record id="sale_contract_list_view_journey" model="ir.ui.view">
+        <field name="name">sale.contract.list.journey</field>
+        <field name="model">sale.contract</field>
+        <field name="inherit_id" ref="sgc_offplan_rental_property_management.sale_contract_list_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='buyer_id']" position="after">
+                <field name="lead_id" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

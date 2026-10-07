@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2026 SGC TECH AI -->
+<odoo>
+
+    <!-- CRM Lead form: journey smart buttons, launch buttons, contract tab -->
+    <record id="crm_lead_view_form_journey" model="ir.ui.view">
+        <field name="name">crm.lead.form.journey</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="priority" eval="20"/>
+        <field name="arch" type="xml">
+
+            <!-- Property-sale instruments behind this lead -->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_contracts" type="object"
+                        class="oe_stat_button" icon="fa-file-text-o"
+                        invisible="not contract_count">
+                    <field name="contract_count" widget="statinfo" string="Contracts"/>
+                </button>
+                <button name="action_view_eoi_contracts" type="object"
+                        class="oe_stat_button" icon="fa-handshake-o"
+                        invisible="not eoi_count">
+                    <field name="eoi_count" widget="statinfo" string="EOIs"/>
+                </button>
+                <button name="action_view_booking_contracts" type="object"
+                        class="oe_stat_button" icon="fa-bookmark-o"
+                        invisible="not booking_count">
+                    <field name="booking_count" widget="statinfo" string="Bookings"/>
+                </button>
+                <button name="action_view_signed_contracts" type="object"
+                        class="oe_stat_button" icon="fa-check-circle-o"
+                        invisible="not signed_count">
+                    <field name="signed_count" widget="statinfo" string="SPAs"/>
+                </button>
+            </xpath>
+
+            <!-- One-click entry into the governed sale funnel -->
+            <xpath expr="//header" position="inside">
+                <button name="action_register_eoi" type="object"
+                        string="Register EOI" class="btn-primary"
+                        invisible="not property_id or probability == 100"/>
+                <button name="action_convert_to_booking" type="object"
+                        string="Convert to Booking"
+                        invisible="not property_id or probability == 100"/>
+            </xpath>
+
+            <!-- Journey tab: SLA + every linked instrument -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Sale Journey" name="sale_journey">
+                    <group>
+                        <group string="Internal control">
+                            <field name="journey_days_in_stage"/>
+                        </group>
+                    </group>
+                    <field name="contract_ids" readonly="1">
+                        <list decoration-success="state in ('spa_signed','signed','completed')"
+                              decoration-warning="state in ('booked','confirmed','spa_issued')"
+                              decoration-muted="state in ('cancelled','refunded')">
+                            <field name="name"/>
+                            <field name="property_id"/>
+                            <field name="sale_price" widget="monetary"/>
+                            <field name="booking_amount" widget="monetary"/>
+                            <field name="state" widget="badge"/>
+                            <field name="booking_date"/>
+                            <field name="spa_signed_date"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

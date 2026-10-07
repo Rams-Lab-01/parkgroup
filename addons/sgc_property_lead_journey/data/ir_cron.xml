@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2026 SGC TECH AI -->
+<odoo>
+    <data noupdate="1">
+        <!--
+            Internal control: daily SLA monitor. Flags open opportunities that
+            have not moved stage for N days by scheduling an activity on the
+            owner (never silently — it leaves a visible to-do + chatter trace).
+
+            Odoo 19: ir.cron no longer carries name/state/code directly; the
+            schedule points at an ir.actions.server (state='code').
+        -->
+        <record id="ir_actions_server_sgc_lead_sla" model="ir.actions.server">
+            <field name="name">SGC Lead Journey SLA monitor</field>
+            <field name="model_id" ref="crm.model_crm_lead"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_flag_stalled_leads()</field>
+        </record>
+
+        <record id="ir_cron_sgc_lead_sla" model="ir.cron">
+            <field name="cron_name">SGC Lead Journey: flag stalled opportunities (SLA)</field>
+            <field name="ir_actions_server_id" ref="ir_actions_server_sgc_lead_sla"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>

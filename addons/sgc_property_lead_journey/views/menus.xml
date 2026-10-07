@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2026 SGC TECH AI -->
+<odoo>
+
+    <!--
+        Governed navigation for the property sales funnel.
+
+        The pre-existing "Leads" entry pointed at an action whose domain was
+        hard-wired to type='opportunity', so genuine incoming leads were
+        invisible, and it was gated to the property rental groups only — so a
+        CRM salesperson saw nothing at all. Fix both: the Leads entry now shows
+        the whole pool, sales roles can see it, and a dedicated Opportunities
+        entry keeps the qualified view.
+    -->
+
+    <!-- Leads: whole pool (leads + opportunities) -->
+    <record id="sgc_offplan_rental_property_management.property_inquiry_action" model="ir.actions.act_window">
+        <field name="name">Leads</field>
+        <field name="domain">[]</field>
+        <field name="context">{'search_default_type': 1}</field>
+    </record>
+
+    <record id="sgc_offplan_rental_property_management.menu_property_lead" model="ir.ui.menu">
+        <field name="name">Leads</field>
+        <field name="sequence" eval="1"/>
+        <field name="group_ids" eval="[(6, 0, [
+            ref('sgc_offplan_rental_property_management.property_rental_manager'),
+            ref('sgc_offplan_rental_property_management.property_rental_officer'),
+            ref('sales_team.group_sale_salesman'),
+            ref('sales_team.group_sale_manager')])]"/>
+    </record>
+
+    <!-- Opportunities: qualified view -->
+    <record id="action_property_opportunity" model="ir.actions.act_window">
+        <field name="name">Opportunities</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">crm.lead</field>
+        <field name="domain">[('type', '=', 'opportunity')]</field>
+        <field name="context">{'default_type': 'opportunity'}</field>
+        <field name="view_mode">list,kanban,form,activity</field>
+    </record>
+
+    <menuitem id="menu_property_opportunity"
+              name="Opportunities"
+              parent="sgc_offplan_rental_property_management.menu_contacts_root"
+              action="action_property_opportunity"
+              sequence="2"
+              groups="sgc_offplan_rental_property_management.property_rental_manager,sgc_offplan_rental_property_management.property_rental_officer,sales_team.group_sale_salesman,sales_team.group_sale_manager"/>
+
+</odoo>
