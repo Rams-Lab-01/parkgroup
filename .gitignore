@@ -107,3 +107,38 @@ Parkgroup_Escrow_Unit_Discrepancy_Report_2026-10-05.xlsx
 PBR*.xlsx
 PGV*.xlsx
 PRY*.xlsx
+
+# ===== Dev scratch: one-off inspection / deploy / verify scripts =====
+/.vscode/
+/recon_work/
+/check_*.py
+/check_*.sql
+/check_*.sh
+/find_*.py
+/list_*.py
+/parse_mounts.py
+/scan_*.sh
+/server_*.sh
+/verify_*.sh
+/verify_*.py
+/deploy*.sh
+/copy_template.sh
+/read_template*.sh
+/upgrade*.sh
+/inventory*.sh
+/fix_kits.sh
+/final_verify.sh
+/test_method.sh
+/tmp_check_view_arch.sql
+/*.html
+
+# ===== Archives / dumps (not source) =====
+*.tgz
+*.tar.gz
+*.bak-*
+odoo_mcp/*.bak-*
+
+# ===== Vendored third-party modules (not SGC source) =====
+/addons/eh_uae_payroll_wps/
+/addons/hr_payroll_account_community/
+
