@@ -65,6 +65,74 @@
     opacity: 0.8;
 }
 
+/* ═══════════════════════════════════════════════════════
+   Real Estate KPI Card Accents
+   ═══════════════════════════════════════════════════════ */
+
+/* Lead-to-Close Rate — Slate purple */
+.metric-card.metric-conversion-rate {
+    border-left: 3px solid #7D7EAF;
+}
+.metric-card.metric-conversion-rate .metric-value {
+    color: #7D7EAF;
+}
+
+/* Avg Days on Market — Emerald */
+.metric-card.metric-avg-dom {
+    border-left: 3px solid #1EC198;
+}
+.metric-card.metric-avg-dom .metric-value {
+    color: #1EC198;
+}
+
+/* Avg Sale Price — Blue info */
+.metric-card.metric-avg-sale-price {
+    border-left: 3px solid #4DA3FF;
+}
+.metric-card.metric-avg-sale-price .metric-value {
+    color: #4DA3FF;
+}
+
+/* Active Listings — Amber/gold */
+.metric-card.metric-active-listings {
+    border-left: 3px solid #FFCA71;
+}
+.metric-card.metric-active-listings .metric-value {
+    color: #FFCA71;
+}
+
+/* Stalled Deal Rate — Coral/red */
+.metric-card.metric-stalled-rate {
+    border-left: 3px solid #FF5A5F;
+}
+.metric-card.metric-stalled-rate .metric-value {
+    color: #FF5A5F;
+}
+
+/* Response Time — Mauve/purple */
+.metric-card.metric-response-time {
+    border-left: 3px solid #BD85BA;
+}
+.metric-card.metric-response-time .metric-value {
+    color: #BD85BA;
+}
+
+/* Quota Attainment — Gold */
+.metric-card.metric-quota {
+    border-left: 3px solid #C7A23A;
+}
+.metric-card.metric-quota .metric-value {
+    color: #C7A23A;
+}
+
+/* Source Conversion — Teal */
+.metric-card.metric-source-conv {
+    border-left: 3px solid #0dcaf0;
+}
+.metric-card.metric-source-conv .metric-value {
+    color: #0dcaf0;
+}
+
 /* Shared metric-card typography tokens */
 .metric-card .metric-label {
     font-size: 0.72rem;

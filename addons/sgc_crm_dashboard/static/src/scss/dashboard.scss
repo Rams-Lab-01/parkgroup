@@ -280,3 +280,53 @@ $blue-info:  #4DA3FF;
     padding: 40px 20px;
     color: $coral;
 }
+
+// ═══════════════════════════════════════════════════════
+// Real Estate KPI Card Enhancements
+// ═══════════════════════════════════════════════════════
+
+.o_kpi_card {
+    transition: transform 0.15s, box-shadow 0.15s;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .o_kpi_label {
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        font-weight: 600;
+        color: $text-muted;
+        margin-bottom: 4px;
+    }
+
+    .o_kpi_value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        line-height: 1.2;
+    }
+
+    .o_kpi_sublabel {
+        font-size: 0.65rem;
+        opacity: 0.55;
+        margin-top: 2px;
+    }
+
+    .o_kpi_icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+// Real Estate section header
+.o_re_section {
+    border-top: 2px solid rgba(199, 162, 58, 0.3);
+    padding-top: 8px;
+    margin-top: 4px;
+}

@@ -119,10 +119,57 @@
                                                 Last activity: <t t-esc="state.salespersonDetail.leads.days_since_activity"/>d ago
                                             </t>
                                             <t t-else="">No activity</t>
-                                        </div>
+                            </div>
+                            <!-- Real Estate Pipeline Health row -->
+                            <div class="row g-2 mt-1">
+                                <div class="col-6">
+                                    <div class="o_stat_box o_stat_box_compact o_stat_clickable" role="button" tabindex="0"
+                                         t-on-click="() => this.openRecords('qual_stalled')"
+                                         t-on-keydown="(ev) => this.onClickableKeydown(ev, 'qual_stalled')"
+                                         t-att-class="state.qualification.stalled_deals_count === null or state.qualification.stalled_deals_count === undefined ? 'o_stat-muted' : 'o_stat-red'">
+                                        <div class="o_stat_value" t-esc="state.qualification.stalled_deals_count === null or state.qualification.stalled_deals_count === undefined ? 'N/A' : formatNumber(state.qualification.stalled_deals_count)"/>
+                                        <div class="o_stat_label">Stalled 3+ Weeks</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="o_stat_box o_stat_box_compact o_stat_clickable" role="button" tabindex="0">
+                                        <div class="o_stat_value" t-esc="state.kpi.stalled_deal_rate !== null ? state.kpi.stalled_deal_rate + '%' : 'N/A'"/>
+                                        <div class="o_stat_label">Stalled Deal Rate (14d)</div>
+                                        <div class="small text-muted" style="font-size:0.65rem;">no activity 14+ days</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="o_stat_box o_stat_box_compact o_stat_clickable" role="button" tabindex="0">
+                                        <div class="o_stat_value" t-esc="state.kpi.response_time_hours !== null ? state.kpi.response_time_hours + 'h' : 'N/A'"/>
+                                        <div class="o_stat_label">Avg Response Time</div>
+                                        <div class="small text-muted" style="font-size:0.65rem;">create → first activity</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="o_stat_box o_stat_box_compact o_stat_clickable" role="button" tabindex="0">
+                                        <div class="o_stat_value" t-esc="state.kpi.activities_per_lead !== null ? state.kpi.activities_per_lead : 'N/A'"/>
+                                        <div class="o_stat_label">Activities / Lead</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="o_stat_box o_stat_box_compact o_stat_clickable" role="button" tabindex="0">
+                                        <div class="o_stat_value" t-esc="state.kpi.quota_attainment !== null ? state.kpi.quota_attainment + '%' : 'N/A'"/>
+                                        <div class="o_stat_label">Quota Attainment</div>
+                                        <div class="small text-muted" style="font-size:0.65rem;">revenue vs team target</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="o_stat_box o_stat_box_compact o_stat_clickable" role="button" tabindex="0"
+                                         t-on-click="() => this.openRecords('qual_stale')"
+                                         t-on-keydown="(ev) => this.onClickableKeydown(ev, 'qual_stale')">
+                                        <div class="o_stat_value" t-esc="formatNumber(state.qualification.stale_lead_count)"/>
+                                        <div class="o_stat_label">Stale, Pending Cleanup</div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
 
                             <!-- Activities -->
                             <div class="row g-3 mb-3">
@@ -388,6 +435,76 @@
                 </div>
             </div>
 
+            <!-- Row 3: Real Estate KPI Scorecard — Conversion Rate · Avg DOM · Avg Sale Price · Active Listings -->
+            <div class="row row-cols-2 row-cols-md-4 g-3 mb-4 px-3">
+                <div class="col">
+                    <div class="card o_kpi_card o_kpi_clickable h-100" style="border-top:3px solid #7D7EAF;" role="button" tabindex="0"
+                         t-on-click="() => this.openRecords('kpi_won')"
+                         t-on-keydown="(ev) => this.onClickableKeydown(ev, 'kpi_won')">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="o_kpi_label">Lead-to-Close Rate</div>
+                                    <div class="o_kpi_value" style="color:#7D7EAF;" t-esc="state.kpi.conversion_rate !== null ? state.kpi.conversion_rate + '%' : 'N/A'"/>
+                                    <div class="o_kpi_sublabel" style="font-size:0.65rem;opacity:0.55;margin-top:2px;">won / (won + lost + pipeline)</div>
+                                </div>
+                                <div class="o_kpi_icon" style="background:rgba(125,126,175,0.15);">
+                                    <i class="fa fa-percentage fa-lg" style="color:#7D7EAF;"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card o_kpi_card o_kpi_clickable h-100" style="border-top:3px solid #1EC198;" role="button" tabindex="0">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="o_kpi_label">Avg Days on Market</div>
+                                    <div class="o_kpi_value" style="color:#1EC198;" t-esc="state.kpi.avg_dom !== null ? state.kpi.avg_dom + 'd' : 'N/A'"/>
+                                    <div class="o_kpi_sublabel" style="font-size:0.65rem;opacity:0.55;margin-top:2px;">create → close for won leads</div>
+                                </div>
+                                <div class="o_kpi_icon" style="background:rgba(30,193,152,0.15);">
+                                    <i class="fa fa-calendar fa-lg" style="color:#1EC198;"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card o_kpi_card o_kpi_clickable h-100" style="border-top:3px solid #4DA3FF;" role="button" tabindex="0">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="o_kpi_label">Avg Sale Price</div>
+                                    <div class="o_kpi_value" style="color:#4DA3FF;font-size:1.3rem;line-height:1.15;" t-esc="formatCurrency(state.kpi.avg_sale_price)"/>
+                                    <div class="o_kpi_sublabel" style="font-size:0.65rem;opacity:0.55;margin-top:2px;">confirmed sale orders</div>
+                                </div>
+                                <div class="o_kpi_icon" style="background:rgba(77,163,255,0.15);">
+                                    <i class="fa fa-tag fa-lg" style="color:#4DA3FF;"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card o_kpi_card o_kpi_clickable h-100" style="border-top:3px solid #FFCA71;" role="button" tabindex="0">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="o_kpi_label">Active Listings</div>
+                                    <div class="o_kpi_value" style="color:#FFCA71;" t-esc="formatNumber(state.kpi.active_listings)"/>
+                                    <div class="o_kpi_sublabel" style="font-size:0.65rem;opacity:0.55;margin-top:2px;">sale.contract active</div>
+                                </div>
+                                <div class="o_kpi_icon" style="background:rgba(255,202,113,0.15);">
+                                    <i class="fa fa-building fa-lg" style="color:#FFCA71;"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Qualification &amp; Gate Compliance (sgc_sales_playbook) · Leaderboard.
                  Even 6/6 split - both get equal, readable space instead of the
                  leaderboard being squeezed into a KPI-card slot. -->
@@ -602,6 +719,32 @@
                                 <i class="fa fa-info-circle fa-2x mb-2 d-block"/>
                                 <div class="small">No source attribution on active leads.<br/>Add UTM source to track campaign ROI.</div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Source Conversion + Avg DOM by Rep -->
+            <div class="row g-3 mb-4 px-3" t-if="state.kpi.source_conversion &amp;&amp; state.kpi.source_conversion.length">
+                <div class="col-md-6">
+                    <div class="card o_dash_card h-100">
+                        <div class="card-header">
+                            <h6 class="mb-0 fw-semibold"><i class="fa fa-filter me-2" style="color:#1EC198;"/>Source Conversion Rate</h6>
+                            <small>Won leads per source — identifies highest-ROI channels. Click a bar to view leads from that source.</small>
+                        </div>
+                        <div class="card-body" style="height: 300px;">
+                            <canvas t-ref="sourceConversionChart"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card o_dash_card h-100">
+                        <div class="card-header">
+                            <h6 class="mb-0 fw-semibold"><i class="fa fa-calendar-check-o me-2" style="color:#4DA3FF;"/>Avg Days on Market by Rep</h6>
+                            <small>Faster DOM = faster turnover. Click a bar to view that rep's won leads.</small>
+                        </div>
+                        <div class="card-body" style="height: 300px;">
+                            <canvas t-ref="domByRepChart"/>
                         </div>
                     </div>
                 </div>

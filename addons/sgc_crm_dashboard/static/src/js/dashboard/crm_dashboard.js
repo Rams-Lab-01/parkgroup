@@ -45,6 +45,8 @@ export class CrmDashboard extends Component {
             agingChart: useRef("agingChart"),
             ownerChart: useRef("ownerChart"),
             sourceChart: useRef("sourceChart"),
+            sourceConversionChart: useRef("sourceConversionChart"),
+            domByRepChart: useRef("domByRepChart"),
         };
         this.charts = {};
         this._chartsReady = false;
@@ -193,6 +195,8 @@ export class CrmDashboard extends Component {
         this.renderAgingChart();
         this.renderOwnerChart();
         this.renderSourceChart();
+        this.renderSourceConversionChart();
+        this.renderDomByRepChart();
     }
 
     renderStageChart() {
@@ -395,6 +399,118 @@ export class CrmDashboard extends Component {
                     if (!elements.length) return;
                     const source = this.state.pipeline_by_source[elements[0].index];
                     if (source) this.openRecords("chart_source", { source_name: source.name });
+                },
+            },
+        });
+    }
+
+    renderSourceConversionChart() {
+        const canvas = this.chartRefs.sourceConversionChart?.el;
+        const data = this.state.kpi?.source_conversion;
+        if (!canvas || !data || !data.length) return;
+        if (this.charts.sourceConversion) this.charts.sourceConversion.destroy();
+        const labels = data.map(d => d.source);
+        const rates = data.map(d => d.rate);
+        const totals = data.map(d => d.total);
+        const colors = rates.map((r, i) => {
+            // Green for high conversion, amber for medium, red for low
+            if (r >= 20) return "#1EC198";
+            if (r >= 10) return "#FFCA71";
+            return "#FF5A5F";
+        });
+        this.charts.sourceConversion = new Chart(canvas, {
+            type: "bar",
+            data: {
+                labels,
+                datasets: [{
+                    label: "Conversion %",
+                    data: rates,
+                    backgroundColor: colors,
+                    borderRadius: 4,
+                    barThickness: 24,
+                }],
+            },
+            options: {
+                indexAxis: "y",
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { beginAtZero: true, max: 100, grid: { color: "#f0f0f0" }, ticks: { callback: v => v + "%" } },
+                    y: { grid: { display: false } },
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: (ctx) => {
+                                const i = ctx.dataIndex;
+                                return `${rates[i]}% conversion (${totals[i]} leads, ${data[i].won} won)`;
+                            },
+                        },
+                    },
+                },
+                onHover: (evt, elements) => this._chartCursorHover(evt, elements),
+                onClick: (evt, elements) => {
+                    if (!elements.length) return;
+                    const source = data[elements[0].index];
+                    if (source) this.openRecords("chart_source", { source_name: source.source });
+                },
+            },
+        });
+    }
+
+    renderDomByRepChart() {
+        const canvas = this.chartRefs.domByRepChart?.el;
+        const salesperson = this.state.salesperson || [];
+        if (!canvas || !salesperson.length) return;
+        if (this.charts.domByRep) this.charts.domByRep.destroy();
+        // Sort by avg DOM ascending (fastest closers first)
+        const sorted = [...salesperson].sort((a, b) => (a.days_without_booking || 999) - (b.days_without_booking || 999));
+        const labels = sorted.map(p => p.name);
+        const doms = sorted.map(p => p.days_without_booking || 0);
+        const colors = doms.map(d => {
+            if (d <= 30) return "#1EC198";
+            if (d <= 60) return "#FFCA71";
+            if (d <= 90) return "#FFA48E";
+            return "#FF5A5F";
+        });
+        this.charts.domByRep = new Chart(canvas, {
+            type: "bar",
+            data: {
+                labels,
+                datasets: [{
+                    label: "Avg Days to Close",
+                    data: doms,
+                    backgroundColor: colors,
+                    borderRadius: 4,
+                    barThickness: 22,
+                }],
+            },
+            options: {
+                indexAxis: "y",
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { beginAtZero: true, grid: { color: "#f0f0f0" }, ticks: { callback: v => v + "d" } },
+                    y: { grid: { display: false } },
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: (ctx) => {
+                                const i = ctx.dataIndex;
+                                const p = sorted[i];
+                                return `${doms[i]}d avg · ${p.won} won · ${p.leads} total leads`;
+                            },
+                        },
+                    },
+                },
+                onHover: (evt, elements) => this._chartCursorHover(evt, elements),
+                onClick: (evt, elements) => {
+                    if (!elements.length) return;
+                    const rep = sorted[elements[0].index];
+                    if (rep) this.openRecords("chart_owner", { owner_id: rep.id });
                 },
             },
         });

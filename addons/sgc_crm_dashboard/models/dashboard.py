@@ -640,6 +640,27 @@ class CRMDashboard(models.AbstractModel):
                 "confirmed_revenue": confirmed_revenue,
                 "revenue_proposal": revenue_proposal,
                 "revenue_converted": revenue_converted,
+                # ─── Real Estate KPIs (P0) ──────────────────────────
+                "conversion_rate": self._compute_conversion_rate(
+                    won, lost, pipeline),
+                "avg_dom": self._compute_avg_dom(
+                    cr, lead_domain_base, is_admin, target_ids, user_id),
+                "avg_sale_price": self._compute_avg_sale_price(
+                    cr, order_user_filter),
+                "active_listings": self._compute_active_listings(
+                    cr),
+                "referral_rate": self._compute_referral_rate(
+                    cr, lead_domain_base, is_admin, target_ids, user_id),
+                "response_time_hours": self._compute_response_time(
+                    cr, lead_domain_base, is_admin, target_ids, user_id),
+                "activities_per_lead": self._compute_activities_per_lead(
+                    cr, lead_domain_base, is_admin, target_ids, user_id),
+                "stalled_deal_rate": self._compute_stalled_deal_rate(
+                    cr, lead_domain_base, is_admin, target_ids, user_id),
+                "quota_attainment": self._compute_quota_attainment(
+                    cr, confirmed_revenue, is_admin),
+                "source_conversion": self._compute_source_conversion(
+                    cr, lead_domain_base, is_admin, target_ids, user_id),
             },
             # ─── Charts (replaces Conversion Funnel, Teams) ─────────────
             "pipeline_aging": pipeline_aging,
@@ -666,6 +687,187 @@ class CRMDashboard(models.AbstractModel):
             "salesperson": salesperson_data[:10] if is_admin and not user_id else salesperson_data,
             "monthly": monthly,
         }
+
+    # ═══════════════════════════════════════════════════════════════
+    #  Real Estate KPI computation helpers
+    #  All fields resolved dynamically so this module is portable
+    #  across tenants with different stage names / pipeline configs.
+    # ═══════════════════════════════════════════════════════════════
+
+    @staticmethod
+    def _compute_conversion_rate(won, lost, pipeline):
+        """Lead-to-close conversion rate.
+        Denominator = all non-active leads (won + lost) + active pipeline.
+        Returns None when denominator is 0."""
+        denom = won + lost + pipeline
+        return round(won / denom * 100.0, 1) if denom else None
+
+    @api.model
+    def _compute_avg_dom(self, cr, lead_domain_base, is_admin, target_ids, user_id):
+        """Average Days on Market = avg(create_date → date_closed) for won leads.
+        Uses only stock crm.lead fields — no schema changes required."""
+        user_filter, params = self._lead_user_filter(user_id, is_admin, target_ids)
+        won_stage_ids = self.env["crm.stage"].search([("is_won", "=", True)]).ids
+        if not won_stage_ids:
+            return None
+        won_sql = ",".join(map(str, won_stage_ids))
+        cr.execute(f"""
+            SELECT AVG(EXTRACT(EPOCH FROM (date_closed - create_date))/86400.0) AS avg_dom
+            FROM crm_lead
+            WHERE active = true
+              AND stage_id IN ({won_sql})
+              AND date_closed IS NOT NULL
+              AND create_date IS NOT NULL
+              {user_filter}
+        """, params)
+        row = cr.fetchone()
+        return round(row[0], 1) if row and row[0] else None
+
+    @api.model
+    def _compute_avg_sale_price(self, cr, order_user_filter):
+        """Average confirmed sale order value."""
+        cr.execute("""
+            SELECT AVG(amount_total) FROM sale_order
+            WHERE state = 'sale'
+        """)
+        row = cr.fetchone()
+        return round(row[0], 2) if row and row[0] else None
+
+    @api.model
+    def _compute_active_listings(self, cr):
+        """Count of sale.contract records in active listing states.
+        Falls back to 0 if the model doesn't exist (tenant without
+        sgc_offplan_rental_property_management)."""
+        if "sale.contract" not in self.env:
+            return 0
+        try:
+            return self.env["sale.contract"].search_count([
+                ("state", "in", ("draft", "sent", "sale", "done")),
+            ])
+        except Exception:
+            return 0
+
+    @api.model
+    def _compute_referral_rate(self, cr, lead_domain_base, is_admin, target_ids, user_id):
+        """% of leads whose UTM source name contains 'referral' (case-insensitive).
+        Dynamic: uses UTM source name, no hardcoded source IDs."""
+        user_filter, params = self._lead_user_filter(user_id, is_admin, target_ids)
+        cr.execute(f"""
+            SELECT
+                COUNT(*) FILTER (WHERE LOWER(COALESCE(s.name,'')) LIKE '%%referral%%') AS referral_cnt,
+                COUNT(*) AS total_cnt
+            FROM crm_lead l
+            LEFT JOIN utm_source s ON l.source_id = s.id
+            WHERE l.active = true
+              {user_filter}
+        """, params)
+        row = cr.dictfetchone()
+        if not row or not row["total_cnt"]:
+            return None
+        return round(row["referral_cnt"] / row["total_cnt"] * 100.0, 1)
+
+    @api.model
+    def _compute_response_time(self, cr, lead_domain_base, is_admin, target_ids, user_id):
+        """Average hours from lead create_date to first mail_activity date.
+        Surfaces speed-to-lead — the #1 predictor of conversion in real estate."""
+        user_filter, params = self._lead_user_filter(user_id, is_admin, target_ids)
+        cr.execute(f"""
+            SELECT AVG(EXTRACT(EPOCH FROM (a.date - l.create_date))/3600.0) AS avg_hours
+            FROM crm_lead l
+            JOIN mail_activity a ON a.res_id = l.id AND a.res_model = 'crm.lead'
+            WHERE l.active = true
+              AND a.date IS NOT NULL
+              AND l.create_date IS NOT NULL
+              {user_filter}
+        """, params)
+        row = cr.fetchone()
+        return round(row[0], 1) if row and row[0] else None
+
+    @api.model
+    def _compute_activities_per_lead(self, cr, lead_domain_base, is_admin, target_ids, user_id):
+        """Total mail_activities across active leads ÷ active lead count."""
+        user_filter, params = self._lead_user_filter(user_id, is_admin, target_ids)
+        cr.execute(f"""
+            SELECT
+                COUNT(a.id) AS activity_cnt,
+                COUNT(DISTINCT l.id) AS lead_cnt
+            FROM crm_lead l
+            LEFT JOIN mail_activity a ON a.res_id = l.id AND a.res_model = 'crm.lead'
+            WHERE l.active = true
+              {user_filter}
+        """, params)
+        row = cr.dictfetchone()
+        if not row or not row["lead_cnt"]:
+            return None
+        return round(row["activity_cnt"] / row["lead_cnt"], 1)
+
+    @api.model
+    def _compute_stalled_deal_rate(self, cr, lead_domain_base, is_admin, target_ids, user_id):
+        """% of active leads with no activity in 14+ days.
+        Uses write_date as proxy for last activity."""
+        user_filter, params = self._lead_user_filter(user_id, is_admin, target_ids)
+        cutoff = fields.Datetime.to_string(datetime.now() - timedelta(days=14))
+        cr.execute(f"""
+            SELECT
+                COUNT(*) FILTER (WHERE write_date <= %s) AS stalled,
+                COUNT(*) AS total
+            FROM crm_lead
+            WHERE active = true
+              {user_filter}
+        """, [cutoff] + list(params))
+        row = cr.dictfetchone()
+        if not row or not row["total"]:
+            return None
+        return round(row["stalled"] / row["total"] * 100.0, 1)
+
+    @api.model
+    def _compute_quota_attainment(self, cr, confirmed_revenue, is_admin):
+        """Revenue vs. crm.team dashboard_target_revenue.
+        Returns None when no target is configured (tenant without quotas)."""
+        cr.execute("SELECT COALESCE(SUM(dashboard_target_revenue),0) FROM crm_team")
+        target = cr.fetchone()[0] or 0
+        if not target:
+            return None
+        return round(confirmed_revenue / target * 100.0, 1)
+
+    @api.model
+    def _compute_source_conversion(self, cr, lead_domain_base, is_admin, target_ids, user_id):
+        """Per-source conversion rate: won_leads / total_leads per UTM source.
+        Returns list of {source, total, won, rate} sorted by rate desc."""
+        user_filter, params = self._lead_user_filter(user_id, is_admin, target_ids)
+        won_stage_ids = self.env["crm.stage"].search([("is_won", "=", True)]).ids
+        if not won_stage_ids:
+            return []
+        won_sql = ",".join(map(str, won_stage_ids))
+        cr.execute(f"""
+            SELECT
+                COALESCE(NULLIF(s.name, ''), 'Unassigned') AS source_name,
+                COUNT(l.id) AS total,
+                COUNT(*) FILTER (WHERE l.stage_id IN ({won_sql})) AS won
+            FROM crm_lead l
+            LEFT JOIN utm_source s ON l.source_id = s.id
+            WHERE l.active = true
+              {user_filter}
+            GROUP BY source_name
+            HAVING COUNT(l.id) >= 3
+            ORDER BY won * 100.0 / NULLIF(total,0) DESC
+            LIMIT 10
+        """, params)
+        return [
+            {"source": r["source_name"], "total": r["total"], "won": r["won"],
+             "rate": round(r["won"] / r["total"] * 100.0, 1) if r["total"] else 0}
+            for r in cr.dictfetchall()
+        ]
+
+    @staticmethod
+    def _lead_user_filter(user_id, is_admin, target_ids):
+        """Return (SQL filter string, params list) for lead user scoping.
+        Shared helper so all KPI queries use the same filter logic."""
+        if user_id:
+            return "AND l.user_id = %s", [user_id]
+        elif not is_admin:
+            return "AND l.user_id IN %s", [tuple(target_ids)]
+        return "", []
 
     # ─── Drill-down: "what records are behind this number?" ─────────────
     # Every KPI card, qualification tile and chart segment on the
@@ -799,7 +1001,45 @@ class CRMDashboard(models.AbstractModel):
                 "target": "current",
             }
 
-        # ── Qualification & Gate Compliance (sgc_sales_playbook) ──────
+        # ── Real Estate KPI drill-downs ────────────────────────
+        if kind == "kpi_conversion_rate":
+            return self._lead_action(_("Leads (won / total)"), lead_domain_base + [
+                ("active", "=", True),
+                "|", ("stage_id", "in", self.env["crm.stage"].search([("is_won", "=", True)]).ids),
+                     ("probability", "=", 0),
+            ])
+        if kind == "kpi_avg_dom":
+            won_stage_ids = self.env["crm.stage"].search([("is_won", "=", True)]).ids
+            return self._lead_action(_("Avg Days on Market"), lead_domain_base + [
+                ("active", "=", True), ("stage_id", "in", won_stage_ids),
+                ("date_closed", "!=", False),
+            ])
+        if kind == "kpi_avg_sale_price":
+            return {
+                "type": "ir.actions.act_window",
+                "name": _("Confirmed Sale Orders"),
+                "res_model": "sale.order",
+                "view_mode": "list,form",
+                "views": [[False, "list"], [False, "form"]],
+                "domain": [("state", "=", "sale")],
+                "context": {"create": False},
+                "target": "current",
+            }
+        if kind == "kpi_active_listings":
+            if "sale.contract" not in self.env:
+                raise UserError(_("sale.contract model not available — install sgc_offplan_rental_property_management."))
+            return {
+                "type": "ir.actions.act_window",
+                "name": _("Active Listings"),
+                "res_model": "sale.contract",
+                "view_mode": "list,form",
+                "views": [[False, "list"], [False, "form"]],
+                "domain": [("state", "in", ("draft", "sent", "sale", "done"))],
+                "context": {"create": False},
+                "target": "current",
+            }
+
+        # ── Qualification & Gate Compliance (sgc_sales_playbook) ───
         if kind == "qual_gate_pass_rate":
             return self._lead_action(_("Gateable Deals (Meeting Booked+)"), lead_domain_base + [
                 ("active", "=", True), ("stage_id.sequence", ">=", 7),
