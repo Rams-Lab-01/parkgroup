@@ -107,22 +107,12 @@ class OffplanWebsiteController(http.Controller):
             if not property_rec.exists():
                 return {'success': False, 'error': _('Property not found.')}
 
-            inquiry = request.env['property.website.inquiry'].sudo().create({
-                'property_id': property_id,
-                'name': kwargs.get('name'),
-                'email': kwargs.get('email'),
-                'phone': kwargs.get('phone', ''),
-                'message': kwargs.get('message', ''),
-                'property_url': request.httprequest.url,
-            })
-            property_rec.sudo().write({'website_inquiry_count': property_rec.website_inquiry_count + 1})
-
-            # property.website.inquiry only feeds this property's own smart
-            # button (action_view_website_inquiries) -- it never reached the
-            # CRM pipeline, so sales saw zero leads from this form even
-            # though visitors were submitting it. A crm.lead is what actually
-            # shows up in the leads pool.
-            request.env['crm.lead'].sudo().create({
+            # A crm.lead is what actually shows up in the leads pool, but the
+            # old code created it *without* property_id and never back-linked
+            # the inquiry -- so the lead could not be traced to the unit the
+            # visitor asked about. Create the lead first, carrying the property,
+            # then link the inquiry to it (both directions).
+            lead = request.env['crm.lead'].sudo().create({
                 'name': _('Property inquiry: %s') % (property_rec.name or _('Property #%s') % property_id),
                 'contact_name': kwargs.get('name'),
                 'email_from': kwargs.get('email'),
@@ -130,7 +120,19 @@ class OffplanWebsiteController(http.Controller):
                 'description': kwargs.get('message') or _(
                     'Website inquiry for "%s" (property.details id=%s).'
                 ) % (property_rec.name or '', property_id),
+                'property_id': property_id,
             })
+
+            inquiry = request.env['property.website.inquiry'].sudo().create({
+                'property_id': property_id,
+                'lead_id': lead.id,
+                'name': kwargs.get('name'),
+                'email': kwargs.get('email'),
+                'phone': kwargs.get('phone', ''),
+                'message': kwargs.get('message', ''),
+                'property_url': request.httprequest.url,
+            })
+            property_rec.sudo().write({'website_inquiry_count': property_rec.website_inquiry_count + 1})
 
             # Live-render the luxury brochure rather than pointing at the
             # `brochure` binary field, which nothing in the codebase ever
