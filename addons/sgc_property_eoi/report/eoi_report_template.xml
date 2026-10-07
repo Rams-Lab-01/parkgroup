@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_property_eoi">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="company" t-value="o.company_id"/>
+                <t t-set="data" t-value="o._report_data()"/>
+                <t t-set="footer" t-value="data['footer']"/>
+                <t t-set="prop" t-value="o.property_id"/>
+                <t t-set="cur" t-value="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                <t t-call="sgc_property_eoi.dx_header"/>
+                <t t-call="sgc_property_eoi.dx_footer"/>
+                <div class="article dx" t-att-data-oe-model="o._name" t-att-data-oe-id="o.id">
+                    <t t-call="sgc_property_eoi.dx_styles"/>
+                    <div class="dx-title">EXPRESSION OF INTEREST</div>
+                    <div class="dx-rule"/>
+                    <table class="dx-meta" style="margin-bottom:10px"><tr>
+                        <td>
+                            <table class="dx-meta">
+                                <tr><td class="k">EOI Reference</td><td><b><t t-out="o.name"/></b></td></tr>
+                                <tr><td class="k">Date</td><td><span t-field="o.eoi_date" t-options='{"widget": "datetime", "format": "dd MMM yyyy HH:mm"}'/></td></tr>
+                                <tr t-if="o.valid_until"><td class="k">Valid Until</td><td><span t-field="o.valid_until" t-options='{"format": "dd MMM yyyy"}'/></td></tr>
+                            </table>
+                        </td>
+                        <td class="r">
+                            <span t-attf-class="dx-badge #{'dx-void' if o.state in ('cancelled','expired') else ''}">
+                                <t t-out="dict(o._fields['state']._description_selection(o.env)).get(o.state)"/>
+                            </span>
+                        </td>
+                    </tr></table>
+
+                    <table class="dx-two"><tr>
+                        <td style="padding-right:5px">
+                            <div class="dx-card">
+                                <h4>Purchaser</h4>
+                                <table class="dx-kv">
+                                    <tr><td class="k">Name</td><td class="v"><t t-out="o.partner_id.name"/></td></tr>
+                                    <tr t-if="o.purchaser_nationality"><td class="k">Nationality</td><td class="v"><t t-out="o.purchaser_nationality"/></td></tr>
+                                    <tr t-if="o.purchaser_passport_no"><td class="k">Passport No.</td><td class="v"><t t-out="o.purchaser_passport_no"/></td></tr>
+                                    <tr t-if="o.purchaser_phone"><td class="k">Mobile</td><td class="v"><t t-out="o.purchaser_phone"/></td></tr>
+                                    <tr t-if="o.purchaser_email"><td class="k">Email</td><td class="v"><t t-out="o.purchaser_email"/></td></tr>
+                                    <tr t-if="o.purchaser_address"><td class="k">Address</td><td class="v"><t t-out="o.purchaser_address"/></td></tr>
+                                </table>
+                                <t t-if="o.joint_partner_id">
+                                    <div style="margin-top:6px"/>
+                                    <table class="dx-kv">
+                                        <tr><td class="k">Joint Purchaser</td><td class="v"><t t-out="o.joint_partner_id.name"/></td></tr>
+                                        <tr t-if="o.joint_nationality"><td class="k">Nationality</td><td class="v"><t t-out="o.joint_nationality"/></td></tr>
+                                        <tr t-if="o.joint_passport_no"><td class="k">Passport No.</td><td class="v"><t t-out="o.joint_passport_no"/></td></tr>
+                                    </table>
+                                </t>
+                            </div>
+                        </td>
+                        <td style="padding-left:5px">
+                            <div class="dx-card">
+                                <h4>Unit Details</h4>
+                                <table class="dx-kv">
+                                    <tr t-if="o.project_id"><td class="k">Project</td><td class="v"><t t-out="o.project_id.name"/></td></tr>
+                                    <tr><td class="k">Unit</td><td class="v"><t t-out="prop.unit_number or prop.name"/></td></tr>
+                                    <tr t-if="prop.property_type"><td class="k">Type</td><td class="v"><t t-out="dict(prop._fields['property_type']._description_selection(prop.env)).get(prop.property_type)"/></td></tr>
+                                    <tr t-if="prop.bedrooms"><td class="k">Bedrooms</td><td class="v"><t t-out="prop.bedrooms"/></td></tr>
+                                    <tr t-if="prop.area"><td class="k">Area</td><td class="v"><t t-out="'{:,.2f}'.format(prop.area)"/> sq ft</td></tr>
+                                    <tr t-if="prop.parking"><td class="k">Parking</td><td class="v"><t t-out="prop.parking"/></td></tr>
+                                    <tr t-if="prop.view_description"><td class="k">View</td><td class="v"><t t-out="prop.view_description"/></td></tr>
+                                    <tr t-if="o.project_id.plot_number"><td class="k">Plot No.</td><td class="v"><t t-out="o.project_id.plot_number"/></td></tr>
+                                    <tr t-if="o.unit_price"><td class="k">List Price</td><td class="v"><span t-out="o.unit_price" t-options="cur"/></td></tr>
+                                </table>
+                            </div>
+                        </td>
+                    </tr></table>
+
+                    <div class="dx-amount">
+                        <table><tr>
+                            <td>
+                                <div class="dx-sub">EOI AMOUNT</div>
+                                <div class="big"><span t-out="o.amount" t-options="cur"/></div>
+                            </td>
+                            <td>
+                                <table class="dx-kv">
+                                    <tr t-if="o.payment_mode"><td class="k">Mode of Payment</td><td class="v"><t t-out="dict(o._fields['payment_mode']._description_selection(o.env)).get(o.payment_mode)"/></td></tr>
+                                    <tr t-if="o.payment_reference"><td class="k">Reference</td><td class="v"><t t-out="o.payment_reference"/></td></tr>
+                                    <tr><td class="k">Received</td><td class="v"><span t-out="o.amount_paid" t-options="cur"/></td></tr>
+                                    <tr t-if="o.amount_outstanding"><td class="k">Outstanding</td><td class="v"><span t-out="o.amount_outstanding" t-options="cur"/></td></tr>
+                                </table>
+                            </td>
+                        </tr></table>
+                    </div>
+
+                    <div class="dx-card" t-if="data['seller']">
+                        <h4>Seller / Developer</h4>
+                        <table class="dx-kv"><tr><td class="k">Name</td><td class="v"><t t-out="data['seller'].name"/></td></tr></table>
+                    </div>
+
+                    <div class="dx-notice" t-if="data['notice']"><b>Important:</b> <t t-out="data['notice']"/></div>
+
+                    <div class="dx-card dx-break" t-if="data['terms']">
+                        <h4>Terms and Conditions</h4>
+                        <ol class="dx-terms"><li t-foreach="data['terms']" t-as="term"><t t-out="term"/></li></ol>
+                    </div>
+
+                    <table class="dx-sign"><tr>
+                        <td><div class="line">Purchaser signature<t t-if="o.joint_partner_id"> (and joint purchaser)</t></div></td>
+                        <td><div class="line">For <t t-out="company.name"/> - authorised signatory</div></td>
+                    </tr></table>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

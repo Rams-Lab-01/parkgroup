@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_property_eoi" name="EOIs"
+              parent="sgc_offplan_rental_property_management.main_menu_rental_management"
+              action="action_property_eoi" sequence="4"/>
+</odoo>
