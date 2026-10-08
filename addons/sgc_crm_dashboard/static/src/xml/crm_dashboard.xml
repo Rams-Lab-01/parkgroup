@@ -176,7 +176,7 @@
                             <h6><i t-attf-class="fa {{rk[1]}} me-2"/><t t-esc="rk[0]"/></h6>
                             <small>Top 10 by contract value in the selected period (cancelled excluded).</small>
                         </div>
-                        <div class="card-body p-0 o_chart_body o_lb_scroll">
+                        <div class="card-body p-0 o_chart_body o_scroll">
                             <table t-if="rk[2].length" class="table table-hover align-middle mb-0">
                                 <thead><tr><th class="ps-3">#</th><th>Name</th><th class="text-center">Deals</th><th class="text-center">Confirmed</th><th class="text-end pe-3">Value (AED)</th></tr></thead>
                                 <tbody>
@@ -270,48 +270,13 @@
 
             <!-- Salesperson performance -->
             <div class="o_section_title px-3">Team</div>
-            <div class="o_chart_grid px-3 pb-4">
-                <div class="card o_dash_card o_lb_panel" role="button" tabindex="0"
-                     t-on-click="() => this.openLeaderboard()" t-on-keydown="(ev) => this.onLeaderboardKeydown(ev)">
-                    <div class="card-header">
-                        <h6><i class="fa fa-trophy me-2"/>Leaderboard</h6>
-                        <small>Ranked by meetings booked &amp; proposal pipeline. Click for the full board.</small>
-                    </div>
-                    <div class="card-body o_chart_body o_lb_scroll">
-                        <div class="o_lb_panel_colheads" t-if="state.leaderboard.top.length">
-                            <span/><span/><span>Rep</span><span class="text-center">Mtgs</span><span class="text-end">Pipeline</span><span class="text-end">Score</span>
-                        </div>
-                        <ol class="o_lb_panel_list" t-if="state.leaderboard.top.length">
-                            <li t-foreach="state.leaderboard.top" t-as="row" t-key="row.id"
-                                class="o_lb_panel_row" t-att-class="{ o_lb_panel_me: row.id === state.currentUserId }"
-                                t-att-data-rank="row.rank &lt;= 3 ? row.rank : ''">
-                                <span class="o_lb_panel_rank" t-att-data-rank="row.rank">
-                                    <t t-if="row.rank === 1">🥇</t><t t-elif="row.rank === 2">🥈</t><t t-elif="row.rank === 3">🥉</t><t t-else="" t-esc="row.rank"/>
-                                </span>
-                                <img class="o_lb_panel_avatar" t-attf-src="/web/image/res.users/{{row.id}}/avatar_128/32x32" t-att-alt="row.name"/>
-                                <span class="o_lb_panel_name" t-esc="row.name"/>
-                                <span class="o_lb_panel_meetings text-center" t-esc="row.meetings_booked"/>
-                                <span class="o_lb_panel_pipeline text-end" t-esc="formatAbbrev(row.pipeline_value)"/>
-                                <span class="o_lb_panel_score text-end" t-esc="row.score"/>
-                            </li>
-                        </ol>
-                        <div class="o_lb_panel_me_row" t-if="state.leaderboard.me">
-                            <span class="o_lb_panel_rank" t-esc="'#' + state.leaderboard.me.rank"/>
-                            <img class="o_lb_panel_avatar" t-attf-src="/web/image/res.users/{{state.leaderboard.me.id}}/avatar_128/32x32" alt="You"/>
-                            <span class="o_lb_panel_name">You</span>
-                            <span class="o_lb_panel_meetings text-center" t-esc="state.leaderboard.me.meetings_booked"/>
-                            <span class="o_lb_panel_pipeline text-end" t-esc="formatAbbrev(state.leaderboard.me.pipeline_value)"/>
-                            <span class="o_lb_panel_score text-end" t-esc="state.leaderboard.me.score"/>
-                        </div>
-                        <div t-if="!state.leaderboard.top.length" class="o_chart_empty"><div class="small">No ranked activity yet</div></div>
-                    </div>
-                </div>
+            <div class="px-3 pb-4">
                 <div class="card o_dash_card">
                     <div class="card-header">
                         <h6><i class="fa fa-user me-2"/>Salesperson Performance</h6>
                         <small>Click a row to view individual activity &amp; productivity</small>
                     </div>
-                    <div class="card-body p-0 o_chart_body o_lb_scroll">
+                    <div class="card-body p-0 o_chart_body o_scroll">
                         <div class="table-responsive">
                             <table class="table table-hover align-middle mb-0">
                                 <thead>
