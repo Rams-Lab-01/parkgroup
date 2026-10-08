@@ -498,7 +498,7 @@ class SgcBrokerApplication(models.Model):
                          'For security, please change your password after the first login.</p>' % (
                              self.full_name, self.name, self.email, password),
             'email_to': self.email,
-            'email_from': self.company_id.email_formatted or self.env.user.email_formatted,
+            'email_from': '"PARK GROUP" <noreply@sgctech.ai>',
             'auto_delete': True,
         }).send()
         return user
