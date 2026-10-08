@@ -1,0 +1,28 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="cGold" x1="14" y1="10" x2="50" y2="50" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F3D98B"/>
+      <stop offset="0.55" stop-color="#C8A24A"/>
+      <stop offset="1" stop-color="#A7832F"/>
+    </linearGradient>
+    <linearGradient id="cBlue" x1="8" y1="30" x2="44" y2="58" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#E4EEFB"/>
+      <stop offset="1" stop-color="#C1DBF6"/>
+    </linearGradient>
+  </defs>
+  <!-- coin stack -->
+  <ellipse cx="25" cy="50" rx="16" ry="6" fill="url(#cBlue)" stroke="#374874" stroke-width="2.500"/>
+  <path d="M9 50v-6c0 3.300 7.200 6 16 6s16-2.700 16-6v6" fill="url(#cBlue)"/>
+  <path d="M9 50v-6M41 50v-6" stroke="#374874" stroke-width="2.500" stroke-linecap="round"/>
+  <ellipse cx="25" cy="44" rx="16" ry="6" fill="url(#cBlue)" stroke="#374874" stroke-width="2.500"/>
+  <path d="M9 44v-6M41 44v-6" stroke="#374874" stroke-width="2.500" stroke-linecap="round"/>
+  <ellipse cx="25" cy="38" rx="16" ry="6" fill="url(#cBlue)" stroke="#374874" stroke-width="2.500"/>
+  <!-- gold percentage coin -->
+  <circle cx="41" cy="22" r="15" fill="url(#cGold)" stroke="#374874" stroke-width="2.500"/>
+  <circle cx="41" cy="22" r="10.500" stroke="#FFFFFF" stroke-width="1.500" opacity=".7"/>
+  <circle cx="36.800" cy="17.800" r="2.600" fill="#374874"/>
+  <circle cx="45.200" cy="26.200" r="2.600" fill="#374874"/>
+  <path d="M46 16.500L36 27.500" stroke="#374874" stroke-width="2.500" stroke-linecap="round"/>
+  <!-- growth tick -->
+  <path d="M50 52l5-5m0 0h-4.500m4.500 0V51.500" stroke="#374874" stroke-width="2.500" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

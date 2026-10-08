@@ -63,7 +63,7 @@
             <div class="o_portal_category row g-2 mt-3" id="portal_commissions_category"
                  t-if="'property.commission.line' in request.env and request.env['property.commission.line'].sudo().search_count([('partner_id', 'child_of', request.env.user.partner_id.commercial_partner_id.id)])">
                 <t t-call="portal.portal_docs_entry">
-                    <t t-set="icon" t-value="'/sgc_offplan_rental_property_management/static/src/img/portal-purchases.svg'"/>
+                    <t t-set="icon" t-value="'/sgc_broker_registration/static/src/img/portal-commissions.svg'"/>
                     <t t-set="title">My Commissions</t>
                     <t t-set="text">Follow your deals and commission payouts</t>
                     <t t-set="url" t-value="'/my/commissions'"/>

@@ -7,6 +7,7 @@
             <t t-set="broker_app" t-value="request.env.user.partner_id.sudo().sgc_broker_application_id"/>
             <div class="o_portal_category row g-2 mt-3" id="portal_broker_category" t-if="broker_app">
                 <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon" t-value="'/sgc_broker_registration/static/src/img/portal-broker-registration.svg'"/>
                     <t t-set="title">My Broker Registration</t>
                     <t t-set="text">Your application, documents and brokerage agreement</t>
                     <t t-set="url" t-value="'/broker/application/%s' % broker_app.access_token"/>
