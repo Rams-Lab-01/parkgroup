@@ -33,10 +33,10 @@ from odoo.exceptions import UserError
 _logger = logging.getLogger(__name__)
 
 _FLAG_NOTES = {
-    'BREAKDOWN_EXCEEDS_COLLECTED': _(
+    'BREAKDOWN_EXCEEDS_COLLECTED': (
         'Source 10%%/20%% breakdown exceeds the collected figure; collapsed to a '
         'single collection bucket.'),
-    'OVERPAYMENT': _(
+    'OVERPAYMENT': (
         'Source shows a negative balance due; no pending line exists. Verify the '
         'overpayment with finance.'),
 }
@@ -290,8 +290,8 @@ class EscrowAllocationImport(models.TransientModel):
         if flag:
             values['flag_code'] = (flag.get('kind') or '').strip() or False
             values['flag_note'] = (flag.get('info') or '').strip() or False
-            values['reconciliation_note'] = _FLAG_NOTES.get(
-                values['flag_code'], _('Flagged during reconciliation; finance sign-off required.'))
+            values['reconciliation_note'] = self.env._(_FLAG_NOTES.get(
+                values['flag_code'], 'Flagged during reconciliation; finance sign-off required.'))
         return values
 
     @api.model
