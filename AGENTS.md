@@ -26,6 +26,7 @@ addons/
 - `sgc_crm_dashboard` depends on `crm`, `sale_management`, `website`, `sgc_employee_badges` — the CRM dashboard used in `odoo19-sgc`; stage ids are resolved by name so it also fits this tenant's New/Qualified/Proposition/Won pipeline. Requires `sgc_realestate_brokerage_template.excludes` to be overridden (it is listed there as an audit-quarantined module)
 - `sgc_employee_badges` depends on `gamification`, `hr_gamification`, `crm` and extends `hr.attendance` → requires `hr_attendance` installed
 - Retired (superseded): `sgc_crm_marketing_dashboard` (bespoke board) and `sgc_realestate_dashboard`
+- `sgc_crm_dashboard` UI notes: one OWL page (`crm_dashboard` action) plus a **Wall Screen** action (`crm_dashboard_screen`) that opens the same page in screen mode (fullscreen, 60s refresh, auto-scroll, news ticker from `crm.dashboard.get_ticker`; optional banner via system parameter `sgc_crm_dashboard.ticker_message`). Developer/project/broker/RM blocks come from `crm.dashboard.get_property_overview` and degrade to empty states when the property module is absent. Brokers = external `property.commission.line` recipients, RMs = internal `manager` recipients. The old public `/dashboard/big-screen` page was removed. Charts and count-up animation must run from `onPatched`, never from timers.
 
 ## Testing
 Tests are tagged `post_install` (`-at_install`), so they run after all modules are installed.
