@@ -112,23 +112,6 @@
             </field>
         </record>
 
-        <record id="mail_template_approved" model="mail.template">
-            <field name="name">Broker registration: approved</field>
-            <field name="model_id" ref="model_sgc_broker_application"/>
-            <field name="subject">Application {{ object.name }} approved</field>
-            <field name="email_from">"PARK GROUP" &lt;noreply@sgctech.ai&gt;</field>
-            <field name="email_to">{{ object.email }}</field>
-            <field name="auto_delete" eval="True"/>
-            <field name="body_html" type="html">
-<div style="font-family: Arial, sans-serif; font-size: 14px;">
-    <p>Dear <t t-out="object.full_name"/>,</p>
-    <p>Your broker registration <b t-out="object.name"/> has been <b>approved</b>.
-       You are now registered as a broker with <t t-out="object.company_id.name"/>.</p>
-    <p>A portal account has been created for you. Please check your email for login credentials.</p>
-</div>
-            </field>
-        </record>
-
         <record id="mail_template_rejected" model="mail.template">
             <field name="name">Broker registration: rejected</field>
             <field name="model_id" ref="model_sgc_broker_application"/>

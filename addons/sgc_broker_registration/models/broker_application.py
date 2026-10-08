@@ -452,8 +452,6 @@ class SgcBrokerApplication(models.Model):
             rec.sudo()._refresh_broker_status()
             rec.message_post(body=_('Registered. Agreement valid until %(date)s. Mapped to contact %(partner)s.',
                                     date=rec.agreement_expiry, partner=partner.display_name))
-            rec.env.ref('sgc_broker_registration.mail_template_approved').sudo().send_mail(
-                rec.id, force_send=True, raise_exception=False)
             rec.activity_unlink(['mail.mail_activity_data_todo'])
 
     def _grant_portal_access(self):
@@ -472,31 +470,30 @@ class SgcBrokerApplication(models.Model):
         if user:
             if user.partner_id != self.partner_id:
                 user.write({'partner_id': self.partner_id.id})
-            password = secrets.token_urlsafe(16)
-            user.write({'password': password})
         else:
-            password = secrets.token_urlsafe(16)
             user = User.create({
                 'name': self.partner_id.name,
                 'login': self.email,
                 'email': self.email,
                 'partner_id': self.partner_id.id,
                 'share': True,
-                'password': password,
             })
         user.write({
             'group_ids': [(4, portal_group.id), (3, internal_group.id)],
         })
+        # the broker sets their own password through a one-time link; no password is ever emailed
+        partner = user.partner_id
+        partner.signup_prepare(signup_type='reset')
+        link = partner._get_signup_url()
         self.env['mail.mail'].sudo().create({
-            'subject': _('Portal account ready: %s', self.name),
+            'subject': _('Application %s approved - set up your portal account', self.name),
             'body_html': '<p>Dear %s,</p>'
-                         '<p>Your broker registration <b>%s</b> has been approved. '
-                         'We have created a portal account for you.</p>'
-                         '<p><strong>Login:</strong> %s<br/>'
-                         '<strong>Password:</strong> %s</p>'
-                         '<p>Log in at <a href="/web/login">/web/login</a>. '
-                         'For security, please change your password after the first login.</p>' % (
-                             self.full_name, self.name, self.email, password),
+                         '<p>Your broker registration <b>%s</b> has been <b>approved</b>. '
+                         'We have created a portal account for you (login: <b>%s</b>).</p>'
+                         '<p><a href="%s">Set your password and sign in</a></p>'
+                         '<p>The link is personal and expires after a limited time. If it has expired, use '
+                         '"Reset password" on the login page.</p>' % (
+                             self.full_name, self.name, self.email, link),
             'email_to': self.email,
             'email_from': '"PARK GROUP" <noreply@sgctech.ai>',
             'auto_delete': True,

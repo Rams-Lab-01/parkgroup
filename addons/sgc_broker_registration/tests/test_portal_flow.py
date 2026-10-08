@@ -263,7 +263,7 @@ class TestBrokerPortalFlow(HttpCase):
         self.assertTrue(partner.bank_ids.filtered(lambda b: b.sanitized_acc_number == GOOD_IBAN))
         self.assertEqual(len(self.env['ir.attachment'].search([
             ('res_model', '=', 'res.partner'), ('res_id', '=', partner.id)])), len(app.document_ids))
-        self.assertTrue(self._mail_for('approved', app.email), 'approval mail missing')
+        self.assertEqual(len(self._mail_for('approved', app.email)), 1, 'exactly one approval mail expected')
 
     def test_review_gated_until_complete_then_success_page(self):
         app = self._verified_app()
