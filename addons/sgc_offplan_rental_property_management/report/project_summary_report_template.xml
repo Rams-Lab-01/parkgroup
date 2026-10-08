@@ -59,7 +59,7 @@
                                 <tr><td class="o_pmg_dl-label">Total Area</td><td class="o_pmg_dl-value"><t t-out="f'{total_area:,.0f}'"/> sqft</td></tr>
                             </table>
                         </div>
-                        <div t-if="o.description" class="o_pmg_note-box" t-raw="o.description"/>
+                        <div t-if="o.description" class="o_pmg_note-box"><span t-field="o.description"/></div>
                     </div>
                 </div>
 

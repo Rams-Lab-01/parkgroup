@@ -61,9 +61,13 @@ access_certificate_type_officer,certificate.type.officer,model_certificate_type,
 access_property_amenities_manager,property.amenities.manager,model_property_amenities,property_rental_manager,1,1,1,1
 access_property_amenities_officer,property.amenities.officer,model_property_amenities,property_rental_officer,1,1,1,0
 access_property_amenities_public,property.amenities.public,model_property_amenities,base.group_public,1,0,0,0
+access_property_amenities_user,property.amenities.user,model_property_amenities,base.group_user,1,0,0,0
+access_property_amenities_portal,property.amenities.portal,model_property_amenities,base.group_portal,1,0,0,0
 access_property_connectivity_manager,property.connectivity.manager,model_property_connectivity,property_rental_manager,1,1,1,1
 access_property_connectivity_officer,property.connectivity.officer,model_property_connectivity,property_rental_officer,1,1,1,0
 access_property_connectivity_public,property.connectivity.public,model_property_connectivity,base.group_public,1,0,0,0
+access_property_connectivity_user,property.connectivity.user,model_property_connectivity,base.group_user,1,0,0,0
+access_property_connectivity_portal,property.connectivity.portal,model_property_connectivity,base.group_portal,1,0,0,0
 access_property_documents_manager,property.documents.manager,model_property_documents,property_rental_manager,1,1,1,1
 access_property_documents_officer,property.documents.officer,model_property_documents,property_rental_officer,1,1,1,0
 access_property_specification_manager,property.specification.manager,model_property_specification,property_rental_manager,1,1,1,1
@@ -80,6 +84,8 @@ access_agreement_template_variable_officer,agreement.template.variable.officer,m
 access_property_tag_manager,property.tag.manager,model_property_tag,property_rental_manager,1,1,1,1
 access_property_tag_officer,property.tag.officer,model_property_tag,property_rental_officer,1,1,1,0
 access_property_tag_public,property.tag.public,model_property_tag,base.group_public,1,0,0,0
+access_property_tag_user,property.tag.user,model_property_tag,base.group_user,1,0,0,0
+access_property_tag_portal,property.tag.portal,model_property_tag,base.group_portal,1,0,0,0
 access_property_image_manager,property.image.manager,model_property_image,property_rental_manager,1,1,1,1
 access_property_image_officer,property.image.officer,model_property_image,property_rental_officer,1,1,1,0
 access_property_image_portal,property.image.portal,model_property_image,base.group_portal,1,0,0,0
