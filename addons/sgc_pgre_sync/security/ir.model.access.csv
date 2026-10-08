@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_pgre_sync_binding_admin,pgre.sync.binding.admin,model_pgre_sync_binding,base.group_system,1,1,1,1
+access_pgre_sync_log_admin,pgre.sync.log.admin,model_pgre_sync_log,base.group_system,1,1,1,1
+access_pgre_sync_cursor_admin,pgre.sync.cursor.admin,model_pgre_sync_cursor,base.group_system,1,1,1,1
+access_pgre_sync_runner_admin,pgre.sync.runner.admin,model_pgre_sync_runner,base.group_system,1,1,1,1

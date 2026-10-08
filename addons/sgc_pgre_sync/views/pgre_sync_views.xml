@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Binding table -->
+    <record id="view_pgre_sync_binding_list" model="ir.ui.view">
+        <field name="name">pgre.sync.binding.list</field>
+        <field name="model">pgre.sync.binding</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="state in ('needs_review', 'conflict', 'deleted_source')"
+                  decoration-muted="state == 'deleted_source'">
+                <field name="model"/>
+                <field name="pgre_id"/>
+                <field name="vps_id"/>
+                <field name="state"/>
+                <field name="source_write_date"/>
+                <field name="last_applied"/>
+                <field name="last_error" optional="hide"/>
+                <field name="note" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pgre_sync_binding_form" model="ir.ui.view">
+        <field name="name">pgre.sync.binding.form</field>
+        <field name="model">pgre.sync.binding</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="model" readonly="1"/>
+                            <field name="pgre_id" readonly="1"/>
+                            <field name="vps_id" readonly="1"/>
+                            <field name="source_write_date" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="state"/>
+                            <field name="last_applied" readonly="1"/>
+                            <field name="note"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="last_error" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_pgre_sync_binding" model="ir.actions.act_window">
+        <field name="name">PGRE Sync Bindings</field>
+        <field name="res_model">pgre.sync.binding</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Operation log -->
+    <record id="view_pgre_sync_log_list" model="ir.ui.view">
+        <field name="name">pgre.sync.log.list</field>
+        <field name="model">pgre.sync.log</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="action == 'error'"
+                  decoration-info="dry_run">
+                <field name="ts"/>
+                <field name="model"/>
+                <field name="pgre_id"/>
+                <field name="vps_id"/>
+                <field name="action"/>
+                <field name="dry_run"/>
+                <field name="summary"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pgre_sync_log_search" model="ir.ui.view">
+        <field name="name">pgre.sync.log.search</field>
+        <field name="model">pgre.sync.log</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="summary"/>
+                <filter name="filter_errors" string="Errors" domain="[('action', '=', 'error')]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_pgre_sync_log" model="ir.actions.act_window">
+        <field name="name">PGRE Sync Log</field>
+        <field name="res_model">pgre.sync.log</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Cursors -->
+    <record id="view_pgre_sync_cursor_list" model="ir.ui.view">
+        <field name="name">pgre.sync.cursor.list</field>
+        <field name="model">pgre.sync.cursor</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="model"/>
+                <field name="last_write_date"/>
+                <field name="last_run"/>
+                <field name="last_result"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_pgre_sync_cursor" model="ir.actions.act_window">
+        <field name="name">PGRE Sync Cursors</field>
+        <field name="res_model">pgre.sync.cursor</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Runner (singleton control panel) -->
+    <record id="view_pgre_sync_runner_form" model="ir.ui.view">
+        <field name="name">pgre.sync.runner.form</field>
+        <field name="model">pgre.sync.runner</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_run_poll" type="object" string="Run Poll Now"
+                            class="btn-primary"/>
+                    <button name="action_run_reconcile" type="object" string="Run Reconcile Now"/>
+                    <button name="action_dry_run_diff" type="object" string="Dry-run Diff"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Poll">
+                            <field name="last_poll"/>
+                            <field name="last_poll_result"/>
+                        </group>
+                        <group string="Reconcile">
+                            <field name="last_reconcile"/>
+                            <field name="last_reconcile_result"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_pgre_sync_runner" model="ir.actions.act_window">
+        <field name="name">PGRE Sync Control</field>
+        <field name="res_model">pgre.sync.runner</field>
+        <field name="view_mode">form</field>
+    </record>
+</odoo>

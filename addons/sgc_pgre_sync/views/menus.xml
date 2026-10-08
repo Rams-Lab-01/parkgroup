@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_pgre_sync_root"
+              name="PGRE Sync"
+              parent="base.menu_administration"
+              sequence="90"/>
+    <menuitem id="menu_pgre_sync_runner"
+              name="Control"
+              parent="menu_pgre_sync_root"
+              action="action_pgre_sync_runner"
+              sequence="10"/>
+    <menuitem id="menu_pgre_sync_log"
+              name="Log"
+              parent="menu_pgre_sync_root"
+              action="action_pgre_sync_log"
+              sequence="20"/>
+    <menuitem id="menu_pgre_sync_binding"
+              name="Bindings"
+              parent="menu_pgre_sync_root"
+              action="action_pgre_sync_binding"
+              sequence="30"/>
+    <menuitem id="menu_pgre_sync_cursor"
+              name="Cursors"
+              parent="menu_pgre_sync_root"
+              action="action_pgre_sync_cursor"
+              sequence="40"/>
+</odoo>
