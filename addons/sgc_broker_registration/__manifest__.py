@@ -25,6 +25,8 @@
         "views/res_config_settings_views.xml",
         "views/menus.xml",
         "views/portal_templates.xml",
+        "views/portal_home.xml",
+        "views/portal_commissions.xml",
         "views/website_templates.xml",
     ],
     "installable": True,

@@ -471,6 +471,17 @@ class TestBrokerPortalFlow(HttpCase):
         res = self.url_open('/broker/application/%s/agreement' % app.access_token)
         self.assertEqual(res.status_code, 200)
 
+    def test_applicant_can_download_own_uploaded_document_only(self):
+        app = self._verified_app()
+        self._details(app)
+        self._upload(app, self.env.ref('sgc_broker_registration.doctype_trade_license'))
+        doc = app.document_ids
+        res = self.url_open('/broker/application/%s/document/%s' % (app.access_token, doc.id))
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.content, PDF)
+        self.assertEqual(self.url_open('/broker/application/%s/document/%s' % (app.access_token, doc.id + 9999)).status_code, 404)
+        self.assertEqual(self.url_open('/broker/application/not-a-token/document/%s' % doc.id).status_code, 404)
+
     # -- hardening / abuse ------------------------------------------------
     def test_control_characters_and_oversized_input_are_refused_not_500(self):
         app = self._verified_app()

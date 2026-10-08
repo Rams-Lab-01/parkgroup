@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_commissions_page" name="Portal My Commissions">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs" t-value="[
+                {'name': 'My Account', 'slug': '/my'},
+                {'name': 'Commissions', 'slug': '/my/commissions'},
+            ]"/>
+            <div class="container">
+                <h1 class="mb-3">My Commissions</h1>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4"><div class="card"><div class="card-body">
+                        <div class="text-muted small">Deals with commission</div>
+                        <div class="h3 mb-0" t-esc="len(lines)"/>
+                    </div></div></div>
+                    <div class="col-md-4"><div class="card"><div class="card-body">
+                        <div class="text-muted small">Total commission</div>
+                        <div class="h3 mb-0" t-esc="'AED {:,.2f}'.format(total_commission)"/>
+                    </div></div></div>
+                    <div class="col-md-4"><div class="card"><div class="card-body">
+                        <div class="text-muted small">Paid to you</div>
+                        <div class="h3 mb-0" t-esc="'AED {:,.2f}'.format(total_paid)"/>
+                    </div></div></div>
+                </div>
+                <t t-if="lines">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead><tr>
+                                <th>Deal</th><th>Property</th><th>Deal status</th><th>Sale payments</th>
+                                <th class="text-end">Commission</th><th>Commission status</th><th>Payout</th>
+                            </tr></thead>
+                            <tbody>
+                                <tr t-foreach="lines" t-as="l">
+                                    <t t-set="c" t-value="l.contract_id"/>
+                                    <td t-esc="c.name"/>
+                                    <td t-esc="c.property_id.name"/>
+                                    <td><span class="badge text-bg-info" t-esc="labels['deal'].get(c.state)"/></td>
+                                    <td>
+                                        <span class="badge text-bg-secondary"
+                                              t-esc="labels['sale_payment'].get(c.overall_payment_state)"/>
+                                        <div class="small text-muted" t-if="not c.is_commission_eligible"
+                                             t-esc="c.commission_ineligible_reason"/>
+                                        <div class="small text-success" t-if="c.is_commission_eligible">Commission eligible</div>
+                                    </td>
+                                    <td class="text-end" t-esc="'{:,.2f}'.format(l.amount_total)"/>
+                                    <td><span class="badge text-bg-primary" t-esc="labels['line'].get(l.state)"/></td>
+                                    <td><span class="badge"
+                                              t-att-class="'text-bg-success' if l.payment_state == 'paid' else 'text-bg-warning'"
+                                              t-esc="labels['payout'].get(l.payment_state) or 'Not Paid'"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+                <p t-else="" class="text-muted">No commissions are linked to your account yet.</p>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_my_home_commissions_tile" inherit_id="portal.portal_my_home"
+              name="Portal My Home: Commissions Tile">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <div class="o_portal_category row g-2 mt-3" id="portal_commissions_category"
+                 t-if="'property.commission.line' in request.env and request.env['property.commission.line'].sudo().search_count([('partner_id', 'child_of', request.env.user.partner_id.commercial_partner_id.id)])">
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon" t-value="'/sgc_offplan_rental_property_management/static/src/img/portal-purchases.svg'"/>
+                    <t t-set="title">My Commissions</t>
+                    <t t-set="text">Follow your deals and commission payouts</t>
+                    <t t-set="url" t-value="'/my/commissions'"/>
+                    <t t-set="config_card" t-value="True"/>
+                </t>
+            </div>
+        </xpath>
+    </template>
+</odoo>

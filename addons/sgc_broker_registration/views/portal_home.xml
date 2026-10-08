@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Approved brokers reach their registration (details, documents, signed agreement) from /my -->
+    <template id="portal_my_home_broker_tile" inherit_id="portal.portal_my_home"
+              name="Portal My Home: Broker Registration Tile">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-set="broker_app" t-value="request.env.user.partner_id.sudo().sgc_broker_application_id"/>
+            <div class="o_portal_category row g-2 mt-3" id="portal_broker_category" t-if="broker_app">
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="title">My Broker Registration</t>
+                    <t t-set="text">Your application, documents and brokerage agreement</t>
+                    <t t-set="url" t-value="'/broker/application/%s' % broker_app.access_token"/>
+                    <t t-set="config_card" t-value="True"/>
+                </t>
+            </div>
+        </xpath>
+    </template>
+</odoo>

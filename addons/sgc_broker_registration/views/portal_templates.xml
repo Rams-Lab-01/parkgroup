@@ -94,6 +94,11 @@
                 </div>
                 <div t-if="app.state == 'approved'" class="alert alert-success">
                     Your registration is approved. Thank you.
+                    <div t-if="app.agreement_expiry" class="mt-2">
+                        Your brokerage agreement is valid until <strong t-out="app.agreement_expiry"/>.
+                        <a class="btn btn-sm btn-success ms-2"
+                           t-attf-href="/broker/application/#{app.access_token}/agreement">Download your agreement</a>
+                    </div>
                 </div>
                 <div t-if="app.state == 'rejected'" class="alert alert-danger">
                     Your application was not approved. <t t-out="app.review_note"/>
@@ -209,7 +214,7 @@
                                     <td>
                                         <t t-foreach="docs_by_type.get(dt.id, [])" t-as="d">
                                             <div>
-                                                <span t-out="d.filename"/>
+                                                <a t-attf-href="/broker/application/#{app.access_token}/document/#{d.id}" t-out="d.filename"/>
                                                 <span t-attf-class="badge #{'text-bg-success' if d.state == 'accepted' else ('text-bg-danger' if d.state == 'rejected' else 'text-bg-secondary')}"
                                                       t-out="dict(d._fields['state'].selection).get(d.state)"/>
                                                 <span t-if="d.expiry_date" class="small text-muted">exp. <t t-out="d.expiry_date"/></span>

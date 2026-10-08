@@ -1,5 +1,6 @@
 import base64
 import logging
+import mimetypes
 from datetime import timedelta
 
 from psycopg2 import IntegrityError
@@ -404,6 +405,19 @@ class BrokerRegistration(http.Controller):
             return self._redirect_for(app)
         return request.render('sgc_broker_registration.thanks_page', {'app': app})
 
+    @http.route('/broker/application/<string:token>/document/<int:doc_id>', type='http', auth='public',
+                website=True, sitemap=False)
+    def application_document(self, token, doc_id, **kw):
+        """Let the applicant download a file they uploaded (e.g. the signed agreement)."""
+        app = self._editable_app(token)
+        doc = app and app.document_ids.filtered(lambda d: d.id == doc_id)
+        if not doc:
+            return request.not_found()
+        mime = mimetypes.guess_type(doc.filename)[0] or 'application/octet-stream'
+        return request.make_response(base64.b64decode(doc.file), headers=[
+            ('Content-Type', mime), ('X-Content-Type-Options', 'nosniff'),
+            ('Content-Disposition', http.content_disposition(doc.filename))])
+
     @http.route('/broker/application/<string:token>/agreement', type='http', auth='public', website=True,
                 sitemap=False)
     def application_agreement(self, token, **kw):
@@ -421,3 +435,33 @@ class BrokerRegistration(http.Controller):
         filename = 'Brokerage-Agreement-%s.%s' % (app.name.replace('/', '-'), ext)
         return request.make_response(content, headers=[
             ('Content-Type', mime), ('Content-Disposition', http.content_disposition(filename))])
+
+
+class BrokerCommissionPortal(http.Controller):
+
+    @http.route('/my/commissions', type='http', auth='user', website=True, sitemap=False)
+    def my_commissions(self, **kw):
+        """Commission lines of the logged-in broker: deal progress and payout status.
+
+        Omits the buyer and the sale price: a broker sees their own commission and
+        where the deal stands, not the customer's details. Needs the offplan module.
+        """
+        Line = request.env.get('property.commission.line')
+        if Line is None:
+            return request.not_found()
+        partner = request.env.user.partner_id.commercial_partner_id
+        lines = Line.sudo().search([('partner_id', 'child_of', partner.id), ('state', '!=', 'cancelled')],
+                                   order='id desc')
+        Contract = request.env['sale.contract']
+        return request.render('sgc_broker_registration.portal_my_commissions_page', {
+            'lines': lines,
+            'total_commission': sum(lines.mapped('amount_total')),
+            'total_paid': sum(lines.filtered(lambda l: l.payment_state == 'paid').mapped('amount_total')),
+            'labels': {
+                'deal': dict(Contract._fields['state'].selection),
+                'sale_payment': dict(Contract._fields['overall_payment_state'].selection),
+                'line': dict(Line._fields['state'].selection),
+                'payout': dict(Line._fields['payment_state'].selection),
+            },
+            'page_name': 'my_commissions',
+        })
