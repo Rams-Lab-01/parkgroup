@@ -87,7 +87,7 @@
 <div style="font-family: Arial, sans-serif; font-size: 14px;">
     <p>Dear <t t-out="object.full_name"/>,</p>
     <p>We received your broker registration application <b t-out="object.name"/>.
-       Our compliance team will review your documents and contact you.</p>
+       Our compliance team reviews every submission and usually responds within about 48 hours.</p>
     <p>You can follow the status any time here:
        <a t-att-href="'%s/broker/application/%s' % (object.get_base_url(), object.access_token)">Application status</a></p>
 </div>
@@ -124,6 +124,7 @@
     <p>Dear <t t-out="object.full_name"/>,</p>
     <p>Your broker registration <b t-out="object.name"/> has been <b>approved</b>.
        You are now registered as a broker with <t t-out="object.company_id.name"/>.</p>
+    <p>A portal account has been created for you. Please check your email for login credentials.</p>
 </div>
             </field>
         </record>

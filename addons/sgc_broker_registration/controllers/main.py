@@ -362,7 +362,7 @@ class BrokerRegistration(http.Controller):
             return request.render('sgc_broker_registration.application_page',
                                   self._application_values(app, error=_error_text(exc)))
         return request.render('sgc_broker_registration.application_page',
-                              self._application_values(app, info=_('Application submitted. We will contact you.')))
+                              self._application_values(app, info=_('Application %s submitted successfully. Our compliance team usually reviews applications within about 48 hours and will contact you if anything else is needed.', app.name)))
 
     @http.route('/broker/application/<string:token>/agreement', type='http', auth='public', website=True,
                 sitemap=False)

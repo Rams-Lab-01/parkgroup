@@ -84,8 +84,11 @@
         </t>
     </template>
 
-    <!-- Website menu entry -->
-    <record id="menu_brokers" model="website.menu">
+    <!-- Website menu entry.
+         NOTE: Odoo duplicates menu-less-website_id entries per website at create time,
+         but our active site already uses a website-specific main menu, so we mark
+         this record noupdate and fix the parent/website in a post-init hook. -->
+    <record id="menu_brokers" model="website.menu" noupdate="1">
         <field name="name">Brokers</field>
         <field name="url">/brokers</field>
         <field name="parent_id" ref="website.main_menu"/>

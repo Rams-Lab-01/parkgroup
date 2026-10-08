@@ -313,7 +313,7 @@ class SgcBrokerApplication(models.Model):
         })
         template = self.env.ref('sgc_broker_registration.mail_template_verification_code')
         template.with_context(code=code, ttl=CODE_TTL_MINUTES).send_mail(
-            self.id, force_send=False, raise_exception=False)
+            self.id, force_send=True, raise_exception=False)
         return 'ok', 0
 
     def verify_code(self, code):
@@ -386,7 +386,7 @@ class SgcBrokerApplication(models.Model):
                                  name=self.declared_name, ip=ip or '-'))
         self._notify_officers(_('New broker application %s needs review.', self.name))
         self.env.ref('sgc_broker_registration.mail_template_submitted').sudo().send_mail(
-            self.id, force_send=False, raise_exception=False)
+            self.id, force_send=True, raise_exception=False)
         return True
 
     def _officers(self):
@@ -424,13 +424,61 @@ class SgcBrokerApplication(models.Model):
             partner = rec._map_to_partner()
             rec.write({'state': 'approved', 'partner_id': partner.id, 'reviewer_id': self.env.user.id,
                        'reviewed_at': fields.Datetime.now()})
+            rec.sudo()._grant_portal_access()
             rec.sudo()._sync_expiry_trackers()
             rec.sudo()._refresh_broker_status()
             rec.message_post(body=_('Registered. Agreement valid until %(date)s. Mapped to contact %(partner)s.',
                                     date=rec.agreement_expiry, partner=partner.display_name))
             rec.env.ref('sgc_broker_registration.mail_template_approved').sudo().send_mail(
-                rec.id, force_send=False, raise_exception=False)
+                rec.id, force_send=True, raise_exception=False)
             rec.activity_unlink(['mail.mail_activity_data_todo'])
+
+    def _grant_portal_access(self):
+        """Create a portal user for the approved broker and send credentials."""
+        self.ensure_one()
+        if not self.partner_id:
+            return
+        portal_group = self.env.ref('base.group_portal')
+        internal_group = self.env.ref('base.group_user')
+        User = self.env['res.users'].sudo()
+        user = User.search([
+            '|',
+            ('partner_id', '=', self.partner_id.id),
+            ('login', '=', self.email),
+        ], limit=1)
+        if user:
+            if user.partner_id != self.partner_id:
+                user.write({'partner_id': self.partner_id.id})
+            password = secrets.token_urlsafe(16)
+            user.write({'password': password})
+        else:
+            password = secrets.token_urlsafe(16)
+            user = User.create({
+                'name': self.partner_id.name,
+                'login': self.email,
+                'email': self.email,
+                'partner_id': self.partner_id.id,
+                'share': True,
+                'password': password,
+            })
+        user.write({
+            'group_ids': [(4, portal_group.id), (3, internal_group.id)],
+        })
+        self.env['mail.mail'].sudo().create({
+            'subject': _('Portal account ready: %s', self.name),
+            'body_html': '<p>Dear %s,</p>'
+                         '<p>Your broker registration <b>%s</b> has been approved. '
+                         'We have created a portal account for you.</p>'
+                         '<p><strong>Login:</strong> %s<br/>'
+                         '<strong>Password:</strong> %s</p>'
+                         '<p>Log in at <a href="/web/login">/web/login</a>. '
+                         'For security, please change your password after the first login.</p>' % (
+                             self.full_name, self.name, self.email, password),
+            'email_to': self.email,
+            'email_from': self.company_id.email_formatted or self.env.user.email_formatted,
+            'auto_delete': True,
+        }).send()
+        return user
 
     def action_open_reject_wizard(self):
         self._check_state(('submitted', 'in_review'))
@@ -457,14 +505,14 @@ class SgcBrokerApplication(models.Model):
                     'reviewed_at': fields.Datetime.now()})
         self.message_post(body=_('Rejected: %s', reason))
         self.env.ref('sgc_broker_registration.mail_template_rejected').sudo().send_mail(
-            self.id, force_send=False, raise_exception=False)
+            self.id, force_send=True, raise_exception=False)
 
     def _do_request_info(self, reason):
         self._check_state(('submitted', 'in_review'))
         self.write({'state': 'needs_info', 'review_note': reason, 'reviewer_id': self.env.user.id})
         self.message_post(body=_('More information requested: %s', reason))
         self.env.ref('sgc_broker_registration.mail_template_needs_info').sudo().send_mail(
-            self.id, force_send=False, raise_exception=False)
+            self.id, force_send=True, raise_exception=False)
 
     def action_reset_to_review(self):
         self._check_state(('rejected',))
@@ -745,7 +793,7 @@ class SgcBrokerApplication(models.Model):
             recipients = ([self.email] if self.email else []) + self._extra_notify_emails()
             template.sudo().with_context(
                 item_label=tracker.label, item_date=tracker.expiry_date, days_left=abs(days_left)
-            ).send_mail(self.id, force_send=False, raise_exception=False,
+            ).send_mail(self.id, force_send=True, raise_exception=False,
                         email_values={'email_to': ','.join(recipients)})
 
 
