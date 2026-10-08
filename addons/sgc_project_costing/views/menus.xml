@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2026 SGC TECH AI (https://sgctech.ai)
+    Part of SGC Odoo Suite. See LICENSE file for full copyright and licensing details.
+-->
+<odoo>
+
+    <menuitem id="menu_project_costing_root"
+              name="Project Costing"
+              sequence="85"
+              groups="sgc_project_costing.group_project_cost_user"/>
+
+    <menuitem id="menu_project_cost_milestones"
+              name="Cost Milestones"
+              parent="menu_project_costing_root"
+              action="action_project_cost_milestone"
+              sequence="10"
+              groups="sgc_project_costing.group_project_cost_user"/>
+
+    <menuitem id="menu_project_cost_report"
+              name="Project Cost Report"
+              parent="menu_project_costing_root"
+              action="action_report_project_cost"
+              sequence="20"
+              groups="sgc_project_costing.group_project_cost_user"/>
+
+</odoo>

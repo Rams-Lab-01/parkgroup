@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2026 SGC TECH AI (https://sgctech.ai)
+    Part of SGC Odoo Suite. See LICENSE file for full copyright and licensing details.
+-->
+<odoo>
+
+    <!-- ═══════════════════ Project Costing on property.project ═══════════════════ -->
+
+    <record id="property_project_view_form_costing" model="ir.ui.view">
+        <field name="name">property.project.view.form.costing</field>
+        <field name="model">property.project</field>
+        <field name="inherit_id"
+               ref="sgc_offplan_rental_property_management.property_project_view_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Header: create analytic account + budget -->
+            <xpath expr="//header" position="inside">
+                <button name="action_open_project_start_wizard"
+                        type="object" string="Set Budget &amp; Analytic Account"
+                        class="btn-primary"
+                        groups="sgc_project_costing.group_project_cost_manager"
+                        invisible="project_analytic_account_id"/>
+                <button name="action_open_cost_report"
+                        type="object" string="Cost Report"
+                        class="btn-secondary"
+                        groups="sgc_project_costing.group_project_cost_user"/>
+            </xpath>
+
+            <!-- Smart buttons -->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_cost_milestones" type="object"
+                        class="oe_stat_button" icon="fa-tasks"
+                        groups="sgc_project_costing.group_project_cost_user">
+                    <field name="cost_milestone_count" string="Milestones" widget="statinfo"/>
+                </button>
+                <button name="action_view_analytic_lines" type="object"
+                        class="oe_stat_button" icon="fa-bar-chart"
+                        groups="sgc_project_costing.group_project_cost_user">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">Analytic Lines</span>
+                    </div>
+                </button>
+            </xpath>
+
+            <!-- Project health (anchor: the Property Status group) -->
+            <xpath expr="//group[.//field[@name='available_count']]" position="after">
+                <group string="Project Health"
+                       groups="sgc_project_costing.group_project_cost_user">
+                    <field name="project_budget" widget="monetary"
+                           groups="sgc_project_costing.group_project_cost_manager"/>
+                    <field name="project_analytic_account_id"
+                           groups="sgc_project_costing.group_project_cost_manager"/>
+                    <field name="analytic_account_budget" widget="monetary"/>
+                    <field name="analytic_costed" widget="monetary"/>
+                    <field name="analytic_committed" widget="monetary"/>
+                    <field name="analytic_remaining" widget="monetary"/>
+                    <field name="burn_rate"/>
+                    <field name="budget_variance" widget="monetary"/>
+                    <field name="budget_variance_percent"/>
+                    <field name="cash_position" widget="monetary"/>
+                </group>
+            </xpath>
+
+            <!-- Collection timeline + milestone notebook (anchor: Description group) -->
+            <xpath expr="//group[.//field[@name='description']]" position="after">
+                <group string="Collection Timeline"
+                       groups="sgc_project_costing.group_project_cost_user">
+                    <field name="expected_collections" widget="monetary"/>
+                    <field name="actual_collections" widget="monetary"/>
+                    <field name="collection_variance" widget="monetary"/>
+                </group>
+                <notebook name="costing_notebook"
+                          groups="sgc_project_costing.group_project_cost_user">
+                    <page string="Cost &amp; Collection Milestones" name="cost_milestones">
+                        <field name="cost_milestone_ids" nolabel="1">
+                            <list editable="bottom">
+                                <field name="name"/>
+                                <field name="milestone_type"/>
+                                <field name="planned_date"/>
+                                <field name="planned_amount" widget="monetary"/>
+                                <field name="actual_date"/>
+                                <field name="actual_amount" widget="monetary"/>
+                                <field name="variance" widget="monetary"/>
+                                <field name="is_completed"/>
+                            </list>
+                        </field>
+                    </page>
+                </notebook>
+            </xpath>
+
+        </field>
+    </record>
+
+    <!-- ═══════════════════ Project Milestone views ═══════════════════ -->
+
+    <record id="project_cost_milestone_view_list" model="ir.ui.view">
+        <field name="name">project.cost.milestone.view.list</field>
+        <field name="model">project.cost.milestone</field>
+        <field name="arch" type="xml">
+            <list string="Cost Milestones" sample="1">
+                <field name="project_id" optional="show"/>
+                <field name="name"/>
+                <field name="milestone_type"/>
+                <field name="planned_date"/>
+                <field name="actual_date"/>
+                <field name="planned_amount" widget="monetary"/>
+                <field name="actual_amount" widget="monetary"/>
+                <field name="variance" widget="monetary"/>
+                <field name="is_completed"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="project_cost_milestone_view_form" model="ir.ui.view">
+        <field name="name">project.cost.milestone.view.form</field>
+        <field name="model">project.cost.milestone</field>
+        <field name="arch" type="xml">
+            <form string="Cost Milestone">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="project_id"/>
+                            <field name="name"/>
+                            <field name="milestone_type"/>
+                            <field name="planned_date"/>
+                            <field name="actual_date"/>
+                            <field name="is_completed"/>
+                        </group>
+                        <group>
+                            <field name="planned_amount" widget="monetary"/>
+                            <field name="actual_amount" widget="monetary"/>
+                            <field name="variance" widget="monetary"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="notes" nolabel="1" placeholder="Notes / reason for variance..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+</odoo>

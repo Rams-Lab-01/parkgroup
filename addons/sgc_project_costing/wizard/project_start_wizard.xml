@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2026 SGC TECH AI (https://sgctech.ai)
+    Part of SGC Odoo Suite. See LICENSE file for full copyright and licensing details.
+-->
+<odoo>
+
+    <record id="project_start_wizard_form" model="ir.ui.view">
+        <field name="name">project.start.wizard.form</field>
+        <field name="model">project.start.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Set Budget &amp; Analytic Account">
+                <group>
+                    <field name="project_id" readonly="1"/>
+                    <field name="budget"/>
+                </group>
+                <footer>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    <button string="Start Project" type="object" name="action_start" class="btn-primary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_project_start_wizard" model="ir.actions.act_window">
+        <field name="name">Set Budget &amp; Analytic Account</field>
+        <field name="res_model">project.start.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

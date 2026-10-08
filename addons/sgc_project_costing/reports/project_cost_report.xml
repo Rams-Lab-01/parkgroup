@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2026 SGC TECH AI (https://sgctech.ai)
+    Part of SGC Odoo Suite. See LICENSE file for full copyright and licensing details.
+
+    Odoo 19 note: ``formatLang`` is no longer exposed to QWeb report templates.
+    Monetary values are rendered with ``t-field`` (which applies the currency
+    format); plain numbers are formatted inline.
+-->
+<odoo>
+
+    <template id="project_cost_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="project">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <!-- Header -->
+                        <div class="row mb-4">
+                            <div class="col-8">
+                                <h3>Project Cost Report</h3>
+                                <p class="text-muted mb-0"><t t-out="project.name"/></p>
+                                <p class="text-muted" t-if="project.code"><t t-out="project.code"/></p>
+                            </div>
+                            <div class="col-4 text-end">
+                                <p>
+                                    <strong>Date:</strong>
+                                    <t t-out="context_timestamp(datetime.datetime.now()).strftime('%d %b %Y')"/>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Budget vs Cost -->
+                        <div class="row mb-3">
+                            <div class="col-3">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <h5 class="text-muted">Budget</h5>
+                                        <h3><span t-field="project.project_budget"/></h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <h5 class="text-muted">Committed</h5>
+                                        <h3 class="text-primary"><span t-field="project.analytic_committed"/></h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <h5 class="text-muted">Actual Cost</h5>
+                                        <h3 class="text-danger"><span t-field="project.analytic_costed"/></h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <h5 class="text-muted">Remaining</h5>
+                                        <h3 t-attf-class="#{project.analytic_remaining >= 0 and 'text-success' or 'text-danger'}">
+                                            <span t-field="project.analytic_remaining"/>
+                                        </h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Collections -->
+                        <div class="row mb-3">
+                            <div class="col-4">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <h5 class="text-muted">Expected Collections</h5>
+                                        <h3><span t-field="project.expected_collections"/></h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <h5 class="text-muted">Actual Collections</h5>
+                                        <h3 class="text-success"><span t-field="project.actual_collections"/></h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <h5 class="text-muted">Collection Variance</h5>
+                                        <h3 t-attf-class="#{project.collection_variance >= 0 and 'text-success' or 'text-danger'}">
+                                            <span t-field="project.collection_variance"/>
+                                        </h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Health indicators -->
+                        <div class="row mb-4">
+                            <div class="col-3">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <h5 class="text-muted">Cash Position</h5>
+                                        <h3 t-attf-class="#{project.cash_position >= 0 and 'text-success' or 'text-danger'}">
+                                            <span t-field="project.cash_position"/>
+                                        </h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <h5 class="text-muted">Burn Rate</h5>
+                                        <h3><t t-out="'%.1f' % (project.burn_rate or 0.0)"/>%</h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <h5 class="text-muted">Budget Variance</h5>
+                                        <h3 t-attf-class="#{project.budget_variance >= 0 and 'text-success' or 'text-danger'}">
+                                            <span t-field="project.budget_variance"/>
+                                        </h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <h5 class="text-muted">Budget Variance %</h5>
+                                        <h3><t t-out="'%.1f' % (project.budget_variance_percent or 0.0)"/>%</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Milestones -->
+                        <h4>Milestones</h4>
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Milestone</th>
+                                    <th>Type</th>
+                                    <th>Planned Date</th>
+                                    <th>Actual Date</th>
+                                    <th class="text-end">Planned</th>
+                                    <th class="text-end">Actual</th>
+                                    <th class="text-end">Variance</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="project.cost_milestone_ids" t-as="m">
+                                    <tr>
+                                        <td><t t-out="m.name"/></td>
+                                        <td><t t-out="m.milestone_type == 'cost' and 'Cost' or 'Collection'"/></td>
+                                        <td><span t-field="m.planned_date"/></td>
+                                        <td><span t-field="m.actual_date"/></td>
+                                        <td class="text-end"><span t-field="m.planned_amount"/></td>
+                                        <td class="text-end"><span t-field="m.actual_amount"/></td>
+                                        <td t-attf-class="text-end #{m.variance >= 0 and 'text-success' or 'text-danger'}">
+                                            <span t-field="m.variance"/>
+                                        </td>
+                                        <td>
+                                            <span t-if="m.is_completed" class="badge bg-success">Completed</span>
+                                            <span t-else="" class="badge bg-warning">Pending</span>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <!-- Analytic lines -->
+                        <h4 t-if="project.project_analytic_account_id">Recent Analytic Lines</h4>
+                        <table class="table table-sm table-bordered" t-if="project.project_analytic_account_id">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Label</th>
+                                    <th class="text-end">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="project.get_recent_analytic_lines()" t-as="line">
+                                    <tr>
+                                        <td><span t-field="line.date"/></td>
+                                        <td><t t-out="line.name or ''"/></td>
+                                        <td t-attf-class="text-end #{line.amount >= 0 and 'text-success' or 'text-danger'}">
+                                            <span t-field="line.amount"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

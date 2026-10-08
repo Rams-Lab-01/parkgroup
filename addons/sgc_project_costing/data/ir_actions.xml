@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2026 SGC TECH AI (https://sgctech.ai)
+    Part of SGC Odoo Suite. See LICENSE file for full copyright and licensing details.
+-->
+<odoo>
+
+    <!-- Cost milestone register -->
+    <record id="action_project_cost_milestone" model="ir.actions.act_window">
+        <field name="name">Cost Milestones</field>
+        <field name="res_model">project.cost.milestone</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Project cost report action (template lives in reports/project_cost_report.xml) -->
+    <record id="action_report_project_cost" model="ir.actions.report">
+        <field name="name">Project Cost Report</field>
+        <field name="model">property.project</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">sgc_project_costing.project_cost_report</field>
+        <field name="report_file">sgc_project_costing.project_cost_report</field>
+        <field name="print_report_name">'Project Cost - %s' % (object.name or '')</field>
+        <field name="paperformat_id"
+               ref="sgc_offplan_rental_property_management.paperformat_property_report"/>
+        <field name="binding_model_id"
+               ref="sgc_offplan_rental_property_management.model_property_project"/>
+        <field name="binding_type">report</field>
+    </record>
+
+</odoo>
