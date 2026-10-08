@@ -28,7 +28,7 @@ released against bank approval.
 - Every field defaults to today's behaviour (escrow off), so installation is additive and fully reversible
     """,
     "summary": "Escrow bridge between Property Management and Accounting with progress-gated releases",
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.0.2",
     "author": "SGC TECH AI",
     "company": "SGC TECH AI",
     "maintainer": "SGC TECH AI",
@@ -53,6 +53,7 @@ released against bank approval.
         "views/property_details_view.xml",
         "views/sale_contract_view.xml",
         "views/account_move_view.xml",
+        "models/property_payment_list_view.xml",
         # Module-owned views
         "views/escrow_allocation_views.xml",
         "views/escrow_release_views.xml",

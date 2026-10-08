@@ -2,33 +2,49 @@
 <!--
     Copyright (C) 2026 SGC TECH AI (https://sgctech.ai)
     Part of SGC Odoo Suite. See LICENSE file for full copyright and licensing details.
+
+    Odoo 19 restructured group categorisation: ``res.groups`` no longer carries
+    a ``category_id`` field. The category is reached through
+    ``res.groups.privilege_id`` -> ``res.groups.privilege.category_id``, so a
+    privilege record is the required intermediate. Using the pre-19
+    ``category_id`` field here fails installation/upgrade with
+    ``ValueError: Invalid field 'category_id' in 'res.groups'``.
 -->
 <odoo>
+    <data noupdate="1">
 
-    <record id="module_category_escrow" model="ir.module.category">
-        <field name="name">Escrow</field>
-        <field name="description">Escrow account management and construction progress release approvals.</field>
-        <field name="sequence">25</field>
-    </record>
+        <record id="module_sgc_escrow" model="ir.module.category">
+            <field name="name">Escrow</field>
+            <field name="description">Access rights for the escrow bridge between property management and accounting</field>
+        </record>
+        <record id="res_groups_privilege_sgc_escrow" model="res.groups.privilege">
+            <field name="name">Escrow</field>
+            <field name="category_id" ref="module_sgc_escrow"/>
+        </record>
 
-    <record id="group_escrow_user" model="res.groups">
-        <field name="name">User</field>
-        <field name="category_id" ref="module_category_escrow"/>
-        <field name="comment">Access to read escrow registers, balances and statements, and raise draft release requests.</field>
-    </record>
+        <!-- Viewer: read-only access to escrow registers and statements. -->
+        <record id="group_escrow_user" model="res.groups">
+            <field name="name">User</field>
+            <field name="privilege_id" ref="res_groups_privilege_sgc_escrow"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="comment">Access to read escrow registers, balances and statements, and raise draft release requests.</field>
+        </record>
 
-    <record id="group_escrow_approver" model="res.groups">
-        <field name="name">Release Approver</field>
-        <field name="category_id" ref="module_category_escrow"/>
-        <field name="implied_ids" eval="[(4, ref('group_escrow_user'))]"/>
-        <field name="comment">Authorised to approve and post escrow releases within the certified progress entitlement.</field>
-    </record>
+        <!-- Approver: can approve and post releases inside the entitlement. -->
+        <record id="group_escrow_approver" model="res.groups">
+            <field name="name">Release Approver</field>
+            <field name="privilege_id" ref="res_groups_privilege_sgc_escrow"/>
+            <field name="implied_ids" eval="[(4, ref('group_escrow_user'))]"/>
+            <field name="comment">Authorised to approve and post escrow releases within the certified progress entitlement.</field>
+        </record>
 
-    <record id="group_escrow_manager" model="res.groups">
-        <field name="name">Manager</field>
-        <field name="category_id" ref="module_category_escrow"/>
-        <field name="implied_ids" eval="[(4, ref('group_escrow_approver'))]"/>
-        <field name="comment">Full administrative access, including setting escrow journals, importing register allocations, and overriding entitlement limits with a mandatory reason.</field>
-    </record>
+        <!-- Manager: can also override the entitlement, with a mandatory reason. -->
+        <record id="group_escrow_manager" model="res.groups">
+            <field name="name">Escrow Manager</field>
+            <field name="privilege_id" ref="res_groups_privilege_sgc_escrow"/>
+            <field name="implied_ids" eval="[(4, ref('group_escrow_approver'))]"/>
+            <field name="comment">Full administrative access, including setting escrow journals, importing register allocations, and overriding entitlement limits with a mandatory reason.</field>
+        </record>
 
+    </data>
 </odoo>

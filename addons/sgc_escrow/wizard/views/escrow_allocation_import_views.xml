@@ -16,10 +16,10 @@
                     </div>
                     <group>
                         <group string="Files">
-                            <field name="data_file" filename="data_filename"/>
-                            <field name="data_filename" invisible="1"/>
-                            <field name="flags_file" filename="flags_filename"/>
-                            <field name="flags_filename" invisible="1"/>
+                            <field name="source_file" filename="source_filename"/>
+                            <field name="source_filename" invisible="1"/>
+                            <field name="flag_file" filename="flag_filename"/>
+                            <field name="flag_filename" invisible="1"/>
                         </group>
                         <group string="Options">
                             <field name="dry_run" widget="boolean_toggle"/>
@@ -28,24 +28,25 @@
                     <notebook invisible="state == 'draft'">
                         <page string="Import Summary" name="summary">
                             <group>
-                                <field name="summary" readonly="1"/>
+                                <field name="created_count"/>
+                                <field name="updated_count"/>
+                                <field name="skipped_count"/>
+                                <field name="flagged_count"/>
                             </group>
-                            <field name="line_ids" readonly="1">
+                            <field name="report_line_ids" readonly="1">
                                 <list string="Import Lines">
-                                    <field name="project_code"/>
-                                    <field name="unit_code"/>
-                                    <field name="client_name"/>
-                                    <field name="escrow_pct"/>
-                                    <field name="escrow_allocated"/>
-                                    <field name="status"/>
-                                    <field name="note"/>
+                                    <field name="project_label"/>
+                                    <field name="unit_label"/>
+                                    <field name="client_label"/>
+                                    <field name="outcome"/>
+                                    <field name="detail"/>
                                 </list>
                             </field>
                         </page>
                     </notebook>
                 </sheet>
                 <footer>
-                    <button name="action_import" string="Run Import" type="object" class="oe_highlight"/>
+                    <button name="action_run" string="Run Import" type="object" class="oe_highlight"/>
                     <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>

@@ -132,6 +132,67 @@ class AccountPaymentEscrowGuard(models.Model):
 
     _inherit = 'account.payment'
 
+    # -------------------------------------------------------------------------
+    # Property / Project attribution -- surfaced on the payment list view so
+    # the finance team can see which unit a receipt is for without opening it.
+    # -------------------------------------------------------------------------
+    property_id = fields.Many2one(
+        'property.details',
+        string='Property',
+        compute='_compute_property_attribution',
+        store=True,
+        index=True,
+        help='The unit this payment is for, derived from the invoice it '
+             'reconciles against.',
+    )
+    project_id = fields.Many2one(
+        'property.project',
+        string='Project',
+        compute='_compute_property_attribution',
+        store=True,
+        index=True,
+        help='The project that owns the property above.',
+    )
+
+    property_unit_no = fields.Char(
+        string='Unit',
+        related='property_id.unit_number',
+        store=True,
+        readonly=True,
+    )
+
+    @api.depends('reconciled_invoice_ids', 'reconciled_invoice_ids.sold_id',
+                 'reconciled_invoice_ids.sold_id.property_id',
+                 'reconciled_invoice_ids.tenancy_id',
+                 'reconciled_invoice_ids.tenancy_id.property_id',
+                 'reconciled_invoice_ids.property_id',
+                 'reconciled_invoice_ids.project_id')
+    def _compute_property_attribution(self):
+        """Resolve property + project from the invoice(s) this payment settled.
+
+        A payment can settle multiple invoices; we pick the first one that
+        carries property attribution. Mixed-property batches show blank.
+        """
+        for payment in self:
+            invoices = payment.reconciled_invoice_ids
+            # Prefer invoices that already have explicit property attribution
+            for inv in invoices:
+                if inv.property_id:
+                    payment.property_id = inv.property_id
+                    payment.project_id = inv.project_id
+                    break
+            else:
+                # Fall back to sold_id / tenancy_id chains
+                for inv in invoices:
+                    if inv.sold_id and inv.sold_id.property_id:
+                        payment.property_id = inv.sold_id.property_id
+                        payment.project_id = inv.sold_id.property_id.project_id
+                        break
+                    if inv.tenancy_id and inv.tenancy_id.property_id:
+                        payment.property_id = inv.tenancy_id.property_id
+                        payment.project_id = inv.tenancy_id.property_id.project_id
+                        break
+
     def _escrow_expected_project(self):
         """The single escrow-enabled project this payment is expected to feed."""
         self.ensure_one()
