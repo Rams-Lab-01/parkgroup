@@ -32,6 +32,23 @@ class UserTypes(models.Model):
     tenancy_ids = fields.One2many('tenancy.details', 'broker_id', string='Tenancy ')
     property_sold_ids = fields.One2many('property.vendor', 'broker_id', string="Sold Commission")
 
+    def _portal_property_menu(self):
+        """Which property-management portal entries have data for this account.
+
+        Drives the "smart" /my tiles: an entry is shown only when it has something
+        to show, so a plain customer never sees an empty landlord/tenant folder.
+        """
+        self.ensure_one()
+        env, pid = self.env, self.id
+        has = lambda model, domain: bool(env[model].sudo().search_count(domain, limit=1))
+        return {
+            'lease': has('rent.contract', [('tenant_id', '=', pid)]) or has('tenancy.details', [('tenant_id', '=', pid)]),
+            'portfolio': has('property.details', [('landlord_id', '=', pid)]) or has('rent.contract', [('landlord_id', '=', pid)]),
+            'favorites': bool(self.sudo().favorite_property_ids),
+            'inquiries': has('crm.lead', [('partner_id', '=', pid), ('property_id', '!=', False)]),
+            'purchases': has('sale.contract', [('buyer_id', '=', pid)]),
+        }
+
     @api.depends('properties_ids')
     def _compute_properties_count(self):
         for rec in self:

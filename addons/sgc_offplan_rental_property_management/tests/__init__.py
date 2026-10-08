@@ -13,3 +13,4 @@ from . import test_payment_plan_dates
 from . import test_audit_delete_workflow
 from . import test_totals_visibility
 from . import test_dashboard_filters
+from . import test_portal_smart_menu
