@@ -171,7 +171,7 @@ class PropertyProject(models.Model):
             "name": "Bookings",
             "type": "ir.actions.act_window",
             "domain": [("property_id", "in", property_ids)],
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "property.vendor",
             "target": "current",
         }

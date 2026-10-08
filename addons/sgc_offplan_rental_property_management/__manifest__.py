@@ -24,7 +24,7 @@
         - Public rental website with search, filtering, and inquiry capture
     """,
     "summary": "Property Sale & Management with Portal Syndication and Public Website",
-    "version": "19.0.2.77",
+    "version": "19.0.2.82",
     "author": "SGC TECH AI",
     "company": "SGC TECH AI",
     "maintainer": "SGC TECH AI",
@@ -104,6 +104,8 @@
         "views/core/rent_contract_view.xml",
         "views/core/property_crm_lead_inherit_view.xml",
         "views/core/product_product_inherit_view.xml",
+        "views/core/account_project_unit_views.xml",
+        "views/core/account_payment_inherit.xml",
         # Portal actions must load before core menus.xml (which references portal actions)
         "views/portal/actions.xml",
         "views/core/menus.xml",
@@ -140,7 +142,6 @@
         "views/core/critical_audit_event_views.xml",
         "views/core/critical_audit_event_menus.xml",
         "views/core/critical_audit_verdict_views.xml",
-        "views/core/navigation_consolidation.xml",
         # Wizard views (loaded after core views)
         "wizard/views/booking_wizard_views.xml",
         "wizard/views/critical_audit_reason_wizard_views.xml",
@@ -162,6 +163,12 @@
         "report/rera_form_a_report_template.xml",
         "report/maintenance_contract_report_template.xml",
         "report/booking_agreement_template.xml",
+        # Navigation consolidation re-parents menus AND references report ACTIONS
+        # that live in the templates above (e.g. action_report_property_brochure_luxury
+        # in property_brochure_luxury_template.xml). It must therefore load after
+        # every report template, otherwise a fresh install fails with
+        # "External ID not found". Menus stay last among the data files.
+        "views/core/navigation_consolidation.xml",
         "data/ir_cron_feed_ingest.xml",
         "data/ir_cron.xml",
     ],
@@ -194,4 +201,5 @@
     "auto_install": False,
     "price": 399,
     "currency": "USD",
+    "post_init_hook": "sgc_offplan_rental_property_management.post_init_hook",
 }

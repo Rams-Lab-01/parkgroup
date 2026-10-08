@@ -1,5 +1,7 @@
 from . import critical_audit_mixin
 from . import account_move
+from . import account_payment
+from . import post_init_hook
 from . import agreement_template
 from . import certificate_type
 from . import commission_line

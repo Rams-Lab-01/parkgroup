@@ -63,11 +63,17 @@ class SaleContractInstallment(models.Model):
                 continue
             if inv and inv.state == 'posted':
                 ps = inv.payment_state
-                if ps == 'paid':
+                # NOTE (migration): 'in_payment' means the invoice is fully
+                # settled by a posted receipt (residual 0) but the payment has
+                # not yet been cleared against a bank statement. For the
+                # historic-migration context the money is genuinely received and
+                # matched to the installment, so it counts as paid -- the SPA
+                # due date (not the bank-clearing date) drives overdue.
+                if ps in ('paid', 'in_payment'):
                     line.state = 'paid'
                 elif ps == 'partial':
                     line.state = 'partial'
-                elif ps in ('not_paid', 'in_payment', 'reversed'):
+                elif ps in ('not_paid', 'reversed'):
                     line.state = 'overdue' if line.due_date and line.due_date < today else 'invoiced'
                 else:
                     line.state = 'invoiced'
