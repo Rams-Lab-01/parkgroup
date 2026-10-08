@@ -1741,13 +1741,17 @@ class CRMDashboard(models.AbstractModel):
             d_from = today - timedelta(days=days[date_range])
         elif date_range and "," in date_range:
             d_from, d_to = date_range.replace("custom", "").strip("_").split(",", 1)
-        flt = {"date_from": d_from, "date_to": d_to, "salesperson_id": user_id or 0}
+        # Portfolio KPIs are all-time so units, sales and collections share one scope
+        # (the property module scopes only the financial figures by date).
+        flt = {"date_from": False, "date_to": False, "salesperson_id": user_id or 0}
         try:
             Prop = self.env["property.details"]
             k = Prop.get_development_kpis(flt)
-            ranks = Prop.get_sales_rankings(flt, limit=10)
         except Exception:
             return {}
+        ranks = self._rankings(d_from, d_to)
+        self.env.cr.execute("SELECT COALESCE(SUM(sale_price), 0) FROM sale_contract WHERE state = 'draft'")
+        k["draft_value"] = self.env.cr.fetchone()[0]
         names = {p.code: p.name for p in self.env["property.project"].sudo().search([])}
         projects = [
             {"name": names.get(code) or code or "—", "units": v["units"], "sold": v["sold"],
@@ -1757,13 +1761,51 @@ class CRMDashboard(models.AbstractModel):
         ]
         projects.sort(key=lambda r: -r["units"])
         keys = ("total_units", "sold_units", "available_units", "sell_through_pct", "sales_value",
-                "avg_psf_sold", "collected", "balance_due", "collection_pct")
+                "avg_psf_sold", "collected", "balance_due", "collection_pct", "draft_value")
         return {
             "kpi": {x: k.get(x) for x in keys},
             "projects": projects,
             "brokers": ranks["brokers"],
-            "rms": ranks["salespeople"],
+            "rms": ranks["rms"],
         }
+
+    @api.model
+    def _rankings(self, date_from=False, date_to=False, limit=10):
+        """Top brokers and RMs by contract value, from sale.contract and its
+        commission lines: broker = external commission recipient, RM = internal
+        'manager' recipient (generic roles such as Head of Sales are skipped).
+        Cancelled contracts excluded; each contract counts once per person."""
+        out = {"brokers": [], "rms": []}
+        if "property.commission.line" not in self.env:
+            return out
+        cr = self.env.cr
+        extra, params = "", []
+        if date_from:
+            extra += " AND c.contract_date >= %s"
+            params.append(date_from)
+        if date_to:
+            extra += " AND c.contract_date <= %s"
+            params.append(date_to)
+        for bucket, cond in (("brokers", "l.category = 'external'"),
+                             ("rms", "l.category = 'internal' AND l.role = 'manager'")):
+            cr.execute(f"""
+                WITH pc AS (
+                    SELECT DISTINCT l.partner_id, l.contract_id
+                    FROM property_commission_line l WHERE {cond} AND l.partner_id IS NOT NULL
+                )
+                SELECT p.id, p.name, COUNT(*),
+                       COUNT(*) FILTER (WHERE c.state IN ('signed', 'completed')),
+                       COALESCE(SUM(c.sale_price), 0)
+                FROM pc JOIN sale_contract c ON c.id = pc.contract_id
+                JOIN res_partner p ON p.id = pc.partner_id
+                WHERE c.state <> 'cancelled' AND c.company_id IN %s {extra}
+                GROUP BY p.id, p.name ORDER BY 5 DESC, 3 DESC, 2 LIMIT %s
+            """, [tuple(self.env.companies.ids)] + params + [limit])
+            out[bucket] = [
+                {"id": r[0], "name": r[1], "deals": r[2], "confirmed": r[3], "value": round(r[4], 2), "rank": n}
+                for n, r in enumerate(cr.fetchall(), 1)
+            ]
+        return out
 
     @api.model
     def get_ticker(self):
@@ -1802,18 +1844,14 @@ class CRMDashboard(models.AbstractModel):
         if n:
             items.append({"kind": "alert", "text": f"{n} overdue follow-up{'s' if n > 1 else ''} need attention"})
 
-        if "property.vendor" in self.env:
+        if "sale.contract" in self.env:
             try:
-                vendors = self.env["property.vendor"].sudo().search(
-                    [("state", "!=", "cancelled")], limit=5)
-                for v in vendors:
-                    who = (v.salesperson_id or v.create_uid).name
-                    unit = v.property_id.name or v.name
-                    items.append({"kind": "win", "text": f"New booking: {unit} · {who}"})
-                ranks = self.env["property.details"].get_sales_rankings({}, limit=1)
-                for label, rows in (("Top broker", ranks["brokers"]), ("Top RM", ranks["salespeople"])):
+                for c in self.env["sale.contract"].sudo().search([("state", "in", ("signed", "completed"))], limit=5, order="id desc"):
+                    items.append({"kind": "win", "text": f"New sale: {c.property_id.name or c.name} · AED {self._abbrev(c.sale_price or 0)}"})
+                ranks = self._rankings(limit=1)
+                for label, rows in (("Top broker", ranks["brokers"]), ("Top RM", ranks["rms"])):
                     if rows:
-                        items.append({"kind": "info", "text": f"{label}: {rows[0]['name']} · AED {self.env['crm.dashboard']._abbrev(rows[0]['value'])}"})
+                        items.append({"kind": "info", "text": f"{label}: {rows[0]['name']} · AED {self._abbrev(rows[0]['value'])}"})
             except Exception:
                 pass
         return items

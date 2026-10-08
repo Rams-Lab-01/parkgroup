@@ -2,7 +2,7 @@
 <templates xml:space="preserve">
 
 <t t-name="sgc_crm_dashboard.Dashboard">
-    <div class="o_crm_dashboard d-flex flex-column h-100 overflow-auto" t-att-class="{ o_tv: state.tv }" t-ref="root">
+    <div class="o_crm_dashboard d-flex flex-column h-100 overflow-auto" t-att-class="{ o_tv: state.tv }" t-att-data-rev="state.rev" t-ref="root">
         <t t-if="state.loading">
             <div class="d-flex justify-content-center align-items-center h-100">
                 <div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>
@@ -19,7 +19,7 @@
                 </h4>
                 <div class="d-flex align-items-center gap-2 o_dash_filter">
                     <span class="o_live"><span class="o_live_dot"/>LIVE</span>
-                    <button class="btn btn-sm btn-outline-secondary" t-on-click="toggleTv" title="Fullscreen wallboard: auto-refresh, auto-scroll and news ticker">
+                    <button class="btn btn-sm btn-outline-light" t-on-click="toggleTv" title="Fullscreen wallboard: auto-refresh, auto-scroll and news ticker">
                         <i t-attf-class="fa {{state.tv ? 'fa-compress' : 'fa-television'}} me-1"/><t t-esc="state.tv ? 'Exit Screen' : 'Screen Mode'"/>
                     </button>
                     <label class="small fw-semibold">Date Range:</label>
@@ -174,7 +174,7 @@
                     <div class="card o_dash_card">
                         <div class="card-header">
                             <h6><i t-attf-class="fa {{rk[1]}} me-2"/><t t-esc="rk[0]"/></h6>
-                            <small>Top 10 by booked value (cancelled bookings excluded).</small>
+                            <small>Top 10 by contract value in the selected period (cancelled excluded).</small>
                         </div>
                         <div class="card-body p-0 o_chart_body o_lb_scroll">
                             <table t-if="rk[2].length" class="table table-hover align-middle mb-0">
@@ -224,7 +224,10 @@
                         <h6><i class="fa fa-users me-2"/>Pipeline by Owner</h6>
                         <small>Open leads per salesperson — flags concentration risk.</small>
                     </div>
-                    <div class="card-body o_chart_body"><canvas t-ref="ownerChart"/></div>
+                    <div class="card-body o_chart_body">
+                        <canvas t-if="state.owner_pipeline.length" t-ref="ownerChart"/>
+                        <div t-else="" class="o_chart_empty"><i class="fa fa-info-circle fa-2x mb-2"/><div class="small">No leads assigned to salespeople.</div></div>
+                    </div>
                 </div>
             </div>
 
@@ -334,6 +337,7 @@
                                 </tbody>
                             </table>
                         </div>
+                        <div t-if="!state.salesperson.length" class="o_chart_empty"><div class="small">No leads assigned to salespeople yet.</div></div>
                     </div>
                 </div>
             </div>

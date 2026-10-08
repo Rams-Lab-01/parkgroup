@@ -3,7 +3,7 @@
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 import { standardActionServiceProps } from "@web/webclient/actions/action_service";
-import { Component, onMounted, onWillUnmount, useRef, useState, useEffect } from "@odoo/owl";
+import { Component, onMounted, onPatched, onWillUnmount, useRef, useState } from "@odoo/owl";
 import { loadJS } from "@web/core/assets";
 
 export class CrmDashboard extends Component {
@@ -39,6 +39,7 @@ export class CrmDashboard extends Component {
             selectedDateRange: "30d",
             leaderboard: { top: [], me: null },
             tv: false,
+            rev: 0,
             ticker: [],
             property: { kpi: {}, projects: [], brokers: [], rms: [] },
         });
@@ -56,6 +57,15 @@ export class CrmDashboard extends Component {
         this.charts = {};
         this._chartsReady = false;
         this._timers = [];
+
+        // Charts and count-up must run after OWL has put the final data in the DOM,
+        // never on a timer (timers fire before the render in throttled tabs).
+        onPatched(() => {
+            if (!this._afterPatch) return;
+            this._afterPatch = false;
+            this.renderCharts();
+            this.animateCounts();
+        });
 
         onWillUnmount(() => {
             this.stopTv();
@@ -115,17 +125,17 @@ export class CrmDashboard extends Component {
             this.state.property = { kpi: {}, projects: [], brokers: [], rms: [] };
         }
 
+        let ticker = [];
         try {
-            this.state.ticker = await this.orm.call("crm.dashboard", "get_ticker", []);
-        } catch (e) {
-            this.state.ticker = [];
-        }
+            ticker = await this.orm.call("crm.dashboard", "get_ticker", []);
+        } catch (e) { /* ticker is optional */ }
 
-        // Wait for OWL to re-render with data, then render charts
-        await new Promise((resolve) => setTimeout(resolve, 50));
         await this._ensureChartJs();
-        this.renderCharts();
-        this.animateCounts();
+        // Last state write. `rev` is always read by the template, so this forces a patch
+        // (state.ticker alone is only read in screen mode) and triggers onPatched above.
+        this.state.ticker = ticker;
+        this._afterPatch = true;
+        this.state.rev++;
     }
 
     /** Screen mode: fullscreen, auto-refresh, slow auto-scroll, ticker. */
@@ -181,11 +191,13 @@ export class CrmDashboard extends Component {
             if (!m) return;
             const target = parseFloat(m[2].replace(/,/g, ""));
             const decimals = (m[2].split(".")[1] || "").length;
+            const node = el.firstChild; // mutate OWL's own text node; replacing it would orphan OWL's reference
+            if (!node) return;
             const start = performance.now();
             const tick = (now) => {
                 const t = Math.min((now - start) / 900, 1);
                 const v = target * (1 - Math.pow(1 - t, 3));
-                el.textContent = m[1] + v.toLocaleString("en-US", { minimumFractionDigits: decimals, maximumFractionDigits: decimals }) + m[3];
+                node.nodeValue = m[1] + v.toLocaleString("en-US", { minimumFractionDigits: decimals, maximumFractionDigits: decimals }) + m[3];
                 if (t < 1) requestAnimationFrame(tick);
             };
             requestAnimationFrame(tick);
@@ -205,11 +217,14 @@ export class CrmDashboard extends Component {
     get salesCards() {
         const k = this.state.kpi;
         const pct = (v) => (v === null || v === undefined ? "N/A" : v + "%");
+        // Property tenants book through sale.contract, not sale.order: prefer those figures when present.
+        const pk = this.state.property.kpi;
+        const hasP = pk.total_units != null;
         return [
             { label: "Open Pipeline", value: this.formatNumber(k.pipeline), icon: "fa-line-chart", color: "#C7A23A", kind: "kpi_pipeline" },
-            { label: "Pipeline Value", value: this.formatAbbrev(k.revenue_proposal), sub: "AED · open quotations", icon: "fa-money", color: "#4DA3FF", kind: "kpi_revenue" },
+            { label: "Pending Bookings", value: this.formatAbbrev(hasP ? pk.draft_value : k.revenue_proposal), sub: "AED · draft contracts", icon: "fa-money", color: "#4DA3FF", kind: "kpi_revenue" },
             { label: "Deals Won", value: this.formatNumber(k.won), icon: "fa-trophy", color: "#F4B740", kind: "kpi_won" },
-            { label: "Revenue Closed", value: this.formatAbbrev(k.revenue_converted), sub: "AED · confirmed sales", icon: "fa-check-circle", color: "#1EC198", kind: "kpi_revenue" },
+            { label: "Revenue Closed", value: this.formatAbbrev(hasP ? pk.sales_value : k.revenue_converted), sub: "AED · signed contracts", icon: "fa-check-circle", color: "#1EC198", kind: "kpi_revenue" },
             { label: "Win Rate", value: pct(k.conversion_rate), sub: "won / all leads", icon: "fa-bullseye", color: "#7D7EAF", kind: "kpi_won" },
             { label: "Avg Days to Close", value: k.avg_dom != null ? k.avg_dom + "d" : "N/A", sub: "lead created → won", icon: "fa-clock-o", color: "#BD85BA" },
         ];
@@ -217,13 +232,15 @@ export class CrmDashboard extends Component {
 
     get opsCards() {
         const k = this.state.kpi;
+        const pk = this.state.property.kpi;
+        const hasP = pk.total_units != null;
         const pct = (v) => (v === null || v === undefined ? "N/A" : v + "%");
         return [
             { label: "Speed to Lead", value: k.response_time_hours != null ? k.response_time_hours + "h" : "N/A", sub: "created → first activity", icon: "fa-bolt", color: "#F4B740" },
             { label: "Activities / Lead", value: k.activities_per_lead != null ? k.activities_per_lead : "N/A", sub: "calls, visits, follow-ups", icon: "fa-tasks", color: "#4DA3FF" },
             { label: "Stalled Rate", value: pct(k.stalled_deal_rate), sub: "no activity 14+ days", icon: "fa-pause-circle", color: "#FF5A5F" },
-            { label: "Avg Deal Size", value: this.formatAbbrev(k.avg_sale_price), sub: "AED · confirmed orders", icon: "fa-tag", color: "#C7A23A" },
-            { label: "Quota Attainment", value: pct(k.quota_attainment), sub: "revenue vs team target", icon: "fa-flag-checkered", color: "#1EC198" },
+            { label: "Avg Deal Size", value: this.formatAbbrev(hasP && pk.sold_units ? pk.sales_value / pk.sold_units : k.avg_sale_price), sub: "AED · per signed contract", icon: "fa-tag", color: "#C7A23A" },
+            { label: "Balance Due", value: hasP ? this.formatAbbrev(pk.balance_due) : pct(k.quota_attainment), sub: hasP ? "AED · left to collect" : "revenue vs team target", icon: "fa-hourglass-half", color: "#1EC198" },
             { label: "Collection Rate", value: pct(this.state.property.kpi.collection_pct != null ? Math.round(this.state.property.kpi.collection_pct * 10) / 10 : null), sub: "collected ÷ sales value", icon: "fa-credit-card", color: "#7D7EAF" },
         ];
     }
@@ -390,13 +407,17 @@ export class CrmDashboard extends Component {
     }
 
     renderCharts() {
-        this.renderProjectCharts();
-        this.renderMonthlyChart();
-        this.renderFunnelChart();
-        this.renderAgingChart();
-        this.renderOwnerChart();
-        this.renderSourceChart();
-        this.renderSourceConversionChart();
+        // Isolated: one failing chart must not blank the others.
+        for (const fn of [
+            this.renderProjectCharts, this.renderMonthlyChart, this.renderFunnelChart, this.renderAgingChart,
+            this.renderOwnerChart, this.renderSourceChart, this.renderSourceConversionChart,
+        ]) {
+            try {
+                fn.call(this);
+            } catch (e) {
+                console.error("[crm_dashboard] chart failed:", fn.name, e);
+            }
+        }
     }
 
     // Developer view: inventory and sales/collections per project.
