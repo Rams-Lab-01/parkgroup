@@ -1,0 +1,48 @@
+/* Invoice form: stop the "Outstanding credits" block from overlapping.
+ *
+ * account.view_move_form renders
+ *   <field name="invoice_outstanding_credits_debits_widget"
+ *          class="oe_invoice_outstanding_credits_debits py-3"
+ *          colspan="2" nolabel="1" widget="payment"/>
+ *
+ * Odoo floats that block to the right with max-width: 400px, but the payment
+ * widget renders its rows with non-wrapping cells. Parkgroup references are
+ * long ("[PRED] Early Settlement ... - INV/2026/0123"), so the reference cell
+ * runs past the 400px box and paints over the amount columns beside it.
+ *
+ * The fix is deliberately scoped: it only lets cells wrap and stops overflow
+ * inside that one widget, so no other list in the backend changes.
+ */
+
+.o_form_view .oe_invoice_outstanding_credits_debits {
+	/* stay inside the allotted column and never push the page sideways */
+	max-width: 100%;
+	overflow-x: hidden;
+}
+
+.o_form_view .oe_invoice_outstanding_credits_debits .o_list_renderer,
+.o_form_view .oe_invoice_outstanding_credits_debits table {
+	width: 100%;
+}
+
+/* let long references wrap instead of overlapping the amount columns */
+.o_form_view .oe_invoice_outstanding_credits_debits .o_list_renderer td,
+.o_form_view .oe_invoice_outstanding_credits_debits table td,
+.o_form_view .oe_invoice_outstanding_credits_debits .o_data_row td {
+	white-space: normal;
+	overflow-wrap: anywhere;
+	word-break: break-word;
+	vertical-align: top;
+}
+
+/* keep the numeric columns on one line and right-aligned */
+.o_form_view .oe_invoice_outstanding_credits_debits td.text-end,
+.o_form_view .oe_invoice_outstanding_credits_debits .o_list_number {
+	white-space: nowrap;
+	vertical-align: top;
+}
+
+/* the Add / Remove toggle must not be squashed */
+.o_form_view .oe_invoice_outstanding_credits_debits .o_data_row .btn {
+	white-space: nowrap;
+}

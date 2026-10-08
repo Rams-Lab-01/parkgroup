@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ====================================================================
+         account.payment LIST view: surface Property / Project columns so
+         receipts can be attributed to a unit without opening them.
+         ==================================================================== -->
+    <record id="property_payment_list_inherit" model="ir.ui.view">
+        <field name="name">property.payment.list.inherit.view</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_tree"/>
+        <field name="priority" eval="8"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <field name="project_id" string="Project" optional="hide"/>
+                <field name="property_unit_no" string="Unit" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="property_supplier_payment_list_inherit" model="ir.ui.view">
+        <field name="name">property.supplier.payment.list.inherit.view</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_supplier_payment_tree"/>
+        <field name="priority" eval="8"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <field name="project_id" string="Project" optional="hide"/>
+                <field name="property_unit_no" string="Unit" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
