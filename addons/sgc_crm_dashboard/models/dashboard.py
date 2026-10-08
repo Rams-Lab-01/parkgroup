@@ -77,12 +77,12 @@ class CRMDashboard(models.AbstractModel):
                 date_filter = "AND l.create_date >= CURRENT_DATE - INTERVAL '179 days'"
             elif date_range == "12m":
                 date_filter = "AND l.create_date >= CURRENT_DATE - INTERVAL '364 days'"
-            elif date_range.startswith("custom"):
-                # Expect format: "custom_start,custom_end" in ISO date strings
+            elif "," in date_range:
+                # "start,end" ISO dates; validated, then bound as parameters (never interpolated)
                 try:
-                    parts = date_range.split(",", 1)
-                    start_s, end_s = parts[0], parts[1]
-                    date_filter = f"AND l.create_date >= '{start_s}' AND l.create_date <= '{end_s}'"
+                    start_s, end_s = (fields.Date.to_date(x.replace("custom", "").strip("_")).isoformat()
+                                      for x in date_range.split(",", 1))
+                    date_filter = "AND l.create_date >= %s AND l.create_date < (%s::date + 1)"
                     date_params = [start_s, end_s]
                 except Exception:
                     pass  # gracefully fall back to no date filter
@@ -1724,3 +1724,103 @@ class CRMDashboard(models.AbstractModel):
             "commission_rate": round(commission_rate, 2),
             "top_sellers": top_sellers,
         }
+
+    @api.model
+    def get_property_overview(self, user_id=None, date_range=None):
+        """Developer + brokerage block: per-project inventory, collections and
+        broker / RM rankings. Reuses property.details.get_development_kpis and
+        get_sales_rankings (the Executive Dashboard's own numbers) so the two
+        dashboards can never disagree. {} when the property module is absent."""
+        if "property.details" not in self.env:
+            return {}
+        from datetime import timedelta
+        today = fields.Date.context_today(self)
+        days = {"today": 0, "7d": 6, "30d": 29, "90d": 89, "6m": 179, "12m": 364}
+        d_from = d_to = False
+        if date_range in days:
+            d_from = today - timedelta(days=days[date_range])
+        elif date_range and "," in date_range:
+            d_from, d_to = date_range.replace("custom", "").strip("_").split(",", 1)
+        flt = {"date_from": d_from, "date_to": d_to, "salesperson_id": user_id or 0}
+        try:
+            Prop = self.env["property.details"]
+            k = Prop.get_development_kpis(flt)
+            ranks = Prop.get_sales_rankings(flt, limit=10)
+        except Exception:
+            return {}
+        names = {p.code: p.name for p in self.env["property.project"].sudo().search([])}
+        projects = [
+            {"name": names.get(code) or code or "—", "units": v["units"], "sold": v["sold"],
+             "available": max(v["units"] - v["sold"], 0), "sales_value": v["sales_value"],
+             "collected": v["collected"]}
+            for code, v in (k.get("per_project") or {}).items() if v["units"]
+        ]
+        projects.sort(key=lambda r: -r["units"])
+        keys = ("total_units", "sold_units", "available_units", "sell_through_pct", "sales_value",
+                "avg_psf_sold", "collected", "balance_due", "collection_pct")
+        return {
+            "kpi": {x: k.get(x) for x in keys},
+            "projects": projects,
+            "brokers": ranks["brokers"],
+            "rms": ranks["salespeople"],
+        }
+
+    @api.model
+    def get_ticker(self):
+        """Headlines for the screen-mode news ticker: [{kind, text}], kind in
+        win | alert | info. Built from live data; no client names (it is shown
+        on a shared screen). An optional free-text banner can be set in
+        ir.config_parameter ``sgc_crm_dashboard.ticker_message``."""
+        cr = self.env.cr
+        items = []
+        msg = self.env["ir.config_parameter"].sudo().get_param("sgc_crm_dashboard.ticker_message")
+        if msg:
+            items.append({"kind": "info", "text": msg})
+
+        won_ids = self.env["crm.stage"].search([("is_won", "=", True)]).ids
+        if won_ids:
+            cr.execute("""
+                SELECT COALESCE(p.name, u.login), COUNT(*)
+                FROM crm_lead l JOIN res_users u ON u.id = l.user_id
+                LEFT JOIN res_partner p ON p.id = u.partner_id
+                WHERE l.stage_id IN %s AND l.date_closed >= CURRENT_DATE
+                GROUP BY 1 ORDER BY 2 DESC LIMIT 3
+            """, (tuple(won_ids),))
+            for name, n in cr.fetchall():
+                items.append({"kind": "win", "text": f"{name} closed {n} deal{'s' if n > 1 else ''} today"})
+
+        cr.execute("SELECT COUNT(*) FROM crm_lead WHERE active AND create_date >= CURRENT_DATE")
+        n = cr.fetchone()[0]
+        if n:
+            items.append({"kind": "info", "text": f"{n} new lead{'s' if n > 1 else ''} received today"})
+
+        cr.execute("""
+            SELECT COUNT(*) FROM mail_activity
+            WHERE res_model = 'crm.lead' AND date_deadline < CURRENT_DATE
+        """)
+        n = cr.fetchone()[0]
+        if n:
+            items.append({"kind": "alert", "text": f"{n} overdue follow-up{'s' if n > 1 else ''} need attention"})
+
+        if "property.vendor" in self.env:
+            try:
+                vendors = self.env["property.vendor"].sudo().search(
+                    [("state", "!=", "cancelled")], limit=5)
+                for v in vendors:
+                    who = (v.salesperson_id or v.create_uid).name
+                    unit = v.property_id.name or v.name
+                    items.append({"kind": "win", "text": f"New booking: {unit} · {who}"})
+                ranks = self.env["property.details"].get_sales_rankings({}, limit=1)
+                for label, rows in (("Top broker", ranks["brokers"]), ("Top RM", ranks["salespeople"])):
+                    if rows:
+                        items.append({"kind": "info", "text": f"{label}: {rows[0]['name']} · AED {self.env['crm.dashboard']._abbrev(rows[0]['value'])}"})
+            except Exception:
+                pass
+        return items
+
+    @staticmethod
+    def _abbrev(n):
+        for div, suf in ((1e9, "B"), (1e6, "M"), (1e3, "K")):
+            if abs(n) >= div:
+                return f"{n / div:.1f}".rstrip("0").rstrip(".") + suf
+        return str(round(n))

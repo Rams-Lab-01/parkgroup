@@ -38,35 +38,46 @@ export class CrmDashboard extends Component {
             currentUserId: null,
             selectedDateRange: "30d",
             leaderboard: { top: [], me: null },
+            tv: false,
+            ticker: [],
+            property: { kpi: {}, projects: [], brokers: [], rms: [] },
         });
         this.chartRefs = {
-            stageChart: useRef("stageChart"),
+            projectChart: useRef("projectChart"),
+            projectSalesChart: useRef("projectSalesChart"),
             monthlyChart: useRef("monthlyChart"),
             funnelChart: useRef("funnelChart"),
             agingChart: useRef("agingChart"),
             ownerChart: useRef("ownerChart"),
             sourceChart: useRef("sourceChart"),
             sourceConversionChart: useRef("sourceConversionChart"),
-            domByRepChart: useRef("domByRepChart"),
         };
+        this.root = useRef("root");
         this.charts = {};
         this._chartsReady = false;
+        this._timers = [];
 
         onWillUnmount(() => {
+            this.stopTv();
             this.destroyCharts();
         });
 
         onMounted(async () => {
             await this.loadDashboard();
+            if (this.constructor.autoTv) {
+                await this.toggleTv();
+            }
         });
     }
 
-    async loadDashboard(userId, dateRange) {
+    async loadDashboard(userId, dateRange = this.state.selectedDateRange, silent = false) {
         this.destroyCharts();
-        this.state.loading = true;
+        if (!silent) {
+            this.state.loading = true;
+        }
         try {
             const params = userId ? [userId] : [];
-            const data = await this.orm.call("crm.dashboard", "get_dashboard_data", params, dateRange);
+            const data = await this.orm.call("crm.dashboard", "get_dashboard_data", params, { date_range: dateRange });
             this.state.kpi = data.kpi;
             this.state.funnel = data.funnel;
             this.state.stages = data.stages;
@@ -96,16 +107,165 @@ export class CrmDashboard extends Component {
             this.state.leaderboard = { top: [], me: null };
         }
 
+        // Non-fatal: property/developer block needs the property module.
+        try {
+            const p = await this.orm.call("crm.dashboard", "get_property_overview", [this.state.selectedUserId], { date_range: dateRange });
+            this.state.property = { kpi: {}, projects: [], brokers: [], rms: [], ...p };
+        } catch (e) {
+            this.state.property = { kpi: {}, projects: [], brokers: [], rms: [] };
+        }
+
+        try {
+            this.state.ticker = await this.orm.call("crm.dashboard", "get_ticker", []);
+        } catch (e) {
+            this.state.ticker = [];
+        }
+
         // Wait for OWL to re-render with data, then render charts
         await new Promise((resolve) => setTimeout(resolve, 50));
         await this._ensureChartJs();
         this.renderCharts();
+        this.animateCounts();
+    }
+
+    /** Screen mode: fullscreen, auto-refresh, slow auto-scroll, ticker. */
+    async toggleTv() {
+        if (this.state.tv) {
+            this.stopTv();
+            if (document.fullscreenElement) {
+                document.exitFullscreen().catch(() => {});
+            }
+            return;
+        }
+        this.state.tv = true;
+        try {
+            await this.root.el.requestFullscreen();
+        } catch (e) { /* kiosk browsers may refuse; screen mode still works */ }
+        this._timers.push(setInterval(() => this.loadDashboard(this.state.selectedUserId, this.state.selectedDateRange, true), 60000));
+        let dir = 1, pausedUntil = 0;
+        const pause = () => { pausedUntil = Date.now() + 15000; };
+        this.root.el.addEventListener("wheel", pause);
+        this.root.el.addEventListener("touchstart", pause);
+        this._timers.push(setInterval(() => {
+            const el = this.root.el;
+            if (!el || Date.now() < pausedUntil) return;
+            el.scrollTop += dir;
+            if (el.scrollTop + el.clientHeight >= el.scrollHeight - 1 || el.scrollTop <= 0) {
+                dir = -dir;
+                pausedUntil = Date.now() + 5000;
+            }
+        }, 40));
+        this._onFsChange = () => { if (!document.fullscreenElement && this.state.tv) this.stopTv(); };
+        document.addEventListener("fullscreenchange", this._onFsChange);
+    }
+
+    stopTv() {
+        this.state.tv = false;
+        this._timers.forEach(clearInterval);
+        this._timers = [];
+        if (this._onFsChange) {
+            document.removeEventListener("fullscreenchange", this._onFsChange);
+        }
+    }
+
+    /** Ticker scroll time scales with text length so speed stays constant. */
+    get tickerSeconds() {
+        const chars = this.state.ticker.reduce((n, t) => n + t.text.length + 8, 0);
+        return Math.max(30, Math.round(chars * 0.25));
+    }
+
+    /** Count KPI numbers up from zero ("1,234", "12.5%", "3.2M" keep their affixes). */
+    animateCounts() {
+        this.root.el?.querySelectorAll(".o_kpi_value").forEach((el) => {
+            const m = /^([^\d-]*)(-?[\d,]*\.?\d+)(.*)$/.exec(el.textContent.trim());
+            if (!m) return;
+            const target = parseFloat(m[2].replace(/,/g, ""));
+            const decimals = (m[2].split(".")[1] || "").length;
+            const start = performance.now();
+            const tick = (now) => {
+                const t = Math.min((now - start) / 900, 1);
+                const v = target * (1 - Math.pow(1 - t, 3));
+                el.textContent = m[1] + v.toLocaleString("en-US", { minimumFractionDigits: decimals, maximumFractionDigits: decimals }) + m[3];
+                if (t < 1) requestAnimationFrame(tick);
+            };
+            requestAnimationFrame(tick);
+        });
     }
 
     async _ensureChartJs() {
         if (typeof Chart === "undefined") {
             await loadJS("/web/static/lib/Chart/Chart.js");
         }
+        // Dashboard is dark: Chart.js defaults (dark text, light grid) are unreadable on it.
+        Chart.defaults.color = "#A7B4C6";
+        Chart.defaults.borderColor = "rgba(255,255,255,0.08)";
+    }
+
+    /** KPI scorecards: one flat list per row so every card renders identically. */
+    get salesCards() {
+        const k = this.state.kpi;
+        const pct = (v) => (v === null || v === undefined ? "N/A" : v + "%");
+        return [
+            { label: "Open Pipeline", value: this.formatNumber(k.pipeline), icon: "fa-line-chart", color: "#C7A23A", kind: "kpi_pipeline" },
+            { label: "Pipeline Value", value: this.formatAbbrev(k.revenue_proposal), sub: "AED · open quotations", icon: "fa-money", color: "#4DA3FF", kind: "kpi_revenue" },
+            { label: "Deals Won", value: this.formatNumber(k.won), icon: "fa-trophy", color: "#F4B740", kind: "kpi_won" },
+            { label: "Revenue Closed", value: this.formatAbbrev(k.revenue_converted), sub: "AED · confirmed sales", icon: "fa-check-circle", color: "#1EC198", kind: "kpi_revenue" },
+            { label: "Win Rate", value: pct(k.conversion_rate), sub: "won / all leads", icon: "fa-bullseye", color: "#7D7EAF", kind: "kpi_won" },
+            { label: "Avg Days to Close", value: k.avg_dom != null ? k.avg_dom + "d" : "N/A", sub: "lead created → won", icon: "fa-clock-o", color: "#BD85BA" },
+        ];
+    }
+
+    get opsCards() {
+        const k = this.state.kpi;
+        const pct = (v) => (v === null || v === undefined ? "N/A" : v + "%");
+        return [
+            { label: "Speed to Lead", value: k.response_time_hours != null ? k.response_time_hours + "h" : "N/A", sub: "created → first activity", icon: "fa-bolt", color: "#F4B740" },
+            { label: "Activities / Lead", value: k.activities_per_lead != null ? k.activities_per_lead : "N/A", sub: "calls, visits, follow-ups", icon: "fa-tasks", color: "#4DA3FF" },
+            { label: "Stalled Rate", value: pct(k.stalled_deal_rate), sub: "no activity 14+ days", icon: "fa-pause-circle", color: "#FF5A5F" },
+            { label: "Avg Deal Size", value: this.formatAbbrev(k.avg_sale_price), sub: "AED · confirmed orders", icon: "fa-tag", color: "#C7A23A" },
+            { label: "Quota Attainment", value: pct(k.quota_attainment), sub: "revenue vs team target", icon: "fa-flag-checkered", color: "#1EC198" },
+            { label: "Collection Rate", value: pct(this.state.property.kpi.collection_pct != null ? Math.round(this.state.property.kpi.collection_pct * 10) / 10 : null), sub: "collected ÷ sales value", icon: "fa-credit-card", color: "#7D7EAF" },
+        ];
+    }
+
+    /** Developer scorecard from the property module. */
+    get propertyCards() {
+        const k = this.state.property.kpi;
+        const n = (v) => this.formatNumber(v);
+        const ok = k.total_units != null;
+        return [
+            { label: "Total Units", value: ok ? n(k.total_units) : "N/A", sub: "inventory", icon: "fa-building", color: "#4DA3FF" },
+            { label: "Units Sold", value: ok ? n(k.sold_units) : "N/A", sub: ok ? `${n(k.available_units)} available` : "", icon: "fa-key", color: "#1EC198" },
+            { label: "Sell-through", value: ok ? Math.round(k.sell_through_pct * 10) / 10 + "%" : "N/A", sub: "sold ÷ total units", icon: "fa-tachometer", color: "#F4B740" },
+            { label: "Sales Value", value: ok ? this.formatAbbrev(k.sales_value) : "N/A", sub: "AED · sold contracts", icon: "fa-money", color: "#C7A23A" },
+            { label: "Collected", value: ok ? this.formatAbbrev(k.collected) : "N/A", sub: ok ? `AED · ${this.formatAbbrev(k.balance_due)} due` : "", icon: "fa-credit-card", color: "#1EC198" },
+            { label: "Avg Price / sqft", value: ok ? this.formatNumber(Math.round(k.avg_psf_sold)) : "N/A", sub: "AED · sold units", icon: "fa-area-chart", color: "#BD85BA" },
+        ];
+    }
+
+    /** Playbook qualification tiles (only shown when sgc_sales_playbook is installed). */
+    get qualTiles() {
+        const q = this.state.qualification;
+        const pct = (v) => (v === null || v === undefined ? "N/A" : v + "%");
+        const num = (v) => (v === null || v === undefined ? "N/A" : this.formatNumber(v));
+        return [
+            { label: "Gate Pass Rate", value: pct(q.gate_pass_rate), sub: `n=${this.formatNumber(q.gate_pass_rate_n)}`, kind: "qual_gate_pass_rate" },
+            { label: "Stalled 3+ Weeks", value: num(q.stalled_deals_count), kind: "qual_stalled" },
+            { label: "Objection → Meeting", value: pct(q.objection_conversion_rate), sub: `n=${this.formatNumber(q.objection_conversion_rate_n)}`, kind: "qual_objection_conversion" },
+            { label: "Stale, Pending Cleanup", value: num(q.stale_lead_count), kind: "qual_stale" },
+        ];
+    }
+
+    get detailCards() {
+        const l = this.state.salespersonDetail.leads;
+        const a = this.state.salespersonDetail.activities;
+        const n = (v) => this.formatNumber(v);
+        return [
+            { label: "Total Leads", value: n(l.total) }, { label: "Won", value: n(l.won) },
+            { label: "Lost", value: n(l.lost) }, { label: "Avg Days to Close", value: l.avg_days_to_close + "d" },
+            { label: "Last 7 Days", value: n(l.last_7d) }, { label: "Last 30 Days", value: n(l.last_30d) },
+            { label: "Activities Done", value: n(a.done) }, { label: "Overdue", value: n(a.overdue) },
+        ];
     }
 
     async onFilterChange(ev) {
@@ -230,42 +390,50 @@ export class CrmDashboard extends Component {
     }
 
     renderCharts() {
-        this.renderStageChart();
+        this.renderProjectCharts();
         this.renderMonthlyChart();
         this.renderFunnelChart();
         this.renderAgingChart();
         this.renderOwnerChart();
         this.renderSourceChart();
         this.renderSourceConversionChart();
-        this.renderDomByRepChart();
     }
 
-    renderStageChart() {
-        const canvas = this.chartRefs.stageChart?.el;
-        if (!canvas || !this.state.stages.length) return;
-        if (this.charts.stage) this.charts.stage.destroy();
-        const labels = this.state.stages.map(s => s.name);
-        const data = this.state.stages.map(s => s.count);
-        const colors = ["#7D7EAF", "#BD85BA", "#F78EAD", "#FFA48E", "#FFCA71", "#CEA716", "#1EC198", "#a0a0a0", "#6C63FF", "#E74C3C"];
-        this.charts.stage = new Chart(canvas, {
-            type: "doughnut",
-            data: {
-                labels,
-                datasets: [{ data, backgroundColor: colors.slice(0, data.length), borderWidth: 0 }],
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { position: "right", labels: { padding: 12, usePointStyle: true } } },
-                cutout: "55%",
-                onHover: (evt, elements) => this._chartCursorHover(evt, elements),
-                onClick: (evt, elements) => {
-                    if (!elements.length) return;
-                    const stage = this.state.stages[elements[0].index];
-                    if (stage) this.openRecords("chart_stage", { stage_name: stage.name });
+    // Developer view: inventory and sales/collections per project.
+    renderProjectCharts() {
+        const rows = this.state.property.projects;
+        if (!rows.length) return;
+        const labels = rows.map(r => r.name);
+        const stacked = { x: { stacked: true, grid: { display: false } }, y: { stacked: true, beginAtZero: true } };
+        const make = (key, ref, datasets, scales, fmt) => {
+            const canvas = this.chartRefs[ref]?.el;
+            if (!canvas) return;
+            if (this.charts[key]) this.charts[key].destroy();
+            this.charts[key] = new Chart(canvas, {
+                type: "bar",
+                data: { labels, datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales,
+                    plugins: {
+                        legend: { labels: { usePointStyle: true, padding: 14 } },
+                        tooltip: { callbacks: { label: (c) => `${c.dataset.label}: ${fmt(c.raw)}` } },
+                    },
                 },
-            },
-        });
+            });
+        };
+        make("project", "projectChart", [
+            { label: "Sold", data: rows.map(r => r.sold), backgroundColor: "#1EC198", borderRadius: 4 },
+            { label: "Available", data: rows.map(r => r.available), backgroundColor: "#4DA3FF", borderRadius: 4 },
+        ], stacked, (v) => this.formatNumber(v) + " units");
+        make("projectSales", "projectSalesChart", [
+            { label: "Sales value", data: rows.map(r => r.sales_value), backgroundColor: "#C7A23A", borderRadius: 4 },
+            { label: "Collected", data: rows.map(r => r.collected), backgroundColor: "#1EC198", borderRadius: 4 },
+        ], {
+            x: { grid: { display: false } },
+            y: { beginAtZero: true, ticks: { callback: (v) => this.formatAbbrev(v) } },
+        }, (v) => "AED " + this.formatAbbrev(v));
     }
 
     renderMonthlyChart() {
@@ -287,7 +455,7 @@ export class CrmDashboard extends Component {
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: {
-                    y: { beginAtZero: true, grid: { color: "#f0f0f0" } },
+                    y: { beginAtZero: true, grid: {} },
                     x: { grid: { display: false } },
                 },
                 plugins: { legend: { labels: { usePointStyle: true, padding: 16 } } },
@@ -334,7 +502,7 @@ export class CrmDashboard extends Component {
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: {
-                    y: { beginAtZero: true, grid: { color: "#f0f0f0" }, ticks: { callback: v => v.toLocaleString() } },
+                    y: { beginAtZero: true, grid: {}, ticks: { callback: v => v.toLocaleString() } },
                     x: { grid: { display: false } },
                 },
                 plugins: {
@@ -388,7 +556,7 @@ export class CrmDashboard extends Component {
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: {
-                    x: { beginAtZero: true, grid: { color: "#f0f0f0" }, ticks: { callback: v => v.toLocaleString() } },
+                    x: { beginAtZero: true, grid: {}, ticks: { callback: v => v.toLocaleString() } },
                     y: { grid: { display: false } },
                 },
                 plugins: {
@@ -476,7 +644,7 @@ export class CrmDashboard extends Component {
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: {
-                    x: { beginAtZero: true, max: 100, grid: { color: "#f0f0f0" }, ticks: { callback: v => v + "%" } },
+                    x: { beginAtZero: true, max: 100, grid: {}, ticks: { callback: v => v + "%" } },
                     y: { grid: { display: false } },
                 },
                 plugins: {
@@ -495,63 +663,6 @@ export class CrmDashboard extends Component {
                     if (!elements.length) return;
                     const source = data[elements[0].index];
                     if (source) this.openRecords("chart_source", { source_name: source.source });
-                },
-            },
-        });
-    }
-
-    renderDomByRepChart() {
-        const canvas = this.chartRefs.domByRepChart?.el;
-        const salesperson = this.state.salesperson || [];
-        if (!canvas || !salesperson.length) return;
-        if (this.charts.domByRep) this.charts.domByRep.destroy();
-        // Sort by avg DOM ascending (fastest closers first)
-        const sorted = [...salesperson].sort((a, b) => (a.days_without_booking || 999) - (b.days_without_booking || 999));
-        const labels = sorted.map(p => p.name);
-        const doms = sorted.map(p => p.days_without_booking || 0);
-        const colors = doms.map(d => {
-            if (d <= 30) return "#1EC198";
-            if (d <= 60) return "#FFCA71";
-            if (d <= 90) return "#FFA48E";
-            return "#FF5A5F";
-        });
-        this.charts.domByRep = new Chart(canvas, {
-            type: "bar",
-            data: {
-                labels,
-                datasets: [{
-                    label: "Avg Days to Close",
-                    data: doms,
-                    backgroundColor: colors,
-                    borderRadius: 4,
-                    barThickness: 22,
-                }],
-            },
-            options: {
-                indexAxis: "y",
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    x: { beginAtZero: true, grid: { color: "#f0f0f0" }, ticks: { callback: v => v + "d" } },
-                    y: { grid: { display: false } },
-                },
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            label: (ctx) => {
-                                const i = ctx.dataIndex;
-                                const p = sorted[i];
-                                return `${doms[i]}d avg · ${p.won} won · ${p.leads} total leads`;
-                            },
-                        },
-                    },
-                },
-                onHover: (evt, elements) => this._chartCursorHover(evt, elements),
-                onClick: (evt, elements) => {
-                    if (!elements.length) return;
-                    const rep = sorted[elements[0].index];
-                    if (rep) this.openRecords("chart_owner", { owner_id: rep.id });
                 },
             },
         });
@@ -582,7 +693,7 @@ export class CrmDashboard extends Component {
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: {
-                    x: { beginAtZero: true, grid: { color: "#f0f0f0" }, ticks: { callback: v => v.toLocaleString() } },
+                    x: { beginAtZero: true, grid: {}, ticks: { callback: v => v.toLocaleString() } },
                     y: { grid: { display: false } },
                 },
                 plugins: {
@@ -639,4 +750,9 @@ export class CrmDashboard extends Component {
     }
 }
 
+export class CrmDashboardScreen extends CrmDashboard {
+    static autoTv = true;
+}
+
 registry.category("actions").add("crm_dashboard", CrmDashboard);
+registry.category("actions").add("crm_dashboard_screen", CrmDashboardScreen);

@@ -541,3 +541,192 @@ $_radius-sm: 10px;
         color: $_text-muted;
     }
 }
+
+// ── Uniform layout: every KPI card the same size, every chart card the same height ──
+.o_crm_dashboard {
+    .o_section_title {
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: $_text-muted;
+        margin-bottom: 10px;
+    }
+
+    .o_kpi_grid {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 1rem;
+        &.o_kpi_grid_4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        @media (max-width: 1399px) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        @media (max-width: 767px) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    .o_kpi_card {
+        min-height: 104px;
+        .card-body {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+        }
+        .o_kpi_icon { flex: 0 0 40px; width: 40px; height: 40px; }
+        .o_kpi_text { min-width: 0; }
+        .o_kpi_value { font-size: 1.5rem; line-height: 1.15; white-space: nowrap; }
+        .o_kpi_label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .o_kpi_sublabel {
+            font-size: 0.68rem;
+            color: $_text-muted;
+            min-height: 1em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+
+    .o_chart_grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
+        @media (max-width: 991px) { grid-template-columns: minmax(0, 1fr); }
+    }
+
+    .o_dash_card .card-header { min-height: 62px; }
+    .o_chart_body {
+        height: 280px;
+        position: relative;
+        overflow: hidden;
+    }
+    .o_lb_scroll { overflow-y: auto; }
+    .o_chart_empty {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: $_text-muted;
+    }
+}
+
+// ── Animation + screen mode ──
+@keyframes o_rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes o_pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
+@keyframes o_ticker_scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+.o_crm_dashboard {
+    .o_kpi_card, .o_dash_card, .o_stat_box { animation: o_rise 0.5s ease both; }
+    @for $i from 1 through 6 {
+        .o_kpi_grid > :nth-child(#{$i}), .o_chart_grid > :nth-child(#{$i}) { animation-delay: #{$i * 0.07}s; }
+    }
+    .o_live { display: inline-flex; align-items: center; font-size: 0.7rem; letter-spacing: 1px; color: $_text-muted; }
+    .o_live_dot { width: 8px; height: 8px; border-radius: 50%; background: $_emerald; margin-right: 6px; animation: o_pulse 2s ease infinite; }
+
+    .o_ticker {
+        position: sticky;
+        bottom: 0;
+        z-index: 10;
+        display: flex;
+        align-items: stretch;
+        margin-top: auto;
+        background: $_bg-primary;
+        border-top: 2px solid $_gold;
+        box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.5);
+    }
+    .o_ticker_label {
+        flex: 0 0 auto;
+        padding: 12px 20px;
+        background: $_gold;
+        color: $_bg-primary;
+        font-weight: 800;
+        font-size: 0.8rem;
+        letter-spacing: 1.5px;
+        display: flex;
+        align-items: center;
+    }
+    .o_ticker_view { flex: 1; overflow: hidden; display: flex; align-items: center; }
+    .o_ticker_track {
+        display: flex;
+        white-space: nowrap;
+        width: max-content;
+        animation: o_ticker_scroll linear infinite;
+        &:hover { animation-play-state: paused; }
+    }
+    .o_ticker_item { padding: 0 40px; font-size: 1rem; font-weight: 600; color: $_text-primary; }
+    .o_ticker_win i { color: $_emerald; }
+    .o_ticker_alert i { color: $_coral; }
+    .o_ticker_info i { color: $_blue-info; }
+
+    // Screen mode: dark canvas, larger type for reading from a distance.
+    &.o_tv {
+        background: $_bg-primary !important;
+        font-size: 1.1rem;
+        .o_dash_filter select, .o_dash_filter label { display: none; }
+        .o_kpi_value { font-size: 2rem; }
+        .o_kpi_label { font-size: 0.8rem; }
+        .o_chart_body { height: 340px; }
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .o_crm_dashboard * { animation: none !important; }
+}
+
+// ── Premium finish ──
+@keyframes o_sheen { from { transform: translateX(-120%); } to { transform: translateX(220%); } }
+@keyframes o_halo { 0%, 100% { box-shadow: 0 0 0 0 rgba(199, 162, 58, 0.35); } 50% { box-shadow: 0 0 0 8px rgba(199, 162, 58, 0); } }
+@keyframes o_aurora { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+.o_crm_dashboard {
+    .o_kpi_card, .o_dash_card {
+        background: linear-gradient(160deg, rgba(19, 38, 63, 0.92) 0%, rgba(14, 27, 46, 0.96) 60%) !important;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+
+        // gold sheen sweeping across on hover
+        &::after {
+            content: '';
+            position: absolute;
+            top: 0; bottom: 0; left: 0;
+            width: 40%;
+            background: linear-gradient(100deg, transparent, rgba(199, 162, 58, 0.14), transparent);
+            transform: translateX(-120%);
+            pointer-events: none;
+        }
+        &:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 34px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(199, 162, 58, 0.45);
+            &::after { animation: o_sheen 0.9s ease; }
+        }
+    }
+    .o_kpi_card {
+        .o_kpi_value {
+            background: linear-gradient(180deg, #FFFFFF 0%, #E9D9A6 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-variant-numeric: tabular-nums;
+        }
+        .o_kpi_icon { animation: o_halo 3s ease-in-out infinite; }
+    }
+    .o_dash_card .card-header h6 i { color: $_gold; }
+    .o_section_title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        &::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, rgba($_gold, 0.45), transparent);
+        }
+    }
+    .o_ticker_label { background: linear-gradient(100deg, #C7A23A, #F0D68A, #C7A23A); background-size: 200% 100%; animation: o_aurora 6s ease infinite; }
+    .o_ticker { box-shadow: 0 -8px 30px rgba(199, 162, 58, 0.18); }
+
+    &.o_tv {
+        background: linear-gradient(120deg, #07111F, #0B1F3A, #0A1626, #07111F) !important;
+        background-size: 300% 300% !important;
+        animation: o_aurora 40s ease infinite;
+    }
+}

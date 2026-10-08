@@ -41,7 +41,6 @@
         "views/crm_team_views.xml",
         "views/res_users_views.xml",
         "views/utm_campaign_views.xml",
-        "views/big_screen.xml",
     ],
     "assets": {
         "web.assets_backend": [
@@ -49,9 +48,6 @@
             "sgc_crm_dashboard/static/src/css/kpi.css",
             "sgc_crm_dashboard/static/src/js/dashboard/crm_dashboard.js",
             "sgc_crm_dashboard/static/src/xml/crm_dashboard.xml",
-        ],
-        "website.assets_frontend": [
-            "sgc_crm_dashboard/static/src/js/big_screen.js",
         ],
     },
     "images": [
