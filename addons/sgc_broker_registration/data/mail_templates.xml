@@ -5,7 +5,7 @@
             <field name="name">Broker registration: email verification code</field>
             <field name="model_id" ref="model_sgc_broker_application"/>
             <field name="subject">Verify your email address</field>
-            <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+            <field name="email_from">"PARK GROUP" &lt;noreply@sgctech.ai&gt;</field>
             <field name="email_to">{{ object.email }}</field>
             <field name="auto_delete" eval="True"/>
             <field name="body_html" type="html">
@@ -25,7 +25,7 @@
             <field name="name">Broker registration: expiry reminder</field>
             <field name="model_id" ref="model_sgc_broker_application"/>
             <field name="subject">Reminder: {{ ctx.get('item_label') }} expires on {{ ctx.get('item_date') }}</field>
-            <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+            <field name="email_from">"PARK GROUP" &lt;noreply@sgctech.ai&gt;</field>
             <field name="email_to">{{ object.email }}</field>
             <field name="auto_delete" eval="True"/>
             <field name="body_html" type="html">
@@ -43,7 +43,7 @@
             <field name="name">Broker registration: expired notice</field>
             <field name="model_id" ref="model_sgc_broker_application"/>
             <field name="subject">EXPIRED: {{ ctx.get('item_label') }} ({{ ctx.get('item_date') }})</field>
-            <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+            <field name="email_from">"PARK GROUP" &lt;noreply@sgctech.ai&gt;</field>
             <field name="email_to">{{ object.email }}</field>
             <field name="auto_delete" eval="True"/>
             <field name="body_html" type="html">
@@ -63,7 +63,7 @@
             <field name="name">Broker registration: resume link</field>
             <field name="model_id" ref="model_sgc_broker_application"/>
             <field name="subject">Continue your broker registration {{ object.name }}</field>
-            <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+            <field name="email_from">"PARK GROUP" &lt;noreply@sgctech.ai&gt;</field>
             <field name="email_to">{{ object.email }}</field>
             <field name="auto_delete" eval="True"/>
             <field name="body_html" type="html">
@@ -80,7 +80,7 @@
             <field name="name">Broker registration: submission received</field>
             <field name="model_id" ref="model_sgc_broker_application"/>
             <field name="subject">Application {{ object.name }} received</field>
-            <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+            <field name="email_from">"PARK GROUP" &lt;noreply@sgctech.ai&gt;</field>
             <field name="email_to">{{ object.email }}</field>
             <field name="auto_delete" eval="True"/>
             <field name="body_html" type="html">
@@ -98,7 +98,7 @@
             <field name="name">Broker registration: more information needed</field>
             <field name="model_id" ref="model_sgc_broker_application"/>
             <field name="subject">Action needed on application {{ object.name }}</field>
-            <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+            <field name="email_from">"PARK GROUP" &lt;noreply@sgctech.ai&gt;</field>
             <field name="email_to">{{ object.email }}</field>
             <field name="auto_delete" eval="True"/>
             <field name="body_html" type="html">
@@ -116,7 +116,7 @@
             <field name="name">Broker registration: approved</field>
             <field name="model_id" ref="model_sgc_broker_application"/>
             <field name="subject">Application {{ object.name }} approved</field>
-            <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+            <field name="email_from">"PARK GROUP" &lt;noreply@sgctech.ai&gt;</field>
             <field name="email_to">{{ object.email }}</field>
             <field name="auto_delete" eval="True"/>
             <field name="body_html" type="html">
@@ -133,7 +133,7 @@
             <field name="name">Broker registration: rejected</field>
             <field name="model_id" ref="model_sgc_broker_application"/>
             <field name="subject">Application {{ object.name }} - decision</field>
-            <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+            <field name="email_from">"PARK GROUP" &lt;noreply@sgctech.ai&gt;</field>
             <field name="email_to">{{ object.email }}</field>
             <field name="auto_delete" eval="True"/>
             <field name="body_html" type="html">
