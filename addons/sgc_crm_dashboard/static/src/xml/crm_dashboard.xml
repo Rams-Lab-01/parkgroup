@@ -13,14 +13,25 @@
         <t t-else="">
 
             <!-- Header with filter -->
-            <div class="d-flex justify-content-between align-items-center mb-3 px-3 pt-3">
+            <div class="d-flex justify-content-between align-items-center mb-3 px-3">
                 <h4 class="mb-0 fw-bold">
                     <t t-if="state.isAdmin and !state.selectedUserId">CRM Dashboard — All Users</t>
                     <t t-elif="state.isAdmin and state.selectedUserId">CRM Dashboard — <t t-esc="state.allUsers.find(u => u.id === state.selectedUserId)?.name || 'User'"/></t>
                     <t t-else="">My Pipeline</t>
                 </h4>
-                <t t-if="state.isAdmin">
-                    <div class="d-flex align-items-center gap-2 o_dash_filter">
+                <div class="d-flex align-items-center gap-2 o_dash_filter">
+                    <label class="small fw-semibold">Date Range:</label>
+                    <select class="form-select form-select-sm" t-on-change="onDateRangeChange" t-att-value="state.selectedDateRange">
+                        <option value="all">All Time</option>
+                        <option value="today">Today</option>
+                        <option value="7d">Last 7 Days</option>
+                        <option value="30d" selected="selected">Last 30 Days</option>
+                        <option value="90d">Last 90 Days</option>
+                        <option value="6m">Last 6 Months</option>
+                        <option value="12m">Last 12 Months</option>
+                        <option value="custom">Custom Range...</option>
+                    </select>
+                    <t t-if="state.isAdmin and !state.selectedUserId">
                         <label class="small fw-semibold">Filter by:</label>
                         <select class="form-select form-select-sm" t-on-change="onFilterChange">
                             <option value="">All Users</option>
@@ -28,8 +39,35 @@
                                 <option t-att-value="u.id" t-att-selected="state.selectedUserId === u.id ? 'selected' : undefined" t-esc="u.name"/>
                             </t>
                         </select>
+                    </t>
+                </div>
+            </div>
+
+            <!-- Custom Date Range Modal -->
+            <div t-if="state.selectedDateRange === 'custom'">
+                <div class="mx-3 o_custom_range_panel mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0 fw-semibold">Custom Date Range</h6>
+                        <button class="btn btn-sm btn-link" t-on-click="() => this.onDateRangeChange({ target: { value: '30d' } })">
+                            <i class="fa fa-times"/> Close
+                        </button>
                     </div>
-                </t>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="small fw-semibold">From</label>
+                                <input type="date" class="form-control form-control-sm" id="date_range_from" t-on-change="() => this.onCustomDateRangeChange('from')"/>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="small fw-semibold">To</label>
+                                <input type="date" class="form-control form-control-sm" id="date_range_to" t-on-change="() => this.onCustomDateRangeChange('to')"/>
+                            </div>
+                            <div class="col-md-12">
+                                <button class="btn btn-sm btn-primary" t-on-click="() => this.onCustomDateRangeApply()">Apply Custom Range</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Detail Panel -->
@@ -265,6 +303,10 @@
                                 <div>
                                     <div class="o_kpi_label">In Pipeline</div>
                                     <div class="o_kpi_value" t-esc="formatNumber(state.kpi.pipeline)"/>
+                                    <div t-if="state.kpi.pipeline_trend" class="o_kpi_trend">
+                                        <span t-att-class="state.kpi.pipeline_trend.delta >= 0 ? 'o_trend_up' : 'o_trend_down'" t-esc="state.kpi.pipeline_trend.delta >= 0 ? '▲' : '▼'"/>
+                                        <span t-esc="Math.abs(state.kpi.pipeline_trend.delta) + ' ' + state.kpi.pipeline_trend.period"/>
+                                    </div>
                                 </div>
                                 <div class="o_kpi_icon" style="background:rgba(199,162,58,0.15);">
                                     <i class="fa fa-line-chart fa-lg" style="color:#C7A23A;"/>
@@ -282,6 +324,10 @@
                                 <div>
                                     <div class="o_kpi_label">Pipeline on New</div>
                                     <div class="o_kpi_value" style="color:#4DA3FF;" t-esc="formatNumber(state.kpi.new_leads_today)"/>
+                                    <div t-if="state.kpi.new_leads_trend" class="o_kpi_trend">
+                                        <span t-att-class="state.kpi.new_leads_trend.delta >= 0 ? 'o_trend_up' : 'o_trend_down'" t-esc="state.kpi.new_leads_trend.delta >= 0 ? '▲' : '▼'"/>
+                                        <span t-esc="Math.abs(state.kpi.new_leads_trend.delta) + ' ' + state.kpi.new_leads_trend.period"/>
+                                    </div>
                                     <div class="o_kpi_sublabel" style="font-size:0.7rem;opacity:0.55;margin-top:2px;">currently in New stage</div>
                                 </div>
                                 <div class="o_kpi_icon" style="background:rgba(77,163,255,0.15);">
@@ -300,6 +346,10 @@
                                 <div>
                                     <div class="o_kpi_label">Moved Out of New</div>
                                     <div class="o_kpi_value" style="color:#1EC198;" t-esc="formatNumber(state.kpi.moved_out_of_new_today)"/>
+                                    <div t-if="state.kpi.moved_out_of_new_trend" class="o_kpi_trend">
+                                        <span t-att-class="state.kpi.moved_out_of_new_trend.delta >= 0 ? 'o_trend_up' : 'o_trend_down'" t-esc="state.kpi.moved_out_of_new_trend.delta >= 0 ? '▲' : '▼'"/>
+                                        <span t-esc="Math.abs(state.kpi.moved_out_of_new_trend.delta) + ' ' + state.kpi.moved_out_of_new_trend.period"/>
+                                    </div>
                                     <div class="o_kpi_sublabel" style="font-size:0.7rem;opacity:0.55;margin-top:2px;">progressed today</div>
                                 </div>
                                 <div class="o_kpi_icon" style="background:rgba(30,193,152,0.15);">
@@ -318,6 +368,10 @@
                                 <div>
                                     <div class="o_kpi_label">Won</div>
                                     <div class="o_kpi_value" t-esc="formatNumber(state.kpi.won)"/>
+                                    <div t-if="state.kpi.won_trend" class="o_kpi_trend">
+                                        <span t-att-class="state.kpi.won_trend.delta >= 0 ? 'o_trend_up' : 'o_trend_down'" t-esc="state.kpi.won_trend.delta >= 0 ? '▲' : '▼'"/>
+                                        <span t-esc="Math.abs(state.kpi.won_trend.delta) + ' ' + state.kpi.won_trend.period"/>
+                                    </div>
                                 </div>
                                 <div class="o_kpi_icon" style="background:rgba(244,183,64,0.15);">
                                     <i class="fa fa-trophy fa-lg" style="color:#F4B740;"/>
@@ -335,6 +389,10 @@
                                 <div>
                                     <div class="o_kpi_label">Lost</div>
                                     <div class="o_kpi_value" t-esc="formatNumber(state.kpi.lost)"/>
+                                    <div t-if="state.kpi.lost_trend" class="o_kpi_trend o_trend_down">
+                                        <span>▼</span>
+                                        <span t-esc="Math.abs(state.kpi.lost_trend.delta) + ' ' + state.kpi.lost_trend.period + ' (avoidable)'" t-if="state.kpi.lost_trend"/>
+                                    </div>
                                 </div>
                                 <div class="o_kpi_icon" style="background:rgba(255,90,95,0.15);">
                                     <i class="fa fa-times-circle fa-lg" style="color:#FF5A5F;"/>
@@ -356,6 +414,10 @@
                                 <div>
                                     <div class="o_kpi_label">Follow Up</div>
                                     <div class="o_kpi_value" t-esc="formatNumber(state.kpi.follow_up)"/>
+                                    <div t-if="state.kpi.follow_up_trend" class="o_kpi_trend">
+                                        <span t-att-class="state.kpi.follow_up_trend.delta >= 0 ? 'o_trend_up' : 'o_trend_down'" t-esc="state.kpi.follow_up_trend.delta >= 0 ? '▲' : '▼'"/>
+                                        <span t-esc="Math.abs(state.kpi.follow_up_trend.delta) + ' ' + state.kpi.follow_up_trend.period"/>
+                                    </div>
                                 </div>
                                 <div class="o_kpi_icon" style="background:rgba(244,183,64,0.15);">
                                     <i class="fa fa-bell fa-lg" style="color:#F4B740;"/>
@@ -370,9 +432,13 @@
                          t-on-keydown="(ev) => this.onClickableKeydown(ev, 'kpi_research_done')">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <div class="o_kpi_label">Qualified</div>
+<div>
+                                    <div class="o_kpi_label">Research Done</div>
                                     <div class="o_kpi_value" style="color:#00B67A;" t-esc="formatNumber(state.kpi.research_done)"/>
+                                    <div t-if="state.kpi.research_done_trend" class="o_kpi_trend">
+                                        <span t-att-class="state.kpi.research_done_trend.delta >= 0 ? 'o_trend_up' : 'o_trend_down'" t-esc="state.kpi.research_done_trend.delta >= 0 ? '▲' : '▼'"/>
+                                        <span t-esc="Math.abs(state.kpi.research_done_trend.delta) + ' ' + state.kpi.research_done_trend.period"/>
+                                    </div>
                                 </div>
                                 <div class="o_kpi_icon" style="background:rgba(0,182,122,0.15);">
                                     <i class="fa fa-search fa-lg" style="color:#00B67A;"/>
@@ -390,6 +456,10 @@
                                 <div>
                                     <div class="o_kpi_label">Email Outreach</div>
                                     <div class="o_kpi_value" style="color:#4DA3FF;" t-esc="formatNumber(state.kpi.outreach_email)"/>
+                                    <div t-if="state.kpi.outreach_email_trend" class="o_kpi_trend">
+                                        <span t-att-class="state.kpi.outreach_email_trend.delta >= 0 ? 'o_trend_up' : 'o_trend_down'" t-esc="state.kpi.outreach_email_trend.delta >= 0 ? '▲' : '▼'"/>
+                                        <span t-esc="Math.abs(state.kpi.outreach_email_trend.delta) + ' ' + state.kpi.outreach_email_trend.period"/>
+                                    </div>
                                 </div>
                                 <div class="o_kpi_icon" style="background:rgba(77,163,255,0.15);">
                                     <i class="fa fa-envelope fa-lg" style="color:#4DA3FF;"/>
@@ -407,6 +477,10 @@
                                 <div>
                                     <div class="o_kpi_label">Proposition</div>
                                     <div class="o_kpi_value" t-esc="formatNumber(state.kpi.booked)"/>
+                                    <div t-if="state.kpi.booked_trend" class="o_kpi_trend">
+                                        <span t-att-class="state.kpi.booked_trend.delta >= 0 ? 'o_trend_up' : 'o_trend_down'" t-esc="state.kpi.booked_trend.delta >= 0 ? '▲' : '▼'"/>
+                                        <span t-esc="Math.abs(state.kpi.booked_trend.delta) + ' ' + state.kpi.booked_trend.period"/>
+                                    </div>
                                 </div>
                                 <div class="o_kpi_icon" style="background:rgba(199,162,58,0.15);">
                                     <i class="fa fa-calendar-check fa-lg" style="color:#C7A23A;"/>
@@ -420,16 +494,20 @@
                          t-on-click="() => this.openRecords('kpi_revenue')"
                          t-on-keydown="(ev) => this.onClickableKeydown(ev, 'kpi_revenue')">
                         <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <div class="o_kpi_label">Proposal/Revenue</div>
-                                    <div class="o_kpi_value" style="color:#C7A23A;font-size:1.5rem;line-height:1.15;" t-esc="formatAbbrev(state.kpi.revenue_proposal) + ' / ' + formatAbbrev(state.kpi.revenue_converted)"/>
-                                    <div class="o_kpi_sublabel" style="font-size:0.65rem;opacity:0.55;margin-top:2px;">proposal / converted</div>
+<div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="o_kpi_label">Proposal/Revenue</div>
+                                        <div class="o_kpi_value" style="color:#C7A23A;font-size:1.5rem;line-height:1.15;" t-esc="formatAbbrev(state.kpi.revenue_proposal) + ' / ' + formatAbbrev(state.kpi.revenue_converted)"/>
+                                        <div class="o_kpi_sublabel" style="font-size:0.65rem;opacity:0.55;margin-top:2px;">proposal / converted</div>
+                                        <div t-if="state.kpi.revenue_proposal_trend" class="o_kpi_trend">
+                                            <span t-att-class="state.kpi.revenue_proposal_trend.delta >= 0 ? 'o_trend_up' : 'o_trend_down'" t-esc="state.kpi.revenue_proposal_trend.delta >= 0 ? '▲' : '▼'"/>
+                                            <span t-esc="Math.abs(state.kpi.revenue_proposal_trend.delta) + ' ' + state.kpi.revenue_proposal_trend.period"/>
+                                        </div>
+                                    </div>
+                                    <div class="o_kpi_icon" style="background:rgba(199,162,58,0.15);">
+                                        <i class="fa fa-money fa-lg" style="color:#C7A23A;"/>
+                                    </div>
                                 </div>
-                                <div class="o_kpi_icon" style="background:rgba(199,162,58,0.15);">
-                                    <i class="fa fa-money fa-lg" style="color:#C7A23A;"/>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -447,6 +525,10 @@
                                     <div class="o_kpi_label">Lead-to-Close Rate</div>
                                     <div class="o_kpi_value" style="color:#7D7EAF;" t-esc="state.kpi.conversion_rate !== null ? state.kpi.conversion_rate + '%' : 'N/A'"/>
                                     <div class="o_kpi_sublabel" style="font-size:0.65rem;opacity:0.55;margin-top:2px;">won / (won + lost + pipeline)</div>
+                                    <div t-if="state.kpi.conversion_rate_trend" class="o_kpi_trend">
+                                        <span t-att-class="state.kpi.conversion_rate_trend.delta >= 0 ? 'o_trend_up' : 'o_trend_down'" t-esc="state.kpi.conversion_rate_trend.delta >= 0 ? '▲' : '▼'"/>
+                                        <span t-esc="Math.abs(state.kpi.conversion_rate_trend.delta) + 'pp ' + state.kpi.conversion_rate_trend.period"/>
+                                    </div>
                                 </div>
                                 <div class="o_kpi_icon" style="background:rgba(125,126,175,0.15);">
                                     <i class="fa fa-percentage fa-lg" style="color:#7D7EAF;"/>
@@ -463,6 +545,10 @@
                                     <div class="o_kpi_label">Avg Days on Market</div>
                                     <div class="o_kpi_value" style="color:#1EC198;" t-esc="state.kpi.avg_dom !== null ? state.kpi.avg_dom + 'd' : 'N/A'"/>
                                     <div class="o_kpi_sublabel" style="font-size:0.65rem;opacity:0.55;margin-top:2px;">create → close for won leads</div>
+                                    <div t-if="state.kpi.avg_dom_trend" class="o_kpi_trend">
+                                        <span t-att-class="state.kpi.avg_dom_trend.delta >= 0 ? 'o_trend_up' : 'o_trend_down'" t-esc="state.kpi.avg_dom_trend.delta >= 0 ? '▲' : '▼'"/>
+                                        <span t-esc="Math.abs(state.kpi.avg_dom_trend.delta) + 'd avg'"/>
+                                    </div>
                                 </div>
                                 <div class="o_kpi_icon" style="background:rgba(30,193,152,0.15);">
                                     <i class="fa fa-calendar fa-lg" style="color:#1EC198;"/>
@@ -479,6 +565,10 @@
                                     <div class="o_kpi_label">Avg Sale Price</div>
                                     <div class="o_kpi_value" style="color:#4DA3FF;font-size:1.3rem;line-height:1.15;" t-esc="formatCurrency(state.kpi.avg_sale_price)"/>
                                     <div class="o_kpi_sublabel" style="font-size:0.65rem;opacity:0.55;margin-top:2px;">confirmed sale orders</div>
+                                    <div t-if="state.kpi.avg_sale_price_trend" class="o_kpi_trend">
+                                        <span t-att-class="state.kpi.avg_sale_price_trend.delta >= 0 ? 'o_trend_up' : 'o_trend_down'" t-esc="state.kpi.avg_sale_price_trend.delta >= 0 ? '▲' : '▼'"/>
+                                        <span t-esc="formatCurrency(Math.abs(state.kpi.avg_sale_price_trend.delta)) + ' ' + state.kpi.avg_sale_price_trend.period"/>
+                                    </div>
                                 </div>
                                 <div class="o_kpi_icon" style="background:rgba(77,163,255,0.15);">
                                     <i class="fa fa-tag fa-lg" style="color:#4DA3FF;"/>
@@ -495,6 +585,10 @@
                                     <div class="o_kpi_label">Active Listings</div>
                                     <div class="o_kpi_value" style="color:#FFCA71;" t-esc="formatNumber(state.kpi.active_listings)"/>
                                     <div class="o_kpi_sublabel" style="font-size:0.65rem;opacity:0.55;margin-top:2px;">sale.contract active</div>
+                                    <div t-if="state.kpi.active_listings_trend" class="o_kpi_trend">
+                                        <span t-att-class="state.kpi.active_listings_trend.delta >= 0 ? 'o_trend_up' : 'o_trend_down'" t-esc="state.kpi.active_listings_trend.delta >= 0 ? '▲' : '▼'"/>
+                                        <span t-esc="Math.abs(state.kpi.active_listings_trend.delta) + ' listings'"/>
+                                    </div>
                                 </div>
                                 <div class="o_kpi_icon" style="background:rgba(255,202,113,0.15);">
                                     <i class="fa fa-building fa-lg" style="color:#FFCA71;"/>
@@ -503,9 +597,115 @@
                         </div>
                     </div>
                 </div>
+</div>
+
+            <!-- NEW: Real Estate KPI Scorecard — Expanded 5-card set -->
+            <div class="row row-cols-2 row-cols-md-5 g-3 mb-4 px-3">
+                <div class="col">
+                    <div class="card o_kpi_card o_kpi_clickable o_kpi-commission h-100" role="button" tabindex="0"
+                         t-on-click="() => this.openRecords('kpi_commission')"
+                         t-on-keydown="(ev) => this.onClickableKeydown(ev, 'kpi_commission')">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="o_kpi_label">Commission Summary</div>
+                                    <div class="o_kpi_value" t-esc="formatNumber(state.kpi.commission_summary.expected)"/>
+                                    <div t-if="state.kpi.commission_summary.trend" class="o_kpi_trend">
+                                        <span t-att-class="state.kpi.commission_summary.trend.delta >= 0 ? 'o_trend_up' : 'o_trend_down'" t-esc="state.kpi.commission_summary.trend.delta >= 0 ? '▲' : '▼'"/>
+                                        <span t-esc="Math.abs(state.kpi.commission_summary.trend.delta) + ' ' + state.kpi.commission_summary.trend.period"/>
+                                    </div>
+                                </div>
+                                <div class="o_kpi_icon" style="background:rgba(199,162,58,0.15);">
+                                    <i class="fa fa-percent fa-lg" style="color:#C7A23A;"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card o_kpi_card o_kpi_clickable o_kpi-transaction h-100" role="button" tabindex="0"
+                         t-on-click="() => this.openRecords('kpi_transaction')"
+                         t-on-keydown="(ev) => this.onClickableKeydown(ev, 'kpi_transaction')">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="o_kpi_label">Transaction Stages</div>
+                                    <div class="o_kpi_value" t-esc="formatNumber(sum(r.count for r in state.kpi.transaction_stages))"/>
+                                    <div t-if="state.kpi.transaction_stages" class="o_kpi_trend">
+                                        <span>Top: <t t-esc="state.kpi.transaction_stages[0]?.name or '—'"/></span>
+                                    </div>
+                                </div>
+                                <div class="o_kpi_icon" style="background:rgba(199,162,58,0.15);">
+                                    <i class="fa fa-level-up fa-lg" style="color:#C7A23A;"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card o_kpi_card o_kpi_clickable o_kpi-property-type h-100" role="button" tabindex="0"
+                         t-on-click="() => this.openRecords('kpi_property_type')"
+                         t-on-keydown="(ev) => this.onClickableKeydown(ev, 'kpi_property_type')">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="o_kpi_label">Property Type</div>
+                                    <div class="o_kpi_value" t-esc="formatNumber(sum(r.count for r in state.kpi.property_type_breakdown))"/>
+                                    <div t-if="state.kpi.property_type_breakdown" class="o_kpi_trend">
+                                        <span>Top: <t t-esc="state.kpi.property_type_breakdown[0]?.name or '—'"/></span>
+                                    </div>
+                                </div>
+                                <div class="o_kpi_icon" style="background:rgba(199,162,58,0.15);">
+                                    <i class="fa fa-building fa-lg" style="color:#C7A23A;"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card o_kpi_card o_kpi_clickable o_kpi-listing h-100" role="button" tabindex="0"
+                         t-on-click="() => this.openRecords('kpi_listing_activity')"
+                         t-on-keydown="(ev) => this.onClickableKeydown(ev, 'kpi_listing_activity')">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="o_kpi_label">Listing Activity</div>
+                                    <div class="o_kpi_value" t-esc="formatNumber(sum(state.kpi.listing_activity.values()))"/>
+                                    <div t-if="state.kpi.listing_activity" class="o_kpi_trend">
+                                        <span>Top: <t t-esc="list(state.kpi.listing_activity.keys())[0] or '—'"/></span>
+                                    </div>
+                                </div>
+                                <div class="o_kpi_icon" style="background:rgba(199,162,58,0.15);">
+                                    <i class="fa fa-list fa-lg" style="color:#C7A23A;"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card o_kpi_card o_kpi_clickable o_kpi-market h-100" role="button" tabindex="0"
+                         t-on-click="() => this.openRecords('kpi_market_velocity')"
+                         t-on-keydown="(ev) => this.onClickableKeydown(ev, 'kpi_market_velocity')">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="o_kpi_label">Market Velocity</div>
+                                    <div class="o_kpi_value" t-esc="state.kpi.market_velocity.velocity_pct !== null ? state.kpi.market_velocity.velocity_pct + '%' : 'N/A'"/>
+                                    <div t-if="state.kpi.market_velocity" class="o_kpi_trend">
+                                        <span t-att-class="state.kpi.market_velocity.trend === 'healthy' ? 'o_trend_up' : state.kpi.market_velocity.trend === 'warning' ? 'o_trend_down' : ''" t-esc="state.kpi.market_velocity.trend"/>
+                                        <span t-esc="state.kpi.market_velocity.opened + ' opened'"/>
+                                    </div>
+                                </div>
+                                <div class="o_kpi_icon" style="background:rgba(199,162,58,0.15);">
+                                    <i class="fa fa-speedometer fa-lg" style="color:#C7A23A;"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <!-- Qualification &amp; Gate Compliance (sgc_sales_playbook) · Leaderboard.
+            <!-- Qualification & Gate Compliance (sgc_sales_playbook) · Leaderboard.
                  Even 6/6 split - both get equal, readable space instead of the
                  leaderboard being squeezed into a KPI-card slot. -->
             <div class="row g-3 mb-4 px-3">

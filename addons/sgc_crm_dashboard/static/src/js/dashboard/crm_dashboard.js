@@ -36,6 +36,7 @@ export class CrmDashboard extends Component {
             allUsers: [],
             selectedUserId: null,
             currentUserId: null,
+            selectedDateRange: "30d",
             leaderboard: { top: [], me: null },
         });
         this.chartRefs = {
@@ -60,12 +61,12 @@ export class CrmDashboard extends Component {
         });
     }
 
-    async loadDashboard(userId) {
+    async loadDashboard(userId, dateRange) {
         this.destroyCharts();
         this.state.loading = true;
         try {
             const params = userId ? [userId] : [];
-            const data = await this.orm.call("crm.dashboard", "get_dashboard_data", params);
+            const data = await this.orm.call("crm.dashboard", "get_dashboard_data", params, dateRange);
             this.state.kpi = data.kpi;
             this.state.funnel = data.funnel;
             this.state.stages = data.stages;
@@ -110,7 +111,47 @@ export class CrmDashboard extends Component {
     async onFilterChange(ev) {
         const val = ev.target.value;
         const userId = val ? parseInt(val) : null;
-        await this.loadDashboard(userId);
+        await this.loadDashboard(userId, this.state.selectedDateRange);
+    }
+
+    async onDateRangeChange(ev) {
+        const val = ev.target.value;
+        this.state.selectedDateRange = val;
+        // Reset custom date inputs if not custom
+        if (val !== 'custom') {
+            // Clear custom inputs
+            try {
+                document.getElementById('date_range_from').value = '';
+                document.getElementById('date_range_to').value = '';
+            } catch(e) {}
+        }
+        await this.loadDashboard(this.state.selectedUserId, val);
+    }
+
+    async onCustomDateRangeChange(type) {
+        const input = document.getElementById(`date_range_${type}`);
+        if (input && input.value) {
+            // Update the state but don't reload yet
+            if (type === 'from') {
+                this.state.customDateFrom = input.value;
+            } else {
+                this.state.customDateTo = input.value;
+            }
+            // If both are set, apply the range
+            if (this.state.customDateFrom && this.state.customDateTo) {
+                const customRange = `${this.state.customDateFrom},${this.state.customDateTo}`;
+                this.state.selectedDateRange = customRange;
+                await this.loadDashboard(this.state.selectedUserId, customRange);
+            }
+        }
+    }
+
+    async onCustomDateRangeApply() {
+        if (this.state.customDateFrom && this.state.customDateTo) {
+            const customRange = `${this.state.customDateFrom},${this.state.customDateTo}`;
+            this.state.selectedDateRange = customRange;
+            await this.loadDashboard(this.state.selectedUserId, customRange);
+        }
     }
 
     async selectSalesperson(ev) {
@@ -145,7 +186,7 @@ export class CrmDashboard extends Component {
     async openRecords(kind, params) {
         try {
             const action = await this.orm.call(
-                "crm.dashboard", "open_records", [kind, params || {}, this.state.selectedUserId]
+                "crm.dashboard", "open_records", [kind, params || {}, this.state.selectedUserId, this.state.selectedDateRange]
             );
             await this.action.doAction(action);
         } catch (e) {

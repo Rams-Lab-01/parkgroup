@@ -46,6 +46,7 @@
     "assets": {
         "web.assets_backend": [
             "sgc_crm_dashboard/static/src/css/dashboard.scss",
+            "sgc_crm_dashboard/static/src/css/kpi.css",
             "sgc_crm_dashboard/static/src/js/dashboard/crm_dashboard.js",
             "sgc_crm_dashboard/static/src/xml/crm_dashboard.xml",
         ],

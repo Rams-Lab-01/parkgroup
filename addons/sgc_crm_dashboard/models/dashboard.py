@@ -34,12 +34,16 @@ class CRMDashboard(models.AbstractModel):
         return cr.fetchone() is not None
 
     @api.model
-    def _scope(self, user_id):
+    def _scope(self, user_id, date_range=None):
         """(is_admin, target_ids, lead_domain_base) for the given salesperson
         filter. Shared by get_dashboard_data (to compute the numbers) and
         open_records (to compute the domain behind a click) so the two can
         never silently diverge — the count shown and the list it opens must
         always describe the same records.
+
+        date_range, if provided, is a string like "30d" or "custom_start,custom_end"
+        applied uniformly across all KPI queries so the clicked list always
+        matches what's on screen.
         """
         is_admin = self._is_admin()
         current_user = self.env.user
@@ -57,7 +61,33 @@ class CRMDashboard(models.AbstractModel):
         if user_id:
             lead_domain_base = [("user_id", "=", user_id)]
 
-        return is_admin, target_ids, lead_domain_base
+        # Build date-range filter, applied uniformly across every KPI query
+        date_filter = ""
+        date_params = []
+        if date_range:
+            if date_range == "today":
+                date_filter = "AND l.create_date >= CURRENT_DATE"
+            elif date_range == "7d":
+                date_filter = "AND l.create_date >= CURRENT_DATE - INTERVAL '6 days'"
+            elif date_range == "30d":
+                date_filter = "AND l.create_date >= CURRENT_DATE - INTERVAL '29 days'"
+            elif date_range == "90d":
+                date_filter = "AND l.create_date >= CURRENT_DATE - INTERVAL '89 days'"
+            elif date_range == "6m":
+                date_filter = "AND l.create_date >= CURRENT_DATE - INTERVAL '179 days'"
+            elif date_range == "12m":
+                date_filter = "AND l.create_date >= CURRENT_DATE - INTERVAL '364 days'"
+            elif date_range.startswith("custom"):
+                # Expect format: "custom_start,custom_end" in ISO date strings
+                try:
+                    parts = date_range.split(",", 1)
+                    start_s, end_s = parts[0], parts[1]
+                    date_filter = f"AND l.create_date >= '{start_s}' AND l.create_date <= '{end_s}'"
+                    date_params = [start_s, end_s]
+                except Exception:
+                    pass  # gracefully fall back to no date filter
+
+        return is_admin, target_ids, lead_domain_base, date_filter, date_params
 
     @api.model
     def _stage_map(self):
@@ -100,7 +130,7 @@ class CRMDashboard(models.AbstractModel):
         }
 
     @api.model
-    def get_dashboard_data(self, user_id=None):
+    def get_dashboard_data(self, user_id=None, date_range=None):
         lead = self.env["crm.lead"]
         order = self.env["sale.order"]
         team = self.env["crm.team"]
@@ -112,7 +142,7 @@ class CRMDashboard(models.AbstractModel):
         except psycopg2.Error:
             pass
 
-        is_admin, target_ids, lead_domain_base = self._scope(user_id)
+        is_admin, target_ids, lead_domain_base, date_filter, date_params = self._scope(user_id, date_range)
         current_user = self.env.user
 
         # Get won stage ids dynamically from CRM stages
@@ -134,16 +164,27 @@ class CRMDashboard(models.AbstractModel):
                 dom.append(("user_id", "in", target_ids))
             return lead.search_count(dom)
 
-        total_leads = lead.search_count(lead_domain_base or [])
-        pipeline = lead.search_count((lead_domain_base or []) + [("active", "=", True), ("probability", ">", 0), ("probability", "<", 100)])
-        won = lead.search_count((lead_domain_base or []) + [("stage_id", "in", won_stage_ids)])
-        lost = lead.search_count((lead_domain_base or []) + ["|", ("active", "=", False), ("probability", "=", 0)])
+        # Apply the selected date window as an ORM domain for the core counts.
+        # (date_filter/date_params are SQL fragments for the raw-SQL helpers;
+        #  the ORM search_count calls below need a real Odoo domain.)
+        date_domain = self._date_range_domain(date_range)
+        base = (lead_domain_base or []) + date_domain
+        total_leads = lead.search_count(base)
+        pipeline = lead.search_count(base + [("active", "=", True), ("probability", ">", 0), ("probability", "<", 100)])
+        won = lead.search_count(base + [("stage_id", "in", won_stage_ids)])
+        lost = lead.search_count(base + ["|", ("active", "=", False), ("probability", "=", 0)])
 
         fu_user_filter, fu_params = "", []
         if user_id:
             fu_user_filter, fu_params = "AND l.user_id = %s", [user_id]
         elif not is_admin:
             fu_user_filter, fu_params = "AND l.user_id IN %s", [tuple(target_ids)]
+
+        # Apply date range filter if specified to user-filtered queries
+        if date_filter:
+            fu_user_filter = fu_user_filter + date_filter
+            if date_params:
+                fu_params = fu_params + date_params
 
         # Stage-flow KPIs resolved by name (see _stage_map). Absent stages -> 0.
         follow_up = _stage_count(sm["follow_up"])
@@ -247,17 +288,21 @@ class CRMDashboard(models.AbstractModel):
             moved_user_filter = ""
             moved_params = []
             if user_id:
-                moved_user_filter = "AND user_id = %s"
+                moved_user_filter = "AND l.user_id = %s"
                 moved_params.append(user_id)
             elif not is_admin:
-                moved_user_filter = "AND user_id IN %s"
+                moved_user_filter = "AND l.user_id IN %s"
                 moved_params.append(tuple(target_ids))
+            if date_filter:
+                moved_user_filter = moved_user_filter + date_filter
+                if date_params:
+                    moved_params = moved_params + date_params
             cr.execute(f"""
                 SELECT COUNT(*)
-                FROM crm_lead
-                WHERE active = true
-                  AND stage_id != %s
-                  AND write_date::date = CURRENT_DATE
+                FROM crm_lead l
+                WHERE l.active = true
+                  AND l.stage_id != %s
+                  AND l.write_date::date = CURRENT_DATE
                   {moved_user_filter}
             """, [new_stage_id] + moved_params)
             moved_out_of_new_today = cr.fetchone()[0] or 0
@@ -274,6 +319,11 @@ class CRMDashboard(models.AbstractModel):
         elif not is_admin:
             stage_user_filter = "AND l.user_id IN %s"
             stage_params = [tuple(target_ids)]
+        # Add date range filter if provided
+        if date_filter:
+            stage_user_filter = stage_user_filter + date_filter
+            if date_params:
+                stage_params = stage_params + date_params
 
         cr.execute(f"""
             SELECT s.id, s.name->>%s AS name,
@@ -299,11 +349,15 @@ class CRMDashboard(models.AbstractModel):
         aging_user_filter = ""
         aging_params = []
         if user_id:
-            aging_user_filter = "AND user_id = %s"
+            aging_user_filter = "AND l.user_id = %s"
             aging_params.append(user_id)
         elif not is_admin:
-            aging_user_filter = "AND user_id IN %s"
+            aging_user_filter = "AND l.user_id IN %s"
             aging_params.append(tuple(target_ids))
+        if date_filter:
+            aging_user_filter = aging_user_filter + date_filter
+            if date_params:
+                aging_params = aging_params + date_params
         cr.execute("""
             SELECT
               SUM(CASE WHEN (CURRENT_DATE - create_date::date) BETWEEN 0 AND 7 THEN 1 ELSE 0 END) AS b_0_7,
@@ -311,7 +365,7 @@ class CRMDashboard(models.AbstractModel):
               SUM(CASE WHEN (CURRENT_DATE - create_date::date) BETWEEN 31 AND 60 THEN 1 ELSE 0 END) AS b_31_60,
               SUM(CASE WHEN (CURRENT_DATE - create_date::date) BETWEEN 61 AND 90 THEN 1 ELSE 0 END) AS b_61_90,
               SUM(CASE WHEN (CURRENT_DATE - create_date::date) > 90 THEN 1 ELSE 0 END) AS b_90p
-            FROM crm_lead WHERE active = true
+            FROM crm_lead l WHERE l.active = true
               """ + aging_user_filter + """
         """, tuple(aging_params))
         row = cr.dictfetchone() or {}
@@ -324,9 +378,18 @@ class CRMDashboard(models.AbstractModel):
         ]
 
         # ─── Pipeline by Owner (concentration insight) ───────────────────
-        owner_domain = [("active", "=", True)]
+        owner_filter = ""
+        owner_params = []
         if user_id:
-            owner_domain.append(("user_id", "=", user_id))
+            owner_filter = "AND l.user_id = %s"
+            owner_params.append(user_id)
+        elif not is_admin:
+            owner_filter = "AND l.user_id IN %s"
+            owner_params.append(tuple(target_ids))
+        if date_filter:
+            owner_filter = owner_filter + date_filter
+            if date_params:
+                owner_params = owner_params + date_params
         cr.execute("""
             SELECT u.id as user_id, COALESCE(p.name, u.login) as name,
                    COUNT(l.id) as active_leads
@@ -334,12 +397,12 @@ class CRMDashboard(models.AbstractModel):
             LEFT JOIN res_partner p ON u.partner_id = p.id
             JOIN crm_lead l ON l.user_id = u.id AND l.active = true
             WHERE u.active = true AND u.id > 2
-              """ + ("AND l.user_id = %s" if user_id else "") + """
+              """ + owner_filter + """
             GROUP BY u.id, p.name, u.login
             HAVING COUNT(l.id) > 0
             ORDER BY active_leads DESC
             LIMIT 10
-        """, ([user_id] if user_id else []))
+        """, owner_params)
         owner_pipeline = [
             {"id": r["user_id"], "name": r["name"], "count": r["active_leads"]}
             for r in cr.dictfetchall()
@@ -356,6 +419,10 @@ class CRMDashboard(models.AbstractModel):
         elif not is_admin:
             source_user_filter = "AND l.user_id IN %s"
             source_params.append(tuple(target_ids))
+        if date_filter:
+            source_user_filter = source_user_filter + date_filter
+            if date_params:
+                source_params = source_params + date_params
         cr.execute("""
             SELECT
               COALESCE(NULLIF(s.name, ''), 'Unassigned') as source_name,
@@ -483,6 +550,10 @@ class CRMDashboard(models.AbstractModel):
         elif not is_admin:
             stale_lead_filter = "AND user_id IN %s"
             stale_params.append(tuple(target_ids))
+        if date_filter:
+            stale_lead_filter = stale_lead_filter + date_filter
+            if date_params:
+                stale_params = stale_params + date_params
         dead_stage_ids = sm["dead"]
         if dead_stage_ids:
             dead_sql = ",".join(map(str, dead_stage_ids))
@@ -509,6 +580,11 @@ class CRMDashboard(models.AbstractModel):
         elif not is_admin:
             user_filter = "AND l.user_id = %s"
             params = [current_user.id]
+        # Add date range filter
+        if date_filter:
+            user_filter = user_filter + date_filter
+            if date_params:
+                params = params + date_params
 
         won_stage_ids_sql = ",".join(map(str, won_stage_ids)) if won_stage_ids else "0"
 
@@ -573,17 +649,21 @@ class CRMDashboard(models.AbstractModel):
         month_user_filter = ""
         month_params = []
         if user_id:
-            month_user_filter = "AND user_id = %s"
+            month_user_filter = "AND l.user_id = %s"
             month_params = [user_id]
         elif not is_admin:
-            month_user_filter = "AND user_id IN %s"
+            month_user_filter = "AND l.user_id IN %s"
             month_params = [tuple(target_ids)]
+        if date_filter:
+            month_user_filter = month_user_filter + date_filter
+            if date_params:
+                month_params = month_params + date_params
 
         cr.execute(f"""
             SELECT TO_CHAR(create_date, 'YYYY-MM') AS month, COUNT(*) AS cnt
-            FROM crm_lead
-            WHERE active = true
-              AND create_date >= %s
+            FROM crm_lead l
+            WHERE l.active = true
+              AND l.create_date >= %s
               {month_user_filter}
             GROUP BY TO_CHAR(create_date, 'YYYY-MM')
         """, [range_start] + month_params)
@@ -596,8 +676,8 @@ class CRMDashboard(models.AbstractModel):
             SELECT TO_CHAR(date_closed, 'YYYY-MM') AS month,
                    SUM(CASE WHEN active = true AND stage_id IN %s THEN 1 ELSE 0 END) AS won,
                    SUM(CASE WHEN active = false THEN 1 ELSE 0 END) AS lost
-            FROM crm_lead
-            WHERE date_closed >= %s
+            FROM crm_lead l
+            WHERE l.date_closed >= %s
               {month_user_filter}
             GROUP BY TO_CHAR(date_closed, 'YYYY-MM')
         """, (won_stage_ids_tuple, range_start) + tuple(month_params))
@@ -661,6 +741,17 @@ class CRMDashboard(models.AbstractModel):
                     cr, confirmed_revenue, is_admin),
                 "source_conversion": self._compute_source_conversion(
                     cr, lead_domain_base, is_admin, target_ids, user_id),
+                # ─── NEW: Date-scoped Real Estate KPIs ─────────────
+                "transaction_stages": self._compute_transaction_stages(
+                    cr, lead_domain_base, is_admin, target_ids, user_id, date_filter, date_params),
+                "property_type_breakdown": self._compute_property_type_breakdown(
+                    cr, lead_domain_base, is_admin, target_ids, user_id, date_filter, date_params),
+                "listing_activity": self._compute_listing_activity(
+                    cr, lead_domain_base, is_admin, target_ids, user_id, date_filter, date_params),
+                "market_velocity": self._compute_market_velocity(
+                    cr, lead_domain_base, is_admin, target_ids, user_id, date_filter, date_params),
+                "commission_summary": self._compute_commission_summary(
+                    cr, order_user_filter),
             },
             # ─── Charts (replaces Conversion Funnel, Teams) ─────────────
             "pipeline_aging": pipeline_aging,
@@ -742,7 +833,7 @@ class CRMDashboard(models.AbstractModel):
             return 0
         try:
             return self.env["sale.contract"].search_count([
-                ("state", "in", ("draft", "sent", "sale", "done")),
+                ("state", "in", ("draft", "signed")),
             ])
         except Exception:
             return 0
@@ -772,11 +863,11 @@ class CRMDashboard(models.AbstractModel):
         Surfaces speed-to-lead — the #1 predictor of conversion in real estate."""
         user_filter, params = self._lead_user_filter(user_id, is_admin, target_ids)
         cr.execute(f"""
-            SELECT AVG(EXTRACT(EPOCH FROM (a.date - l.create_date))/3600.0) AS avg_hours
+            SELECT AVG(EXTRACT(EPOCH FROM (a.create_date - l.create_date))/3600.0) AS avg_hours
             FROM crm_lead l
             JOIN mail_activity a ON a.res_id = l.id AND a.res_model = 'crm.lead'
             WHERE l.active = true
-              AND a.date IS NOT NULL
+              AND a.create_date IS NOT NULL
               AND l.create_date IS NOT NULL
               {user_filter}
         """, params)
@@ -840,16 +931,19 @@ class CRMDashboard(models.AbstractModel):
             return []
         won_sql = ",".join(map(str, won_stage_ids))
         cr.execute(f"""
-            SELECT
-                COALESCE(NULLIF(s.name, ''), 'Unassigned') AS source_name,
-                COUNT(l.id) AS total,
-                COUNT(*) FILTER (WHERE l.stage_id IN ({won_sql})) AS won
-            FROM crm_lead l
-            LEFT JOIN utm_source s ON l.source_id = s.id
-            WHERE l.active = true
-              {user_filter}
-            GROUP BY source_name
-            HAVING COUNT(l.id) >= 3
+            SELECT source_name, total, won
+            FROM (
+                SELECT
+                    COALESCE(NULLIF(s.name, ''), 'Unassigned') AS source_name,
+                    COUNT(l.id) AS total,
+                    COUNT(*) FILTER (WHERE l.stage_id IN ({won_sql})) AS won
+                FROM crm_lead l
+                LEFT JOIN utm_source s ON l.source_id = s.id
+                WHERE l.active = true
+                  {user_filter}
+                GROUP BY source_name
+                HAVING COUNT(l.id) >= 3
+            ) sub
             ORDER BY won * 100.0 / NULLIF(total,0) DESC
             LIMIT 10
         """, params)
@@ -860,7 +954,7 @@ class CRMDashboard(models.AbstractModel):
         ]
 
     @staticmethod
-    def _lead_user_filter(user_id, is_admin, target_ids):
+    def _lead_user_filter(user_id, is_admin, target_ids, date_filter=None, date_params=None):
         """Return (SQL filter string, params list) for lead user scoping.
         Shared helper so all KPI queries use the same filter logic."""
         if user_id:
@@ -868,6 +962,39 @@ class CRMDashboard(models.AbstractModel):
         elif not is_admin:
             return "AND l.user_id IN %s", [tuple(target_ids)]
         return "", []
+
+    def _date_range_domain(self, date_range):
+        """Convert a date_range string ('7d', '30d', '90d', '6m', '12m',
+        'today', 'custom_start,end') to an Odoo domain for crm_lead
+        create_date filtering. Returns list of domain tuples."""
+        from datetime import datetime, timedelta
+        if not date_range or date_range in ("", "all"):
+            return []
+        today = fields.Date.context_today(self)
+        if date_range == "today":
+            return [("create_date", ">=", fields.Datetime.to_string(datetime.combine(today, datetime.min.time())))]
+        if date_range == "7d":
+            start = today - timedelta(days=6)
+            return [("create_date", ">=", fields.Datetime.to_string(datetime.combine(start, datetime.min.time())))]
+        if date_range == "30d":
+            start = today - timedelta(days=29)
+            return [("create_date", ">=", fields.Datetime.to_string(datetime.combine(start, datetime.min.time())))]
+        if date_range == "90d":
+            start = today - timedelta(days=89)
+            return [("create_date", ">=", fields.Datetime.to_string(datetime.combine(start, datetime.min.time())))]
+        if date_range == "6m":
+            start = today - timedelta(days=179)
+            return [("create_date", ">=", fields.Datetime.to_string(datetime.combine(start, datetime.min.time())))]
+        if date_range == "12m":
+            start = today - timedelta(days=364)
+            return [("create_date", ">=", fields.Datetime.to_string(datetime.combine(start, datetime.min.time())))]
+        if date_range.startswith("custom"):
+            try:
+                parts = date_range.split(",", 1)
+                return [("create_date", ">=", parts[0]), ("create_date", "<=", parts[1])]
+            except Exception:
+                return []
+        return []
 
     # ─── Drill-down: "what records are behind this number?" ─────────────
     # Every KPI card, qualification tile and chart segment on the
@@ -927,7 +1054,7 @@ class CRMDashboard(models.AbstractModel):
         }
 
     @api.model
-    def open_records(self, kind, params=None, user_id=None):
+    def open_records(self, kind, params=None, user_id=None, date_range=None):
         """Return an ir.actions.act_window dict for the records behind a
         dashboard KPI/chart segment.
 
@@ -935,16 +1062,21 @@ class CRMDashboard(models.AbstractModel):
         showing when the user clicked (the admin dropdown selection) so the
         opened list always matches what was on screen — the frontend passes
         state.selectedUserId on every call.
+
+        date_range, if provided, filters the opened list to the same window
+        the dashboard is showing, so click-through always shows the exact
+        records behind the displayed number.
         """
         params = params or {}
-        is_admin, target_ids, lead_domain_base = self._scope(user_id)
+        is_admin, target_ids, lead_domain_base, date_filter, date_params = self._scope(user_id, date_range)
         sm = self._stage_map()
 
         # ── Scorecard row 1 ──────────────────────────────────────────
+        date_domain = self._date_range_domain(date_range)
         if kind == "kpi_pipeline":
             return self._lead_action(_("In Pipeline"), lead_domain_base + [
                 ("active", "=", True), ("probability", ">", 0), ("probability", "<", 100),
-            ])
+            ] + date_domain)
         if kind == "kpi_new_leads_today":
             # Opens the same set the count comes from: active leads currently
             # in the New stage, scoped to the selected user filter.
@@ -956,6 +1088,7 @@ class CRMDashboard(models.AbstractModel):
                 domain.append(("user_id", "=", user_id))
             elif not is_admin:
                 domain.append(("user_id", "in", target_ids))
+            domain += date_domain
             return self._lead_action(_("New Leads Today"), domain)
         if kind == "kpi_moved_out_of_new":
             new_stage_id = sm["new"]
@@ -969,24 +1102,25 @@ class CRMDashboard(models.AbstractModel):
                 domain.append(("user_id", "=", user_id))
             elif not is_admin:
                 domain.append(("user_id", "in", target_ids))
+            domain += date_domain
             return self._lead_action(_("Moved Out of New Today"), domain)
         if kind == "kpi_won":
             won_stage_ids = self.env["crm.stage"].search([("is_won", "=", True)]).ids
-            return self._lead_action(_("Won"), lead_domain_base + [("stage_id", "in", won_stage_ids)])
+            return self._lead_action(_("Won"), lead_domain_base + [("stage_id", "in", won_stage_ids)] + date_domain)
         if kind == "kpi_lost":
             return self._lead_action(_("Lost"), lead_domain_base + [
                 "|", ("active", "=", False), ("probability", "=", 0),
-            ])
+            ] + date_domain)
 
         # ── Scorecard row 2 ──────────────────────────────────────────
         if kind == "kpi_follow_up":
-            return self._lead_action(_("Follow Up"), lead_domain_base + [("active", "=", True), ("stage_id", "=", sm["follow_up"] or 0)])
+            return self._lead_action(_("Follow Up"), lead_domain_base + [("active", "=", True), ("stage_id", "=", sm["follow_up"] or 0)] + date_domain)
         if kind == "kpi_research_done":
-            return self._lead_action(_("Qualified"), lead_domain_base + [("active", "=", True), ("stage_id", "=", sm["research_done"] or 0)])
+            return self._lead_action(_("Qualified"), lead_domain_base + [("active", "=", True), ("stage_id", "=", sm["research_done"] or 0)] + date_domain)
         if kind == "kpi_outreach_email":
-            return self._lead_action(_("Email Outreach"), lead_domain_base + [("active", "=", True), ("stage_id", "=", sm["outreach_email"] or 0)])
+            return self._lead_action(_("Email Outreach"), lead_domain_base + [("active", "=", True), ("stage_id", "=", sm["outreach_email"] or 0)] + date_domain)
         if kind == "kpi_booked":
-            return self._lead_action(_("Proposition"), lead_domain_base + [("active", "=", True), ("stage_id", "=", sm["meeting_booked"] or 0)])
+            return self._lead_action(_("Proposition"), lead_domain_base + [("active", "=", True), ("stage_id", "=", sm["meeting_booked"] or 0)] + date_domain)
         if kind == "kpi_revenue":
             # confirmed_revenue sums ALL confirmed sale.order regardless of
             # salesperson filter — mirrored here, not scoped either.
@@ -1007,13 +1141,13 @@ class CRMDashboard(models.AbstractModel):
                 ("active", "=", True),
                 "|", ("stage_id", "in", self.env["crm.stage"].search([("is_won", "=", True)]).ids),
                      ("probability", "=", 0),
-            ])
+            ] + date_domain)
         if kind == "kpi_avg_dom":
             won_stage_ids = self.env["crm.stage"].search([("is_won", "=", True)]).ids
             return self._lead_action(_("Avg Days on Market"), lead_domain_base + [
                 ("active", "=", True), ("stage_id", "in", won_stage_ids),
                 ("date_closed", "!=", False),
-            ])
+            ] + date_domain)
         if kind == "kpi_avg_sale_price":
             return {
                 "type": "ir.actions.act_window",
@@ -1034,7 +1168,57 @@ class CRMDashboard(models.AbstractModel):
                 "res_model": "sale.contract",
                 "view_mode": "list,form",
                 "views": [[False, "list"], [False, "form"]],
-                "domain": [("state", "in", ("draft", "sent", "sale", "done"))],
+                "domain": [("state", "in", ("draft", "signed"))],
+                "context": {"create": False},
+                "target": "current",
+            }
+        if kind == "kpi_commission":
+            return {
+                "type": "ir.actions.act_window",
+                "name": _("Commission Summary"),
+                "res_model": "sale.order",
+                "view_mode": "list,form",
+                "views": [[False, "list"], [False, "form"]],
+                "domain": [("state", "=", "sale")],
+                "context": {"create": False},
+                "target": "current",
+            }
+        if kind == "kpi_transaction":
+            return self._lead_action(_("Transaction Pipeline"), lead_domain_base + [
+                ("active", "=", True),
+            ] + date_domain)
+        if kind == "kpi_property_type":
+            if "sale.contract" not in self.env:
+                raise UserError(_("sale.contract model not available — install sgc_offplan_rental_property_management."))
+            return {
+                "type": "ir.actions.act_window",
+                "name": _("Property Type Breakdown"),
+                "res_model": "sale.contract",
+                "view_mode": "list,form",
+                "views": [[False, "list"], [False, "form"]],
+                "domain": [("state", "in", ("draft", "signed"))],
+                "context": {"create": False},
+                "target": "current",
+            }
+        if kind == "kpi_listing_activity":
+            return {
+                "type": "ir.actions.act_window",
+                "name": _("Listing Activity"),
+                "res_model": "property.details",
+                "view_mode": "list,form",
+                "views": [[False, "list"], [False, "form"]],
+                "domain": [],
+                "context": {"create": False},
+                "target": "current",
+            }
+        if kind == "kpi_market_velocity":
+            return {
+                "type": "ir.actions.act_window",
+                "name": _("Market Velocity"),
+                "res_model": "crm.lead",
+                "view_mode": "list,graph",
+                "views": [[False, "list"], [False, "graph"]],
+                "domain": [("active", "=", True)] + date_domain,
                 "context": {"create": False},
                 "target": "current",
             }
@@ -1043,14 +1227,14 @@ class CRMDashboard(models.AbstractModel):
         if kind == "qual_gate_pass_rate":
             return self._lead_action(_("Gateable Deals (Meeting Booked+)"), lead_domain_base + [
                 ("active", "=", True), ("stage_id.sequence", ">=", 7),
-            ])
+            ] + date_domain)
         if kind == "qual_stalled":
             stall_cutoff = fields.Datetime.to_string(datetime.now() - timedelta(weeks=3))
             return self._lead_action(_("Stalled 3+ Weeks"), lead_domain_base + [
                 ("active", "=", True),
                 ("date_last_stage_update", "!=", False),
                 ("date_last_stage_update", "<=", stall_cutoff),
-            ])
+            ] + date_domain)
         if kind == "qual_objection_conversion":
             if "sgc.lead.objection" not in self.env:
                 raise UserError(_("Objection tracking isn't installed (sgc_sales_playbook)."))
@@ -1077,41 +1261,41 @@ class CRMDashboard(models.AbstractModel):
                 ("stage_id", "in", sm["dead"] or [0]),
                 ("lost_reason_id", "=", False),
                 ("write_date", "<=", stale_cutoff_dt),
-            ])
+            ] + date_domain)
 
-        # ── Charts ─────────────────────────────────────────────────────
+        # ── Charts ─────────────────────────────────────────────
         if kind == "chart_stage":
             # "Pipeline by Stage (Active)" donut — segment identified by
             # stage name, matching the stages[] the chart already renders.
             stage_name = params.get("stage_name")
             return self._lead_action(_("Pipeline: %s", stage_name), lead_domain_base + [
                 ("active", "=", True), ("stage_id.name", "=", stage_name),
-            ])
+            ] + date_domain)
         if kind == "chart_funnel":
             # "Conversion Funnel" — all-time (active + archived) per stage,
             # matching funnel_stages' f_domain (no active filter).
             stage_name = params.get("stage_name")
             return self._lead_action(_("Funnel: %s", stage_name), lead_domain_base + [
                 ("stage_id.name", "=", stage_name),
-            ])
+            ] + date_domain)
         if kind == "chart_aging":
             bucket = params.get("bucket")
             return self._lead_action(_("Pipeline Age: %s", bucket), lead_domain_base + [
                 ("active", "=", True),
-            ] + self._aging_bucket_domain(bucket))
+            ] + self._aging_bucket_domain(bucket) + date_domain)
         if kind == "chart_owner":
             owner_id = params.get("owner_id")
             owner = self.env["res.users"].browse(owner_id)
             return self._lead_action(_("Pipeline: %s", owner.display_name), [
                 ("active", "=", True), ("user_id", "=", owner_id),
-            ])
+            ] + date_domain)
         if kind == "chart_source":
             # Matches pipeline_by_source, which collapses NULL/blank UTM
             # source into a single "Unassigned" bucket by display name.
             source_name = params.get("source_name")
             domain = lead_domain_base + [("active", "=", True)]
             domain += [("source_id", "=", False)] if source_name == "Unassigned" else [("source_id.name", "=", source_name)]
-            return self._lead_action(_("Pipeline Source: %s", source_name), domain)
+            return self._lead_action(_("Pipeline Source: %s", source_name), domain + date_domain)
         if kind == "chart_monthly":
             month = params.get("month")
             series = params.get("series")
@@ -1343,4 +1527,200 @@ class CRMDashboard(models.AbstractModel):
         return {
             "top": [_entry(u) for u in top],
             "me": _entry(me) if me and not me_in_top else None,
+        }
+
+    # ═══════════════════════════════════════════════════════════════
+    #  NEW: Date-scoped Real Estate KPI Helpers
+    # ═══════════════════════════════════════════════════════════════
+
+    @api.model
+    def _user_filter_sql(self, user_id, is_admin, target_ids):
+        """Return (SQL filter string, params) for user scoping. Shared so all
+        KPI queries use the same filter logic."""
+        if user_id:
+            return "AND l.user_id = %s", [user_id]
+        elif not is_admin:
+            return "AND l.user_id IN %s", [tuple(target_ids)]
+        return "", []
+
+    @api.model
+    def _compute_transaction_stages(self, cr, lead_domain_base, is_admin, target_ids, user_id, date_filter, date_params):
+        """Transaction pipeline stage tracker — count of active leads per
+        pipeline stage. This is the "deal tracker" real estate managers
+        need to see: how many leads are at each step of the transaction.
+        Returns list sorted by stage sequence with counts and % of open."""
+        won_stage_ids = self.env["crm.stage"].search([("is_won", "=", True)]).ids
+        user_filter, params = self._user_filter_sql(user_id, is_admin, target_ids)
+        if date_filter:
+            user_filter = user_filter + date_filter
+            params = params + (date_params or [])
+        cr.execute(f"""
+            SELECT
+                s.id, s.name->>%s as stage_name, s.sequence,
+                COUNT(l.id) FILTER (WHERE l.active = true) as count
+            FROM crm_stage s
+            LEFT JOIN crm_lead l ON l.stage_id = s.id {user_filter}
+            GROUP BY s.id, s.name, s.sequence
+            ORDER BY s.sequence
+        """, (self.env.user.lang or 'en_US',) + tuple(params))
+        rows = cr.dictfetchall()
+        total_open = sum(r["count"] for r in rows)
+        result = []
+        for r in rows:
+            pct = round((r["count"] / total_open * 100.0), 1) if total_open else 0
+            result.append({
+                "name": r["stage_name"],
+                "count": r["count"],
+                "pct": pct,
+                "seq": r["sequence"],
+            })
+        result.sort(key=lambda x: x["seq"])
+        return result
+
+    @api.model
+    def _compute_property_type_breakdown(self, cr, lead_domain_base, is_admin, target_ids, user_id, date_filter, date_params):
+        """Property type breakdown for active listings (requires
+        sgc_offplan_rental_property_management). Counts sale.contract by
+        property_type (or falls back to contract type)."""
+        if "sale.contract" not in self.env:
+            return []
+        try:
+            Contract = self.env["sale.contract"]
+        except Exception:
+            return []
+        params = []
+        date_clause = ""
+        if date_filter:
+            # date_filter is built against crm_lead.create_date; re-point at contract.
+            date_clause = " " + date_filter.replace("l.create_date", "c.create_date")
+            params = list(date_params or [])
+        cr.execute(f"""
+            SELECT
+                COALESCE(NULLIF(p.property_type, ''), 'Other') AS property_type,
+                COUNT(c.id) AS count
+            FROM sale_contract c
+            JOIN property_details p ON c.property_id = p.id
+            WHERE c.state IN ('draft', 'signed')
+              {date_clause}
+            GROUP BY p.property_type
+            ORDER BY count DESC
+        """, tuple(params))
+        return [
+            {"name": r["property_type"], "count": r["count"]}
+            for r in cr.dictfetchall()
+        ]
+
+    @api.model
+    def _compute_listing_activity(self, cr, lead_domain_base, is_admin, target_ids, user_id, date_filter, date_params):
+        """Listing activity summary — new/published/withdrawn listings over the
+        selected date range. Real estate managers need to see listing velocity,
+        not just the static "active listings" count. Measured over
+        property.details (the listings themselves)."""
+        if "property.details" not in self.env:
+            return {"new": 0, "published": 0, "withdrawn": 0}
+
+        date_clause = ""
+        params = []
+        if date_filter:
+            # date_filter is built against crm_lead.create_date; re-point at listings.
+            date_clause = " " + date_filter.replace("l.create_date", "p.create_date")
+            params = list(date_params or [])
+
+        result = {}
+        cr.execute(f"""
+            SELECT COUNT(*) FROM property_details p
+            WHERE 1 = 1 {date_clause}
+        """, tuple(params))
+        result["new"] = cr.fetchone()[0] or 0
+
+        cr.execute("SELECT COUNT(*) FROM property_details WHERE is_published_website = true")
+        result["published"] = cr.fetchone()[0] or 0
+
+        cr.execute("SELECT COUNT(*) FROM property_details WHERE active = false")
+        result["withdrawn"] = cr.fetchone()[0] or 0
+        return result
+
+    @api.model
+    def _compute_market_velocity(self, cr, lead_domain_base, is_admin, target_ids, user_id, date_filter, date_params):
+        """Market velocity — ratio of closed to opened opportunities in the
+        selected window. Shows how fast the market is moving and whether
+        inventory (leads) is building up faster than it closes."""
+        user_filter, params = self._user_filter_sql(user_id, is_admin, target_ids)
+        if date_filter:
+            user_filter = user_filter + date_filter
+            params = params + (date_params or [])
+        won_stage_ids = self.env["crm.stage"].search([("is_won", "=", True)]).ids
+        won_sql = ",".join(map(str, won_stage_ids)) if won_stage_ids else "0"
+        cr.execute(f"""
+            SELECT
+                COUNT(l.id) FILTER (WHERE l.active = true) as opened,
+                SUM(CASE WHEN l.active = true AND l.stage_id IN ({won_sql}) THEN 1 ELSE 0 END) as closed
+            FROM crm_lead l WHERE 1 = 1 {user_filter}
+        """, tuple(params))
+        row = cr.fetchone()
+        opened = row[0] or 0 if row else 0
+        closed = row[1] or 0 if row else 0
+        velocity = round(closed / opened * 100.0, 1) if opened else None
+        return {
+            "opened": opened,
+            "closed": closed,
+            "velocity_pct": velocity,
+            "trend": "healthy" if velocity and velocity >= 80 else ("warning" if velocity and velocity >= 50 else "alert"),
+        }
+
+    @api.model
+    def _compute_commission_summary(self, cr, order_user_filter):
+        """Commission summary — expected vs earned commission by salesperson.
+        Assumes a commission_rate on sale.order or a team-level commission.
+        Returns top sellers with expected/earned commission."""
+        if "sale.order" not in self.env:
+            return {"expected": 0, "earned": 0, "top_sellers": []}
+        try:
+            Order = self.env["sale.order"]
+        except Exception:
+            return {"expected": 0, "earned": 0, "top_sellers": []}
+        # Commission rate fallback: try order commission field, else team config
+        commission_rate = 0.0
+        if Order._fields.get("commission_rate"):
+            cr.execute("SELECT COALESCE(AVG(commission_rate), 0) FROM sale_order")
+            commission_rate = cr.fetchone()[0] or 0.0
+        # If no commission_rate field, try crm.team target revenue
+        cr.execute("""
+            SELECT COALESCE(SUM(amount_total), 0)
+            FROM sale_order so WHERE so.state = 'sale' {order_filter}
+        """.format(order_filter=order_user_filter if isinstance(order_user_filter, str) else ""))
+        earned_revenue = cr.fetchone()[0] or 0
+        cr.execute("""
+            SELECT COALESCE(SUM(amount_total), 0)
+            FROM sale_order so WHERE so.state IN ('draft', 'sent') {order_filter}
+        """.format(order_filter=order_user_filter if isinstance(order_user_filter, str) else ""))
+        expected_revenue = cr.fetchone()[0] or 0
+
+        top_sellers = []
+        cr.execute("""
+            SELECT u.id as user_id, COALESCE(p.name, u.login) as name,
+                   COALESCE(SUM(CASE WHEN so.state = 'sale' THEN so.amount_total ELSE 0 END), 0) as earned,
+                   COALESCE(SUM(CASE WHEN so.state IN ('draft', 'sent') THEN so.amount_total ELSE 0 END), 0) as expected
+            FROM sale_order so
+            JOIN res_users u ON so.user_id = u.id
+            LEFT JOIN res_partner p ON u.partner_id = p.id
+            WHERE so.user_id > 2
+            GROUP BY u.id, p.name, u.login
+            ORDER BY earned DESC
+            LIMIT 5
+        """)
+        for r in cr.dictfetchall():
+            top_sellers.append({
+                "id": r["user_id"],
+                "name": r["name"],
+                "earned": round(r["earned"] or 0, 2),
+                "expected": round(r["expected"] or 0, 2),
+                "earned_commission": round((r["earned"] or 0) * commission_rate / 100.0, 2),
+                "expected_commission": round((r["expected"] or 0) * commission_rate / 100.0, 2),
+            })
+        return {
+            "expected": round(expected_revenue, 2),
+            "earned": round(earned_revenue, 2),
+            "commission_rate": round(commission_rate, 2),
+            "top_sellers": top_sellers,
         }
