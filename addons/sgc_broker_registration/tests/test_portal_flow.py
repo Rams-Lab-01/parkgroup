@@ -209,6 +209,7 @@ class TestBrokerPortalFlow(HttpCase):
 
     def test_cannot_submit_until_complete_then_full_review_and_mapping(self):
         app = self._verified_app()
+        self._details(app)
         res = self._submit(app)
         self.assertIn('Missing required document', res.text)
         self.assertEqual(app.state, 'verified')
@@ -462,6 +463,7 @@ class TestBrokerPortalFlow(HttpCase):
 
     def test_agreement_report_renders(self):
         app = self._verified_app()
+        self._details(app)
         report = self.env.ref('sgc_broker_registration.action_report_broker_agreement')
         html, _fmt = report._render_qweb_html(report.report_name, app.ids)
         self.assertIn(b'BROKERAGE COOPERATION AGREEMENT', html)
