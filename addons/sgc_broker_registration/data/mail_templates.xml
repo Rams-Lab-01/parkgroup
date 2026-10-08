@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="1">
+    <data noupdate="0">
         <record id="mail_template_verification_code" model="mail.template">
             <field name="name">Broker registration: email verification code</field>
             <field name="model_id" ref="model_sgc_broker_application"/>
-            <field name="subject">Your verification code: {{ ctx.get('code') }}</field>
+            <field name="subject">Verify your email address</field>
             <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
             <field name="email_to">{{ object.email }}</field>
             <field name="auto_delete" eval="True"/>
             <field name="body_html" type="html">
 <div style="font-family: Arial, sans-serif; font-size: 14px;">
-    <p>Hello <t t-out="object.full_name"/>,</p>
-    <p>Use this code to verify your email address for broker registration
-       <b t-out="object.name"/>:</p>
+    <p>Hello,</p>
+    <p>We received a request to verify this email address for your broker registration application.</p>
+    <p>Your verification code is:</p>
     <p style="font-size: 28px; letter-spacing: 6px; font-weight: bold;" t-out="ctx.get('code')"/>
-    <p>The code is valid for <t t-out="ctx.get('ttl', 10)"/> minutes. Enter it here:
-       <a t-att-href="'%s/broker/verify/%s' % (object.get_base_url(), object.access_token)">verify my email</a>.
-       If you did not request it, ignore this email.</p>
+    <p>This code will expire in <t t-out="ctx.get('ttl', 10)"/> minutes and can only be used once.</p>
+    <p>If you did not request this verification, you can safely ignore this email.</p>
+    <p><a t-att-href="'%s/broker/verify/%s' % (object.get_base_url(), object.access_token)">verify my email</a></p>
 </div>
             </field>
         </record>

@@ -16,9 +16,9 @@ from ..models.document_type import EMIRATES
 _logger = logging.getLogger(__name__)
 _lt = LazyTranslate(__name__)
 
-REGISTER_FIELDS = ['applicant_type', 'emirate', 'company_name', 'full_name', 'email', 'phone',
-                   'street', 'city', 'po_box', 'website']
-DETAIL_FIELDS = ['company_name', 'full_name', 'phone', 'street', 'city', 'po_box', 'website',
+REGISTER_FIELDS = ['email']
+DETAIL_FIELDS = ['applicant_type', 'emirate', 'company_name', 'full_name', 'phone', 'street', 'city', 'po_box', 'website',
+                 'nationality_id',
                  'trade_license_no', 'trade_license_authority', 'orn', 'brn', 'vat_trn', 'goaml_id',
                  'emirates_id', 'passport_no', 'signatory_name', 'signatory_title',
                  'bank_name', 'iban', 'account_holder']
@@ -63,8 +63,6 @@ class BrokerRegistration(http.Controller):
 
     def _register_values(self, values=None, error=None):
         return {
-            'emirates': EMIRATES,
-            'countries': request.env['res.country'].sudo().search([]),
             'values': values or {},
             'error': error,
         }
@@ -79,6 +77,7 @@ class BrokerRegistration(http.Controller):
             'app': app, 'types': applicable, 'docs_by_type': by_type,
             'can_edit': app.state in EDITABLE_STATES, 'error': error, 'info': info,
             'emirates': dict(EMIRATES), 'today': fields.Date.context_today(app),
+            'countries': request.env['res.country'].sudo().search([]),
             'max_mb': request.env['sgc.broker.application.document'].sudo()._max_bytes() // (1024 * 1024),
         }
         vals.update(extra)
@@ -148,20 +147,9 @@ class BrokerRegistration(http.Controller):
             return request.redirect('/broker/register')
         Application = request.env['sgc.broker.application'].sudo()
         try:
-            if values.get('applicant_type') not in ('individual', 'company'):
-                raise ValidationError(_('Choose the applicant type.'))
-            if values.get('emirate') not in dict(EMIRATES):
-                raise ValidationError(_('Choose the emirate / regulator.'))
-            for key, label in (('full_name', _('Full name')), ('email', _('Email')), ('phone', _('Mobile'))):
-                if not values.get(key):
-                    raise ValidationError(_('%s is required.', label))
-            if values['applicant_type'] == 'company' and not values.get('company_name'):
-                raise ValidationError(_('Company name is required.'))
+            if not values.get('email'):
+                raise ValidationError(_('Email is required.'))
             values['email'] = normalize_email(values['email'])
-            values = Application._clean_vals(values)
-            nat = post.get('nationality_id')
-            if nat and nat.isdigit() and request.env['res.country'].sudo().browse(int(nat)).exists():
-                values['nationality_id'] = int(nat)
 
             now = fields.Datetime.now()
             if Application.search_count([('create_ip', '=', self._ip()),
@@ -278,10 +266,23 @@ class BrokerRegistration(http.Controller):
                         raise ValidationError(_('Invalid date for %s.', app._fields[key].string))
                 else:
                     vals[key] = False
+            if post.get('applicant_type') and post['applicant_type'] not in ('individual', 'company'):
+                raise ValidationError(_('Choose the applicant type.'))
+            if post.get('emirate') and post['emirate'] not in dict(EMIRATES):
+                raise ValidationError(_('Choose the emirate / regulator.'))
+            if post.get('nationality_id'):
+                nat = post['nationality_id']
+                if nat.isdigit() and request.env['res.country'].sudo().browse(int(nat)).exists():
+                    vals['nationality_id'] = int(nat)
+                else:
+                    vals['nationality_id'] = False
+            else:
+                vals['nationality_id'] = False
             vals = request.env['sgc.broker.application'].sudo()._clean_vals(vals)
             for empty_key in [k for k, v in vals.items() if v == '']:
                 vals[empty_key] = False
             app.write(vals)
+            app.message_post(body=_('Application details updated.'))
         except (ValidationError, UserError) as exc:
             return request.render('sgc_broker_registration.application_page',
                                   self._application_values(app, error=_error_text(exc)))
@@ -321,6 +322,7 @@ class BrokerRegistration(http.Controller):
                 if vals['expiry_date'] <= today:
                     raise ValidationError(_('"%s" has expired. Upload a valid document.', dtype.name))
             request.env['sgc.broker.application.document'].sudo().create(vals)
+            app.message_post(body=_('Document uploaded: %s (%s).', dtype.name, vals['filename']))
         except (ValidationError, UserError, ValueError) as exc:
             return request.render('sgc_broker_registration.application_page',
                                   self._application_values(app, error=_error_text(exc)))
@@ -337,10 +339,36 @@ class BrokerRegistration(http.Controller):
         error = None
         if app.state not in EDITABLE_STATES or doc.state == 'accepted':
             error = _('This document can no longer be removed.')
-        elif doc:
+        elif not doc:
+            error = _('Document not found.')
+        else:
+            filename = doc.filename
             doc.sudo().unlink()
+            app.message_post(body=_('Document removed: %s.', filename))
         return request.render('sgc_broker_registration.application_page',
                               self._application_values(app, error=error))
+
+    @http.route('/broker/application/<string:token>/review', type='http', auth='public', website=True,
+                sitemap=False)
+    def application_review(self, token, **kw):
+        app = self._editable_app(token)
+        if not app:
+            return request.not_found()
+        if app.state not in EDITABLE_STATES:
+            return request.render('sgc_broker_registration.application_page',
+                                  self._application_values(app, error=_('This application can no longer be changed.')))
+        missing_details = app._missing_details()
+        if app.missing_type_ids or missing_details:
+            parts = []
+            if missing_details:
+                parts.append(_('Missing details: %s', ', '.join(missing_details)))
+            if app.missing_type_ids:
+                parts.append(_('Missing documents: %s', ', '.join(app.missing_type_ids.mapped('name'))))
+            return request.render('sgc_broker_registration.application_page',
+                                  self._application_values(app, error=_('Complete all required information and documents before reviewing. %s', ' '.join(parts))))
+        app.write({'review_opened_at': fields.Datetime.now()})
+        app.message_post(body=_('Review page opened by the applicant.'))
+        return request.render('sgc_broker_registration.review_page', self._application_values(app))
 
     @http.route('/broker/application/<string:token>/submit', type='http', auth='public', website=True,
                 methods=['POST'], sitemap=False)
@@ -348,6 +376,9 @@ class BrokerRegistration(http.Controller):
         app = self._editable_app(token)
         if not app:
             return request.not_found()
+        if app.state not in EDITABLE_STATES:
+            return request.render('sgc_broker_registration.review_page',
+                                  self._application_values(app, error=_('This application can no longer be changed.')))
         try:
             declared = request.env['sgc.broker.application'].sudo()._clean_vals(
                 {'declared_name': post.get('declared_name') or ''})
@@ -359,10 +390,19 @@ class BrokerRegistration(http.Controller):
             })
             app.action_submit(ip=self._ip())
         except (ValidationError, UserError) as exc:
-            return request.render('sgc_broker_registration.application_page',
+            return request.render('sgc_broker_registration.review_page',
                                   self._application_values(app, error=_error_text(exc)))
-        return request.render('sgc_broker_registration.application_page',
-                              self._application_values(app, info=_('Application %s submitted successfully. Our compliance team usually reviews applications within about 48 hours and will contact you if anything else is needed.', app.name)))
+        return request.redirect('/broker/application/%s/thanks' % app.access_token)
+
+    @http.route('/broker/application/<string:token>/thanks', type='http', auth='public', website=True,
+                sitemap=False)
+    def application_thanks(self, token, **kw):
+        app = self._app(token)
+        if not app:
+            return request.not_found()
+        if not app.email_verified or app.state not in ('submitted', 'in_review', 'needs_info', 'approved', 'rejected'):
+            return self._redirect_for(app)
+        return request.render('sgc_broker_registration.thanks_page', {'app': app})
 
     @http.route('/broker/application/<string:token>/agreement', type='http', auth='public', website=True,
                 sitemap=False)

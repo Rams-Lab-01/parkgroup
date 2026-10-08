@@ -117,11 +117,11 @@ class SgcBrokerApplication(models.Model):
         ('individual', 'Individual broker'),
         ('company', 'Brokerage company'),
     ], required=True, default='company', tracking=True)
-    emirate = fields.Selection(EMIRATES, string='Regulator / Emirate', required=True, tracking=True)
+    emirate = fields.Selection(EMIRATES, string='Regulator / Emirate', required=False, tracking=True)
     company_name = fields.Char(string='Company / Trade Name')
-    full_name = fields.Char(string='Full Name (as in passport)', required=True)
+    full_name = fields.Char(string='Full Name (as in passport)', required=False)
     email = fields.Char(required=True, index=True, tracking=True)
-    phone = fields.Char(string='Mobile', required=True)
+    phone = fields.Char(string='Mobile', required=False)
     nationality_id = fields.Many2one('res.country', string='Nationality')
     street = fields.Char(string='Office Address')
     city = fields.Char()
@@ -179,6 +179,7 @@ class SgcBrokerApplication(models.Model):
     reviewed_at = fields.Datetime(copy=False)
     review_note = fields.Text(string='Reviewer note to applicant', copy=False)
     submitted_at = fields.Datetime(copy=False)
+    review_opened_at = fields.Datetime(copy=False, help='When the applicant opened the review screen.')
     agreement_start = fields.Date(string='Agreement Start', readonly=True, copy=False, tracking=True)
     agreement_expiry = fields.Date(string='Agreement Expiry', copy=False, tracking=True,
                                    help='Set to one year after approval; extended on renewal.')
@@ -226,7 +227,10 @@ class SgcBrokerApplication(models.Model):
             if vals['name'] == 'New':
                 vals['name'] = self.env['ir.sequence'].next_by_code('sgc.broker.application') or 'New'
             vals.setdefault('access_token', secrets.token_urlsafe(32))
-        return super().create(vals_list)
+        apps = super().create(vals_list)
+        for app in apps:
+            app.message_post(body=_('Application started for %s.', app.email))
+        return apps
 
     @api.model
     def _clean_vals(self, vals):
@@ -314,6 +318,7 @@ class SgcBrokerApplication(models.Model):
         template = self.env.ref('sgc_broker_registration.mail_template_verification_code')
         template.with_context(code=code, ttl=CODE_TTL_MINUTES).send_mail(
             self.id, force_send=True, raise_exception=False)
+        self.message_post(body=_('Verification code requested for %s.', self.email))
         return 'ok', 0
 
     def verify_code(self, code):
@@ -341,13 +346,18 @@ class SgcBrokerApplication(models.Model):
     # ------------------------------------------------------------------
     # Applicant submission
     # ------------------------------------------------------------------
-    def _validate_for_submit(self):
+    def _missing_details(self):
+        """Required application information that is still missing (labels)."""
         self.ensure_one()
-        errors = []
-        if not self.email_verified:
-            errors.append(_('Verify your email address first.'))
-        if self.state not in ('verified', 'needs_info'):
-            errors.append(_('This application can no longer be changed.'))
+        missing = []
+        if not self.applicant_type:
+            missing.append(_('Applicant type'))
+        if not self.emirate:
+            missing.append(_('Emirate / regulator'))
+        if not (self.full_name or '').strip():
+            missing.append(_('Full name'))
+        if not (self.phone or '').strip():
+            missing.append(_('Mobile'))
         if self.applicant_type == 'company':
             for field, label in (('company_name', _('Company name')), ('trade_license_no', _('Trade licence number')),
                                  ('trade_license_expiry', _('Trade licence expiry')),
@@ -355,12 +365,25 @@ class SgcBrokerApplication(models.Model):
                                  ('signatory_name', _('Authorised signatory')),
                                  ('emirates_id', _('Emirates ID'))):
                 if not self[field]:
-                    errors.append(_('%s is required.', label))
+                    missing.append(label)
         else:
             for field, label in (('brn', _('Broker registration number (BRN)')),
                                  ('emirates_id', _('Emirates ID')), ('passport_no', _('Passport number'))):
                 if not self[field]:
-                    errors.append(_('%s is required.', label))
+                    missing.append(label)
+        return missing
+
+    def _validate_for_submit(self):
+        self.ensure_one()
+        errors = []
+        if not self.email_verified:
+            errors.append(_('Verify your email address first.'))
+        if self.state not in ('verified', 'needs_info'):
+            errors.append(_('This application can no longer be changed.'))
+        for label in self._missing_details():
+            errors.append(_('%s is required.', label))
+        if not (self.email or '').strip():
+            errors.append(_('Email is required.'))
         today = fields.Date.context_today(self)
         if self.trade_license_expiry and self.trade_license_expiry <= today:
             errors.append(_('The trade licence has expired.'))

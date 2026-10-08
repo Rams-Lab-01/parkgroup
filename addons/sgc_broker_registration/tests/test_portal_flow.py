@@ -44,15 +44,13 @@ class TestBrokerPortalFlow(HttpCase):
         return self.url_open(url, data=data, files=files)
 
     def _register(self, **over):
-        data = {'applicant_type': 'company', 'emirate': 'dubai', 'company_name': 'Acme Brokers LLC',
-                'full_name': 'Jane Broker', 'email': 'jane@acme.test', 'phone': '+971 50 123 4567',
-                'street': 'Business Bay', 'city': 'Dubai'}
+        data = {'email': 'jane@acme.test'}
         data.update(over)
         return self._post('/broker/register/submit', data, '/broker/register')
 
     def _last_code(self, email):
         mail = self.env['mail.mail'].search([('email_to', 'ilike', email),
-                                             ('subject', 'ilike', 'verification code')], order='id desc', limit=1)
+                                             ('subject', 'ilike', 'Verify your email')], order='id desc', limit=1)
         self.assertTrue(mail, 'no verification mail queued')
         return re.search(r'>(\d{6})<', mail.body_html).group(1)
 
@@ -70,7 +68,8 @@ class TestBrokerPortalFlow(HttpCase):
         return app
 
     def _details(self, app, **over):
-        data = {'company_name': 'Acme Brokers LLC', 'full_name': 'Jane Broker', 'phone': '+971501234567',
+        data = {'applicant_type': 'company', 'emirate': 'dubai',
+                'company_name': 'Acme Brokers LLC', 'full_name': 'Jane Broker', 'phone': '+971501234567',
                 'emirates_id': '784-1990-1234567-1', 'trade_license_no': 'TL-998',
                 'trade_license_authority': 'DET', 'trade_license_expiry': str(fields.Date.today() + timedelta(days=300)),
                 'orn': '12345', 'signatory_name': 'Jane Broker', 'signatory_title': 'Manager',
@@ -112,16 +111,22 @@ class TestBrokerPortalFlow(HttpCase):
         app = self.Application.search([('email', '=', 'jane@acme.test')])
         self.assertEqual(app.state, 'draft')
         self.assertFalse(app.email_verified)
-        self.assertEqual(app.phone, '+971501234567')
+        self.assertFalse(app.phone)
         self.assertTrue(re.fullmatch(r'\d{6}', self._last_code('jane@acme.test')))
         self.assertNotIn(self._last_code('jane@acme.test'), app.code_hash or '')   # only a hash is stored
 
     def test_invalid_input_is_rejected_with_message(self):
-        for over, msg in (({'email': 'bad'}, 'valid email'), ({'phone': '12'}, 'digits'),
-                          ({'emirate': 'mars'}, 'emirate')):
-            res = self._register(**over)
-            self.assertIn(msg, res.text)
+        res = self._register(email='bad')
+        self.assertIn('valid email', res.text)
         self.assertFalse(self.Application.search([('email', '=', 'jane@acme.test')]))
+        # phone / emirate are validated when the details are provided (after verification)
+        app = self._verified_app()
+        res = self._post('/broker/application/%s/details' % app.access_token,
+                         {'phone': '12'}, '/broker/application/%s' % app.access_token)
+        self.assertIn('digits', res.text)
+        res = self._post('/broker/application/%s/details' % app.access_token,
+                         {'emirate': 'mars'}, '/broker/application/%s' % app.access_token)
+        self.assertIn('emirate', res.text)
 
     def test_honeypot_blocks_bots(self):
         self._register(website_hp='http://spam')
@@ -176,7 +181,7 @@ class TestBrokerPortalFlow(HttpCase):
         app = self._verified_app()
         html = self.url_open('/broker/application/%s' % app.access_token).text
         self.assertIn('/broker/application/%s/upload' % app.access_token, html)
-        self.assertIn('Submit application', html)
+        self.assertIn('Review Application', html)
         self.assertIn('Save details', html)
         self.assertNotIn('disabled="disabled"', html)
 
@@ -259,6 +264,45 @@ class TestBrokerPortalFlow(HttpCase):
             ('res_model', '=', 'res.partner'), ('res_id', '=', partner.id)])), len(app.document_ids))
         self.assertTrue(self._mail_for('approved', app.email), 'approval mail missing')
 
+    def test_review_gated_until_complete_then_success_page(self):
+        app = self._verified_app()
+        res = self.url_open('/broker/application/%s/review' % app.access_token)
+        self.assertIn('Complete all required', res.text)
+        self._details(app)
+        self._upload_all_required(app)
+        res = self.url_open('/broker/application/%s/review' % app.access_token)
+        self.assertIn('Review your application', res.text)
+        self.assertIn('Email Verified', res.text)
+        self._submit(app)
+        app.invalidate_recordset()
+        self.assertEqual(app.state, 'submitted')
+        res = self.url_open('/broker/application/%s/thanks' % app.access_token)
+        self.assertIn('Application Successfully Submitted', res.text)
+        self.assertIn(app.name, res.text)
+        self.assertIn('48 hours', res.text)
+
+    def test_duplicate_submission_is_blocked(self):
+        app = self._verified_app()
+        self._details(app)
+        self._upload_all_required(app)
+        self._submit(app)
+        app.invalidate_recordset()
+        res = self._submit(app)
+        self.assertIn('no longer', res.text)
+        self.assertEqual(self.Application.search_count([('email', '=', 'jane@acme.test')]), 1)
+
+    def test_unverified_user_cannot_open_review_or_submit(self):
+        self._register()
+        app = self.Application.search([('email', '=', 'jane@acme.test')])
+        for url in ('/broker/application/%s/review' % app.access_token,
+                    '/broker/application/%s/thanks' % app.access_token,
+                    '/broker/application/%s' % app.access_token):
+            res = self.url_open(url, allow_redirects=False)
+            self.assertIn(res.status_code, (301, 302, 303, 404))
+        res = self._post('/broker/application/%s/details' % app.access_token,
+                         {'full_name': 'X'}, '/broker/application/%s' % app.access_token)
+        self.assertEqual(res.status_code, 404)
+
     def test_request_info_then_resubmit_and_reject(self):
         app = self._verified_app()
         self._details(app)
@@ -280,16 +324,17 @@ class TestBrokerPortalFlow(HttpCase):
     def test_individual_requirements_and_existing_contact_is_reused(self):
         existing = self.env['res.partner'].create({
             'name': 'Old Jane', 'email': 'solo@acme.test', 'is_company': False})
-        app = self._verified_app(applicant_type='individual', company_name='', email='solo@acme.test',
-                                 full_name='Solo Broker', emirate='abu_dhabi')
+        app = self._verified_app(email='solo@acme.test')
+        self._post('/broker/application/%s/details' % app.access_token,
+                   {'applicant_type': 'individual', 'emirate': 'abu_dhabi',
+                    'full_name': 'Solo Broker', 'emirates_id': '784199012345671', 'passport_no': 'P123',
+                    'brn': '45678', 'phone': '0501234567', 'iban': GOOD_IBAN},
+                   '/broker/application/%s' % app.access_token)
+        app.invalidate_recordset()
         codes = set(app._required_types().mapped('code'))
         self.assertTrue({'passport', 'emirates_id', 'residence_visa', 'broker_card', 'photo',
                          'bank_letter', 'signed_agreement'} <= codes)
         self.assertNotIn('trade_license', codes)
-        self._post('/broker/application/%s/details' % app.access_token,
-                   {'full_name': 'Solo Broker', 'emirates_id': '784199012345671', 'passport_no': 'P123',
-                    'brn': '45678', 'phone': '0501234567', 'iban': GOOD_IBAN},
-                   '/broker/application/%s' % app.access_token)
         self._upload_all_required(app)
         self._submit(app, declared_name='Solo Broker')
         app = app.with_user(self.officer)
@@ -426,14 +471,16 @@ class TestBrokerPortalFlow(HttpCase):
 
     # -- hardening / abuse ------------------------------------------------
     def test_control_characters_and_oversized_input_are_refused_not_500(self):
+        app = self._verified_app()
         for over, msg in (({'full_name': 'Bad\x00Name'}, 'invalid characters'),
                           ({'full_name': 'A' * 5000}, 'too long'),
                           ({'street': 'B' * 5000}, 'too long'),
                           ({'company_name': 'x\x07y'}, 'invalid characters')):
-            res = self._register(**over)
+            res = self._post('/broker/application/%s/details' % app.access_token, over,
+                             '/broker/application/%s' % app.access_token)
             self.assertEqual(res.status_code, 200, over)
             self.assertIn(msg, res.text)
-        self.assertFalse(self.Application.search([('email', '=', 'jane@acme.test')]))
+        self.assertEqual(app.state, 'verified')
 
     def test_database_blocks_two_open_applications_for_one_email(self):
         base = {'applicant_type': 'company', 'emirate': 'dubai', 'company_name': 'X', 'full_name': 'Y',
@@ -473,7 +520,8 @@ class TestBrokerPortalFlow(HttpCase):
             doc.unlink()
 
     def test_output_is_escaped_on_portal_pages(self):
-        app = self._verified_app(full_name='<script>alert(1)</script>', company_name='<img src=x onerror=alert(2)>')
+        app = self._verified_app()
+        self._details(app, full_name='<script>alert(1)</script>', company_name='<img src=x onerror=alert(2)>')
         html = self.url_open('/broker/application/%s' % app.access_token).text
         self.assertNotIn('<script>alert(1)</script>', html)
         self.assertNotIn('<img src=x onerror=alert(2)>', html)

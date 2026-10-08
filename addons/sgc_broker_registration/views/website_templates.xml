@@ -16,8 +16,9 @@
 
                     <h2 class="h4 mt-5">How it works</h2>
                     <ol class="list-group list-group-numbered mb-4">
-                        <li class="list-group-item"><b>Register</b> - tell us who you are and which emirate regulator you are licensed with.</li>
-                        <li class="list-group-item"><b>Verify your email</b> - we send a 6-digit code.</li>
+                        <li class="list-group-item"><b>Enter your email</b> - we send you a one-time verification code.</li>
+                        <li class="list-group-item"><b>Verify your email</b> - confirm you can access the address.</li>
+                        <li class="list-group-item"><b>Complete your application</b> - tell us who you are and which emirate regulator you are licensed with.</li>
                         <li class="list-group-item"><b>Upload your documents</b> - trade licence, broker card / regulator registration and the other compliance documents below.</li>
                         <li class="list-group-item"><b>Sign the brokerage agreement online</b> and submit.</li>
                         <li class="list-group-item"><b>Our team reviews</b> every document. We may ask for corrections. On approval you become a Registered Broker; the agreement runs for one year and we remind you before it expires.</li>
