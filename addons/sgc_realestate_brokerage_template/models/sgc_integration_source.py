@@ -18,7 +18,7 @@ class SgcIntegrationSource(models.Model):
     _rec_name = "system"
 
     tenant_id = fields.Many2one(
-        "sgc.brokerage.tenant", required=True, check_company=True,
+        "sgc.brokerage.tenant", required=True,
         tracking=True,
     )
     sequence = fields.Integer(default=10)

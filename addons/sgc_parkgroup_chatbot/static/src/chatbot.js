@@ -32,6 +32,34 @@ async function boot() {
             },
         },
     });
+    showTeaser();
+}
+
+// Floating greeting above the toggle: once per browser session, hides on open/dismiss.
+function showTeaser() {
+    try {
+        if (sessionStorage.getItem('sgcChatTeaser')) {
+            return;
+        }
+        sessionStorage.setItem('sgcChatTeaser', '1');
+    } catch (e) {
+        // storage blocked: show anyway
+    }
+    setTimeout(() => {
+        const toggle = document.querySelector('.chat-window-toggle');
+        if (!toggle || document.querySelector('.chat-window')?.getBoundingClientRect().width) {
+            return;
+        }
+        const teaser = document.createElement('div');
+        teaser.className = 'sgc-chat-teaser';
+        teaser.setAttribute('role', 'status');
+        teaser.innerHTML = '<span>👋 Hi! I’m the PARK Group assistant. Need a hand?</span>' +
+            '<button type="button" aria-label="Dismiss greeting">×</button>';
+        const close = () => teaser.remove();
+        teaser.querySelector('button').addEventListener('click', close);
+        toggle.addEventListener('click', close, { once: true });
+        document.body.appendChild(teaser);
+    }, 4000);
 }
 
 if ('requestIdleCallback' in window) {

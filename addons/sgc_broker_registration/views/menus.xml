@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <menuitem id="menu_sgc_broker_root" name="Broker Registration" sequence="46"
+              web_icon="sgc_broker_registration,static/description/icon.png"
               groups="group_broker_officer"/>
     <menuitem id="menu_sgc_broker_applications" name="Applications" parent="menu_sgc_broker_root"
               action="action_sgc_broker_application" sequence="10"/>

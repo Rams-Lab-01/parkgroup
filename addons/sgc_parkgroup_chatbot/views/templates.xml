@@ -2,10 +2,10 @@
 <odoo>
     <template id="chatbot_loader" inherit_id="website.layout" name="PARK Group chatbot">
         <xpath expr="//head" position="inside">
-            <link rel="stylesheet" href="/sgc_parkgroup_chatbot/static/src/chatbot.css?v=3"/>
+            <link rel="stylesheet" href="/sgc_parkgroup_chatbot/static/src/chatbot.css?v=4"/>
         </xpath>
         <xpath expr="//body" position="inside">
-            <script type="module" src="/sgc_parkgroup_chatbot/static/src/chatbot.js?v=3"/>
+            <script type="module" src="/sgc_parkgroup_chatbot/static/src/chatbot.js?v=4"/>
         </xpath>
     </template>
 </odoo>

@@ -509,7 +509,8 @@
         </field>
     </record>
 
-    <menuitem id="main_menu_rental_management" name="Property Management" sequence="20"/>
+    <menuitem id="main_menu_rental_management" name="Property Management" sequence="20"
+              web_icon="sgc_offplan_rental_property_management,static/description/icon.png"/>
     <menuitem id="menu_property_details" name="Properties" parent="main_menu_rental_management"
         action="action_property_details" sequence="1"/>
 </odoo>

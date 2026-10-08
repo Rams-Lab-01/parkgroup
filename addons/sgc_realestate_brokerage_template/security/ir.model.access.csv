@@ -25,3 +25,4 @@ access_sgc_brokerage_incident_audit,"sgc.brokerage.incident audit",model_sgc_bro
 access_sgc_wa_log_manager,"sgc.wa_log manager",model_sgc_wa_log,group_realestate_brokerage_manager,1,1,1,1
 access_sgc_wa_log_user,"sgc.wa_log user",model_sgc_wa_log,group_realestate_brokerage_user,1,1,1,0
 access_sgc_wa_log_audit,"sgc.wa_log audit",model_sgc_wa_log,group_realestate_audit_reviewer,1,0,0,0
+access_sgc_brokerage_tenant_preflight_manager,"sgc.brokerage.tenant.preflight manager",model_sgc_brokerage_tenant_preflight,group_realestate_brokerage_manager,1,1,1,1

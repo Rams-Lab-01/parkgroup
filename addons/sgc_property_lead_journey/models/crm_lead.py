@@ -19,10 +19,10 @@ class CrmLead(models.Model):
         "sale.contract", "lead_id", string="EOI / Reservations",
         domain=[("state", "=", "eoi")])
     booking_contract_ids = fields.One2many(
-        "sale.contract", "lead_id", string="Bookings",
+        "sale.contract", "lead_id", string="Booked Contracts",
         domain=[("state", "in", ("booked", "confirmed", "spa_issued"))])
     signed_contract_ids = fields.One2many(
-        "sale.contract", "lead_id", string="Signed SPAs",
+        "sale.contract", "lead_id", string="Signed SPA Contracts",
         domain=[("state", "in", ("spa_signed", "signed", "completed"))])
 
     contract_count = fields.Integer(

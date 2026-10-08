@@ -8,6 +8,7 @@
     <menuitem id="menu_project_costing_root"
               name="Project Costing"
               sequence="85"
+              web_icon="sgc_project_costing,static/description/icon.png"
               groups="sgc_project_costing.group_project_cost_user"/>
 
     <menuitem id="menu_project_cost_milestones"
