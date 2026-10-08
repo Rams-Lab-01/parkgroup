@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!-- ============================================ -->
+        <!-- Default Monitoring Rules per CBUAE guidelines -->
+        <!-- ============================================ -->
+
+        <!-- Rule 1: CTR Threshold (AED 55,000) -->
+        <record id="rule_ctr_threshold" model="aml.monitoring.rule">
+            <field name="name">CTR Cash Threshold (AED 55,000)</field>
+            <field name="code">CTR_THRESHOLD</field>
+            <field name="description">UAE CBUAE regulation: report all cash transactions at or above AED 55,000.</field>
+            <field name="rule_type">threshold</field>
+            <field name="threshold_amount">55000</field>
+            <field name="applies_to">all</field>
+            <field name="severity">high</field>
+            <field name="auto_create_str" eval="False"/>
+        </record>
+
+        <!-- Rule 2: High-Value Property Transaction -->
+        <record id="rule_high_value_property" model="aml.monitoring.rule">
+            <field name="name">High-Value Property Transaction</field>
+            <field name="code">HV_PROPERTY</field>
+            <field name="description">Flag property transactions above AED 500,000 for enhanced review.</field>
+            <field name="rule_type">threshold</field>
+            <field name="threshold_amount">500000</field>
+            <field name="applies_to">property</field>
+            <field name="severity">medium</field>
+        </record>
+
+        <!-- Rule 3: Rapid Transaction Velocity -->
+        <record id="rule_velocity_7day" model="aml.monitoring.rule">
+            <field name="name">Rapid Transactions (5+ in 7 days)</field>
+            <field name="code">VELOCITY_7D</field>
+            <field name="description">Flag customers with 5 or more transactions within 7 days.</field>
+            <field name="rule_type">velocity</field>
+            <field name="velocity_count">5</field>
+            <field name="velocity_window_days">7</field>
+            <field name="applies_to">all</field>
+            <field name="severity">medium</field>
+        </record>
+
+        <!-- Rule 4: Structuring Detection -->
+        <record id="rule_structuring" model="aml.monitoring.rule">
+            <field name="name">Structuring Detection (&lt; CTR Threshold)</field>
+            <field name="code">STRUCTURING</field>
+            <field name="description">Detect transactions within 20% below AED 55,000 threshold — potential splitting to avoid reporting.</field>
+            <field name="rule_type">structuring</field>
+            <field name="threshold_amount">55000</field>
+            <field name="structuring_percentage">20</field>
+            <field name="applies_to">all</field>
+            <field name="severity">high</field>
+        </record>
+
+        <!-- Rule 5: Round Amount Detection -->
+        <record id="rule_round_amount" model="aml.monitoring.rule">
+            <field name="name">Suspicious Round Amounts (AED 10,000+)</field>
+            <field name="code">ROUND_AMT</field>
+            <field name="description">Flag transactions of AED 10,000+ that are exact multiples of 1,000.</field>
+            <field name="rule_type">round_amount</field>
+            <field name="threshold_amount">10000</field>
+            <field name="applies_to">all</field>
+            <field name="severity">low</field>
+        </record>
+
+        <!-- Rule 6: Monthly Velocity -->
+        <record id="rule_velocity_30day" model="aml.monitoring.rule">
+            <field name="name">Monthly Transaction Velocity (10+ in 30 days)</field>
+            <field name="code">VELOCITY_30D</field>
+            <field name="description">Flag customers with 10 or more transactions in a 30-day period.</field>
+            <field name="rule_type">velocity</field>
+            <field name="velocity_count">10</field>
+            <field name="velocity_window_days">30</field>
+            <field name="applies_to">all</field>
+            <field name="severity">medium</field>
+        </record>
+
+    </data>
+</odoo>

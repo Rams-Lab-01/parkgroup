@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="chatbot_loader" inherit_id="website.layout" name="PARK Group chatbot">
+        <xpath expr="//head" position="inside">
+            <link rel="stylesheet" href="/sgc_parkgroup_chatbot/static/src/chatbot.css"/>
+        </xpath>
+        <xpath expr="//body" position="inside">
+            <script type="module" src="/sgc_parkgroup_chatbot/static/src/chatbot.js"/>
+        </xpath>
+    </template>
+</odoo>

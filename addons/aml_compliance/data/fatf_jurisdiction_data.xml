@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ============================================================ -->
+        <!-- FATF High-Risk Jurisdictions (Black List)                     -->
+        <!-- Subject to a Call for Action — per FATF Feb 2024 update       -->
+        <!-- ============================================================ -->
+
+        <record id="fatf_iran" model="aml.fatf.jurisdiction">
+            <field name="country_id" ref="base.ir"/>
+            <field name="risk_level">black</field>
+            <field name="risk_score">100</field>
+            <field name="notes">FATF Call for Action — strategic deficiencies in AML/CFT regime. Counter-measures apply.</field>
+        </record>
+
+        <record id="fatf_dprk" model="aml.fatf.jurisdiction">
+            <field name="country_id" ref="base.kp"/>
+            <field name="risk_level">black</field>
+            <field name="risk_score">100</field>
+            <field name="notes">FATF Call for Action — proliferation financing risk. Counter-measures apply.</field>
+        </record>
+
+        <record id="fatf_myanmar" model="aml.fatf.jurisdiction">
+            <field name="country_id" ref="base.mm"/>
+            <field name="risk_level">black</field>
+            <field name="risk_score">100</field>
+            <field name="notes">FATF Call for Action — failure to address strategic deficiencies.</field>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- FATF Jurisdictions under Increased Monitoring (Grey List)      -->
+        <!-- Per FATF February 2024 plenary update                         -->
+        <!-- ============================================================ -->
+
+        <record id="fatf_bulgaria" model="aml.fatf.jurisdiction">
+            <field name="country_id" ref="base.bg"/>
+            <field name="risk_level">grey</field>
+            <field name="risk_score">60</field>
+            <field name="notes">Added Feb 2024 — deficiencies in AML/CFT supervision</field>
+        </record>
+
+        <record id="fatf_burkina_faso" model="aml.fatf.jurisdiction">
+            <field name="country_id" ref="base.bf"/>
+            <field name="risk_level">grey</field>
+            <field name="risk_score">60</field>
+            <field name="notes">Increased monitoring for AML/CFT deficiencies</field>
+        </record>
+
+        <record id="fatf_cameroon" model="aml.fatf.jurisdiction">
+            <field name="country_id" ref="base.cm"/>
+            <field name="risk_level">grey</field>
+            <field name="risk_score">60</field>
+            <field name="notes">Increased monitoring for AML/CFT deficiencies</field>
+        </record>
+
+        <record id="fatf_congo_dr" model="aml.fatf.jurisdiction">
+            <field name="country_id" ref="base.cd"/>
+            <field name="risk_level">grey</field>
+            <field name="risk_score">60</field>
+            <field name="notes">Increased monitoring for AML/CFT deficiencies</field>
+        </record>
+
+        <record id="fatf_croatia" model="aml.fatf.jurisdiction">
+            <field name="country_id" ref="base.hr"/>
+            <field name="risk_level">grey</field>
+            <field name="risk_score">50</field>
+            <field name="notes">Added Feb 2024 — deficiencies in beneficial ownership transparency</field>
+        </record>
+
+        <record id="fatf_haiti" model="aml.fatf.jurisdiction">
+            <field name="country_id" ref="base.ht"/>
+            <field name="risk_level">grey</field>
+            <field name="risk_score">60</field>
+            <field name="notes">Increased monitoring for AML/CFT deficiencies</field>
+        </record>
+
+        <record id="fatf_kenya" model="aml.fatf.jurisdiction">
+            <field name="country_id" ref="base.ke"/>
+            <field name="risk_level">grey</field>
+            <field name="risk_score">50</field>
+            <field name="notes">Increased monitoring — progress noted but deficiencies remain</field>
+        </record>
+
+        <record id="fatf_mali" model="aml.fatf.jurisdiction">
+            <field name="country_id" ref="base.ml"/>
+            <field name="risk_level">grey</field>
+            <field name="risk_score">60</field>
+            <field name="notes">Increased monitoring for AML/CFT deficiencies</field>
+        </record>
+
+        <record id="fatf_mozambique" model="aml.fatf.jurisdiction">
+            <field name="country_id" ref="base.mz"/>
+            <field name="risk_level">grey</field>
+            <field name="risk_score">60</field>
+            <field name="notes">Increased monitoring for AML/CFT deficiencies</field>
+        </record>
+
+        <record id="fatf_namibia" model="aml.fatf.jurisdiction">
+            <field name="country_id" ref="base.na"/>
+            <field name="risk_level">grey</field>
+            <field name="risk_score">50</field>
+            <field name="notes">Increased monitoring — working on AML reforms</field>
+        </record>
+
+        <record id="fatf_nigeria" model="aml.fatf.jurisdiction">
+            <field name="country_id" ref="base.ng"/>
+            <field name="risk_level">grey</field>
+            <field name="risk_score">60</field>
+            <field name="notes">Increased monitoring for AML/CFT deficiencies</field>
+        </record>
+
+        <record id="fatf_philippines" model="aml.fatf.jurisdiction">
+            <field name="country_id" ref="base.ph"/>
+            <field name="risk_level">grey</field>
+            <field name="risk_score">50</field>
+            <field name="notes">Increased monitoring — progress on proliferation financing</field>
+        </record>
+
+        <record id="fatf_senegal" model="aml.fatf.jurisdiction">
+            <field name="country_id" ref="base.sn"/>
+            <field name="risk_level">grey</field>
+            <field name="risk_score">50</field>
+            <field name="notes">Increased monitoring for AML/CFT deficiencies</field>
+        </record>
+
+        <record id="fatf_south_africa" model="aml.fatf.jurisdiction">
+            <field name="country_id" ref="base.za"/>
+            <field name="risk_level">grey</field>
+            <field name="risk_score">50</field>
+            <field name="notes">Added Feb 2023 — deficiencies in AML supervision and beneficial ownership</field>
+        </record>
+
+        <record id="fatf_south_sudan" model="aml.fatf.jurisdiction">
+            <field name="country_id" ref="base.ss"/>
+            <field name="risk_level">grey</field>
+            <field name="risk_score">70</field>
+            <field name="notes">Increased monitoring — significant AML/CFT deficiencies</field>
+        </record>
+
+        <record id="fatf_syria" model="aml.fatf.jurisdiction">
+            <field name="country_id" ref="base.sy"/>
+            <field name="risk_level">grey</field>
+            <field name="risk_score">70</field>
+            <field name="notes">Increased monitoring — strategic AML/CFT deficiencies. Also subject to UN/UAE sanctions.</field>
+        </record>
+
+        <record id="fatf_tanzania" model="aml.fatf.jurisdiction">
+            <field name="country_id" ref="base.tz"/>
+            <field name="risk_level">grey</field>
+            <field name="risk_score">50</field>
+            <field name="notes">Increased monitoring for AML/CFT deficiencies</field>
+        </record>
+
+        <record id="fatf_vietnam" model="aml.fatf.jurisdiction">
+            <field name="country_id" ref="base.vn"/>
+            <field name="risk_level">grey</field>
+            <field name="risk_score">40</field>
+            <field name="notes">Increased monitoring — making progress on action plan</field>
+        </record>
+
+        <record id="fatf_yemen" model="aml.fatf.jurisdiction">
+            <field name="country_id" ref="base.ye"/>
+            <field name="risk_level">grey</field>
+            <field name="risk_score">70</field>
+            <field name="notes">Increased monitoring — conflict zone with significant AML risks</field>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- UAE-Specific Elevated Risk Countries                           -->
+        <!-- Per CBUAE guidance for UAE real estate sector                   -->
+        <!-- ============================================================ -->
+
+        <record id="fatf_afghanistan" model="aml.fatf.jurisdiction">
+            <field name="country_id" ref="base.af"/>
+            <field name="risk_level">elevated</field>
+            <field name="risk_score">80</field>
+            <field name="notes">UAE-specific elevated risk — neighboring country with significant ML/TF risks</field>
+        </record>
+
+        <record id="fatf_iraq" model="aml.fatf.jurisdiction">
+            <field name="country_id" ref="base.iq"/>
+            <field name="risk_level">elevated</field>
+            <field name="risk_score">60</field>
+            <field name="notes">Regional elevated risk — history of sanctions evasion</field>
+        </record>
+
+        <record id="fatf_somalia" model="aml.fatf.jurisdiction">
+            <field name="country_id" ref="base.so"/>
+            <field name="risk_level">elevated</field>
+            <field name="risk_score">70</field>
+            <field name="notes">Elevated risk — limited formal financial infrastructure</field>
+        </record>
+
+    </data>
+</odoo>

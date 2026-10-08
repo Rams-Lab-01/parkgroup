@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Sequence for Risk Assessment Reference -->
+        <record id="seq_risk_assessment" model="ir.sequence">
+            <field name="name">AML Risk Assessment</field>
+            <field name="code">aml.risk.assessment</field>
+            <field name="prefix">AML/RA/%(year)s/</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequence for EDD Workflow -->
+        <record id="seq_edd_workflow" model="ir.sequence">
+            <field name="name">AML EDD Workflow</field>
+            <field name="code">aml.edd.workflow</field>
+            <field name="prefix">AML/EDD/%(year)s/</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequence for Investigation Case -->
+        <record id="seq_investigation_case" model="ir.sequence">
+            <field name="name">AML Investigation Case</field>
+            <field name="code">aml.investigation.case</field>
+            <field name="prefix">AML/CASE/%(year)s/</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

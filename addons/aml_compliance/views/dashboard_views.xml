@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- AML Compliance Dashboard                                      -->
+    <!-- Phase 5: MLRO Reporting & KPI Overview                       -->
+    <!-- ============================================================ -->
+
+    <!-- =============================== -->
+    <!-- Risk Assessment Pivot View       -->
+    <!-- =============================== -->
+    <record id="view_risk_assessment_pivot" model="ir.ui.view">
+        <field name="name">aml.risk.assessment.pivot</field>
+        <field name="model">aml.risk.assessment</field>
+        <field name="arch" type="xml">
+            <pivot string="Risk Assessment Analysis" sample="1">
+                <field name="final_risk_level" type="row"/>
+                <field name="state" type="col"/>
+                <field name="computed_risk_score" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- =============================== -->
+    <!-- Risk Assessment Graph View       -->
+    <!-- =============================== -->
+    <record id="view_risk_assessment_graph" model="ir.ui.view">
+        <field name="name">aml.risk.assessment.graph</field>
+        <field name="model">aml.risk.assessment</field>
+        <field name="arch" type="xml">
+            <graph string="Risk Assessment Distribution" type="pie" sample="1">
+                <field name="final_risk_level"/>
+                <field name="computed_risk_score" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Dashboard Action: Risk Assessments -->
+    <record id="action_dashboard_risk_assessments" model="ir.actions.act_window">
+        <field name="name">Risk Assessment Overview</field>
+        <field name="res_model">aml.risk.assessment</field>
+        <field name="view_mode">graph,pivot,list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Risk assessment dashboard
+            </p>
+        </field>
+    </record>
+
+    <!-- =============================== -->
+    <!-- Transaction Alert Pivot View     -->
+    <!-- =============================== -->
+    <record id="view_transaction_alert_pivot" model="ir.ui.view">
+        <field name="name">aml.transaction.alert.pivot</field>
+        <field name="model">aml.transaction.alert</field>
+        <field name="arch" type="xml">
+            <pivot string="Alert Analysis" sample="1">
+                <field name="severity" type="row"/>
+                <field name="state" type="col"/>
+                <field name="transaction_amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_transaction_alert_graph" model="ir.ui.view">
+        <field name="name">aml.transaction.alert.graph</field>
+        <field name="model">aml.transaction.alert</field>
+        <field name="arch" type="xml">
+            <graph string="Alert Distribution" type="bar" sample="1">
+                <field name="rule_id"/>
+                <field name="transaction_amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_dashboard_alerts" model="ir.actions.act_window">
+        <field name="name">Transaction Alert Analysis</field>
+        <field name="res_model">aml.transaction.alert</field>
+        <field name="view_mode">graph,pivot,list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Transaction alert analytics
+            </p>
+        </field>
+    </record>
+
+    <!-- =============================== -->
+    <!-- goAML Report Pivot View          -->
+    <!-- =============================== -->
+    <record id="view_goaml_report_pivot" model="ir.ui.view">
+        <field name="name">aml.goaml.report.pivot</field>
+        <field name="model">aml.goaml.report</field>
+        <field name="arch" type="xml">
+            <pivot string="goAML Report Analysis" sample="1">
+                <field name="report_type" type="row"/>
+                <field name="state" type="col"/>
+                <field name="transaction_amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_goaml_report_graph" model="ir.ui.view">
+        <field name="name">aml.goaml.report.graph</field>
+        <field name="model">aml.goaml.report</field>
+        <field name="arch" type="xml">
+            <graph string="goAML Filing Status" type="bar" sample="1">
+                <field name="report_type"/>
+                <field name="state" type="col"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_dashboard_goaml" model="ir.actions.act_window">
+        <field name="name">goAML Filing Overview</field>
+        <field name="res_model">aml.goaml.report</field>
+        <field name="view_mode">graph,pivot,list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                goAML report filing analytics
+            </p>
+        </field>
+    </record>
+
+    <!-- =============================== -->
+    <!-- Screening Results Pivot          -->
+    <!-- =============================== -->
+    <record id="view_screening_result_pivot" model="ir.ui.view">
+        <field name="name">aml.screening.result.pivot</field>
+        <field name="model">aml.screening.result</field>
+        <field name="arch" type="xml">
+            <pivot string="Screening Analysis" sample="1">
+                <field name="state" type="row"/>
+                <field name="match_source" type="col"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_screening_result_graph" model="ir.ui.view">
+        <field name="name">aml.screening.result.graph</field>
+        <field name="model">aml.screening.result</field>
+        <field name="arch" type="xml">
+            <graph string="Screening Result Distribution" type="bar" sample="1">
+                <field name="state"/>
+                <field name="match_source" type="col"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_dashboard_screening" model="ir.actions.act_window">
+        <field name="name">Screening Results Overview</field>
+        <field name="res_model">aml.screening.result</field>
+        <field name="view_mode">graph,pivot,list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Sanctions screening analytics
+            </p>
+        </field>
+    </record>
+
+    <!-- =============================== -->
+    <!-- EDD Workflow Pivot & Graph      -->
+    <!-- =============================== -->
+    <record id="view_edd_workflow_pivot" model="ir.ui.view">
+        <field name="name">aml.edd.workflow.pivot</field>
+        <field name="model">aml.edd.workflow</field>
+        <field name="arch" type="xml">
+            <pivot string="EDD Workflow Analysis" sample="1">
+                <field name="state" type="row"/>
+                <field name="conclusion" type="col"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_edd_workflow_graph" model="ir.ui.view">
+        <field name="name">aml.edd.workflow.graph</field>
+        <field name="model">aml.edd.workflow</field>
+        <field name="arch" type="xml">
+            <graph string="EDD Workflow Distribution" type="pie" sample="1">
+                <field name="state"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_dashboard_edd" model="ir.actions.act_window">
+        <field name="name">EDD Workflow Overview</field>
+        <field name="res_model">aml.edd.workflow</field>
+        <field name="view_mode">graph,pivot,list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Enhanced Due Diligence analytics
+            </p>
+        </field>
+    </record>
+
+    <!-- =============================== -->
+    <!-- Investigation Case Pivot & Graph -->
+    <!-- =============================== -->
+    <record id="view_investigation_case_pivot" model="ir.ui.view">
+        <field name="name">aml.investigation.case.pivot</field>
+        <field name="model">aml.investigation.case</field>
+        <field name="arch" type="xml">
+            <pivot string="Investigation Case Analysis" sample="1">
+                <field name="state" type="row"/>
+                <field name="severity" type="col"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_investigation_case_graph" model="ir.ui.view">
+        <field name="name">aml.investigation.case.graph</field>
+        <field name="model">aml.investigation.case</field>
+        <field name="arch" type="xml">
+            <graph string="Cases by Status" type="bar" sample="1">
+                <field name="state"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_dashboard_investigation" model="ir.actions.act_window">
+        <field name="name">Investigation Case Overview</field>
+        <field name="res_model">aml.investigation.case</field>
+        <field name="view_mode">graph,pivot,list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Investigation case analytics
+            </p>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Overdue Reviews: Server Action (quick link from dashboard)    -->
+    <!-- ============================================================ -->
+    <record id="action_overdue_reviews" model="ir.actions.act_window">
+        <field name="name">Overdue Risk Reviews</field>
+        <field name="res_model">aml.risk.assessment</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state','=','approved'),('next_review_date','&lt;=', (context_today()).strftime('%Y-%m-%d'))]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No overdue risk reviews
+            </p>
+        </field>
+    </record>
+
+    <!-- High Risk Customers (quick link) -->
+    <record id="action_high_risk_customers" model="ir.actions.act_window">
+        <field name="name">High / Very High Risk Customers</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('aml_risk_level','in',['high','very_high'])]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No high-risk customers
+            </p>
+        </field>
+    </record>
+
+    <!-- Pending Alerts (quick link) -->
+    <record id="action_pending_alerts" model="ir.actions.act_window">
+        <field name="name">Pending Alerts</field>
+        <field name="res_model">aml.transaction.alert</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state','in',['new','investigating','escalated'])]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                All alerts have been resolved
+            </p>
+        </field>
+    </record>
+
+</odoo>

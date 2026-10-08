@@ -1,0 +1,509 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Consolidated KYC Report — aml_compliance
+    =========================================================
+    Model  : kyc.application
+    Report : aml_compliance.report_consolidated_kyc
+    Purpose: Single branded PDF combining KYC profile, Risk Assessment
+             score and Sanctions Screening results for UAE DNFBP compliance
+    Author : SGC TECH AI
+    Depends: no external CSS module — styling is self-contained below.
+-->
+<odoo>
+    <data>
+
+        <!-- ============================================================ -->
+        <!--  1.  Report Action                                            -->
+        <!-- ============================================================ -->
+        <record id="action_report_consolidated_kyc" model="ir.actions.report">
+            <field name="name">Consolidated KYC Report</field>
+            <field name="model">kyc.application</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">aml_compliance.report_consolidated_kyc</field>
+            <field name="report_file">aml_compliance.report_consolidated_kyc</field>
+            <field name="print_report_name">'Consolidated_KYC_%s' % (object.kyc_id or object.id)</field>
+            <field name="binding_model_id" ref="kyc_management.model_kyc_application"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <!-- ============================================================ -->
+        <!--  2.  QWeb Template                                            -->
+        <!-- ============================================================ -->
+        <template id="report_consolidated_kyc">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="web.external_layout">
+                        <style>
+                            .document-title {
+                                text-align: center;
+                                background: linear-gradient(135deg, #10243B 0%, #1B3A5C 100%);
+                                color: #ffffff;
+                                padding: 14pt 10pt;
+                                border-radius: 4pt;
+                                margin-bottom: 10pt;
+                                -webkit-print-color-adjust: exact;
+                                print-color-adjust: exact;
+                            }
+                            hr.sgc-divider, hr.gold-divider {
+                                border: none;
+                                border-top: 2px solid #C8A24A;
+                                margin: 10pt 0;
+                            }
+                            .signature-block {
+                                border-top: 2px solid #10243B;
+                                padding-top: 8pt;
+                                margin-top: 10pt;
+                                text-align: center;
+                            }
+                            .note-box {
+                                border-left: 5px solid #C8A24A;
+                                background-color: #FAF7EE;
+                                padding: 8pt 12pt;
+                                margin: 8pt 0;
+                                font-size: 8.5pt;
+                            }
+                        </style>
+                        <div class="page">
+
+                            <!-- =========================================== -->
+                            <!-- TITLE BAND                                   -->
+                            <!-- =========================================== -->
+                            <div class="document-title text-center">
+                                <div style="font-size:16pt; font-weight:800; letter-spacing:1.2pt;">
+                                    CONSOLIDATED KYC COMPLIANCE REPORT
+                                </div>
+                                <div style="font-size:8pt; font-weight:400; margin-top:4pt; opacity:0.88;">
+                                    UAE Federal Decree-Law No. 20 of 2018 &#8212; AML/CFT Compliance Documentation
+                                </div>
+                            </div>
+
+                            <!-- Reference / date row -->
+                            <div class="row" style="margin-bottom:4pt; margin-top:2pt;">
+                                <div class="col-6">
+                                    <span style="font-size:9pt;">
+                                        <strong>KYC Reference:</strong>&#160;
+                                        <span t-field="o.kyc_id"
+                                              style="font-family:monospace; font-weight:700;"/>
+                                    </span>
+                                </div>
+                                <div class="col-3">
+                                    <span style="font-size:9pt;">
+                                        <strong>Status:</strong>&#160;
+                                        <t t-esc="dict(o._fields['state'].selection).get(o.state, o.state)"/>
+                                    </span>
+                                </div>
+                                <div class="col-3 text-end">
+                                    <span style="font-size:9pt;">
+                                        <strong>Issued:</strong>&#160;
+                                        <t t-esc="datetime.date.today().strftime('%d %B %Y')"/>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <hr class="sgc-divider"/>
+
+                            <!-- =========================================== -->
+                            <!-- SECTION 1 — PERSONAL INFORMATION            -->
+                            <!-- =========================================== -->
+                            <h3>Section 1 &#8212; Personal Information</h3>
+                            <table class="table table-sm table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <td style="width:22%;"><strong>Full Name</strong></td>
+                                        <td style="width:38%;">
+                                            <t t-esc="' '.join(filter(None, [o.first_name, o.last_name]))"/>
+                                        </td>
+                                        <td style="width:20%;"><strong>KYC ID</strong></td>
+                                        <td style="width:20%; font-family:monospace;">
+                                            <span t-field="o.kyc_id"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Date of Birth</strong></td>
+                                        <td>
+                                            <t t-if="o.date_of_birth">
+                                                <span t-field="o.date_of_birth"
+                                                      t-options='{"widget": "date"}'/>
+                                            </t>
+                                            <t t-else=""><em class="text-muted">Not provided</em></t>
+                                        </td>
+                                        <td><strong>Gender</strong></td>
+                                        <td>
+                                            <t t-esc="dict(o._fields['gender'].selection).get(o.gender, '') if o.gender else 'Not provided'"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Nationality</strong></td>
+                                        <td>
+                                            <t t-if="o.nationality_id">
+                                                <span t-field="o.nationality_id"/>
+                                            </t>
+                                            <t t-else=""><em class="text-muted">Not provided</em></t>
+                                        </td>
+                                        <td><strong>Place of Birth</strong></td>
+                                        <td>
+                                            <t t-esc="o.place_of_birth or ''"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Email</strong></td>
+                                        <td><t t-esc="o.email or ''"/></td>
+                                        <td><strong>Phone / Mobile</strong></td>
+                                        <td>
+                                            <t t-esc="o.phone or ''"/>
+                                            <t t-if="o.partner_id.phone">
+                                                &#160;/&#160;<t t-esc="o.partner_id.phone"/>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <!-- =========================================== -->
+                            <!-- SECTION 2 — IDENTIFICATION DOCUMENTS        -->
+                            <!-- =========================================== -->
+                            <h3>Section 2 &#8212; Identification Documents</h3>
+                            <table class="table table-sm table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <td style="width:25%;"><strong>Passport No.</strong></td>
+                                        <td style="width:25%;">
+                                            <t t-esc="o.passport_number or 'Not provided'"/>
+                                        </td>
+                                        <td style="width:25%;"><strong>Passport Expiry</strong></td>
+                                        <td style="width:25%;">
+                                            <t t-if="o.passport_expiry_date">
+                                                <span t-field="o.passport_expiry_date"
+                                                      t-options='{"widget": "date"}'/>
+                                            </t>
+                                            <t t-else=""><em class="text-muted">N/A</em></t>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Emirates ID</strong></td>
+                                        <td>
+                                            <t t-esc="o.emirates_id or 'Not provided'"/>
+                                        </td>
+                                        <td><strong>Residency Visa</strong></td>
+                                        <td>
+                                            <t t-esc="o.residency_visa_no or 'N/A'"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <!-- =========================================== -->
+                            <!-- SECTION 3 — ADDRESS &amp; EMPLOYMENT        -->
+                            <!-- =========================================== -->
+                            <h3>Section 3 &#8212; Address &amp; Employment</h3>
+                            <table class="table table-sm table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <td style="width:25%;"><strong>Residential Address</strong></td>
+                                        <td style="width:75%;" colspan="3">
+                                            <t t-esc="', '.join(filter(None, [o.residential_address, o.residential_city, o.residential_state, o.residential_country_id.name if o.residential_country_id else '']))"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Employment Status</strong></td>
+                                        <td>
+                                            <t t-esc="dict(o._fields['employment_status'].selection).get(o.employment_status, '') if o.employment_status else 'Not provided'"/>
+                                        </td>
+                                        <td><strong>Employer</strong></td>
+                                        <td><t t-esc="o.employer_name or 'N/A'"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Annual Income</strong></td>
+                                        <td>
+                                            <t t-if="o.annual_income">
+                                                AED&#160;<t t-esc="'{:,.2f}'.format(o.annual_income)"/>
+                                            </t>
+                                            <t t-else=""><em class="text-muted">Not disclosed</em></t>
+                                        </td>
+                                        <td><strong>Payment Method</strong></td>
+                                        <td>
+                                            <t t-esc="dict(o._fields['payment_method'].selection).get(o.payment_method, '') if o.payment_method else 'N/A'"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <!-- =========================================== -->
+                            <!-- SECTION 4 — AML/CFT DECLARATIONS            -->
+                            <!-- =========================================== -->
+                            <h3>Section 4 &#8212; AML/CFT Declarations</h3>
+                            <table class="table table-sm table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <td style="width:35%;"><strong>Purpose of Transaction</strong></td>
+                                        <td style="width:65%;" colspan="3">
+                                            <t t-esc="dict(o._fields['purpose_of_transaction'].selection).get(o.purpose_of_transaction, '') if o.purpose_of_transaction else 'Not specified'"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>PEP Status</strong></td>
+                                        <td>
+                                            <t t-esc="o.pep_details or 'Not declared'"/>
+                                        </td>
+                                        <td style="width:25%;"><strong>Source of Funds</strong></td>
+                                        <td>
+                                            <t t-if="o.source_of_funds_id">
+                                                <t t-esc="o.source_of_funds_id.name"/>
+                                            </t>
+                                            <t t-else=""><em class="text-muted">Not specified</em></t>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <hr class="gold-divider"/>
+
+                            <!-- =========================================== -->
+                            <!-- SECTION 5 — RISK ASSESSMENT SUMMARY         -->
+                            <!-- =========================================== -->
+                            <h3>Section 5 &#8212; Risk Assessment Summary</h3>
+                            <t t-set="latest_ra" t-value="o.risk_assessment_ids.filtered(lambda r: r.state in ('computed','reviewed','approved','overridden')).sorted('assessment_date', reverse=True)[:1]"/>
+                            <t t-if="latest_ra">
+                                <table class="table table-sm table-bordered">
+                                    <tbody>
+                                        <tr>
+                                            <td style="width:25%;"><strong>Assessment Ref</strong></td>
+                                            <td style="width:25%; font-family:monospace;">
+                                                <span t-field="latest_ra.name"/>
+                                            </td>
+                                            <td style="width:25%;"><strong>Assessment Date</strong></td>
+                                            <td style="width:25%;">
+                                                <t t-if="latest_ra.assessment_date">
+                                                    <span t-field="latest_ra.assessment_date"
+                                                          t-options='{"widget": "datetime"}'/>
+                                                </t>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Risk Score</strong></td>
+                                            <td>
+                                                <strong style="font-size:11pt; color:#10243B;">
+                                                    <t t-esc="'%.1f' % latest_ra.computed_risk_score"/>
+                                                </strong>
+                                            </td>
+                                            <td><strong>Risk Level</strong></td>
+                                            <td>
+                                                <t t-set="rl" t-value="latest_ra.final_risk_level or latest_ra.computed_risk_level"/>
+                                                <t t-if="rl == 'very_high'">
+                                                    <span class="badge badge-danger">VERY HIGH</span>
+                                                </t>
+                                                <t t-elif="rl == 'high'">
+                                                    <span class="badge badge-warning">HIGH</span>
+                                                </t>
+                                                <t t-elif="rl == 'medium'">
+                                                    <span class="badge badge-info">MEDIUM</span>
+                                                </t>
+                                                <t t-elif="rl == 'low'">
+                                                    <span class="badge badge-success">LOW</span>
+                                                </t>
+                                                <t t-else="">
+                                                    <em class="text-muted">Pending</em>
+                                                </t>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Assessment Type</strong></td>
+                                            <td>
+                                                <t t-esc="dict(latest_ra._fields['assessment_type'].selection).get(latest_ra.assessment_type, latest_ra.assessment_type) if latest_ra.assessment_type else ''"/>
+                                            </td>
+                                            <td><strong>Overridden</strong></td>
+                                            <td>
+                                                <t t-if="latest_ra.is_overridden">
+                                                    <span class="badge badge-warning">Yes &#8212; manual override</span>
+                                                </t>
+                                                <t t-else="">No</t>
+                                            </td>
+                                        </tr>
+                                        <t t-if="latest_ra.justification">
+                                            <tr>
+                                                <td><strong>Risk Justification</strong></td>
+                                                <td colspan="3" class="small">
+                                                    <span t-field="latest_ra.justification"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </t>
+                            <t t-else="">
+                                <div class="note-box">
+                                    <strong>&#9432;</strong>&#160;
+                                    No risk assessment has been computed for this KYC application yet.
+                                    A risk assessment is automatically triggered upon KYC approval.
+                                </div>
+                            </t>
+
+                            <hr class="gold-divider"/>
+
+                            <!-- =========================================== -->
+                            <!-- SECTION 6 — SANCTIONS SCREENING SUMMARY     -->
+                            <!-- =========================================== -->
+                            <h3>Section 6 &#8212; Sanctions Screening Summary</h3>
+                            <t t-set="screenings" t-value="o.env['aml.screening.result'].sudo().search([('partner_id','=',o.partner_id.id)], order='screening_date desc', limit=5)"/>
+                            <t t-if="screenings">
+                                <table class="table table-sm table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Reference</th>
+                                            <th>Screening Date</th>
+                                            <th>Type</th>
+                                            <th>Result</th>
+                                            <th>Reviewed By</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="screenings" t-as="sr">
+                                            <tr>
+                                                <td style="font-family:monospace; font-size:8pt;">
+                                                    <span t-field="sr.name"/>
+                                                </td>
+                                                <td>
+                                                    <t t-if="sr.screening_date">
+                                                        <span t-field="sr.screening_date"
+                                                              t-options='{"widget": "datetime"}'/>
+                                                    </t>
+                                                </td>
+                                                <td>
+                                                    <t t-esc="dict(sr._fields['screening_type'].selection).get(sr.screening_type, sr.screening_type) if sr.screening_type else ''"/>
+                                                </td>
+                                                <td>
+                                                    <t t-if="sr.state == 'cleared'">
+                                                        <span class="badge badge-success">CLEARED</span>
+                                                    </t>
+                                                    <t t-elif="sr.state == 'false_positive'">
+                                                        <span class="badge badge-info">FALSE POSITIVE</span>
+                                                    </t>
+                                                    <t t-elif="sr.state == 'match'">
+                                                        <span class="badge badge-danger">MATCH</span>
+                                                    </t>
+                                                    <t t-elif="sr.state == 'pending'">
+                                                        <span class="badge badge-warning">PENDING</span>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <t t-esc="sr.state"/>
+                                                    </t>
+                                                </td>
+                                                <td>
+                                                    <t t-if="sr.reviewed_by_id">
+                                                        <span t-field="sr.reviewed_by_id"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <em class="text-muted">&#8212;</em>
+                                                    </t>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                                <p class="xsmall text-muted">
+                                    Showing up to 5 most recent screenings.
+                                    All screenings are logged in the AML audit trail.
+                                </p>
+                            </t>
+                            <t t-else="">
+                                <div class="note-box">
+                                    <strong>&#9432;</strong>&#160;
+                                    No sanctions screening records found for this contact.
+                                    Screening is automatically triggered upon KYC approval.
+                                </div>
+                            </t>
+
+                            <hr class="gold-divider"/>
+
+                            <!-- =========================================== -->
+                            <!-- SECTION 7 — APPROVAL RECORD                 -->
+                            <!-- =========================================== -->
+                            <h3>Section 7 &#8212; KYC Approval Record</h3>
+                            <table class="table table-sm table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <td style="width:25%;"><strong>Application Status</strong></td>
+                                        <td style="width:35%;">
+                                            <t t-esc="dict(o._fields['state'].selection).get(o.state, o.state)"/>
+                                        </td>
+                                        <td style="width:20%;"><strong>Submitted</strong></td>
+                                        <td style="width:20%;">
+                                            <t t-if="o.submitted_date">
+                                                <span t-field="o.submitted_date"
+                                                      t-options='{"widget": "datetime"}'/>
+                                            </t>
+                                            <t t-else=""><em class="text-muted">N/A</em></t>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Approved / Reviewed By</strong></td>
+                                        <td>
+                                            <t t-if="o.approver_id">
+                                                <span t-field="o.approver_id"/>
+                                            </t>
+                                            <t t-else=""><em class="text-muted">N/A</em></t>
+                                        </td>
+                                        <td><strong>Decision Date</strong></td>
+                                        <td>
+                                            <t t-if="o.approval_date">
+                                                <span t-field="o.approval_date"
+                                                      t-options='{"widget": "datetime"}'/>
+                                            </t>
+                                            <t t-else=""><em class="text-muted">N/A</em></t>
+                                        </td>
+                                    </tr>
+                                    <t t-if="o.rejection_reason">
+                                        <tr>
+                                            <td><strong>Review Notes</strong></td>
+                                            <td colspan="3" class="small">
+                                                <span t-field="o.rejection_reason"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+
+                            <!-- Signature blocks -->
+                            <div class="row no-break" style="margin-top:18pt;">
+                                <div class="col-5">
+                                    <div class="signature-block">
+                                        <t t-if="o.approver_id">
+                                            <strong>
+                                                <span t-field="o.approver_id"/>
+                                            </strong><br/>
+                                        </t>
+                                        <t t-else="">
+                                            <strong>Compliance Officer</strong><br/>
+                                        </t>
+                                        <span class="xsmall">Signature &amp; Date</span>
+                                    </div>
+                                </div>
+                                <div class="col-2"><!-- spacer --></div>
+                                <div class="col-5">
+                                    <div class="signature-block">
+                                        <strong>MLRO</strong><br/>
+                                        <span class="xsmall">Money Laundering Reporting Officer</span><br/>
+                                        <span class="xsmall">Signature &amp; Date</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Legal disclaimer -->
+                            <div class="note-box no-break" style="margin-top:14pt; font-size:8pt;">
+                                <strong>Confidentiality Notice:</strong> This Consolidated KYC Report
+                                is produced for internal compliance purposes pursuant to UAE Federal
+                                Decree-Law No. 20 of 2018 and Cabinet Resolution No. 10 of 2019.
+                                It is strictly confidential and must not be disclosed to
+                                third parties without the express written authorisation of the
+                                designated MLRO. Unauthorised disclosure may constitute a violation
+                                of applicable AML/CFT legislation.
+                            </div>
+
+                        </div><!-- /.page -->
+                    </t><!-- /web.external_layout -->
+                </t><!-- /foreach docs -->
+            </t><!-- /web.html_container -->
+        </template>
+
+    </data>
+</odoo>

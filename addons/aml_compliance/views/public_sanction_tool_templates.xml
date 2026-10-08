@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <template id="public_sanction_check_page" name="Public Sanction Check Tool">
+    <t t-call="website.layout">
+      <div id="aml-sanction-tool" class="aml-tool-wrap container py-5">
+
+        <!-- Hero -->
+        <section class="aml-hero mb-4">
+          <div class="aml-hero-shine"/>
+          <p class="aml-kicker">Free AML Compliance Tool</p>
+          <h1>Sanctions Name Screening</h1>
+          <p>Enter subject details as per passport, run a sanctions check across international watchlists, then generate a printable compliance certificate.</p>
+          <div class="aml-progress-steps">
+            <span id="step_pill_1" class="is-active">1. Subject Details</span>
+            <span id="step_pill_2">2. Screening Results</span>
+            <span id="step_pill_3">3. Certificate</span>
+          </div>
+        </section>
+
+        <!-- Step 1: Subject Details (always visible) -->
+        <section id="aml_step1" class="card p-4 mb-4 aml-card aml-card-anim">
+          <h3 class="mb-1">Step 1 — Subject Details</h3>
+          <p class="text-muted small mb-3">Enter the subject's information as it appears on their passport or official ID before running the screening.</p>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label fw-semibold" for="aml_name">Full Name <span class="text-danger">*</span></label>
+              <input id="aml_name" class="form-control" type="text" placeholder="As per passport / official ID" autocomplete="off" />
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold" for="aml_dob">Date of Birth <span class="text-danger">*</span></label>
+              <input id="aml_dob" class="form-control" type="date" placeholder="YYYY-MM-DD" />
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold" for="aml_gender">Gender <span class="text-danger">*</span></label>
+              <select id="aml_gender" class="form-select">
+                <option value="">Select gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other / Not Specified</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold" for="aml_nationality">Nationality <span class="text-danger">*</span></label>
+              <input id="aml_nationality" class="form-control" type="text" placeholder="e.g. UAE, Indian, British" autocomplete="off" />
+            </div>
+            <div class="col-md-6 d-flex align-items-end">
+              <button id="aml_search_btn" class="aml-btn aml-btn-primary w-100" type="button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-1" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.099zm-5.242 1.656a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/></svg>
+                Run Sanctions Screening
+              </button>
+            </div>
+          </div>
+          <p id="aml_search_error" class="text-danger small mt-2 mb-0 d-none">All fields are required before running the screening.</p>
+        </section>
+
+        <!-- Step 2: Screening Results (hidden until search) -->
+        <section id="aml_step2" class="card p-4 mb-4 d-none aml-card aml-card-anim">
+          <h3 class="mb-1">Step 2 — Screening Results</h3>
+          <p class="text-muted small mb-3">Results from international sanctions watchlists for the screened subject.</p>
+
+          <!-- Screened subject summary -->
+          <div id="aml_subject_summary" class="aml-subject-box mb-3 d-none">
+            <div class="row g-2 text-sm">
+              <div class="col-6 col-md-3"><span class="label">Name</span><strong id="ss_name">—</strong></div>
+              <div class="col-6 col-md-3"><span class="label">Date of Birth</span><strong id="ss_dob">—</strong></div>
+              <div class="col-6 col-md-3"><span class="label">Gender</span><strong id="ss_gender">—</strong></div>
+              <div class="col-6 col-md-3"><span class="label">Nationality</span><strong id="ss_nationality">—</strong></div>
+            </div>
+          </div>
+
+          <div class="mb-3 d-flex flex-wrap align-items-center gap-2">
+            <span class="me-2 fw-semibold">Risk Level:</span>
+            <strong id="aml_risk_badge" class="risk-badge">—</strong>
+            <span id="aml_risk_caption" class="text-muted small"></span>
+          </div>
+          <div id="aml_result_summary" class="aml-result-summary d-none"/>
+          <div id="aml_match_table_wrap"></div>
+
+          <div class="mt-3 aml-actions-row">
+            <button id="aml_proceed_btn" class="aml-btn aml-btn-primary" type="button">
+              Proceed to Get Certificate →
+            </button>
+            <button id="aml_rescreen_btn" class="aml-btn aml-btn-ghost ms-2" type="button">
+              ↩ Screen Another Name
+            </button>
+          </div>
+        </section>
+
+        <!-- Step 3: Contact Details + Certificate (hidden until Step 2 complete) -->
+        <section id="aml_step3" class="card p-4 d-none aml-card aml-card-anim">
+          <h3 class="mb-1">Step 3 — Contact Details &amp; Certificate</h3>
+          <p class="text-muted small mb-3">Provide your contact details to generate a printable compliance certificate.</p>
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label fw-semibold" for="aml_person_name">Contact Name <span class="text-danger">*</span></label>
+              <input id="aml_person_name" class="form-control" type="text" placeholder="Your full name" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold" for="aml_company_name">Company Name <span class="text-danger">*</span></label>
+              <input id="aml_company_name" class="form-control" type="text" placeholder="Your company or organisation" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold" for="aml_email">Email Address <span class="text-danger">*</span></label>
+              <input id="aml_email" class="form-control" type="email" placeholder="you@company.com" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold" for="aml_mobile">Mobile Number <span class="text-danger">*</span></label>
+              <input id="aml_mobile" class="form-control" type="tel" placeholder="+971 50 000 0000" />
+            </div>
+
+            <div class="col-12">
+              <div class="aml-otp-card">
+                <div class="aml-otp-head">
+                  <strong>Email Verification</strong>
+                  <span id="aml_verify_status" class="aml-verify-pill">Not Verified</span>
+                </div>
+                <p class="text-muted small mb-2">Verify your email before generating certificate. This helps prevent abuse and improves lead quality tracking.</p>
+                <div class="row g-2">
+                  <div class="col-md-4">
+                    <button id="aml_send_otp_btn" class="aml-btn aml-btn-ghost w-100" type="button">Send Verification Code</button>
+                  </div>
+                  <div class="col-md-4">
+                    <input id="aml_otp_code" class="form-control" type="text" maxlength="6" placeholder="Enter 6-digit code" />
+                  </div>
+                  <div class="col-md-4">
+                    <button id="aml_verify_otp_btn" class="aml-btn aml-btn-primary w-100" type="button">Verify Email</button>
+                  </div>
+                </div>
+                <p id="aml_verify_msg" class="small mt-2 mb-0 d-none"></p>
+              </div>
+            </div>
+          </div>
+
+          <p id="aml_form_error" class="text-danger small mt-2 mb-0 d-none">All fields are required.</p>
+
+          <div class="mt-3 aml-actions-row">
+            <button id="aml_certificate_btn" class="aml-btn aml-btn-primary" type="button">
+              📄 Generate Compliance Certificate
+            </button>
+          </div>
+        </section>
+
+        <!-- Scanning loader overlay -->
+        <div id="aml_loader_overlay">
+          <div class="aml-loader-card">
+            <div class="aml-radar">
+              <div class="aml-radar-ring"/>
+              <div class="aml-radar-ring"/>
+              <div class="aml-radar-ring"/>
+              <div class="aml-radar-core">
+                <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="#67e8f9" viewBox="0 0 16 16">
+                  <path d="M5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.775 11.775 0 0 1-2.517 2.453 7.159 7.159 0 0 1-1.048.625c-.28.132-.581.24-.829.24s-.548-.108-.829-.24a7.158 7.158 0 0 1-1.048-.625 11.777 11.777 0 0 1-2.517-2.453C1.928 10.487.545 7.169 1.141 2.692A1.54 1.54 0 0 1 2.185 1.43 62.456 62.456 0 0 1 5.072.56z"/>
+                </svg>
+              </div>
+            </div>
+            <p class="aml-loader-title">Scanning Watchlists</p>
+            <p id="aml_loader_sub" class="aml-loader-sub">Checking against international sanctions databases…</p>
+            <div class="aml-loader-dots">
+              <span/><span/><span/><span/>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </t>
+  </template>
+</odoo>

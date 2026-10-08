@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ======================================= -->
+    <!-- Inherit KYC Application Form to add      -->
+    <!-- Risk Assessment tab and button            -->
+    <!-- ======================================= -->
+
+    <record id="view_kyc_application_form_inherit_aml" model="ir.ui.view">
+        <field name="name">kyc.application.form.inherit.aml</field>
+        <field name="model">kyc.application</field>
+        <field name="inherit_id" ref="kyc_management.view_kyc_application_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Add button_box with risk assessment smart button -->
+            <xpath expr="//sheet/div[hasclass('oe_title')]" position="before">
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_view_risk_assessments"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-shield"
+                            groups="aml_compliance.group_aml_officer">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_value">
+                                <field name="risk_assessment_count"/>
+                            </span>
+                            <span class="o_stat_text">Risk Assessments</span>
+                        </div>
+                    </button>
+                </div>
+            </xpath>
+
+            <!-- Add risk level alert banner below title -->
+            <xpath expr="//sheet/div[hasclass('oe_title')]" position="after">
+                <div class="alert alert-danger" role="alert"
+                     invisible="current_risk_level not in ('high', 'very_high')">
+                    <strong>⚠ HIGH RISK CUSTOMER</strong> — Enhanced Due Diligence (EDD) required.
+                    Risk Level: <field name="current_risk_level" widget="badge"
+                                       decoration-danger="current_risk_level == 'very_high'"
+                                       decoration-warning="current_risk_level == 'high'"/>
+                </div>
+            </xpath>
+
+            <!-- Add Risk Assessment button in header before statusbar -->
+            <xpath expr="//header/field[@name='state']" position="before">
+                <button name="action_trigger_risk_assessment"
+                        string="Run Risk Assessment"
+                        type="object"
+                        class="btn-secondary"
+                        groups="aml_compliance.group_aml_officer"/>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

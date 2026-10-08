@@ -1,0 +1,538 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Sanctions Screening Certificate — aml_compliance
+    =========================================================
+    Model  : aml.screening.result
+    Report : aml_compliance.report_screening_certificate
+    Purpose: UAE DNFBP compliance certificate — goAML / MLRO audit / FATF Rec.6
+    Author : SGC TECH AI
+    Depends: kyc_management (partner KYC fields). Styling is self-contained
+             below (no external CSS module required).
+-->
+<odoo>
+    <data>
+
+        <!-- ============================================================ -->
+        <!--  1.  Report Action                                            -->
+        <!-- ============================================================ -->
+        <record id="action_report_screening_certificate" model="ir.actions.report">
+            <field name="name">Sanctions Screening Certificate</field>
+            <field name="model">aml.screening.result</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">aml_compliance.report_screening_certificate</field>
+            <field name="report_file">aml_compliance.report_screening_certificate</field>
+            <field name="print_report_name">'Screening_Certificate_%s' % (object.name or object.id)</field>
+            <field name="binding_model_id" ref="model_aml_screening_result"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <!-- ============================================================ -->
+        <!--  2.  QWeb Template                                            -->
+        <!-- ============================================================ -->
+        <template id="report_screening_certificate">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="web.external_layout">
+                        <style>
+                            .document-title {
+                                text-align: center;
+                                background: linear-gradient(135deg, #10243B 0%, #1B3A5C 100%);
+                                color: #ffffff;
+                                padding: 14pt 10pt;
+                                border-radius: 4pt;
+                                margin-bottom: 10pt;
+                                -webkit-print-color-adjust: exact;
+                                print-color-adjust: exact;
+                            }
+                            hr.sgc-divider, hr.gold-divider {
+                                border: none;
+                                border-top: 2px solid #C8A24A;
+                                margin: 10pt 0;
+                            }
+                            .signature-block {
+                                border-top: 2px solid #10243B;
+                                padding-top: 8pt;
+                                margin-top: 10pt;
+                                text-align: center;
+                            }
+                            .note-box {
+                                border-left: 5px solid #C8A24A;
+                                background-color: #FAF7EE;
+                                padding: 8pt 12pt;
+                                margin: 8pt 0;
+                                font-size: 8.5pt;
+                            }
+                        </style>
+                        <div class="page">
+
+                            <!-- =========================================== -->
+                            <!-- CERTIFICATE TITLE BAND                       -->
+                            <!-- =========================================== -->
+                            <div class="document-title text-center">
+                                <div style="font-size:15pt; font-weight:800; letter-spacing:1.2pt;">
+                                    SANCTIONS SCREENING CERTIFICATE
+                                </div>
+                                <div style="font-size:8pt; font-weight:400; margin-top:4pt; opacity:0.88;">
+                                    Issued pursuant to UAE Federal Decree-Law No. 20 of 2018 on
+                                    Anti-Money Laundering and Combating the Financing of Terrorism
+                                </div>
+                            </div>
+
+                            <!-- Certificate reference / date row -->
+                            <div class="row" style="margin-bottom:4pt; margin-top:2pt;">
+                                <div class="col-6">
+                                    <span style="font-size:9pt;">
+                                        <strong>Certificate Reference No.:</strong>&#160;
+                                        <span t-field="o.name"
+                                              style="font-family:monospace; font-weight:700;"/>
+                                    </span>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <span style="font-size:9pt;">
+                                        <strong>Issue Date:</strong>&#160;
+                                        <t t-esc="datetime.date.today().strftime('%d %B %Y')"/>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <hr class="sgc-divider"/>
+
+                            <!-- =========================================== -->
+                            <!-- SECTION 1 — SCREENED SUBJECT                -->
+                            <!-- =========================================== -->
+                            <h3>Section 1 &#8212; Screened Subject</h3>
+                            <table class="table table-sm table-bordered">
+                                <tbody>
+                                    <!-- Row: Full Name | Customer Type -->
+                                    <tr>
+                                        <td style="width:22%;"><strong>Full Name</strong></td>
+                                        <td style="width:38%;">
+                                            <span t-field="o.partner_id"/>
+                                        </td>
+                                        <td style="width:20%;"><strong>Customer Type</strong></td>
+                                        <td style="width:20%;">
+                                            <t t-if="o.partner_id.is_company">
+                                                <span class="badge badge-info">Company / Legal Entity</span>
+                                            </t>
+                                            <t t-else="">
+                                                <span class="badge badge-info">Individual</span>
+                                            </t>
+                                        </td>
+                                    </tr>
+
+                                    <!--
+                                        KYC fields — added by kyc_management module.
+                                        Guard with _fields check; aml_compliance depends on
+                                        kyc_management so these are always present at runtime,
+                                        but the guard provides safe behaviour if ever loaded
+                                        standalone or in tests without the full dependency tree.
+                                    -->
+                                    <!-- Row: Date of Birth | Nationality -->
+                                    <tr t-if="'x_date_of_birth' in o.partner_id._fields">
+                                        <td><strong>Date of Birth</strong></td>
+                                        <td>
+                                            <t t-if="o.partner_id.x_date_of_birth">
+                                                <span t-field="o.partner_id.x_date_of_birth"
+                                                      t-options='{"widget": "date"}'/>
+                                            </t>
+                                            <t t-else="">
+                                                <em class="text-muted">Not provided</em>
+                                            </t>
+                                        </td>
+                                        <td><strong>Nationality</strong></td>
+                                        <td>
+                                            <t t-if="'x_nationality_id' in o.partner_id._fields
+                                                      and o.partner_id.x_nationality_id">
+                                                <span t-field="o.partner_id.x_nationality_id"/>
+                                            </t>
+                                            <t t-else="">
+                                                <em class="text-muted">Not provided</em>
+                                            </t>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Row: Passport No | Emirates ID -->
+                                    <tr>
+                                        <td><strong>Passport No.</strong></td>
+                                        <td>
+                                            <t t-if="'x_passport_number' in o.partner_id._fields
+                                                      and o.partner_id.x_passport_number">
+                                                <span t-field="o.partner_id.x_passport_number"
+                                                      style="font-family:monospace;"/>
+                                            </t>
+                                            <t t-else="">
+                                                <em class="text-muted">Not provided</em>
+                                            </t>
+                                        </td>
+                                        <td><strong>Emirates ID</strong></td>
+                                        <td>
+                                            <t t-if="'x_emirates_id' in o.partner_id._fields
+                                                      and o.partner_id.x_emirates_id">
+                                                <span t-field="o.partner_id.x_emirates_id"
+                                                      style="font-family:monospace;"/>
+                                            </t>
+                                            <t t-else="">
+                                                <em class="text-muted">Not provided</em>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <!-- =========================================== -->
+                            <!-- SECTION 2 — SCREENING DETAILS               -->
+                            <!-- =========================================== -->
+                            <h3>Section 2 &#8212; Screening Details</h3>
+                            <table class="table table-sm table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <td style="width:25%;"><strong>Screening Reference</strong></td>
+                                        <td style="width:35%;">
+                                            <span t-field="o.name" style="font-family:monospace;"/>
+                                        </td>
+                                        <td style="width:20%;"><strong>Screening Type</strong></td>
+                                        <td style="width:20%;">
+                                            <span t-field="o.screening_type"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Screening Date &amp; Time</strong></td>
+                                        <td colspan="3">
+                                            <span t-field="o.screening_date"
+                                                  t-options='{"widget": "datetime"}'/>
+                                            <span class="text-muted small">&#160;(UTC)</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Initiated By</strong></td>
+                                        <td>
+                                            <t t-if="o.screened_by_id">
+                                                <span t-field="o.screened_by_id"/>
+                                            </t>
+                                            <t t-else="">
+                                                <span class="text-muted">System / Automated</span>
+                                            </t>
+                                        </td>
+                                        <td><strong>Lists Screened</strong></td>
+                                        <td class="small">
+                                            <t t-if="o.lists_screened">
+                                                <span t-field="o.lists_screened"/>
+                                            </t>
+                                            <t t-else="">
+                                                <span class="text-muted">See Section 2 — Screening Method</span>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Screening Method</strong></td>
+                                        <td colspan="3" class="small">
+                                            Structured multi-attribute matching — FollowTheMoney
+                                            entity query via <strong>OpenSanctions API v2</strong>
+                                            (POST /match/{dataset}; algorithm: logic-v2) with local
+                                            Levenshtein fuzzy-match fallback (threshold &#8805; 80%).
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <!-- Lists screened (badge grid, no table to avoid table CSS) -->
+                            <p style="margin-top:6pt; margin-bottom:4pt;">
+                                <strong>Sanctions Lists Screened Against:</strong>
+                            </p>
+                            <div class="row" style="font-size:9pt; margin-bottom:4pt;">
+                                <div class="col-6" style="padding:3pt 8pt;">
+                                    <span class="badge badge-primary">UN</span>&#160;
+                                    UN Security Council Consolidated List
+                                </div>
+                                <div class="col-6" style="padding:3pt 8pt;">
+                                    <span class="badge badge-danger">UAE</span>&#160;
+                                    UAE Local Terrorist List (National Committee)
+                                </div>
+                                <div class="col-6" style="padding:3pt 8pt;">
+                                    <span class="badge badge-warning">OFAC</span>&#160;
+                                    OFAC SDN / Consolidated List (US Treasury)
+                                </div>
+                                <div class="col-6" style="padding:3pt 8pt;">
+                                    <span class="badge badge-info">EU</span>&#160;
+                                    EU Financial Sanctions List
+                                </div>
+                                <div class="col-12" style="padding:3pt 8pt;">
+                                    <span class="badge badge-success">OpenSanctions</span>&#160;
+                                    OpenSanctions Global Database (100+ sources) &#8212;
+                                    <em class="text-muted xsmall">
+                                        Via OpenSanctions API &#8212;
+                                        https://www.opensanctions.org
+                                    </em>
+                                </div>
+                            </div>
+
+                            <hr class="gold-divider"/>
+
+                            <!-- =========================================== -->
+                            <!-- SECTION 3 — SCREENING RESULT (primary block)-->
+                            <!-- =========================================== -->
+                            <h3>Section 3 &#8212; Screening Result</h3>
+
+                            <!-- ——— CLEARED / FALSE POSITIVE ——— -->
+                            <t t-if="o.state in ('cleared', 'false_positive')">
+                                <div class="no-break" style="
+                                        background-color: #1a7a3c;
+                                        color: #ffffff;
+                                        border-radius: 4pt;
+                                        padding: 12pt 18pt;
+                                        margin: 6pt 0 10pt 0;
+                                        border-left: 7px solid #0d5c2c;
+                                        -webkit-print-color-adjust: exact;
+                                        print-color-adjust: exact;">
+                                    <div style="font-size:15pt; font-weight:800; letter-spacing:0.6pt;">
+                                        &#10003;&#160; NO MATCH FOUND &#8212; CLEARED
+                                    </div>
+                                    <div style="font-size:9pt; margin-top:7pt; font-weight:400; line-height:1.5;">
+                                        The above-named subject was screened against all applicable
+                                        international and UAE sanctions lists. No sanctioned entity
+                                        matching the subject was identified.
+                                    </div>
+                                    <t t-if="o.state == 'false_positive'">
+                                        <div style="font-size:8pt; margin-top:6pt; font-style:italic;
+                                                    border-top:1px solid rgba(255,255,255,0.4);
+                                                    padding-top:5pt; opacity:0.92;">
+                                            &#9432;&#160; An initial potential match was reviewed and
+                                            formally determined to be a <strong>false positive</strong>
+                                            by the compliance officer. See Section 4 for review details
+                                            and rationale.
+                                        </div>
+                                    </t>
+                                </div>
+                            </t>
+
+                            <!-- ——— CONFIRMED MATCH ——— -->
+                            <t t-if="o.state == 'match'">
+                                <div class="no-break" style="
+                                        background-color: #8b0000;
+                                        color: #ffffff;
+                                        border-radius: 4pt;
+                                        padding: 12pt 18pt;
+                                        margin: 6pt 0 10pt 0;
+                                        border-left: 7px solid #5c0000;
+                                        -webkit-print-color-adjust: exact;
+                                        print-color-adjust: exact;">
+                                    <div style="font-size:15pt; font-weight:800; letter-spacing:0.6pt;">
+                                        &#9888;&#160; CONFIRMED MATCH DETECTED
+                                    </div>
+                                    <div style="font-size:9pt; margin-top:7pt; font-weight:400; line-height:1.5;">
+                                        A confirmed match against an international or UAE sanctions
+                                        list entry has been identified for the above-named subject.
+                                        This record must be escalated to the MLRO
+                                        <strong>immediately</strong> and the subject must be treated
+                                        as a sanctioned person/entity until further direction.
+                                    </div>
+                                </div>
+
+                                <!-- Match details table -->
+                                <table class="table table-sm table-bordered no-break"
+                                       style="margin-top:6pt;">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="4">Match Details</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td style="width:25%;"><strong>Matched Name</strong></td>
+                                            <td style="width:35%;">
+                                                <t t-if="o.matched_name">
+                                                    <span t-field="o.matched_name"
+                                                          style="font-weight:700;"/>
+                                                </t>
+                                                <t t-else="">
+                                                    <em class="text-muted">&#8212;</em>
+                                                </t>
+                                            </td>
+                                            <td style="width:20%;"><strong>Match Score</strong></td>
+                                            <td style="width:20%;">
+                                                <strong style="font-size:11pt; color:#10243B;">
+                                                    <t t-esc="'%.1f' % o.match_score"/>%
+                                                </strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>List Source</strong></td>
+                                            <td>
+                                                <t t-if="o.match_source">
+                                                    <span t-field="o.match_source"/>
+                                                </t>
+                                                <t t-else="">
+                                                    <em class="text-muted">&#8212;</em>
+                                                </t>
+                                            </td>
+                                            <td><strong>Sanctions Entry</strong></td>
+                                            <td>
+                                                <t t-if="o.sanctions_entry_id">
+                                                    <span t-field="o.sanctions_entry_id"/>
+                                                </t>
+                                                <t t-else="">
+                                                    <em class="text-muted">&#8212;</em>
+                                                </t>
+                                            </td>
+                                        </tr>
+                                        <tr t-if="o.sanctions_entry_id
+                                                   and o.sanctions_entry_id.un_reference">
+                                            <td>
+                                                <strong>OpenSanctions Entity ID</strong>
+                                            </td>
+                                            <td>
+                                                <span t-field="o.sanctions_entry_id.un_reference"
+                                                      style="font-family:monospace;
+                                                             font-weight:700;"/>
+                                            </td>
+                                            <td><strong>UN Reference</strong></td>
+                                            <td>
+                                                <span t-field="o.sanctions_entry_id.un_reference"
+                                                      style="font-family:monospace;"/>
+                                            </td>
+                                        </tr>
+                                        <tr t-if="o.sanctions_entry_id
+                                                   and o.sanctions_entry_id.un_reference">
+                                            <td><strong>OpenSanctions URL</strong></td>
+                                            <td colspan="3" class="xsmall"
+                                                style="font-family:monospace; word-break:break-all;">
+                                                <t t-esc="'https://www.opensanctions.org/entities/'
+                                                          + (o.sanctions_entry_id.un_reference or '')"/>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </t>
+
+                            <!-- ——— PENDING REVIEW ——— -->
+                            <t t-if="o.state == 'pending'">
+                                <div class="no-break" style="
+                                        background-color: #996600;
+                                        color: #ffffff;
+                                        border-radius: 4pt;
+                                        padding: 12pt 18pt;
+                                        margin: 6pt 0 10pt 0;
+                                        border-left: 7px solid #664400;
+                                        -webkit-print-color-adjust: exact;
+                                        print-color-adjust: exact;">
+                                    <div style="font-size:15pt; font-weight:800; letter-spacing:0.6pt;">
+                                        &#8987;&#160; PENDING REVIEW
+                                    </div>
+                                    <div style="font-size:9pt; margin-top:7pt; font-weight:400; line-height:1.5;">
+                                        This screening result is currently under review by the
+                                        compliance team. A final determination has not yet been
+                                        recorded. This certificate is issued as an interim record
+                                        only and must not be accepted as a final compliance
+                                        clearance.
+                                    </div>
+                                </div>
+                            </t>
+
+                            <!-- =========================================== -->
+                            <!-- SECTION 4 — REVIEW AND SIGN-OFF             -->
+                            <!-- =========================================== -->
+                            <h3>Section 4 &#8212; Review &amp; Sign-Off</h3>
+                            <table class="table table-sm table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <td style="width:25%;"><strong>Reviewed By</strong></td>
+                                        <td style="width:35%;">
+                                            <t t-if="o.reviewed_by_id">
+                                                <span t-field="o.reviewed_by_id"/>
+                                            </t>
+                                            <t t-else="">
+                                                <em class="text-muted">Pending assignment</em>
+                                            </t>
+                                        </td>
+                                        <td style="width:20%;"><strong>Review Date</strong></td>
+                                        <td style="width:20%;">
+                                            <t t-if="o.review_date">
+                                                <span t-field="o.review_date"
+                                                      t-options='{"widget": "datetime"}'/>
+                                            </t>
+                                            <t t-else="">
+                                                <em class="text-muted">Pending</em>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Review Notes</strong></td>
+                                        <td colspan="3">
+                                            <t t-if="o.review_notes">
+                                                <span t-field="o.review_notes"/>
+                                            </t>
+                                            <t t-else="">
+                                                <em class="text-muted">No notes recorded.</em>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <!-- Signature blocks — Bootstrap grid + global .signature-block class -->
+                            <div class="row no-break" style="margin-top:18pt;">
+                                <div class="col-5">
+                                    <div class="signature-block">
+                                        <strong>Compliance Officer</strong><br/>
+                                        <span class="xsmall">Name, Signature &amp; Date</span>
+                                    </div>
+                                </div>
+                                <div class="col-2">
+                                    <!-- spacer -->
+                                </div>
+                                <div class="col-5">
+                                    <div class="signature-block">
+                                        <strong>MLRO</strong><br/>
+                                        <span class="xsmall">Money Laundering Reporting Officer</span><br/>
+                                        <span class="xsmall">Name, Signature &amp; Date</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- =========================================== -->
+                            <!-- SECTION 5 — REGULATORY REFERENCE BOX        -->
+                            <!-- =========================================== -->
+                            <div class="note-box no-break" style="margin-top:16pt;">
+                                <strong style="font-size:8.5pt;">
+                                    Regulatory Compliance Reference
+                                </strong>
+                                <p class="xsmall" style="margin-top:4pt; margin-bottom:2pt;">
+                                    This screening was conducted in compliance with:
+                                </p>
+                                <ul style="margin: 2pt 0 4pt 16pt; padding:0;
+                                           font-size:8pt; line-height:1.7;">
+                                    <li>
+                                        UAE Federal Decree-Law No. 20 of 2018 (AML/CFT Law)
+                                    </li>
+                                    <li>
+                                        Cabinet Decision No. 10 of 2019
+                                        (Implementing Regulation of the AML/CFT Law)
+                                    </li>
+                                    <li>
+                                        FATF Recommendation 6 &#8212;
+                                        Targeted Financial Sanctions related to Terrorism and
+                                        Terrorist Financing
+                                    </li>
+                                    <li>
+                                        CBUAE Guidance for Designated Non-Financial Businesses
+                                        and Professions (DNFBPs)
+                                    </li>
+                                </ul>
+                                <p class="xsmall" style="margin-top:4pt; margin-bottom:0;">
+                                    Sanctions data sourced from
+                                    <strong>OpenSanctions</strong>
+                                    (opensanctions.org) &#8212; covering the UN Security Council
+                                    Consolidated List, OFAC SDN / Consolidated List (US Treasury),
+                                    EU Financial Sanctions List, UAE National Committee Terrorist
+                                    List, and 100+ additional international watchlists.
+                                </p>
+                            </div>
+
+                        </div><!-- /.page -->
+                    </t><!-- /web.external_layout -->
+                </t><!-- /t-foreach docs -->
+            </t><!-- /web.html_container -->
+        </template>
+
+    </data>
+</odoo>

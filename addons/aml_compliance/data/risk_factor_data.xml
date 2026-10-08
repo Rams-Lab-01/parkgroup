@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ============================== -->
+        <!-- Default Risk Factors            -->
+        <!-- Per CBUAE / FATF RBA guidance   -->
+        <!-- ============================== -->
+
+        <!-- GEOGRAPHY FACTORS -->
+        <record id="factor_geo_nationality" model="aml.risk.factor">
+            <field name="name">Nationality Risk</field>
+            <field name="code">GEO_NATIONALITY</field>
+            <field name="category">geography</field>
+            <field name="weight">15.0</field>
+            <field name="max_score">100</field>
+            <field name="sequence">1</field>
+            <field name="description">Risk score based on customer nationality against FATF grey/black lists</field>
+        </record>
+
+        <record id="factor_geo_residence" model="aml.risk.factor">
+            <field name="name">Country of Residence Risk</field>
+            <field name="code">GEO_RESIDENCE</field>
+            <field name="category">geography</field>
+            <field name="weight">10.0</field>
+            <field name="max_score">100</field>
+            <field name="sequence">2</field>
+            <field name="description">Risk score based on country where customer resides</field>
+        </record>
+
+        <!-- CUSTOMER FACTORS -->
+        <record id="factor_cust_pep" model="aml.risk.factor">
+            <field name="name">Politically Exposed Person (PEP)</field>
+            <field name="code">CUST_PEP</field>
+            <field name="category">customer</field>
+            <field name="weight">20.0</field>
+            <field name="max_score">100</field>
+            <field name="sequence">3</field>
+            <field name="description">PEP status — automatic high risk per FATF Recommendation 12</field>
+        </record>
+
+        <record id="factor_cust_type" model="aml.risk.factor">
+            <field name="name">Customer Type</field>
+            <field name="code">CUST_TYPE</field>
+            <field name="category">customer</field>
+            <field name="weight">5.0</field>
+            <field name="max_score">100</field>
+            <field name="sequence">4</field>
+            <field name="description">Natural person vs legal entity; entities carry higher risk</field>
+        </record>
+
+        <record id="factor_cust_source_funds" model="aml.risk.factor">
+            <field name="name">Source of Funds</field>
+            <field name="code">CUST_SOURCE_FUNDS</field>
+            <field name="category">customer</field>
+            <field name="weight">10.0</field>
+            <field name="max_score">100</field>
+            <field name="sequence">5</field>
+            <field name="description">Complexity and transparency of declared source of funds</field>
+        </record>
+
+        <record id="factor_cust_source_wealth" model="aml.risk.factor">
+            <field name="name">Source of Wealth</field>
+            <field name="code">CUST_SOURCE_WEALTH</field>
+            <field name="category">customer</field>
+            <field name="weight">5.0</field>
+            <field name="max_score">100</field>
+            <field name="sequence">6</field>
+            <field name="description">Declared source of wealth completeness</field>
+        </record>
+
+        <record id="factor_cust_income" model="aml.risk.factor">
+            <field name="name">Income Level</field>
+            <field name="code">CUST_INCOME_LEVEL</field>
+            <field name="category">customer</field>
+            <field name="weight">5.0</field>
+            <field name="max_score">100</field>
+            <field name="sequence">7</field>
+            <field name="description">Annual income level — higher income = higher AML scrutiny</field>
+        </record>
+
+        <!-- PRODUCT/SERVICE FACTORS -->
+        <record id="factor_prod_realestate" model="aml.risk.factor">
+            <field name="name">Real Estate Product Risk</field>
+            <field name="code">PROD_REAL_ESTATE</field>
+            <field name="category">product</field>
+            <field name="weight">15.0</field>
+            <field name="max_score">100</field>
+            <field name="sequence">8</field>
+            <field name="description">Real estate is classified as high-risk per FATF and CBUAE guidance</field>
+        </record>
+
+        <!-- DELIVERY CHANNEL FACTORS -->
+        <record id="factor_chan_nonface" model="aml.risk.factor">
+            <field name="name">Non-Face-to-Face Channel</field>
+            <field name="code">CHAN_NON_FACE</field>
+            <field name="category">channel</field>
+            <field name="weight">5.0</field>
+            <field name="max_score">100</field>
+            <field name="sequence">9</field>
+            <field name="description">Online/portal submissions carry higher risk than in-person</field>
+        </record>
+
+        <!-- TRANSACTION FACTORS -->
+        <record id="factor_txn_value" model="aml.risk.factor">
+            <field name="name">Transaction Value</field>
+            <field name="code">TXN_VALUE</field>
+            <field name="category">transaction</field>
+            <field name="weight">10.0</field>
+            <field name="max_score">100</field>
+            <field name="sequence">10</field>
+            <field name="description">Cumulative transaction volume with this customer</field>
+        </record>
+
+    </data>
+</odoo>

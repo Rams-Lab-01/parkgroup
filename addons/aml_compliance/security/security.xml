@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Multi-company rule: users only see assessments for their company -->
+        <record id="rule_risk_assessment_company" model="ir.rule">
+            <field name="name">Risk Assessment: Multi-Company</field>
+            <field name="model_id" ref="model_aml_risk_assessment"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('group_aml_officer'))]"/>
+        </record>
+
+        <!-- goAML Report multi-company -->
+        <record id="rule_goaml_report_company" model="ir.rule">
+            <field name="name">goAML Report: Multi-Company</field>
+            <field name="model_id" ref="model_aml_goaml_report"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('group_aml_officer'))]"/>
+        </record>
+
+        <!-- Transaction Alert multi-company -->
+        <record id="rule_transaction_alert_company" model="ir.rule">
+            <field name="name">Transaction Alert: Multi-Company</field>
+            <field name="model_id" ref="model_aml_transaction_alert"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('group_aml_officer'))]"/>
+        </record>
+
+        <!-- Screening Result multi-company -->
+        <record id="rule_screening_result_company" model="ir.rule">
+            <field name="name">Screening Result: Multi-Company</field>
+            <field name="model_id" ref="model_aml_screening_result"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('group_aml_officer'))]"/>
+        </record>
+
+        <!-- EDD Workflow multi-company -->
+        <record id="rule_edd_workflow_company" model="ir.rule">
+            <field name="name">EDD Workflow: Multi-Company</field>
+            <field name="model_id" ref="model_aml_edd_workflow"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('group_aml_officer'))]"/>
+        </record>
+
+        <!-- Investigation Case multi-company -->
+        <record id="rule_investigation_case_company" model="ir.rule">
+            <field name="name">Investigation Case: Multi-Company</field>
+            <field name="model_id" ref="model_aml_investigation_case"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('group_aml_officer'))]"/>
+        </record>
+
+        <!-- goAML Involved Party: scoped via its parent report's company (direct
+             queries against this model previously bypassed the report's own rule) -->
+        <record id="rule_goaml_involved_party_company" model="ir.rule">
+            <field name="name">goAML Involved Party: Multi-Company</field>
+            <field name="model_id" ref="model_aml_goaml_involved_party"/>
+            <field name="domain_force">[('report_id.company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('group_aml_officer'))]"/>
+        </record>
+
+        <!-- EDD Document: scoped via its parent workflow's company -->
+        <record id="rule_edd_document_company" model="ir.rule">
+            <field name="name">EDD Document: Multi-Company</field>
+            <field name="model_id" ref="model_aml_edd_document"/>
+            <field name="domain_force">[('workflow_id.company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('group_aml_officer'))]"/>
+        </record>
+
+        <!-- EDD Enquiry Response: scoped via its parent workflow's company -->
+        <record id="rule_edd_enquiry_response_company" model="ir.rule">
+            <field name="name">EDD Enquiry Response: Multi-Company</field>
+            <field name="model_id" ref="model_aml_edd_enquiry_response"/>
+            <field name="domain_force">[('workflow_id.company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('group_aml_officer'))]"/>
+        </record>
+
+    </data>
+</odoo>

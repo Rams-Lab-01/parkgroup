@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- =============================================== -->
+        <!-- AML Compliance Security Groups                   -->
+        <!-- Using existing compliance module category from   -->
+        <!-- kyc_management                                    -->
+        <!-- =============================================== -->
+
+        <!-- AML Compliance Officer -->
+        <record id="group_aml_officer" model="res.groups">
+            <field name="name">AML Compliance Officer</field>
+            <field name="implied_ids" eval="[(4, ref('kyc_management.group_kyc_approver'))]"/>
+            <field name="comment">
+                Can perform risk assessments, review customer risk levels,
+                and access the AML compliance menu.
+            </field>
+        </record>
+
+        <!-- AML Manager -->
+        <record id="group_aml_manager" model="res.groups">
+            <field name="name">AML Manager</field>
+            <field name="implied_ids" eval="[(4, ref('group_aml_officer'))]"/>
+            <field name="comment">
+                Can override risk levels, approve assessments,
+                configure risk factors and FATF jurisdiction lists.
+            </field>
+        </record>
+
+        <!-- Money Laundering Reporting Officer (MLRO) -->
+        <record id="group_mlro" model="res.groups">
+            <field name="name">MLRO (Money Laundering Reporting Officer)</field>
+            <field name="implied_ids" eval="[(4, ref('group_aml_manager'))]"/>
+            <field name="comment">
+                Full authority: can approve high-risk assessments,
+                file STR/SAR reports with goAML, override any risk level,
+                and configure all AML compliance settings.
+            </field>
+        </record>
+
+    </data>
+</odoo>

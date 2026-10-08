@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================= -->
+    <!-- Risk Assessment Views                          -->
+    <!-- ============================================= -->
+
+    <!-- TREE VIEW -->
+    <record id="view_risk_assessment_list" model="ir.ui.view">
+        <field name="name">aml.risk.assessment.list</field>
+        <field name="model">aml.risk.assessment</field>
+        <field name="arch" type="xml">
+            <list string="Risk Assessments"
+                   decoration-danger="final_risk_level == 'very_high'"
+                   decoration-warning="final_risk_level == 'high'"
+                   decoration-info="final_risk_level == 'medium'">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="assessment_date"/>
+                <field name="assessment_type"/>
+                <field name="computed_risk_score"/>
+                <field name="computed_risk_level" widget="badge"
+                       decoration-danger="computed_risk_level == 'very_high'"
+                       decoration-warning="computed_risk_level == 'high'"
+                       decoration-info="computed_risk_level == 'medium'"
+                       decoration-success="computed_risk_level == 'low'"/>
+                <field name="final_risk_level" widget="badge"
+                       decoration-danger="final_risk_level == 'very_high'"
+                       decoration-warning="final_risk_level == 'high'"
+                       decoration-info="final_risk_level == 'medium'"
+                       decoration-success="final_risk_level == 'low'"/>
+                <field name="is_overridden"/>
+                <field name="requires_edd"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state == 'computed'"
+                       decoration-success="state in ('reviewed', 'approved')"
+                       decoration-danger="state == 'overridden'"/>
+                <field name="next_review_date"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- FORM VIEW -->
+    <record id="view_risk_assessment_form" model="ir.ui.view">
+        <field name="name">aml.risk.assessment.form</field>
+        <field name="model">aml.risk.assessment</field>
+        <field name="arch" type="xml">
+            <form string="Risk Assessment">
+                <header>
+                    <button name="action_compute_risk"
+                            string="Compute Risk Score"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state not in ('draft',)"
+                            groups="aml_compliance.group_aml_officer"/>
+                    <button name="action_compute_risk"
+                            string="Recompute"
+                            type="object"
+                            invisible="state == 'draft'"
+                            groups="aml_compliance.group_aml_officer"/>
+                    <button name="action_review"
+                            string="Mark Reviewed"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state not in ('computed', 'overridden')"
+                            groups="aml_compliance.group_aml_officer"/>
+                    <button name="action_approve"
+                            string="Approve"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'reviewed'"
+                            groups="aml_compliance.group_aml_manager"/>
+                    <button name="action_open_override_wizard"
+                            string="Override Risk Level"
+                            type="object"
+                            invisible="state not in ('computed', 'reviewed')"
+                            groups="aml_compliance.group_aml_manager"/>
+                    <button name="action_reset_draft"
+                            string="Reset to Draft"
+                            type="object"
+                            invisible="state == 'draft'"
+                            groups="aml_compliance.group_aml_manager"/>
+                        <button name="%(aml_compliance.risk_assessment_report_action)d"
+                            string="Print Risk Report"
+                            type="action"
+                            class="btn-secondary"
+                            invisible="state == 'draft'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,computed,reviewed,approved"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_goaml_reports"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-file-text"
+                                invisible="goaml_report_count == 0">
+                            <field name="goaml_report_count" widget="statinfo" string="goAML Reports"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="Assessment Details">
+                            <field name="partner_id" readonly="state != 'draft'"/>
+                            <field name="kyc_application_id" readonly="state != 'draft'"/>
+                            <field name="assessment_date"/>
+                            <field name="assessment_type" readonly="state != 'draft'"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Risk Score">
+                            <field name="computed_risk_score" widget="progressbar"/>
+                            <field name="computed_risk_level" widget="badge"
+                                   decoration-danger="computed_risk_level == 'very_high'"
+                                   decoration-warning="computed_risk_level == 'high'"
+                                   decoration-info="computed_risk_level == 'medium'"
+                                   decoration-success="computed_risk_level == 'low'"/>
+                            <field name="final_risk_level" widget="badge"
+                                   decoration-danger="final_risk_level == 'very_high'"
+                                   decoration-warning="final_risk_level == 'high'"
+                                   decoration-info="final_risk_level == 'medium'"
+                                   decoration-success="final_risk_level == 'low'"/>
+                            <field name="requires_edd"/>
+                            <field name="next_review_date"/>
+                        </group>
+                    </group>
+
+                    <group string="Quick Risk Indicators">
+                        <group>
+                            <field name="nationality_risk"/>
+                            <field name="pep_status"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Factor Scores" name="factor_scores">
+                            <field name="factor_score_ids">
+                                <list editable="bottom">
+                                    <field name="factor_id" readonly="1"/>
+                                    <field name="factor_category" readonly="1"/>
+                                    <field name="raw_score"/>
+                                    <field name="weighted_score" readonly="1"/>
+                                    <field name="justification" readonly="1"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Override Details" name="override"
+                              invisible="not is_overridden">
+                            <group>
+                                <field name="is_overridden" readonly="1"/>
+                                <field name="override_reason" readonly="1"/>
+                                <field name="override_user_id" readonly="1"/>
+                                <field name="override_date" readonly="1"/>
+                            </group>
+                        </page>
+
+                        <page string="EDD Information" name="edd"
+                              invisible="not requires_edd">
+                            <group>
+                                <field name="edd_reason" readonly="1"/>
+                            </group>
+                        </page>
+
+                        <page string="Review &amp; Approval" name="review">
+                            <group>
+                                <group string="Review">
+                                    <field name="reviewer_id" readonly="1"/>
+                                    <field name="review_date" readonly="1"/>
+                                    <field name="review_notes"
+                                           readonly="state not in ('computed', 'overridden')"/>
+                                </group>
+                                <group string="Approval">
+                                    <field name="approved_by_id" readonly="1"/>
+                                    <field name="approval_date" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- SEARCH VIEW -->
+    <record id="view_risk_assessment_search" model="ir.ui.view">
+        <field name="name">aml.risk.assessment.search</field>
+        <field name="model">aml.risk.assessment</field>
+        <field name="arch" type="xml">
+            <search string="Risk Assessments">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="kyc_application_id"/>
+                <separator/>
+                <filter name="filter_low" string="Low Risk"
+                        domain="[('final_risk_level', '=', 'low')]"/>
+                <filter name="filter_medium" string="Medium Risk"
+                        domain="[('final_risk_level', '=', 'medium')]"/>
+                <filter name="filter_high" string="High Risk"
+                        domain="[('final_risk_level', '=', 'high')]"/>
+                <filter name="filter_very_high" string="Very High Risk"
+                        domain="[('final_risk_level', '=', 'very_high')]"/>
+                <separator/>
+                <filter name="filter_edd" string="Requires EDD"
+                        domain="[('requires_edd', '=', True)]"/>
+                <filter name="filter_overridden" string="Overridden"
+                        domain="[('is_overridden', '=', True)]"/>
+                <separator/>
+                <filter name="filter_draft" string="Draft"
+                        domain="[('state', '=', 'draft')]"/>
+                <filter name="filter_pending_review" string="Pending Review"
+                        domain="[('state', '=', 'computed')]"/>
+                <filter name="filter_approved" string="Approved"
+                        domain="[('state', '=', 'approved')]"/>
+                <separator/>
+                <filter name="filter_review_overdue" string="Review Overdue"
+                        domain="[('next_review_date', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
+                <group name="group_by">
+                    <filter name="groupby_risk_level" string="Risk Level"
+                            context="{'group_by': 'final_risk_level'}"/>
+                    <filter name="groupby_state" string="Status"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="groupby_type" string="Assessment Type"
+                            context="{'group_by': 'assessment_type'}"/>
+                    <filter name="groupby_partner" string="Customer"
+                            context="{'group_by': 'partner_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ACTION -->
+    <record id="action_risk_assessment" model="ir.actions.act_window">
+        <field name="name">Risk Assessments</field>
+        <field name="res_model">aml.risk.assessment</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_risk_assessment_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first AML risk assessment
+            </p>
+            <p>
+                Risk assessments evaluate customers against FATF criteria,
+                PEP status, source of funds, and other configurable factors
+                to produce a composite risk score.
+            </p>
+        </field>
+    </record>
+
+</odoo>

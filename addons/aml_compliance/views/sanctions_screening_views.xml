@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================================ -->
+    <!-- Sanctions List: Views                                         -->
+    <!-- ============================================================ -->
+    <record id="view_sanctions_list_tree" model="ir.ui.view">
+        <field name="name">aml.sanctions.list.tree</field>
+        <field name="model">aml.sanctions.list</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="listed_name"/>
+                <field name="list_source" widget="badge"/>
+                <field name="listed_type"/>
+                <field name="nationality"/>
+                <field name="listing_date"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_sanctions_list_form" model="ir.ui.view">
+        <field name="name">aml.sanctions.list.form</field>
+        <field name="model">aml.sanctions.list</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="listed_name" placeholder="Listed Name"/></h1>
+                    </div>
+                    <group>
+                        <group string="List Details">
+                            <field name="list_source"/>
+                            <field name="listed_type"/>
+                            <field name="un_reference"/>
+                            <field name="listing_date"/>
+                            <field name="delisting_date"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Identity">
+                            <field name="nationality"/>
+                            <field name="date_of_birth"/>
+                            <field name="passport_number"/>
+                            <field name="national_id"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="alias_names"
+                               placeholder="Comma-separated alias names..."/>
+                        <field name="notes"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_sanctions_list_search" model="ir.ui.view">
+        <field name="name">aml.sanctions.list.search</field>
+        <field name="model">aml.sanctions.list</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="listed_name"/>
+                <field name="alias_names"/>
+                <field name="nationality"/>
+                <separator/>
+                <filter name="filter_un" string="UN List"
+                        domain="[('list_source','=','un')]"/>
+                <filter name="filter_uae" string="UAE Local"
+                        domain="[('list_source','=','uae_local')]"/>
+                <filter name="filter_ofac" string="OFAC"
+                        domain="[('list_source','=','ofac')]"/>
+                <separator/>
+                <group name="group_by">
+                    <filter name="groupby_source" string="List Source"
+                            context="{'group_by': 'list_source'}"/>
+                    <filter name="groupby_type" string="Type"
+                            context="{'group_by': 'listed_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_sanctions_list" model="ir.actions.act_window">
+        <field name="name">Sanctions Lists</field>
+        <field name="res_model">aml.sanctions.list</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_sanctions_list_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Add a sanctions list entry</p>
+            <p>Import entries from UN, UAE, or OFAC sanctions lists.</p>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Screening Results: Views                                      -->
+    <!-- ============================================================ -->
+    <record id="view_screening_result_tree" model="ir.ui.view">
+        <field name="name">aml.screening.result.tree</field>
+        <field name="model">aml.screening.result</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="state == 'match'"
+                  decoration-warning="state == 'pending'">
+                <field name="name"/>
+                <field name="screening_date"/>
+                <field name="partner_id"/>
+                <field name="matched_name"/>
+                <field name="match_score" widget="progressbar"/>
+                <field name="match_source" widget="badge"/>
+                <field name="screening_type"/>
+                <field name="state" widget="badge"
+                       decoration-danger="state == 'match'"
+                       decoration-warning="state == 'pending'"
+                       decoration-success="state in ('false_positive','cleared')"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_screening_result_form" model="ir.ui.view">
+        <field name="name">aml.screening.result.form</field>
+        <field name="model">aml.screening.result</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_confirm_match"
+                            string="Confirm Match"
+                            type="object" class="btn-danger"
+                            invisible="state != 'pending'"
+                            groups="aml_compliance.group_aml_manager"/>
+                    <button name="action_false_positive"
+                            string="False Positive"
+                            type="object"
+                            invisible="state != 'pending'"/>
+                    <button name="action_clear"
+                            string="Clear"
+                            type="object" class="btn-success"
+                            invisible="state != 'pending'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="pending,match,cleared"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="MATCH"
+                            bg_color="text-bg-danger"
+                            invisible="state != 'match'"/>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Screening Info">
+                            <field name="partner_id"/>
+                            <field name="screening_date"/>
+                            <field name="screening_type"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Match Details">
+                            <field name="sanctions_entry_id"/>
+                            <field name="matched_name"/>
+                            <field name="match_score" widget="progressbar"/>
+                            <field name="match_source"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Review" name="review">
+                            <group>
+                                <field name="reviewed_by_id"/>
+                                <field name="review_date"/>
+                                <field name="review_notes"
+                                       placeholder="Document review findings..."/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_screening_result_search" model="ir.ui.view">
+        <field name="name">aml.screening.result.search</field>
+        <field name="model">aml.screening.result</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="partner_id"/>
+                <field name="matched_name"/>
+                <separator/>
+                <filter name="filter_pending" string="Pending"
+                        domain="[('state','=','pending')]"/>
+                <filter name="filter_match" string="Confirmed Matches"
+                        domain="[('state','=','match')]"/>
+                <separator/>
+                <group name="group_by">
+                    <filter name="groupby_state" string="Status"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="groupby_source" string="List Source"
+                            context="{'group_by': 'match_source'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_screening_result" model="ir.actions.act_window">
+        <field name="name">Screening Results</field>
+        <field name="res_model">aml.screening.result</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_screening_result_search"/>
+        <field name="context">{'search_default_filter_pending': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No screening results</p>
+            <p>
+                Run sanctions screening on partners or wait for the scheduled
+                batch screening to complete.
+            </p>
+        </field>
+    </record>
+
+</odoo>

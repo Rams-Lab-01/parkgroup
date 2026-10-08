@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="risk_assessment_report_action" model="ir.actions.report">
+            <field name="name">AML Risk Assessment Report</field>
+            <field name="model">aml.risk.assessment</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">aml_compliance.report_risk_assessment_document</field>
+            <field name="print_report_name">'AML_Risk_Assessment_%s' % (object.name or object.id)</field>
+        </record>
+
+        <template id="report_risk_assessment_document">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                            <h2>AML Risk Assessment</h2>
+                            <p><strong>Reference:</strong> <span t-field="o.name"/></p>
+                            <p><strong>Customer:</strong> <span t-field="o.partner_id"/></p>
+                            <p><strong>KYC Application:</strong> <span t-field="o.kyc_application_id"/></p>
+                            <p><strong>Assessment Date:</strong> <span t-field="o.assessment_date" t-options='{"widget": "datetime"}'/></p>
+                            <p><strong>Assessment Type:</strong> <span t-field="o.assessment_type"/></p>
+
+                            <h3>Risk Outcome</h3>
+                            <p><strong>Computed Score:</strong> <span t-field="o.computed_risk_score"/></p>
+                            <p><strong>Computed Level:</strong> <span t-field="o.computed_risk_level"/></p>
+                            <p><strong>Final Level:</strong> <span t-field="o.final_risk_level"/></p>
+                            <p><strong>Requires EDD:</strong>
+                                <t t-if="o.requires_edd">Yes</t>
+                                <t t-else="">No</t>
+                            </p>
+                            <p t-if="o.edd_reason"><strong>EDD Reason:</strong> <span t-field="o.edd_reason"/></p>
+
+                            <h3>Review And Approval</h3>
+                            <p><strong>Reviewer:</strong> <span t-field="o.reviewer_id"/></p>
+                            <p><strong>Review Date:</strong> <span t-field="o.review_date" t-options='{"widget": "datetime"}'/></p>
+                            <p><strong>Review Notes:</strong> <span t-field="o.review_notes"/></p>
+                            <p><strong>Approved By:</strong> <span t-field="o.approved_by_id"/></p>
+                            <p><strong>Approval Date:</strong> <span t-field="o.approval_date" t-options='{"widget": "datetime"}'/></p>
+
+                            <h3>Factor Scores</h3>
+                            <table class="table table-sm table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Factor</th>
+                                        <th>Category</th>
+                                        <th>Raw Score</th>
+                                        <th>Weighted Score</th>
+                                        <th>Justification</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="o.factor_score_ids" t-as="line">
+                                        <td><span t-field="line.factor_id"/></td>
+                                        <td><span t-field="line.factor_category"/></td>
+                                        <td><span t-field="line.raw_score"/></td>
+                                        <td><span t-field="line.weighted_score"/></td>
+                                        <td><span t-field="line.justification"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

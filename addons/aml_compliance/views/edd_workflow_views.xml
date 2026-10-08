@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- EDD Workflow Views                                            -->
+    <!-- ============================================================ -->
+
+    <!-- TREE VIEW -->
+    <record id="view_edd_workflow_tree" model="ir.ui.view">
+        <field name="name">aml.edd.workflow.tree</field>
+        <field name="model">aml.edd.workflow</field>
+        <field name="arch" type="xml">
+            <list string="EDD Workflows"
+                  decoration-warning="state == 'in_progress'"
+                  decoration-info="state == 'review'"
+                  decoration-success="state == 'completed'"
+                  decoration-muted="state == 'cancelled'">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="state" widget="badge"/>
+                <field name="assigned_to_id"/>
+                <field name="start_date"/>
+                <field name="due_date"/>
+                <field name="completed_enquiry_count" string="Enquiries"/>
+                <field name="document_count" string="Docs"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- FORM VIEW -->
+    <record id="view_edd_workflow_form" model="ir.ui.view">
+        <field name="name">aml.edd.workflow.form</field>
+        <field name="model">aml.edd.workflow</field>
+        <field name="arch" type="xml">
+            <form string="EDD Workflow">
+                <header>
+                    <button name="action_start"
+                            string="Start EDD"
+                            type="object"
+                            class="btn-primary"
+                            groups="aml_compliance.group_aml_officer"
+                            invisible="state != 'draft'"/>
+                    <button name="action_submit_review"
+                            string="Submit for Review"
+                            type="object"
+                            class="btn-primary"
+                            groups="aml_compliance.group_aml_officer"
+                            invisible="state != 'in_progress'"/>
+                    <button name="action_complete"
+                            string="Complete EDD"
+                            type="object"
+                            class="btn-primary"
+                            groups="aml_compliance.group_aml_manager"
+                            invisible="state != 'review'"/>
+                    <button name="action_cancel"
+                            string="Cancel"
+                            type="object"
+                            groups="aml_compliance.group_aml_manager"
+                            invisible="state in ('completed','cancelled')"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="assessment_id"/>
+                            <field name="assigned_to_id"/>
+                        </group>
+                        <group>
+                            <field name="start_date"/>
+                            <field name="due_date"/>
+                            <field name="completed_date"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Enquiries" name="enquiries">
+                            <field name="enquiry_response_ids">
+                                <list editable="bottom">
+                                    <field name="enquiry_type_id"/>
+                                    <field name="question"/>
+                                    <field name="response"/>
+                                    <field name="completed" widget="boolean_toggle"/>
+                                    <field name="completed_by_id"/>
+                                    <field name="completed_date"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Documents" name="documents">
+                            <field name="document_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="document_type"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="verified_by_id"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Conclusion" name="conclusion">
+                            <group>
+                                <field name="officer_notes" nolabel="1" placeholder="Officer investigation notes..."/>
+                            </group>
+                            <group>
+                                <field name="conclusion"/>
+                                <field name="conclusion_notes"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- SEARCH VIEW -->
+    <record id="view_edd_workflow_search" model="ir.ui.view">
+        <field name="name">aml.edd.workflow.search</field>
+        <field name="model">aml.edd.workflow</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="assigned_to_id"/>
+                <filter name="state_open" string="Open" domain="[('state','not in',('completed','cancelled'))]"/>
+                <filter name="state_completed" string="Completed" domain="[('state','=','completed')]"/>
+                <separator/>
+                <filter name="my" string="My EDDs" domain="[('assigned_to_id','=',uid)]"/>
+                <group name="group_by">
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_partner" string="Customer" context="{'group_by':'partner_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ACTION -->
+    <record id="action_edd_workflow" model="ir.actions.act_window">
+        <field name="name">EDD Workflows</field>
+        <field name="res_model">aml.edd.workflow</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Enhanced Due Diligence (EDD) workflows are created automatically
+                when a risk assessment classifies a customer as High or Very High risk.
+            </p>
+        </field>
+    </record>
+
+</odoo>

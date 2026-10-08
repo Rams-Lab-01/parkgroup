@@ -1,0 +1,57 @@
+/* PARK brand: primary #243573 (white text 11.5:1). All pairs >= 4.5:1 text, >= 3:1 UI. */
+:root {
+    --chat--color--primary: #243573;
+    --chat--color--primary-shade-50: #1a2857;
+    --chat--color--primary--shade-100: #121c3d;
+    --chat--color--secondary: #243573;
+    --chat--color-secondary-shade-50: #1a2857;
+    --chat--color-dark: #101330;
+    --chat--color-typing: #3d4150;
+    --chat--header--background: #243573;
+    --chat--header--color: #ffffff;
+    --chat--heading--font-size: 1.05rem;
+    --chat--message--bot--background: #f1f3f8;
+    --chat--message--bot--color: #101330;
+    --chat--message--user--background: #243573;
+    --chat--message--user--color: #ffffff;
+    --chat--toggle--background: #243573;
+    --chat--toggle--hover--background: #1a2857;
+    --chat--toggle--active--background: #121c3d;
+    --chat--toggle--color: #ffffff;
+    --chat--window--border: 1px solid #c2c5cc;
+    --chat--window--border-radius: 12px;
+    --chat--window--z-index: 1040;
+    --chat--input--text-color: #101330;
+}
+#n8n-chat button:focus-visible,
+#n8n-chat textarea:focus-visible,
+.chat-window-toggle:focus-visible {
+    outline: 3px solid #1e4a7a;
+    outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+    #n8n-chat * { animation: none !important; transition: none !important; }
+}
+@media (max-width: 480px) {
+    :root { --chat--window--width: calc(100vw - 2rem); --chat--window--height: 75vh; }
+}
+
+/* Compact header: website logo (forced white for contrast) left, title + subtitle stacked right. */
+#n8n-chat .chat-header {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 0.75rem;
+    align-items: center;
+    padding: 0.75rem 1rem;
+}
+#n8n-chat .chat-header::before {
+    content: "";
+    grid-row: 1 / span 2;
+    width: 84px;
+    height: 32px;
+    background: url("/web/image/website/1/logo") left center / contain no-repeat;
+    filter: brightness(0) invert(1);
+}
+#n8n-chat .chat-heading { grid-column: 2; margin: 0; }
+#n8n-chat .chat-heading h1 { font-size: 1.05rem; line-height: 1.25; margin: 0; }
+#n8n-chat .chat-header p { grid-column: 2; margin: 0; font-style: italic; font-size: 0.85rem; line-height: 1.3; }

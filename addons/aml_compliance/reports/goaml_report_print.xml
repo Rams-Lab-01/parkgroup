@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="goaml_report_print_action" model="ir.actions.report">
+            <field name="name">goAML Filing Dossier</field>
+            <field name="model">aml.goaml.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">aml_compliance.report_goaml_dossier_document</field>
+            <field name="print_report_name">'goAML_Dossier_%s' % (object.name or object.id)</field>
+        </record>
+
+        <template id="report_goaml_dossier_document">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                            <h2>goAML Filing Dossier</h2>
+                            <p><strong>Report Reference:</strong> <span t-field="o.name"/></p>
+                            <p><strong>Report Type:</strong> <span t-field="o.report_type"/></p>
+                            <p><strong>Status:</strong> <span t-field="o.state"/></p>
+                            <p><strong>Customer:</strong> <span t-field="o.partner_id"/></p>
+                            <p><strong>Linked Risk Assessment:</strong> <span t-field="o.risk_assessment_id"/></p>
+
+                            <h3>Report Details</h3>
+                            <p><strong>Report Date:</strong> <span t-field="o.report_date"/></p>
+                            <p><strong>Suspicion Date:</strong> <span t-field="o.suspicion_date"/></p>
+                            <p><strong>Reason for Suspicion:</strong> <span t-field="o.reason_for_suspicion"/></p>
+
+                            <h3>Transaction Details</h3>
+                            <p><strong>Transaction Date:</strong> <span t-field="o.transaction_date"/></p>
+                            <p><strong>Amount:</strong> <span t-field="o.transaction_amount"/> <span t-field="o.currency_id"/></p>
+                            <p><strong>Transaction Type:</strong> <span t-field="o.transaction_type"/></p>
+                            <p><strong>Description:</strong> <span t-field="o.transaction_description"/></p>
+
+                            <h3>MLRO Review</h3>
+                            <p><strong>MLRO:</strong> <span t-field="o.mlro_id"/></p>
+                            <p><strong>Review Date:</strong> <span t-field="o.mlro_review_date" t-options='{"widget": "datetime"}'/></p>
+                            <p><strong>Notes:</strong> <span t-field="o.mlro_notes"/></p>
+
+                            <h3>Filing Details</h3>
+                            <p><strong>Filed By:</strong> <span t-field="o.filed_by_id"/></p>
+                            <p><strong>Filing Date:</strong> <span t-field="o.filing_date" t-options='{"widget": "datetime"}'/></p>
+                            <p><strong>FIU Reference:</strong> <span t-field="o.fiu_reference"/></p>
+                            <p><strong>FIU Acknowledgement Date:</strong> <span t-field="o.fiu_acknowledgement_date"/></p>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ======================================= -->
+    <!-- Inherit Contact Form to show AML risk     -->
+    <!-- ======================================= -->
+
+    <record id="view_partner_form_inherit_aml" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit.aml</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Add AML smart button to button_box -->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_risk_assessments"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-shield"
+                        groups="aml_compliance.group_aml_officer"
+                        invisible="aml_risk_assessment_count == 0">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_value">
+                            <field name="aml_risk_assessment_count"/>
+                        </span>
+                        <span class="o_stat_text">AML Risk</span>
+                    </div>
+                </button>
+                <button name="action_view_screening_results"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-search"
+                        groups="aml_compliance.group_aml_officer"
+                        invisible="aml_screening_count == 0">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_value">
+                            <field name="aml_screening_count"/>
+                        </span>
+                        <span class="o_stat_text">Screenings</span>
+                    </div>
+                </button>
+                <button name="action_view_goaml_reports"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-file-text"
+                        groups="aml_compliance.group_aml_officer"
+                        invisible="aml_goaml_report_count == 0">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_value">
+                            <field name="aml_goaml_report_count"/>
+                        </span>
+                        <span class="o_stat_text">goAML</span>
+                    </div>
+                </button>
+                <button name="action_view_alerts"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-exclamation-triangle"
+                        groups="aml_compliance.group_aml_officer"
+                        invisible="aml_alert_count == 0">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_value">
+                            <field name="aml_alert_count"/>
+                        </span>
+                        <span class="o_stat_text">Alerts</span>
+                    </div>
+                </button>
+            </xpath>
+
+            <!-- Add AML risk fields in internal notes page area -->
+            <xpath expr="//page[@name='internal_notes']" position="after">
+                <page string="AML Compliance" name="aml_compliance"
+                      groups="aml_compliance.group_aml_officer">
+                    <group>
+                        <group string="Risk Classification">
+                            <field name="aml_risk_level" widget="badge"
+                                   decoration-danger="aml_risk_level == 'very_high'"
+                                   decoration-warning="aml_risk_level == 'high'"
+                                   decoration-info="aml_risk_level == 'medium'"
+                                   decoration-success="aml_risk_level == 'low'"/>
+                            <field name="aml_requires_edd"/>
+                        </group>
+                        <group string="Assessment Dates">
+                            <field name="aml_last_assessment_date"/>
+                            <field name="aml_next_review_date"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Sanctions Screening">
+                            <field name="aml_sanctions_match"/>
+                            <field name="aml_last_screening_date"/>
+                        </group>
+                        <group string="Actions">
+                            <button name="action_run_risk_assessment"
+                                    string="Run Risk Assessment"
+                                    type="object"
+                                    class="btn-primary"
+                                    groups="aml_compliance.group_aml_officer"/>
+                            <button name="action_run_sanctions_screening"
+                                    string="Run Sanctions Screening"
+                                    type="object"
+                                    class="btn-warning"
+                                    groups="aml_compliance.group_aml_officer"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

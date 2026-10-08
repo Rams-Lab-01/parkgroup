@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================================ -->
+    <!-- goAML Report: Tree View                                       -->
+    <!-- ============================================================ -->
+    <record id="view_goaml_report_tree" model="ir.ui.view">
+        <field name="name">aml.goaml.report.tree</field>
+        <field name="model">aml.goaml.report</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="state == 'rejected'"
+                  decoration-warning="report_type == 'str'"
+                  decoration-success="state in ('filed','acknowledged')">
+                <field name="name"/>
+                <field name="report_type" widget="badge"
+                       decoration-danger="report_type == 'str'"
+                       decoration-warning="report_type == 'sar'"
+                       decoration-info="report_type == 'ctr'"/>
+                <field name="partner_id"/>
+                <field name="report_date"/>
+                <field name="transaction_amount" sum="Total"/>
+                <field name="filed_by_id"/>
+                <field name="fiu_reference"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state == 'submitted'"
+                       decoration-success="state in ('filed','acknowledged')"
+                       decoration-danger="state == 'rejected'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- goAML Report: Form View                                       -->
+    <!-- ============================================================ -->
+    <record id="view_goaml_report_form" model="ir.ui.view">
+        <field name="name">aml.goaml.report.form</field>
+        <field name="model">aml.goaml.report</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit_to_mlro"
+                            string="Submit to MLRO"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_mlro_approve"
+                            string="MLRO Approve"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'submitted'"
+                            groups="aml_compliance.group_mlro"/>
+                    <button name="action_open_filing_wizard"
+                            string="⬆ File Report (MLRO Wizard)"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state not in ('draft','submitted','approved')"
+                            groups="aml_compliance.group_mlro"/>
+                    <button name="action_generate_xml"
+                            string="Generate goAML XML"
+                            type="object"
+                            class="btn-secondary"
+                            invisible="state not in ('approved','filed')"/>
+                    <button name="action_open_acknowledgement_wizard"
+                            string="Record FIU Acknowledgement"
+                            type="object"
+                            class="btn-success"
+                            invisible="state != 'filed'"
+                            groups="aml_compliance.group_mlro"/>
+                    <button name="action_reject"
+                            string="Reject"
+                            type="object"
+                            class="btn-danger"
+                            invisible="state not in ('submitted','approved')"
+                            groups="aml_compliance.group_mlro"/>
+                    <button name="action_reset_draft"
+                            string="Reset to Draft"
+                            type="object"
+                            invisible="state not in ('rejected','submitted')"/>
+                        <button name="%(aml_compliance.goaml_report_print_action)d"
+                            string="Print Dossier"
+                            type="action"
+                            class="btn-secondary"
+                            invisible="state == 'draft'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,submitted,approved,filed,acknowledged"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_linked_alerts"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-exclamation-triangle"
+                                invisible="linked_alert_count == 0">
+                            <field name="linked_alert_count" widget="statinfo" string="Linked Alerts"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Rejected"
+                            bg_color="text-bg-danger"
+                            invisible="state != 'rejected'"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Report Info">
+                            <field name="report_type"/>
+                            <field name="report_date"/>
+                            <field name="partner_id"/>
+                            <field name="risk_assessment_id"
+                                   domain="[('partner_id','=',partner_id)]"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Transaction Details">
+                            <field name="transaction_date"
+                                   invisible="report_type == 'sar'"/>
+                            <field name="transaction_amount"
+                                   invisible="report_type == 'sar'"/>
+                            <field name="currency_id" groups="base.group_multi_currency"/>
+                            <field name="transaction_type"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Suspicion Details" name="suspicion"
+                              invisible="report_type == 'ctr'">
+                            <group>
+                                <field name="suspicion_date"/>
+                                <field name="reason_for_suspicion"
+                                       placeholder="Describe the grounds for suspicion in detail..."/>
+                            </group>
+                        </page>
+                        <page string="Transaction Description" name="txn_desc">
+                            <field name="transaction_description"
+                                   placeholder="Describe the transaction..."/>
+                        </page>
+                        <page string="Related Invoices" name="invoices">
+                            <field name="related_invoice_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="partner_id"/>
+                                    <field name="invoice_date"/>
+                                    <field name="amount_total"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Involved Parties" name="parties">
+                            <field name="involved_party_ids">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="role"/>
+                                    <field name="partner_id"/>
+                                    <field name="country_id"/>
+                                    <field name="id_type"/>
+                                    <field name="id_number"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="MLRO Review" name="mlro"
+                              invisible="state == 'draft'">
+                            <group>
+                                <field name="mlro_id"/>
+                                <field name="mlro_review_date"/>
+                                <field name="mlro_notes"
+                                       placeholder="MLRO review notes..."/>
+                            </group>
+                        </page>
+                        <page string="Filing" name="filing"
+                              invisible="state not in ('approved','filed','acknowledged')">
+                            <group>
+                                <field name="filed_by_id"/>
+                                <field name="filing_date"/>
+                                <field name="fiu_reference"/>
+                                <field name="fiu_acknowledgement_date"/>
+                                <field name="xml_file" filename="xml_filename"/>
+                                <field name="xml_filename" invisible="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- goAML Report: Search View                                     -->
+    <!-- ============================================================ -->
+    <record id="view_goaml_report_search" model="ir.ui.view">
+        <field name="name">aml.goaml.report.search</field>
+        <field name="model">aml.goaml.report</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="fiu_reference"/>
+                <separator/>
+                <filter name="filter_str" string="STR"
+                        domain="[('report_type','=','str')]"/>
+                <filter name="filter_sar" string="SAR"
+                        domain="[('report_type','=','sar')]"/>
+                <filter name="filter_ctr" string="CTR"
+                        domain="[('report_type','=','ctr')]"/>
+                <separator/>
+                <filter name="filter_draft" string="Draft"
+                        domain="[('state','=','draft')]"/>
+                <filter name="filter_submitted" string="Pending MLRO"
+                        domain="[('state','=','submitted')]"/>
+                <filter name="filter_filed" string="Filed"
+                        domain="[('state','in',['filed','acknowledged'])]"/>
+                <separator/>
+                <group name="group_by">
+                    <filter name="groupby_type" string="Report Type"
+                            context="{'group_by': 'report_type'}"/>
+                    <filter name="groupby_state" string="Status"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="groupby_partner" string="Customer"
+                            context="{'group_by': 'partner_id'}"/>
+                    <filter name="groupby_date" string="Report Date"
+                            context="{'group_by': 'report_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- goAML Report: Window Action                                   -->
+    <!-- ============================================================ -->
+    <record id="action_goaml_report" model="ir.actions.act_window">
+        <field name="name">goAML Reports</field>
+        <field name="res_model">aml.goaml.report</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_goaml_report_search"/>
+        <field name="context">{'search_default_filter_draft': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new goAML report
+            </p>
+            <p>
+                File Suspicious Transaction Reports (STR), Suspicious Activity
+                Reports (SAR), and Cash Transaction Reports (CTR) for
+                submission to the UAE Financial Intelligence Unit via goAML.
+            </p>
+        </field>
+    </record>
+
+</odoo>

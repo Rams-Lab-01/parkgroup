@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- goAML Self-Filing Wizard — Form View                          -->
+    <!-- ============================================================ -->
+
+    <record id="view_goaml_filing_wizard_form" model="ir.ui.view">
+        <field name="name">aml.goaml.filing.wizard.form</field>
+        <field name="model">aml.goaml.filing.wizard</field>
+        <field name="arch" type="xml">
+            <form string="File goAML Report — Self-Filing Wizard">
+                <sheet>
+
+                    <!-- Report Banner -->
+                    <div class="oe_title mb-3">
+                        <h3>
+                            goAML Self-Filing Wizard
+                        </h3>
+                    </div>
+
+                    <group string="Report Summary" col="4">
+                        <field name="report_name" readonly="1"/>
+                        <field name="report_type" readonly="1" widget="badge"
+                               decoration-danger="report_type == 'str'"
+                               decoration-warning="report_type == 'sar'"
+                               decoration-info="report_type == 'ctr'"/>
+                        <field name="partner_name" readonly="1"/>
+                        <field name="report_state" readonly="1" widget="badge"
+                               decoration-info="report_state == 'draft'"
+                               decoration-warning="report_state == 'submitted'"
+                               decoration-success="report_state in ('filed','acknowledged')"
+                               decoration-danger="report_state == 'rejected'"/>
+                    </group>
+
+                    <!-- ======================================== -->
+                    <!-- STEP 1: Preflight Checklist               -->
+                    <!-- ======================================== -->
+
+                    <group string="Step 1 — Preflight Checklist">
+                        <group string="Mandatory Fields">
+                            <field name="check_subject" string="Subject (Customer) set"
+                                   readonly="1" widget="boolean_toggle"/>
+                            <field name="check_identifier" string="Customer Identifier (VAT / Passport / Emirates ID)"
+                                   readonly="1" widget="boolean_toggle"/>
+                            <field name="check_report_type" string="Report Type selected (STR / SAR / CTR)"
+                                   readonly="1" widget="boolean_toggle"/>
+                        </group>
+                        <group string="Type-Specific Fields">
+                            <field name="check_suspicion" string="Reason for Suspicion (STR/SAR)"
+                                   readonly="1" widget="boolean_toggle"/>
+                            <field name="check_transaction" string="Transaction Amount, Date &amp; Type (STR/CTR)"
+                                   readonly="1" widget="boolean_toggle"/>
+                            <field name="checklist_passed" string="All Checks Passed"
+                                   readonly="1" widget="boolean_toggle"/>
+                        </group>
+                        <div class="alert alert-danger" role="alert"
+                             invisible="checklist_passed">
+                            <strong>Action Required — Fix the following before proceeding:</strong>
+                            <field name="checklist_issues" readonly="1" nolabel="1"/>
+                        </div>
+                        <div class="alert alert-success" role="alert"
+                             invisible="not checklist_passed">
+                            <strong>✓ All preflight checks passed.</strong>
+                            Proceed to Step 2 to generate the goAML XML file.
+                        </div>
+                    </group>
+
+                    <!-- ======================================== -->
+                    <!-- STEP 2: Generate XML                      -->
+                    <!-- ======================================== -->
+
+                    <group string="Step 2 — Generate goAML XML">
+                        <div class="alert alert-info" role="alert"
+                             invisible="xml_generated">
+                            Click <strong>Generate XML</strong> to build the goAML-compliant XML
+                            file. This will also internally advance the report through the
+                            workflow (Draft → Submitted → Approved) so it is ready for filing.
+                        </div>
+                        <div>
+                            <button name="action_generate_xml"
+                                    type="object"
+                                    string="Generate goAML XML"
+                                    class="btn-primary mb-2"
+                                    invisible="xml_generated"/>
+                            <button name="action_generate_xml"
+                                    type="object"
+                                    string="Re-Generate XML"
+                                    class="btn-secondary mb-2"
+                                    invisible="not xml_generated"/>
+                        </div>
+                        <div invisible="not xml_generated">
+                            <field name="xml_file"
+                                   filename="xml_filename"
+                                   widget="binary"
+                                   string="Download goAML XML ↓"
+                                   readonly="1"/>
+                            <field name="xml_filename" invisible="1"/>
+                            <field name="xml_generated" invisible="1"/>
+                        </div>
+                        <div class="alert alert-success" role="alert"
+                             invisible="not xml_generated">
+                            <strong>✓ XML file generated.</strong>
+                            Download it using the button above, then proceed to Step 3.
+                        </div>
+                    </group>
+
+                    <!-- ======================================== -->
+                    <!-- STEP 3: Portal Upload Instructions        -->
+                    <!-- ======================================== -->
+
+                    <group string="Step 3 — Upload to UAE FIU goAML Portal"
+                           invisible="not xml_generated">
+                        <div class="alert alert-warning" role="alert">
+                            <strong>Manual Upload Required</strong>
+                            <ol class="mt-2">
+                                <li>Download the XML file generated in Step 2.</li>
+                                <li>Log in to the <strong>UAE FIU goAML portal</strong>
+                                    (goAML.moec.gov.ae or the portal URL issued by CBUAE).</li>
+                                <li>Navigate to: <em>Reports → New Report → Upload XML</em>.</li>
+                                <li>Select the downloaded XML file and submit.</li>
+                                <li>Note the <strong>FIU Reference Number</strong> assigned
+                                    by the portal upon successful submission.</li>
+                                <li>Return to Step 4 and enter the reference number.</li>
+                            </ol>
+                        </div>
+                    </group>
+
+                    <!-- ======================================== -->
+                    <!-- STEP 4: Confirm Filing                    -->
+                    <!-- ======================================== -->
+
+                    <group string="Step 4 — Confirm Filing" invisible="not xml_generated">
+                        <group>
+                            <field name="filing_date" required="1"/>
+                            <field name="fiu_reference"
+                                   placeholder="e.g. UAE-FIU-2025-STR-00123 (optional — can be entered later)"/>
+                        </group>
+                        <group>
+                            <field name="mlro_notes"
+                                   placeholder="Internal notes for audit trail (optional)..."/>
+                        </group>
+                        <div class="alert alert-info" role="alert">
+                            Clicking <strong>Confirm Filing</strong> will mark this report as
+                            <em>Filed with FIU</em> and close all linked transaction alerts.
+                            If you do not yet have the FIU reference, leave it blank — you can
+                            update it later via the
+                            <em>Record FIU Acknowledgement</em> button on the report.
+                        </div>
+                    </group>
+
+                </sheet>
+                <footer>
+                    <button name="action_confirm_filing"
+                            string="Confirm Filing"
+                            type="object"
+                            class="btn-primary"
+                            invisible="not xml_generated"/>
+                    <button string="Cancel" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- goAML FIU Acknowledgement Wizard — Form View                 -->
+    <!-- ============================================================ -->
+
+    <record id="view_goaml_acknowledgement_wizard_form" model="ir.ui.view">
+        <field name="name">aml.goaml.acknowledgement.wizard.form</field>
+        <field name="model">aml.goaml.acknowledgement.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Record FIU Acknowledgement">
+                <sheet>
+                    <div class="oe_title mb-3">
+                        <h3>Record FIU Acknowledgement</h3>
+                    </div>
+                    <div class="alert alert-info" role="alert">
+                        Enter the reference number and acknowledgement date received from
+                        the UAE FIU via the goAML portal. This will mark the report as
+                        <strong>Acknowledged by FIU</strong>.
+                    </div>
+                    <group>
+                        <group string="Report">
+                            <field name="report_name" readonly="1"/>
+                            <field name="report_type" readonly="1" widget="badge"
+                                   decoration-danger="report_type == 'str'"
+                                   decoration-warning="report_type == 'sar'"
+                                   decoration-info="report_type == 'ctr'"/>
+                        </group>
+                        <group string="FIU Response">
+                            <field name="fiu_reference" required="1"
+                                   placeholder="e.g. UAE-FIU-2025-STR-00123"/>
+                            <field name="acknowledgement_date" required="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="fiu_response_notes"
+                               placeholder="Any FIU feedback, queries, or instructions..."/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_confirm_acknowledgement"
+                            string="Record Acknowledgement"
+                            type="object"
+                            class="btn-primary"/>
+                    <button string="Cancel" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Window action for acknowledgement wizard (opened from report) -->
+    <record id="action_goaml_acknowledgement_wizard" model="ir.actions.act_window">
+        <field name="name">Record FIU Acknowledgement</field>
+        <field name="res_model">aml.goaml.acknowledgement.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

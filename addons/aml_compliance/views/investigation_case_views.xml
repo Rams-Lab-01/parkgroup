@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- Investigation Case Views                                      -->
+    <!-- ============================================================ -->
+
+    <!-- TREE VIEW -->
+    <record id="view_investigation_case_tree" model="ir.ui.view">
+        <field name="name">aml.investigation.case.tree</field>
+        <field name="model">aml.investigation.case</field>
+        <field name="arch" type="xml">
+            <list string="Investigation Cases"
+                  decoration-danger="severity in ('high','critical')"
+                  decoration-warning="severity == 'medium'"
+                  decoration-info="state in ('open','investigating')"
+                  decoration-success="state in ('closed','str_filed')"
+                  decoration-muted="state == 'closed'">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="state" widget="badge"/>
+                <field name="severity" widget="badge"/>
+                <field name="alert_count" string="# Alerts"/>
+                <field name="assigned_to_id"/>
+                <field name="create_date"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- FORM VIEW -->
+    <record id="view_investigation_case_form" model="ir.ui.view">
+        <field name="name">aml.investigation.case.form</field>
+        <field name="model">aml.investigation.case</field>
+        <field name="arch" type="xml">
+            <form string="Investigation Case">
+                <header>
+                    <button name="action_investigate"
+                            string="Start Investigation"
+                            type="object"
+                            class="btn-primary"
+                            groups="aml_compliance.group_aml_officer"
+                            invisible="state != 'open'"/>
+                    <button name="action_escalate"
+                            string="Escalate to MLRO"
+                            type="object"
+                            class="btn-warning"
+                            groups="aml_compliance.group_aml_officer"
+                            invisible="state not in ('open','investigating')"/>
+                    <button name="action_create_str"
+                            string="Create STR"
+                            type="object"
+                            class="btn-danger"
+                            groups="aml_compliance.group_mlro"
+                            invisible="state not in ('open','investigating','escalated')"/>
+                    <button name="action_close"
+                            string="Close Case"
+                            type="object"
+                            class="btn-primary"
+                            groups="aml_compliance.group_aml_officer"
+                            invisible="state in ('closed','str_filed')"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="severity" widget="badge"/>
+                        </group>
+                        <group>
+                            <field name="assigned_to_id"/>
+                            <field name="resolution_date"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Alerts" name="alerts">
+                            <field name="alert_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="alert_date"/>
+                                    <field name="rule_id"/>
+                                    <field name="severity" widget="badge"/>
+                                    <field name="transaction_amount" widget="monetary"/>
+                                    <field name="state" widget="badge"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Investigation" name="investigation">
+                            <group>
+                                <field name="investigation_notes" nolabel="1"
+                                       placeholder="Detailed investigation notes..."/>
+                            </group>
+                            <group>
+                                <field name="resolution_summary"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- SEARCH VIEW -->
+    <record id="view_investigation_case_search" model="ir.ui.view">
+        <field name="name">aml.investigation.case.search</field>
+        <field name="model">aml.investigation.case</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="assigned_to_id"/>
+                <filter name="state_open" string="Open" domain="[('state','not in',('closed','str_filed'))]"/>
+                <filter name="state_closed" string="Closed" domain="[('state','=','closed')]"/>
+                <separator/>
+                <filter name="my" string="My Cases" domain="[('assigned_to_id','=',uid)]"/>
+                <group name="group_by">
+                    <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    <filter name="group_severity" string="Severity" context="{'group_by':'severity'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ACTION -->
+    <record id="action_investigation_case" model="ir.actions.act_window">
+        <field name="name">Investigation Cases</field>
+        <field name="res_model">aml.investigation.case</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Investigation cases group transaction alerts for structured review.
+            </p>
+        </field>
+    </record>
+
+</odoo>

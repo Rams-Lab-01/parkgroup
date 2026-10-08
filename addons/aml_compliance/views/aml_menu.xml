@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ======================================= -->
+    <!-- AML Compliance — Merged under KYC Menu   -->
+    <!-- ======================================= -->
+
+    <!-- AML Compliance Parent Group (under KYC Enhanced root) -->
+    <menuitem id="menu_aml_section"
+              name="AML Compliance"
+              parent="kyc_management.menu_kyc_enhanced_root"
+              groups="aml_compliance.group_aml_officer"
+              sequence="25"/>
+
+    <!-- ======================== -->
+    <!-- Risk Assessment Submenu  -->
+    <!-- ======================== -->
+    <menuitem id="menu_aml_risk"
+              name="Risk Assessment"
+              parent="menu_aml_section"
+              sequence="10"/>
+
+    <menuitem id="menu_aml_risk_assessments"
+              name="Risk Assessments"
+              parent="menu_aml_risk"
+              action="action_risk_assessment"
+              sequence="10"/>
+
+    <!-- ======================== -->
+    <!-- goAML Reports Submenu    -->
+    <!-- ======================== -->
+    <menuitem id="menu_aml_goaml"
+              name="goAML Reports"
+              parent="menu_aml_section"
+              sequence="20"/>
+
+    <menuitem id="menu_aml_goaml_reports"
+              name="STR / SAR / CTR"
+              parent="menu_aml_goaml"
+              action="action_goaml_report"
+              sequence="10"/>
+
+    <!-- ======================== -->
+    <!-- Transaction Monitoring   -->
+    <!-- ======================== -->
+    <menuitem id="menu_aml_monitoring"
+              name="Transaction Monitoring"
+              parent="menu_aml_section"
+              sequence="30"/>
+
+    <menuitem id="menu_aml_alerts"
+              name="Transaction Alerts"
+              parent="menu_aml_monitoring"
+              action="action_transaction_alert"
+              sequence="10"/>
+
+    <menuitem id="menu_aml_investigation_cases"
+              name="Investigation Cases"
+              parent="menu_aml_monitoring"
+              action="action_investigation_case"
+              sequence="20"/>
+
+    <!-- ======================== -->
+    <!-- EDD & Investigations     -->
+    <!-- ======================== -->
+    <menuitem id="menu_aml_edd"
+              name="Enhanced Due Diligence"
+              parent="menu_aml_section"
+              sequence="35"/>
+
+    <menuitem id="menu_aml_edd_workflows"
+              name="EDD Workflows"
+              parent="menu_aml_edd"
+              action="action_edd_workflow"
+              sequence="10"/>
+
+    <!-- ======================== -->
+    <!-- Sanctions Screening      -->
+    <!-- ======================== -->
+    <menuitem id="menu_aml_sanctions"
+              name="Sanctions Screening"
+              parent="menu_aml_section"
+              sequence="40"/>
+
+    <menuitem id="menu_aml_screening_results"
+              name="Screening Results"
+              parent="menu_aml_sanctions"
+              action="action_screening_result"
+              sequence="10"/>
+
+    <menuitem id="menu_aml_screening_certificate"
+              name="Print Screening Certificate"
+              parent="menu_aml_sanctions"
+              action="action_report_screening_certificate"
+              sequence="15"/>
+
+    <!-- Consolidated KYC Report — under KYC Reports section -->
+    <menuitem id="menu_kyc_report_consolidated"
+              name="Consolidated KYC Report"
+              parent="kyc_management.menu_kyc_reports"
+              action="action_report_consolidated_kyc"
+              sequence="3"/>
+
+    <menuitem id="menu_aml_sanctions_list"
+              name="Sanctions Lists"
+              parent="menu_aml_sanctions"
+              action="action_sanctions_list"
+              sequence="20"/>
+
+    <!-- ======================== -->
+    <!-- AML Dashboard            -->
+    <!-- ======================== -->
+    <menuitem id="menu_aml_dashboard"
+              name="AML Dashboard"
+              parent="menu_aml_section"
+              groups="aml_compliance.group_aml_manager"
+              sequence="5"/>
+
+    <menuitem id="menu_aml_dashboard_risk"
+              name="Risk Assessment Overview"
+              parent="menu_aml_dashboard"
+              action="action_dashboard_risk_assessments"
+              sequence="10"/>
+
+    <menuitem id="menu_aml_dashboard_alerts"
+              name="Alert Analysis"
+              parent="menu_aml_dashboard"
+              action="action_dashboard_alerts"
+              sequence="20"/>
+
+    <menuitem id="menu_aml_dashboard_goaml"
+              name="goAML Filing Status"
+              parent="menu_aml_dashboard"
+              action="action_dashboard_goaml"
+              sequence="30"/>
+
+    <menuitem id="menu_aml_dashboard_screening"
+              name="Screening Overview"
+              parent="menu_aml_dashboard"
+              action="action_dashboard_screening"
+              sequence="40"/>
+
+    <menuitem id="menu_aml_dashboard_overdue"
+              name="Overdue Reviews"
+              parent="menu_aml_dashboard"
+              action="action_overdue_reviews"
+              sequence="50"/>
+
+    <menuitem id="menu_aml_dashboard_highrisk"
+              name="High Risk Customers"
+              parent="menu_aml_dashboard"
+              action="action_high_risk_customers"
+              sequence="60"/>
+
+    <menuitem id="menu_aml_dashboard_pending_alerts"
+              name="Pending Alerts"
+              parent="menu_aml_dashboard"
+              action="action_pending_alerts"
+              sequence="70"/>
+
+    <menuitem id="menu_aml_dashboard_edd"
+              name="EDD Overview"
+              parent="menu_aml_dashboard"
+              action="action_dashboard_edd"
+              sequence="80"/>
+
+    <menuitem id="menu_aml_dashboard_investigation"
+              name="Case Overview"
+              parent="menu_aml_dashboard"
+              action="action_dashboard_investigation"
+              sequence="90"/>
+
+    <!-- ======================== -->
+    <!-- AML Configuration        -->
+    <!-- (under KYC Configuration)-->
+    <!-- ======================== -->
+    <menuitem id="menu_aml_config_risk_factors"
+              name="Risk Factors"
+              parent="kyc_management.menu_kyc_configuration"
+              action="action_risk_factor"
+              sequence="10"/>
+
+    <menuitem id="menu_aml_config_fatf"
+              name="FATF Jurisdictions"
+              parent="kyc_management.menu_kyc_configuration"
+              action="action_fatf_jurisdiction"
+              sequence="11"/>
+
+    <menuitem id="menu_aml_config_monitoring_rules"
+              name="Monitoring Rules"
+              parent="kyc_management.menu_kyc_configuration"
+              action="action_monitoring_rule"
+              sequence="12"/>
+
+    <menuitem id="menu_aml_config_opensanctions"
+              name="OpenSanctions / Yente"
+              parent="kyc_management.menu_kyc_configuration"
+              action="action_opensanctions_config"
+              sequence="13"
+              groups="aml_compliance.group_aml_manager"/>
+
+</odoo>

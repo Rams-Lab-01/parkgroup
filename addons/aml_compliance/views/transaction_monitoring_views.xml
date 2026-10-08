@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================================ -->
+    <!-- Transaction Monitoring Rules: Views                           -->
+    <!-- ============================================================ -->
+    <record id="view_monitoring_rule_tree" model="ir.ui.view">
+        <field name="name">aml.monitoring.rule.tree</field>
+        <field name="model">aml.monitoring.rule</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="rule_type" widget="badge"/>
+                <field name="severity" widget="badge"
+                       decoration-info="severity == 'low'"
+                       decoration-warning="severity == 'medium'"
+                       decoration-danger="severity in ('high','critical')"/>
+                <field name="threshold_amount" invisible="rule_type not in ('threshold','structuring')"/>
+                <field name="velocity_count" invisible="rule_type != 'velocity'"/>
+                <field name="velocity_window_days" invisible="rule_type != 'velocity'"/>
+                <field name="applies_to"/>
+                <field name="active"/>
+                <field name="alert_count" string="# Alerts"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_monitoring_rule_form" model="ir.ui.view">
+        <field name="name">aml.monitoring.rule.form</field>
+        <field name="model">aml.monitoring.rule</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Rule Name"/></h1>
+                    </div>
+                    <group>
+                        <group string="Rule Definition">
+                            <field name="code"/>
+                            <field name="rule_type"/>
+                            <field name="severity"/>
+                            <field name="applies_to"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Parameters">
+                            <field name="threshold_amount"
+                                   invisible="rule_type not in ('threshold','structuring','round_amount')"/>
+                            <field name="velocity_count"
+                                   invisible="rule_type != 'velocity'"/>
+                            <field name="velocity_window_days"
+                                   invisible="rule_type != 'velocity'"/>
+                            <field name="structuring_percentage"
+                                   invisible="rule_type != 'structuring'"/>
+                            <field name="auto_create_str"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="description"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_monitoring_rule" model="ir.actions.act_window">
+        <field name="name">Monitoring Rules</field>
+        <field name="res_model">aml.monitoring.rule</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create a monitoring rule</p>
+            <p>Configure rules to automatically detect suspicious transactions.</p>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Transaction Alerts: Views                                     -->
+    <!-- ============================================================ -->
+    <record id="view_transaction_alert_tree" model="ir.ui.view">
+        <field name="name">aml.transaction.alert.tree</field>
+        <field name="model">aml.transaction.alert</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="severity in ('high','critical') and state == 'new'"
+                  decoration-warning="state in ('new','investigating')">
+                <field name="name"/>
+                <field name="alert_date"/>
+                <field name="partner_id"/>
+                <field name="rule_id"/>
+                <field name="severity" widget="badge"
+                       decoration-info="severity == 'low'"
+                       decoration-warning="severity == 'medium'"
+                       decoration-danger="severity in ('high','critical')"/>
+                <field name="transaction_amount" sum="Total"/>
+                <field name="assigned_to_id"/>
+                <field name="state" widget="badge"
+                       decoration-danger="state == 'new'"
+                       decoration-warning="state == 'investigating'"
+                       decoration-info="state == 'escalated'"
+                       decoration-success="state in ('false_positive','closed','str_filed')"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_transaction_alert_form" model="ir.ui.view">
+        <field name="name">aml.transaction.alert.form</field>
+        <field name="model">aml.transaction.alert</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_investigate"
+                            string="Start Investigation"
+                            type="object" class="btn-primary"
+                            invisible="state != 'new'"/>
+                    <button name="action_escalate"
+                            string="Escalate to MLRO"
+                            type="object" class="btn-warning"
+                            invisible="state != 'investigating'"/>
+                    <button name="action_create_str"
+                            string="Create STR"
+                            type="object" class="btn-danger"
+                            invisible="state not in ('investigating','escalated')"
+                            groups="aml_compliance.group_aml_officer"/>
+                    <button name="action_false_positive"
+                            string="Mark False Positive"
+                            type="object"
+                            invisible="state not in ('investigating','escalated')"/>
+                    <button name="action_close"
+                            string="Close — No Action"
+                            type="object"
+                            invisible="state not in ('investigating','escalated')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="new,investigating,escalated,str_filed"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Critical"
+                            bg_color="text-bg-danger"
+                            invisible="severity != 'critical'"/>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Alert Info">
+                            <field name="alert_date"/>
+                            <field name="rule_id"/>
+                            <field name="severity"/>
+                            <field name="partner_id"/>
+                        </group>
+                        <group string="Transaction">
+                            <field name="transaction_amount"/>
+                            <field name="currency_id" groups="base.group_multi_currency"/>
+                            <field name="transaction_date"/>
+                            <field name="invoice_id"/>
+                        </group>
+                    </group>
+                    <separator string="Alert Description"/>
+                    <field name="alert_description" nolabel="1"/>
+                    <notebook>
+                        <page string="Investigation" name="investigation">
+                            <group>
+                                <group>
+                                    <field name="assigned_to_id"/>
+                                </group>
+                                <group>
+                                    <field name="resolution_date" readonly="1"/>
+                                </group>
+                            </group>
+                            <separator string="Investigation Notes"/>
+                            <field name="investigation_notes" nolabel="1"
+                                   placeholder="Document your investigation findings..."/>
+                        </page>
+                        <page string="Links" name="links">
+                            <group>
+                                <field name="goaml_report_id"/>
+                                <field name="risk_assessment_id"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_transaction_alert_search" model="ir.ui.view">
+        <field name="name">aml.transaction.alert.search</field>
+        <field name="model">aml.transaction.alert</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="rule_id"/>
+                <separator/>
+                <filter name="filter_new" string="New Alerts"
+                        domain="[('state','=','new')]"/>
+                <filter name="filter_investigating" string="Under Investigation"
+                        domain="[('state','=','investigating')]"/>
+                <filter name="filter_escalated" string="Escalated"
+                        domain="[('state','=','escalated')]"/>
+                <filter name="filter_critical" string="Critical"
+                        domain="[('severity','in',['high','critical'])]"/>
+                <separator/>
+                <group name="group_by">
+                    <filter name="groupby_severity" string="Severity"
+                            context="{'group_by': 'severity'}"/>
+                    <filter name="groupby_state" string="Status"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="groupby_rule" string="Rule"
+                            context="{'group_by': 'rule_id'}"/>
+                    <filter name="groupby_partner" string="Customer"
+                            context="{'group_by': 'partner_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_transaction_alert" model="ir.actions.act_window">
+        <field name="name">Transaction Alerts</field>
+        <field name="res_model">aml.transaction.alert</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_transaction_alert_search"/>
+        <field name="context">{'search_default_filter_new': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No transaction alerts
+            </p>
+            <p>
+                Transaction alerts are generated automatically by monitoring
+                rules. Configure rules under Configuration → Monitoring Rules.
+            </p>
+        </field>
+    </record>
+
+</odoo>
