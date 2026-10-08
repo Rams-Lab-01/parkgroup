@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Predefined generic endpoints per runbook section 8.2 routing override.
+             Used when the recipient is: Deemed Supply (97), unregistered
+             Exports (99), or out-of-scope buyer (98). Scheme always 0235. -->
+        <record id="endpoint_9900000097_deemed_supply" model="uae.einvoice.endpoint">
+            <field name="scheme_id">0235</field>
+            <field name="identifier">9900000097</field>
+            <field name="purpose">deemed_supply</field>
+        </record>
+        <record id="endpoint_9900000098_out_of_scope_buyer" model="uae.einvoice.endpoint">
+            <field name="scheme_id">0235</field>
+            <field name="identifier">9900000098</field>
+            <field name="purpose">out_of_scope_buyer</field>
+        </record>
+        <record id="endpoint_9900000099_unregistered_exports" model="uae.einvoice.endpoint">
+            <field name="scheme_id">0235</field>
+            <field name="identifier">9900000099</field>
+            <field name="purpose">unregistered_exports</field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_uae_einvoice_transaction_type,uae.einvoice.transaction.type,model_uae_einvoice_transaction_type,base.group_user,1,1,1,0
+access_uae_einvoice_document_type,uae.einvoice.document.type,model_uae_einvoice_document_type,base.group_user,1,0,0,0
+access_uae_einvoice_endpoint,uae.einvoice.endpoint,model_uae_einvoice_endpoint,base.group_user,1,0,0,0

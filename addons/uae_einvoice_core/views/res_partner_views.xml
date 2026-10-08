@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_uae_einvoice" model="ir.ui.view">
+        <field name="name">res.partner.form.uae.einvoice</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='vat']" position="after">
+                <field name="trn" placeholder="e.g. 100123456700003"/>
+                <field name="legal_registration_type"/>
+                <field name="legal_registration_id"/>
+                <field name="peppol_scheme_id" groups="base.group_no_one"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_move_form_uae_einvoice" model="ir.ui.view">
+        <field name="name">account.move.form.uae.einvoice</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="PINT-AE" name="uae_einvoice"
+                      invisible="move_type not in ('out_invoice', 'out_refund')">
+                    <group>
+                        <group string="Classification">
+                            <field name="uae_document_type_id"/>
+                            <field name="uae_transaction_type_id"/>
+                            <field name="einvoice_state" widget="badge"/>
+                        </group>
+                        <group string="Credit Note" invisible="not uae_is_credit_note">
+                            <field name="credit_note_reason_code"/>
+                            <field name="preceding_invoice_ref"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Stub QWeb template for the PINT-AE UBL 2.1 invoice renderer.
+
+         The full render-to-XML implementation is section 11 build-sequence
+         step 2 (a separate plan). This stub exists only so the manifest's
+         qweb: list resolves at module-install time. The real template
+         will inherit account_edi_ubl_cii.ubl_21_Invoice and override the
+         PINT-AE-specific nodes (IBT-030/047, BTAE-12/11/15/16, etc.). -->
+    <templates>
+        <t t-name="uae_einvoice_core.pint_ae_ubl_invoice_stub">
+            <!-- placeholder, intentionally empty -->
+        </t>
+    </templates>
+</odoo>

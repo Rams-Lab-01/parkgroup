@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- PINT-AE document type codes per runbook section 8.1.
+             Code 380 Tax Invoice, 381 Tax Credit Note,
+             480 Invoice out of tax scope, 81 Credit note out of tax scope.
+             Rule: no negative invoices, reversals always via 381/81. -->
+        <record id="doc_type_380_tax_invoice" model="uae.einvoice.document.type">
+            <field name="code">380</field>
+            <field name="name">Tax Invoice</field>
+            <field name="is_credit_note" eval="False"/>
+        </record>
+        <record id="doc_type_381_tax_credit_note" model="uae.einvoice.document.type">
+            <field name="code">381</field>
+            <field name="name">Tax Credit Note</field>
+            <field name="is_credit_note" eval="True"/>
+        </record>
+        <record id="doc_type_480_invoice_out_of_scope" model="uae.einvoice.document.type">
+            <field name="code">480</field>
+            <field name="name">Invoice, out of tax scope</field>
+            <field name="is_credit_note" eval="False"/>
+        </record>
+        <record id="doc_type_81_credit_note_out_of_scope" model="uae.einvoice.document.type">
+            <field name="code">81</field>
+            <field name="name">Credit note, out of tax scope</field>
+            <field name="is_credit_note" eval="True"/>
+        </record>
+    </data>
+</odoo>
