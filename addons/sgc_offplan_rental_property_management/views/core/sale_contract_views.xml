@@ -134,6 +134,61 @@
 
                     <!-- Notebook -->
                     <notebook>
+                        <page string="Payment Plan" name="payment_plan">
+                            <div class="mb-3">
+                                <button name="action_generate_installments"
+                                        string="Generate Installments"
+                                        type="object"
+                                        class="btn btn-secondary"
+                                        invisible="not payment_schedule_id"/>
+                                <button name="action_generate_installment_invoices"
+                                        string="Generate Installment Invoices"
+                                        type="object"
+                                        class="btn btn-primary"
+                                        invisible="not installment_ids or not buyer_id"/>
+                            </div>
+                            <field name="installment_ids"
+                                   context="{'default_contract_id': id}">
+                                <list editable="bottom"
+                                      decoration-success="state in ('paid', 'partial')"
+                                      decoration-danger="state == 'overdue'"
+                                      decoration-warning="state == 'invoiced'"
+                                      decoration-muted="state == 'pending'">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="due_date"/>
+                                    <field name="percentage" string="%" digits="[5,2]"/>
+                                    <field name="amount" sum="Total"
+                                           widget="monetary"
+                                           options="{'currency_field': 'currency_id'}"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="state"
+                                           widget="badge"
+                                           decoration-info="state == 'pending'"
+                                           decoration-success="state in ('paid', 'partial')"
+                                           decoration-warning="state == 'invoiced'"
+                                           decoration-danger="state == 'overdue'"
+                                           decoration-muted="state == 'cancelled'"/>
+                                    <field name="invoice_id"
+                                           widget="many2one_button"
+                                           string="Invoice"
+                                           optional="hide"/>
+                                    <field name="payment_date" optional="hide"/>
+                                    <button name="action_generate_invoice"
+                                            string="Generate Invoice"
+                                            type="object"
+                                            icon="fa-file-text-o"
+                                            invisible="invoice_id"
+                                            class="btn-sm btn-primary"/>
+                                    <button name="action_view_invoice"
+                                            string="View Invoice"
+                                            type="object"
+                                            icon="fa-search"
+                                            invisible="not invoice_id"
+                                            class="btn-sm btn-secondary"/>
+                                </list>
+                            </field>
+                        </page>
                         <page string="Commission" name="commission">
                             <field name="is_commission_eligible" invisible="1"/>
                             <div class="alert alert-warning" role="alert"
@@ -216,61 +271,6 @@
                                        options="{'currency_field': 'currency_id'}"
                                        decoration-bf="True"/>
                             </group>
-                        </page>
-                        <page string="Payment Plan" name="payment_plan">
-                            <div class="mb-3">
-                                <button name="action_generate_installments"
-                                        string="Generate Installments"
-                                        type="object"
-                                        class="btn btn-secondary"
-                                        invisible="not payment_schedule_id"/>
-                                <button name="action_generate_installment_invoices"
-                                        string="Generate Installment Invoices"
-                                        type="object"
-                                        class="btn btn-primary"
-                                        invisible="not installment_ids or not buyer_id"/>
-                            </div>
-                            <field name="installment_ids"
-                                   context="{'default_contract_id': id}">
-                                <list editable="bottom"
-                                      decoration-success="state in ('paid', 'partial')"
-                                      decoration-danger="state == 'overdue'"
-                                      decoration-warning="state == 'invoiced'"
-                                      decoration-muted="state == 'pending'">
-                                    <field name="sequence" widget="handle"/>
-                                    <field name="name"/>
-                                    <field name="due_date"/>
-                                    <field name="percentage" string="%" digits="[5,2]"/>
-                                    <field name="amount" sum="Total"
-                                           widget="monetary"
-                                           options="{'currency_field': 'currency_id'}"/>
-                                    <field name="currency_id" column_invisible="1"/>
-                                    <field name="state"
-                                           widget="badge"
-                                           decoration-info="state == 'pending'"
-                                           decoration-success="state in ('paid', 'partial')"
-                                           decoration-warning="state == 'invoiced'"
-                                           decoration-danger="state == 'overdue'"
-                                           decoration-muted="state == 'cancelled'"/>
-                                    <field name="invoice_id"
-                                           widget="many2one_button"
-                                           string="Invoice"
-                                           optional="hide"/>
-                                    <field name="payment_date" optional="hide"/>
-                                    <button name="action_generate_invoice"
-                                            string="Generate Invoice"
-                                            type="object"
-                                            icon="fa-file-text-o"
-                                            invisible="invoice_id"
-                                            class="btn-sm btn-primary"/>
-                                    <button name="action_view_invoice"
-                                            string="View Invoice"
-                                            type="object"
-                                            icon="fa-search"
-                                            invisible="not invoice_id"
-                                            class="btn-sm btn-secondary"/>
-                                </list>
-                            </field>
                         </page>
                         <page string="Notes" name="notes">
                             <field name="notes" placeholder="Internal notes about this contract…"/>
