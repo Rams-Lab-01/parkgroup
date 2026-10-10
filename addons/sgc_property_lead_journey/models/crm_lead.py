@@ -20,10 +20,10 @@ class CrmLead(models.Model):
         domain=[("state", "=", "eoi")])
     booking_contract_ids = fields.One2many(
         "sale.contract", "lead_id", string="Booked Contracts",
-        domain=[("state", "in", ("booked", "confirmed", "spa_issued"))])
+        domain=[("state", "in", ("booked", "spa_issued"))])
     signed_contract_ids = fields.One2many(
         "sale.contract", "lead_id", string="Signed SPA Contracts",
-        domain=[("state", "in", ("spa_signed", "signed", "completed"))])
+        domain=[("state", "in", ("spa_signed", "registered", "waiting_handover", "completed"))])
 
     contract_count = fields.Integer(
         string="Contracts", compute="_compute_contract_counts")
@@ -50,9 +50,9 @@ class CrmLead(models.Model):
             lead.contract_count = len(contracts)
             lead.eoi_count = len(contracts.filtered(lambda c: c.state == "eoi"))
             lead.booking_count = len(contracts.filtered(
-                lambda c: c.state in ("booked", "confirmed", "spa_issued")))
+                lambda c: c.state in ("booked", "spa_issued")))
             lead.signed_count = len(contracts.filtered(
-                lambda c: c.state in ("spa_signed", "signed", "completed")))
+                lambda c: c.state in ("spa_signed", "registered", "waiting_handover", "completed")))
 
     @api.depends("date_last_stage_update")
     def _compute_journey_days_in_stage(self):
@@ -104,11 +104,11 @@ class CrmLead(models.Model):
 
     def action_view_booking_contracts(self):
         return self._contract_action(
-            _("Bookings"), [("state", "in", ("booked", "confirmed", "spa_issued"))])
+            _("Bookings"), [("state", "in", ("booked", "spa_issued"))])
 
     def action_view_signed_contracts(self):
         return self._contract_action(
-            _("Signed SPAs"), [("state", "in", ("spa_signed", "signed", "completed"))])
+            _("Signed SPAs"), [("state", "in", ("spa_signed", "registered", "waiting_handover", "completed"))])
 
     # ─────────────────────────────────────────────────────────────────────
     # Journey launch points (carry the lead into the EOI/booking wizard)

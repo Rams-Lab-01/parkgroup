@@ -12,6 +12,25 @@ class AccountMove(models.Model):
         readonly=True,
         help='Related tenancy contract'
     )
+
+    def _apply_open_advances(self):
+        """Match the buyer's unreconciled receipts/credits (oldest first) against these posted customer invoices."""
+        for move in self.filtered(lambda m: m.state == 'posted' and m.move_type == 'out_invoice'):
+            recv = move.line_ids.filtered(lambda l: l.account_id.account_type == 'asset_receivable' and not l.reconciled)
+            if not recv:
+                continue
+            credits = self.env['account.move.line'].search([
+                ('partner_id', 'child_of', move.commercial_partner_id.id),
+                ('account_id', 'in', recv.account_id.ids),
+                ('company_id', '=', move.company_id.id),
+                ('parent_state', '=', 'posted'),
+                ('reconciled', '=', False),
+                ('amount_residual', '<', 0),
+            ], order='date, id')
+            for credit in credits:
+                if move.payment_state in ('paid', 'in_payment'):
+                    break
+                move.js_assign_outstanding_line(credit.id)
     
     tenancy_property_id = fields.Many2one(
         'property.details',

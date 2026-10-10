@@ -22,7 +22,7 @@ class SaleContract(models.Model):
         related="lead_id.source_id", string="Lead Source", store=False)
 
     # Contract states that mean "the deal is won" (SPA signed) vs "dead".
-    _JOURNEY_WON_STATES = ("spa_signed", "signed", "completed")
+    _JOURNEY_WON_STATES = ("spa_signed", "registered", "waiting_handover", "completed")
     _JOURNEY_DEAD_STATES = ("refunded", "cancelled")
 
     # ─────────────────────────────────────────────────────────────────────
