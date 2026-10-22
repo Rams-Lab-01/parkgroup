@@ -1,0 +1,125 @@
+id,payment_ref,partner,email,paid_on,payment_type,amount,old_unit,project,journal
+27,PBNK16/2026/00003,David Vobornik,dvobornik@gmail.com,2026-01-22,inbound,30000.00,Park Residency - Studio 416,Park Residency,PBR 1 Payable
+45,PBNK16/2026/00019,David Vobornik,dvobornik@gmail.com,2026-01-27,inbound,80603.88,Park Residency - Studio 416,Park Residency,PBR 1 Payable
+54,PBNK16/2026/00028,David Vobornik,dvobornik@gmail.com,2026-02-06,inbound,30000.00,Park Residency - Studio 311,Park Residency,PBR 1 Payable
+55,PBNK16/2026/00029,David Vobornik,dvobornik@gmail.com,2026-02-09,inbound,85853.15,Park Residency - Studio 311,Park Residency,PBR 1 Payable
+56,PBNK12/2026/00001,Imaan Mangal,imaanmangal@gmail.com,2026-02-12,inbound,193431.59,Park Residency - 1 Bedroom 201,Park Residency,UBL - Park Residency Corporate
+57,PBNK12/2026/00002,Imaan Mangal,imaanmangal@gmail.com,2026-02-12,inbound,220194.95,Park Residency - 1 Bedroom 202,Park Residency,UBL - Park Residency Corporate
+58,PBNK12/2026/00003,Imaan Mangal,imaanmangal@gmail.com,2026-02-12,inbound,294302.25,Park Residency - 2 Bedrooms 203,Park Residency,UBL - Park Residency Corporate
+59,PBNK12/2026/00004,Imaan Mangal,imaanmangal@gmail.com,2026-02-12,inbound,220164.81,Park Residency - 1 Bedroom 205,Park Residency,UBL - Park Residency Corporate
+60,PBNK12/2026/00005,Imaan Mangal,imaanmangal@gmail.com,2026-02-12,inbound,202292.43,Park Residency - 1 Bedroom 206,Park Residency,UBL - Park Residency Corporate
+61,PBNK12/2026/00006,Imaan Mangal,imaanmangal@gmail.com,2026-02-12,inbound,207928.41,Park Residency - 1 Bedroom 207,Park Residency,UBL - Park Residency Corporate
+62,PBNK12/2026/00007,Imaan Mangal,imaanmangal@gmail.com,2026-02-12,inbound,114435.33,Park Residency - Studio 209,Park Residency,UBL - Park Residency Corporate
+63,PBNK12/2026/00008,Imaan Mangal,imaanmangal@gmail.com,2026-02-12,inbound,112812.13,Park Residency - Studio 210,Park Residency,UBL - Park Residency Corporate
+64,PBNK12/2026/00009,Imaan Mangal,imaanmangal@gmail.com,2026-02-12,inbound,115059.63,Park Residency - Studio 211,Park Residency,UBL - Park Residency Corporate
+65,PBNK12/2026/00010,Imaan Mangal,imaanmangal@gmail.com,2026-02-12,inbound,112219.04,Park Residency - Studio 212,Park Residency,UBL - Park Residency Corporate
+66,PBNK12/2026/00011,Imaan Mangal,imaanmangal@gmail.com,2026-02-12,inbound,113998.31,Park Residency - Studio 213,Park Residency,UBL - Park Residency Corporate
+67,PBNK12/2026/00012,Imaan Mangal,imaanmangal@gmail.com,2026-02-12,inbound,231918.99,Park Residency - 1 Bedroom 214,Park Residency,UBL - Park Residency Corporate
+68,PBNK12/2026/00013,Imaan Mangal,imaanmangal@gmail.com,2026-02-12,inbound,256271.24,Park Residency - 1 Bedroom 215,Park Residency,UBL - Park Residency Corporate
+69,PBNK12/2026/00014,Imaan Mangal,imaanmangal@gmail.com,2026-02-12,inbound,114841.13,Park Residency - Studio 216,Park Residency,UBL - Park Residency Corporate
+70,PBNK12/2026/00015,Imaan Mangal,imaanmangal@gmail.com,2026-02-12,inbound,114809.91,Park Residency - Studio 217,Park Residency,UBL - Park Residency Corporate
+71,PBNK12/2026/00016,Imaan Mangal,imaanmangal@gmail.com,2026-02-12,inbound,112375.12,Park Residency - Studio 218,Park Residency,UBL - Park Residency Corporate
+72,PBNK12/2026/00017,Imaan Mangal,imaanmangal@gmail.com,2026-02-12,inbound,214860.36,Park Residency - 1 Bedroom 219,Park Residency,UBL - Park Residency Corporate
+73,PBNK12/2026/00018,Imaan Mangal,imaanmangal@gmail.com,2026-02-12,inbound,200483.10,Park Residency - 1 Bedroom 221,Park Residency,UBL - Park Residency Corporate
+74,PBNK12/2026/00019,Imaan Mangal,imaanmangal@gmail.com,2026-02-12,inbound,113935.88,Park Residency - Studio 208,Park Residency,UBL - Park Residency Corporate
+77,PBNK12/2026/00020,David Vobornik,dvobornik@gmail.com,2026-03-12,inbound,5792.66,Park Residency - Studio 311,Park Residency,UBL - Park Residency Corporate
+78,PBNK12/2026/00021,David Vobornik,dvobornik@gmail.com,2026-03-12,inbound,5530.19,Park Residency - Studio 416,Park Residency,UBL - Park Residency Corporate
+3933,PCSH6/2026/00339,Mohammed Jassim Mohammed Al Fatlawi,mbj2080@gmail.com,2026-08-11,inbound,28000.00,Park Beach Residence II - 2 Bedrooms 309,Park Beach Residence II,Mashreq Bank Escrow - PBR2
+4149,PCSH6/2026/00309,Mohammed Jassim Mohammed Al Fatlawi,mbj2080@gmail.com,2026-09-14,inbound,28000.00,Park Beach Residence II - 2 Bedrooms 309,Park Beach Residence II,Mashreq Bank Escrow - PBR2
+4253,PCSH8/2024/00197,Machiel De Vries,dvbeleggingsmaatschappij@gmail.com,2024-10-07,inbound,50000.00,Park Beach Residence II - 1 Bedroom 101,Park Beach Residence II,PBR1 Payable
+4254,PCSH8/2024/00165,Machiel De Vries,dvbeleggingsmaatschappij@gmail.com,2024-10-31,inbound,176958.11,Park Beach Residence II - 1 Bedroom 101,Park Beach Residence II,PBR1 Payable
+4257,PCSH8/2025/00188,Machiel De Vries,dvbeleggingsmaatschappij@gmail.com,2025-01-22,inbound,3000.00,Park Beach Residence II - 1 Bedroom 101,Park Beach Residence II,PBR1 Payable
+4261,PCSH8/2025/00104,Machiel De Vries,dvbeleggingsmaatschappij@gmail.com,2025-12-25,inbound,66287.00,Park Beach Residence II - 1 Bedroom 101,Park Beach Residence II,PBR1 Payable
+4552,PCSH8/2024/00196,Halil Erseven,herseven1@gmail.com,2024-10-07,inbound,49713.00,Park Beach Residence II - Studio 302,Park Beach Residence II,PBR1 Payable
+4572,PCSH8/2024/00230,Halil Erseven,herseven1@gmail.com,2024-09-17,inbound,50279.00,Park Beach Residence II - Studio 502,Park Beach Residence II,PBR1 Payable
+4661,PCSH6/2026/00366,Mohammed Jassim Mohammed Al Fatlawi,mbj2080@gmail.com,2026-07-14,inbound,28000.00,Park Beach Residence II - 2 Bedrooms 309,Park Beach Residence II,Mashreq Bank Escrow - PBR2
+4662,PCSH6/2026/00396,Mohammed Jassim Mohammed Al Fatlawi,mbj2080@gmail.com,2026-06-18,inbound,28000.00,Park Beach Residence II - 2 Bedrooms 309,Park Beach Residence II,Mashreq Bank Escrow - PBR2
+4663,PCSH6/2026/00436,Mohammed Jassim Mohammed Al Fatlawi,mbj2080@gmail.com,2026-05-15,inbound,28000.00,Park Beach Residence II - 2 Bedrooms 309,Park Beach Residence II,Mashreq Bank Escrow - PBR2
+4664,PCSH6/2026/00485,Mohammed Jassim Mohammed Al Fatlawi,mbj2080@gmail.com,2026-03-24,inbound,28000.00,Park Beach Residence II - 2 Bedrooms 309,Park Beach Residence II,Mashreq Bank Escrow - PBR2
+4665,PCSH6/2026/00487,Mohammed Jassim Mohammed Al Fatlawi,mbj2080@gmail.com,2026-03-18,inbound,28000.00,Park Beach Residence II - 2 Bedrooms 309,Park Beach Residence II,Mashreq Bank Escrow - PBR2
+4666,PCSH6/2026/00519,Mohammed Jassim Mohammed Al Fatlawi,mbj2080@gmail.com,2026-02-13,inbound,27970.00,Park Beach Residence II - 2 Bedrooms 309,Park Beach Residence II,Mashreq Bank Escrow - PBR2
+4667,PCSH6/2026/00539,Mohammed Jassim Mohammed Al Fatlawi,mbj2080@gmail.com,2026-01-30,inbound,27470.00,Park Beach Residence II - 2 Bedrooms 309,Park Beach Residence II,Mashreq Bank Escrow - PBR2
+4668,PCSH6/2026/00557,Mohammed Jassim Mohammed Al Fatlawi,mbj2080@gmail.com,2026-01-09,inbound,27470.00,Park Beach Residence II - 2 Bedrooms 309,Park Beach Residence II,Mashreq Bank Escrow - PBR2
+4669,PCSH6/2025/00553,Mohammed Jassim Mohammed Al Fatlawi,mbj2080@gmail.com,2025-12-16,inbound,271419.00,Park Beach Residence II - 2 Bedrooms 309,Park Beach Residence II,Mashreq Bank Escrow - PBR2
+4670,PCSH8/2025/00114,Mohammed Jassim Mohammed Al Fatlawi,mbj2080@gmail.com,2025-10-16,inbound,277418.60,Park Beach Residence II - 2 Bedrooms 309,Park Beach Residence II,PBR1 Payable
+4692,PCSH8/2024/00173,Mohammed Jassim Mohammed Al Fatlawi,mbj2080@gmail.com,2024-10-24,inbound,6000.00,Park Beach Residence II - Studio 310,Park Beach Residence II,PBR1 Payable
+4694,PCSH8/2024/00184,Mohammed Jassim Mohammed Al Fatlawi,mbj2080@gmail.com,2024-10-10,inbound,50000.00,Park Beach Residence II - Studio 310,Park Beach Residence II,PBR1 Payable
+4781,PCSH8/2026/00042,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,rajabalimukadam@gmail.com,2026-03-28,inbound,19778.79,Park Beach Residence II - 1 Bedroom 314,Park Beach Residence II,PBR1 Payable
+4782,PCSH6/2026/00510,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,rajabalimukadam@gmail.com,2026-02-24,inbound,19779.75,Park Beach Residence II - 1 Bedroom 314,Park Beach Residence II,Mashreq Bank Escrow - PBR2
+4783,PCSH6/2026/00544,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,rajabalimukadam@gmail.com,2026-01-28,inbound,19779.00,Park Beach Residence II - 1 Bedroom 314,Park Beach Residence II,Mashreq Bank Escrow - PBR2
+4784,PCSH6/2025/00547,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,rajabalimukadam@gmail.com,2025-12-23,inbound,19778.75,Park Beach Residence II - 1 Bedroom 314,Park Beach Residence II,Mashreq Bank Escrow - PBR2
+4785,PCSH6/2025/00585,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,rajabalimukadam@gmail.com,2025-11-18,inbound,19778.75,Park Beach Residence II - 1 Bedroom 314,Park Beach Residence II,Mashreq Bank Escrow - PBR2
+4786,PCSH6/2025/00602,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,rajabalimukadam@gmail.com,2025-11-03,inbound,19778.85,Park Beach Residence II - 1 Bedroom 314,Park Beach Residence II,Mashreq Bank Escrow - PBR2
+4787,PCSH6/2025/00655,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,rajabalimukadam@gmail.com,2025-09-17,inbound,19778.75,Park Beach Residence II - 1 Bedroom 314,Park Beach Residence II,Mashreq Bank Escrow - PBR2
+4788,PCSH6/2025/00708,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,rajabalimukadam@gmail.com,2025-08-18,inbound,19778.75,Park Beach Residence II - 1 Bedroom 314,Park Beach Residence II,Mashreq Bank Escrow - PBR2
+4789,PCSH6/2025/00748,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,rajabalimukadam@gmail.com,2025-07-14,inbound,19733.87,Park Beach Residence II - 1 Bedroom 314,Park Beach Residence II,Mashreq Bank Escrow - PBR2
+4790,PCSH6/2025/00795,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,rajabalimukadam@gmail.com,2025-06-13,inbound,59336.00,Park Beach Residence II - 1 Bedroom 314,Park Beach Residence II,Mashreq Bank Escrow - PBR2
+4791,PCSH6/2025/00843,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,rajabalimukadam@gmail.com,2025-05-14,inbound,19778.75,Park Beach Residence II - 1 Bedroom 314,Park Beach Residence II,Mashreq Bank Escrow - PBR2
+4792,PCSH6/2025/00896,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,rajabalimukadam@gmail.com,2025-04-14,inbound,19778.75,Park Beach Residence II - 1 Bedroom 314,Park Beach Residence II,Mashreq Bank Escrow - PBR2
+4793,PCSH6/2025/00944,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,rajabalimukadam@gmail.com,2025-03-21,inbound,19778.75,Park Beach Residence II - 1 Bedroom 314,Park Beach Residence II,Mashreq Bank Escrow - PBR2
+4794,PCSH6/2025/00981,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,rajabalimukadam@gmail.com,2025-02-28,inbound,35349.75,Park Beach Residence II - 1 Bedroom 314,Park Beach Residence II,Mashreq Bank Escrow - PBR2
+4795,PCSH6/2025/00980,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,rajabalimukadam@gmail.com,2025-02-28,inbound,35349.75,Park Beach Residence II - 1 Bedroom 314,Park Beach Residence II,Mashreq Bank Escrow - PBR2
+4796,PCSH6/2025/00979,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,rajabalimukadam@gmail.com,2025-02-28,inbound,35349.75,Park Beach Residence II - 1 Bedroom 314,Park Beach Residence II,Mashreq Bank Escrow - PBR2
+4797,PCSH6/2025/00986,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,rajabalimukadam@gmail.com,2025-02-26,inbound,12350.00,Park Beach Residence II - 1 Bedroom 314,Park Beach Residence II,Mashreq Bank Escrow - PBR2
+4798,PCSH6/2025/01033,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,rajabalimukadam@gmail.com,2025-01-27,inbound,20000.00,Park Beach Residence II - 1 Bedroom 314,Park Beach Residence II,Mashreq Bank Escrow - PBR2
+4799,PCSH6/2024/00144,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,rajabalimukadam@gmail.com,2024-12-30,inbound,35500.00,Park Beach Residence II - 1 Bedroom 314,Park Beach Residence II,Mashreq Bank Escrow - PBR2
+4800,PCSH6/2024/00143,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,rajabalimukadam@gmail.com,2024-12-30,inbound,12000.00,Park Beach Residence II - 1 Bedroom 314,Park Beach Residence II,Mashreq Bank Escrow - PBR2
+4801,PCSH6/2024/00149,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,rajabalimukadam@gmail.com,2024-12-20,inbound,35500.75,Park Beach Residence II - 1 Bedroom 314,Park Beach Residence II,Mashreq Bank Escrow - PBR2
+4802,PCSH6/2024/00148,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,rajabalimukadam@gmail.com,2024-12-20,inbound,35500.75,Park Beach Residence II - 1 Bedroom 314,Park Beach Residence II,Mashreq Bank Escrow - PBR2
+4803,PCSH6/2024/00180,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,rajabalimukadam@gmail.com,2024-11-28,inbound,5000.00,Park Beach Residence II - 1 Bedroom 314,Park Beach Residence II,Mashreq Bank Escrow - PBR2
+4804,PCSH8/2024/00164,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,rajabalimukadam@gmail.com,2024-11-02,inbound,6000.00,Park Beach Residence II - 1 Bedroom 314,Park Beach Residence II,PBR1 Payable
+4805,PCSH6/2024/00225,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,rajabalimukadam@gmail.com,2024-10-29,inbound,34499.75,Park Beach Residence II - 1 Bedroom 314,Park Beach Residence II,Mashreq Bank Escrow - PBR2
+4806,PCSH6/2024/00224,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,rajabalimukadam@gmail.com,2024-10-29,inbound,34499.75,Park Beach Residence II - 1 Bedroom 314,Park Beach Residence II,Mashreq Bank Escrow - PBR2
+4807,PCSH6/2024/00223,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,rajabalimukadam@gmail.com,2024-10-29,inbound,34499.75,Park Beach Residence II - 1 Bedroom 314,Park Beach Residence II,Mashreq Bank Escrow - PBR2
+4808,PCSH6/2024/00234,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,rajabalimukadam@gmail.com,2024-10-16,inbound,50000.00,Park Beach Residence II - 1 Bedroom 314,Park Beach Residence II,Mashreq Bank Escrow - PBR2
+5798,PCSH8/2024/00140,Mon Myat Thu,miley.mon93@gmail.com,2024-12-10,inbound,106527.20,Park Beach Residence II - Studio 405,Park Beach Residence II,PBR1 Payable
+5800,PCSH8/2024/00190,Mon Myat Thu,miley.mon93@gmail.com,2024-10-09,inbound,6000.00,Park Beach Residence II - Studio 405,Park Beach Residence II,PBR1 Payable
+5812,PCSH8/2024/00139,Mon Myat Thu,miley.mon93@gmail.com,2024-12-10,inbound,238581.80,Park Beach Residence II - 1 Bedroom 406,Park Beach Residence II,PBR1 Payable
+5814,PCSH8/2024/00189,Mon Myat Thu,miley.mon93@gmail.com,2024-10-09,inbound,6000.00,Park Beach Residence II - 1 Bedroom 406,Park Beach Residence II,PBR1 Payable
+5893,PCSH8/2025/00183,Hasan Abdulla Hasan Aldoobi Alshehhi,nader1989@hotmail.com,2025-02-06,inbound,3000.00,Park Beach Residence II - Studio 410,Park Beach Residence II,PBR1 Payable
+5896,PCSH8/2024/00201,Hasan Abdulla Hasan Aldoobi Alshehhi,nader1989@hotmail.com,2024-10-05,inbound,3000.00,Park Beach Residence II - Studio 410,Park Beach Residence II,PBR1 Payable
+5897,PCSH8/2024/00218,Hasan Abdulla Hasan Aldoobi Alshehhi,nader1989@hotmail.com,2024-09-28,inbound,105659.60,Park Beach Residence II - Studio 410,Park Beach Residence II,PBR1 Payable
+5975,PCSH8/2024/00188,Mon Myat Thu,miley.mon93@gmail.com,2024-10-09,inbound,6000.00,Park Beach Residence II - Studio 503,Park Beach Residence II,PBR1 Payable
+5977,PCSH8/2024/00234,Mon Myat Thu,miley.mon93@gmail.com,2024-09-09,inbound,50000.00,Park Beach Residence II - Studio 503,Park Beach Residence II,PBR1 Payable
+6150,PCSH8/2024/00195,Raphael Phillipe Dominique Francois Emille Goue,rg@euracific.com,2024-10-07,inbound,3000.00,Park Beach Residence II - 1 Bedroom 509,Park Beach Residence II,PBR1 Payable
+6159,PCSH8/2024/00200,Raphael Phillipe Dominique Francois Emille Goue,rg@euracific.com,2024-10-06,inbound,3000.00,Park Beach Residence II - 1 Bedroom 509,Park Beach Residence II,PBR1 Payable
+6161,PCSH8/2024/00237,Raphael Phillipe Dominique Francois Emille Goue,rg@euracific.com,2024-09-05,inbound,50000.00,Park Beach Residence II - 1 Bedroom 509,Park Beach Residence II,PBR1 Payable
+6323,PCSH8/2025/00107,Mohammed Assahraoui,mohamed.assahraoui@hotmail.com,2025-11-22,inbound,9000.00,Park Beach Residence II - Studio 512,Park Beach Residence II,PBR1 Payable
+6324,PCSH8/2025/00127,Mohammed Assahraoui,mohamed.assahraoui@hotmail.com,2025-09-12,inbound,13057.12,Park Beach Residence II - Studio 512,Park Beach Residence II,PBR1 Payable
+6325,PCSH8/2025/00132,Mohammed Assahraoui,mohamed.assahraoui@hotmail.com,2025-09-08,inbound,20000.00,Park Beach Residence II - Studio 512,Park Beach Residence II,PBR1 Payable
+6326,PCSH8/2025/00142,Mohammed Assahraoui,mohamed.assahraoui@hotmail.com,2025-07-04,inbound,26130.65,Park Beach Residence II - Studio 512,Park Beach Residence II,PBR1 Payable
+6327,PCSH8/2025/00147,Mohammed Assahraoui,mohamed.assahraoui@hotmail.com,2025-06-04,inbound,16482.28,Park Beach Residence II - Studio 512,Park Beach Residence II,PBR1 Payable
+6328,PCSH8/2025/00159,Mohammed Assahraoui,mohamed.assahraoui@hotmail.com,2025-05-03,inbound,12482.27,Park Beach Residence II - Studio 512,Park Beach Residence II,PBR1 Payable
+6329,PCSH8/2025/00163,Mohammed Assahraoui,mohamed.assahraoui@hotmail.com,2025-04-26,inbound,1212.00,Park Beach Residence II - Studio 512,Park Beach Residence II,PBR1 Payable
+6330,PCSH8/2025/00172,Mohammed Assahraoui,mohamed.assahraoui@hotmail.com,2025-04-11,inbound,22183.50,Park Beach Residence II - Studio 512,Park Beach Residence II,PBR1 Payable
+6331,PCSH8/2025/00181,Mohammed Assahraoui,mohamed.assahraoui@hotmail.com,2025-03-06,inbound,8250.00,Park Beach Residence II - Studio 512,Park Beach Residence II,PBR1 Payable
+6332,PCSH8/2025/00185,Mohammed Assahraoui,mohamed.assahraoui@hotmail.com,2025-01-31,inbound,23000.00,Park Beach Residence II - Studio 512,Park Beach Residence II,PBR1 Payable
+6333,PCSH8/2024/00199,Mohammed Assahraoui,mohamed.assahraoui@hotmail.com,2024-12-21,inbound,35250.00,Park Beach Residence II - Studio 512,Park Beach Residence II,PBR1 Payable
+6334,PCSH8/2024/00134,Mohammed Assahraoui,mohamed.assahraoui@hotmail.com,2024-12-19,inbound,20000.00,Park Beach Residence II - Studio 512,Park Beach Residence II,PBR1 Payable
+6335,PCSH8/2024/00154,Mohammed Assahraoui,mohamed.assahraoui@hotmail.com,2024-11-09,inbound,10000.00,Park Beach Residence II - Studio 512,Park Beach Residence II,PBR1 Payable
+6336,PCSH8/2024/00153,Mohammed Assahraoui,mohamed.assahraoui@hotmail.com,2024-11-09,inbound,26000.00,Park Beach Residence II - Studio 512,Park Beach Residence II,PBR1 Payable
+6339,PCSH8/2024/00225,Mohammed Assahraoui,mohamed.assahraoui@hotmail.com,2024-09-27,inbound,24985.00,Park Beach Residence II - Studio 512,Park Beach Residence II,PBR1 Payable
+6342,PCSH8/2025/00126,Mohammed Assahraoui,mohamed.assahraoui@hotmail.com,2025-09-12,inbound,5677.88,Park Beach Residence II - Studio 513,Park Beach Residence II,PBR1 Payable
+6343,PCSH8/2025/00131,Mohammed Assahraoui,mohamed.assahraoui@hotmail.com,2025-09-08,inbound,20000.00,Park Beach Residence II - Studio 513,Park Beach Residence II,PBR1 Payable
+6344,PCSH8/2025/00141,Mohammed Assahraoui,mohamed.assahraoui@hotmail.com,2025-07-04,inbound,22869.35,Park Beach Residence II - Studio 513,Park Beach Residence II,PBR1 Payable
+6345,PCSH8/2025/00146,Mohammed Assahraoui,mohamed.assahraoui@hotmail.com,2025-06-04,inbound,16517.72,Park Beach Residence II - Studio 513,Park Beach Residence II,PBR1 Payable
+6346,PCSH8/2025/00158,Mohammed Assahraoui,mohamed.assahraoui@hotmail.com,2025-05-03,inbound,12517.73,Park Beach Residence II - Studio 513,Park Beach Residence II,PBR1 Payable
+6348,PCSH8/2025/00162,Mohammed Assahraoui,mohamed.assahraoui@hotmail.com,2025-04-26,inbound,1920.00,Park Beach Residence II - Studio 513,Park Beach Residence II,PBR1 Payable
+6350,PCSH8/2025/00171,Mohammed Assahraoui,mohamed.assahraoui@hotmail.com,2025-04-11,inbound,22183.50,Park Beach Residence II - Studio 513,Park Beach Residence II,PBR1 Payable
+6355,PCSH8/2025/00184,Mohammed Assahraoui,mohamed.assahraoui@hotmail.com,2025-01-31,inbound,23000.00,Park Beach Residence II - Studio 513,Park Beach Residence II,PBR1 Payable
+6368,PCSH8/2024/00224,Mohammed Assahraoui,mohamed.assahraoui@hotmail.com,2024-09-27,inbound,24985.00,Park Beach Residence II - Studio 513,Park Beach Residence II,PBR1 Payable
+6433,PCSH8/2024/00150,Yekjan Yuzal,yekjanyuzal@gmail.com,2024-11-12,inbound,3000.00,Park Beach Residence II - Studio 603,Park Beach Residence II,PBR1 Payable
+6434,PCSH8/2024/00209,Yekjan Yuzal,yekjanyuzal@gmail.com,2024-10-02,inbound,64530.00,Park Beach Residence II - Studio 603,Park Beach Residence II,PBR1 Payable
+6435,PCSH8/2024/00223,Yekjan Yuzal,yekjanyuzal@gmail.com,2024-09-27,inbound,50000.00,Park Beach Residence II - Studio 603,Park Beach Residence II,PBR1 Payable
+6542,PCSH8/2024/00149,Yekjan Yuzal,yekjanyuzal@gmail.com,2024-11-12,inbound,3000.00,Park Beach Residence II - 1 Bedroom 613,Park Beach Residence II,PBR1 Payable
+6543,PCSH8/2024/00208,Yekjan Yuzal,yekjanyuzal@gmail.com,2024-10-02,inbound,181939.00,Park Beach Residence II - 1 Bedroom 613,Park Beach Residence II,PBR1 Payable
+6545,PCSH8/2024/00222,Yekjan Yuzal,yekjanyuzal@gmail.com,2024-09-27,inbound,50000.00,Park Beach Residence II - 1 Bedroom 613,Park Beach Residence II,PBR1 Payable
+6758,PCSH8/2024/00235,Raphael Phillipe Dominique Francois Emille Goue,rg@euracific.com,2024-09-06,inbound,50000.00,Park Beach Residence II - 1 Bedroom 711,Park Beach Residence II,PBR1 Payable
+6829,PCSH8/2025/00106,Mohammed Assahraoui,mohamed.assahraoui@hotmail.com,2025-11-22,inbound,10000.00,Park Beach Residence II - Studio 512,Park Beach Residence II,PBR1 Payable
+6830,PCSH8/2026/00048,Mohammed Assahraoui,mohamed.assahraoui@hotmail.com,2026-01-27,inbound,21000.00,Park Beach Residence II - Studio 513,Park Beach Residence II,PBR1 Payable
+6867,PCSH6/2026/00303,Kim Sandra Naulls & Jack Phillip John Bines,-,2026-09-28,inbound,22297.00,Park Beach Residence II - 1 Bedroom 414,Park Beach Residence II,Mashreq Bank Escrow - PBR2
+6907,PCSH6/2026/00294,Halil Erseven,herseven1@gmail.com,2026-10-05,inbound,10866.56,Park Beach Residence II - Studio 302,Park Beach Residence II,Mashreq Bank Escrow - PBR2
+7007,PCSH1/2026/00038,Nashwan Darwish Taalo Taalo,salwan.alkuti@gmx.de,2026-06-05,inbound,39192.00,Park Residency - 1 Bedroom 505,Park Residency,Cash
+7008,PCSH1/2026/00039,Nashwan Darwish Taalo Taalo,salwan.alkuti@gmx.de,2026-08-26,inbound,40000.00,Park Residency - 1 Bedroom 502,Park Residency,Cash
+7009,PBNK16/2026/00091,Nashwan Darwish Taalo Taalo,salwan.alkuti@gmx.de,2026-08-27,inbound,42300.22,Park Residency - 1 Bedroom 505,Park Residency,PBR 1 Payable
+7010,PCSH1/2026/00041,Nashwan Darwish Taalo Taalo,salwan.alkuti@gmx.de,2026-06-05,inbound,38808.00,Park Residency - 1 Bedroom 502,Park Residency,Cash
