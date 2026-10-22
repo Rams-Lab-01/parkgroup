@@ -1,0 +1,2409 @@
+{
+ "report": [
+  {
+   "pid": "27",
+   "ref": "PBNK16/2026/00003",
+   "partner": "David Vobornik",
+   "date": "2026-01-22",
+   "amount": "30000.00",
+   "tgt_unit": "Park Residency - Studio 416",
+   "exact_old": true,
+   "old_units_seen": {
+    "[416] 416": 42,
+    "[311] 311": 42
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[416] 416"
+  },
+  {
+   "pid": "45",
+   "ref": "PBNK16/2026/00019",
+   "partner": "David Vobornik",
+   "date": "2026-01-27",
+   "amount": "80603.88",
+   "tgt_unit": "Park Residency - Studio 416",
+   "exact_old": true,
+   "old_units_seen": {
+    "[416] 416": 42,
+    "[311] 311": 42
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[416] 416"
+  },
+  {
+   "pid": "54",
+   "ref": "PBNK16/2026/00028",
+   "partner": "David Vobornik",
+   "date": "2026-02-06",
+   "amount": "30000.00",
+   "tgt_unit": "Park Residency - Studio 311",
+   "exact_old": true,
+   "old_units_seen": {
+    "[416] 416": 42,
+    "[311] 311": 42
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[416] 416"
+  },
+  {
+   "pid": "55",
+   "ref": "PBNK16/2026/00029",
+   "partner": "David Vobornik",
+   "date": "2026-02-09",
+   "amount": "85853.15",
+   "tgt_unit": "Park Residency - Studio 311",
+   "exact_old": true,
+   "old_units_seen": {
+    "[416] 416": 42,
+    "[311] 311": 42
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[416] 416"
+  },
+  {
+   "pid": "56",
+   "ref": "PBNK12/2026/00001",
+   "partner": "Imaan Mangal",
+   "date": "2026-02-12",
+   "amount": "193431.59",
+   "tgt_unit": "Park Residency - 1 Bedroom 201",
+   "exact_old": true,
+   "old_units_seen": {
+    "[201] 201": 19,
+    "[202] 202": 19,
+    "[203] 203": 19,
+    "[205] 205": 19,
+    "[206] 206": 19,
+    "[207] 207": 19,
+    "[209] 209": 19,
+    "[210] 210": 19,
+    "[211] 211": 19,
+    "[212] 212": 19,
+    "[213] 213": 19,
+    "[214] 214": 19,
+    "[215] 215": 19,
+    "[216] 216": 19,
+    "[217] 217": 19,
+    "[218] 218": 19,
+    "[219] 219": 19,
+    "[221] 221": 19,
+    "[208] 208": 19
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[201] 201"
+  },
+  {
+   "pid": "57",
+   "ref": "PBNK12/2026/00002",
+   "partner": "Imaan Mangal",
+   "date": "2026-02-12",
+   "amount": "220194.95",
+   "tgt_unit": "Park Residency - 1 Bedroom 202",
+   "exact_old": true,
+   "old_units_seen": {
+    "[201] 201": 19,
+    "[202] 202": 19,
+    "[203] 203": 19,
+    "[205] 205": 19,
+    "[206] 206": 19,
+    "[207] 207": 19,
+    "[209] 209": 19,
+    "[210] 210": 19,
+    "[211] 211": 19,
+    "[212] 212": 19,
+    "[213] 213": 19,
+    "[214] 214": 19,
+    "[215] 215": 19,
+    "[216] 216": 19,
+    "[217] 217": 19,
+    "[218] 218": 19,
+    "[219] 219": 19,
+    "[221] 221": 19,
+    "[208] 208": 19
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[201] 201"
+  },
+  {
+   "pid": "58",
+   "ref": "PBNK12/2026/00003",
+   "partner": "Imaan Mangal",
+   "date": "2026-02-12",
+   "amount": "294302.25",
+   "tgt_unit": "Park Residency - 2 Bedrooms 203",
+   "exact_old": true,
+   "old_units_seen": {
+    "[201] 201": 19,
+    "[202] 202": 19,
+    "[203] 203": 19,
+    "[205] 205": 19,
+    "[206] 206": 19,
+    "[207] 207": 19,
+    "[209] 209": 19,
+    "[210] 210": 19,
+    "[211] 211": 19,
+    "[212] 212": 19,
+    "[213] 213": 19,
+    "[214] 214": 19,
+    "[215] 215": 19,
+    "[216] 216": 19,
+    "[217] 217": 19,
+    "[218] 218": 19,
+    "[219] 219": 19,
+    "[221] 221": 19,
+    "[208] 208": 19
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[201] 201"
+  },
+  {
+   "pid": "59",
+   "ref": "PBNK12/2026/00004",
+   "partner": "Imaan Mangal",
+   "date": "2026-02-12",
+   "amount": "220164.81",
+   "tgt_unit": "Park Residency - 1 Bedroom 205",
+   "exact_old": true,
+   "old_units_seen": {
+    "[201] 201": 19,
+    "[202] 202": 19,
+    "[203] 203": 19,
+    "[205] 205": 19,
+    "[206] 206": 19,
+    "[207] 207": 19,
+    "[209] 209": 19,
+    "[210] 210": 19,
+    "[211] 211": 19,
+    "[212] 212": 19,
+    "[213] 213": 19,
+    "[214] 214": 19,
+    "[215] 215": 19,
+    "[216] 216": 19,
+    "[217] 217": 19,
+    "[218] 218": 19,
+    "[219] 219": 19,
+    "[221] 221": 19,
+    "[208] 208": 19
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[201] 201"
+  },
+  {
+   "pid": "60",
+   "ref": "PBNK12/2026/00005",
+   "partner": "Imaan Mangal",
+   "date": "2026-02-12",
+   "amount": "202292.43",
+   "tgt_unit": "Park Residency - 1 Bedroom 206",
+   "exact_old": true,
+   "old_units_seen": {
+    "[201] 201": 19,
+    "[202] 202": 19,
+    "[203] 203": 19,
+    "[205] 205": 19,
+    "[206] 206": 19,
+    "[207] 207": 19,
+    "[209] 209": 19,
+    "[210] 210": 19,
+    "[211] 211": 19,
+    "[212] 212": 19,
+    "[213] 213": 19,
+    "[214] 214": 19,
+    "[215] 215": 19,
+    "[216] 216": 19,
+    "[217] 217": 19,
+    "[218] 218": 19,
+    "[219] 219": 19,
+    "[221] 221": 19,
+    "[208] 208": 19
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[201] 201"
+  },
+  {
+   "pid": "61",
+   "ref": "PBNK12/2026/00006",
+   "partner": "Imaan Mangal",
+   "date": "2026-02-12",
+   "amount": "207928.41",
+   "tgt_unit": "Park Residency - 1 Bedroom 207",
+   "exact_old": true,
+   "old_units_seen": {
+    "[201] 201": 19,
+    "[202] 202": 19,
+    "[203] 203": 19,
+    "[205] 205": 19,
+    "[206] 206": 19,
+    "[207] 207": 19,
+    "[209] 209": 19,
+    "[210] 210": 19,
+    "[211] 211": 19,
+    "[212] 212": 19,
+    "[213] 213": 19,
+    "[214] 214": 19,
+    "[215] 215": 19,
+    "[216] 216": 19,
+    "[217] 217": 19,
+    "[218] 218": 19,
+    "[219] 219": 19,
+    "[221] 221": 19,
+    "[208] 208": 19
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[201] 201"
+  },
+  {
+   "pid": "62",
+   "ref": "PBNK12/2026/00007",
+   "partner": "Imaan Mangal",
+   "date": "2026-02-12",
+   "amount": "114435.33",
+   "tgt_unit": "Park Residency - Studio 209",
+   "exact_old": true,
+   "old_units_seen": {
+    "[201] 201": 19,
+    "[202] 202": 19,
+    "[203] 203": 19,
+    "[205] 205": 19,
+    "[206] 206": 19,
+    "[207] 207": 19,
+    "[209] 209": 19,
+    "[210] 210": 19,
+    "[211] 211": 19,
+    "[212] 212": 19,
+    "[213] 213": 19,
+    "[214] 214": 19,
+    "[215] 215": 19,
+    "[216] 216": 19,
+    "[217] 217": 19,
+    "[218] 218": 19,
+    "[219] 219": 19,
+    "[221] 221": 19,
+    "[208] 208": 19
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[201] 201"
+  },
+  {
+   "pid": "63",
+   "ref": "PBNK12/2026/00008",
+   "partner": "Imaan Mangal",
+   "date": "2026-02-12",
+   "amount": "112812.13",
+   "tgt_unit": "Park Residency - Studio 210",
+   "exact_old": true,
+   "old_units_seen": {
+    "[201] 201": 19,
+    "[202] 202": 19,
+    "[203] 203": 19,
+    "[205] 205": 19,
+    "[206] 206": 19,
+    "[207] 207": 19,
+    "[209] 209": 19,
+    "[210] 210": 19,
+    "[211] 211": 19,
+    "[212] 212": 19,
+    "[213] 213": 19,
+    "[214] 214": 19,
+    "[215] 215": 19,
+    "[216] 216": 19,
+    "[217] 217": 19,
+    "[218] 218": 19,
+    "[219] 219": 19,
+    "[221] 221": 19,
+    "[208] 208": 19
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[201] 201"
+  },
+  {
+   "pid": "64",
+   "ref": "PBNK12/2026/00009",
+   "partner": "Imaan Mangal",
+   "date": "2026-02-12",
+   "amount": "115059.63",
+   "tgt_unit": "Park Residency - Studio 211",
+   "exact_old": true,
+   "old_units_seen": {
+    "[201] 201": 19,
+    "[202] 202": 19,
+    "[203] 203": 19,
+    "[205] 205": 19,
+    "[206] 206": 19,
+    "[207] 207": 19,
+    "[209] 209": 19,
+    "[210] 210": 19,
+    "[211] 211": 19,
+    "[212] 212": 19,
+    "[213] 213": 19,
+    "[214] 214": 19,
+    "[215] 215": 19,
+    "[216] 216": 19,
+    "[217] 217": 19,
+    "[218] 218": 19,
+    "[219] 219": 19,
+    "[221] 221": 19,
+    "[208] 208": 19
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[201] 201"
+  },
+  {
+   "pid": "65",
+   "ref": "PBNK12/2026/00010",
+   "partner": "Imaan Mangal",
+   "date": "2026-02-12",
+   "amount": "112219.04",
+   "tgt_unit": "Park Residency - Studio 212",
+   "exact_old": true,
+   "old_units_seen": {
+    "[201] 201": 19,
+    "[202] 202": 19,
+    "[203] 203": 19,
+    "[205] 205": 19,
+    "[206] 206": 19,
+    "[207] 207": 19,
+    "[209] 209": 19,
+    "[210] 210": 19,
+    "[211] 211": 19,
+    "[212] 212": 19,
+    "[213] 213": 19,
+    "[214] 214": 19,
+    "[215] 215": 19,
+    "[216] 216": 19,
+    "[217] 217": 19,
+    "[218] 218": 19,
+    "[219] 219": 19,
+    "[221] 221": 19,
+    "[208] 208": 19
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[201] 201"
+  },
+  {
+   "pid": "66",
+   "ref": "PBNK12/2026/00011",
+   "partner": "Imaan Mangal",
+   "date": "2026-02-12",
+   "amount": "113998.31",
+   "tgt_unit": "Park Residency - Studio 213",
+   "exact_old": true,
+   "old_units_seen": {
+    "[201] 201": 19,
+    "[202] 202": 19,
+    "[203] 203": 19,
+    "[205] 205": 19,
+    "[206] 206": 19,
+    "[207] 207": 19,
+    "[209] 209": 19,
+    "[210] 210": 19,
+    "[211] 211": 19,
+    "[212] 212": 19,
+    "[213] 213": 19,
+    "[214] 214": 19,
+    "[215] 215": 19,
+    "[216] 216": 19,
+    "[217] 217": 19,
+    "[218] 218": 19,
+    "[219] 219": 19,
+    "[221] 221": 19,
+    "[208] 208": 19
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[201] 201"
+  },
+  {
+   "pid": "67",
+   "ref": "PBNK12/2026/00012",
+   "partner": "Imaan Mangal",
+   "date": "2026-02-12",
+   "amount": "231918.99",
+   "tgt_unit": "Park Residency - 1 Bedroom 214",
+   "exact_old": true,
+   "old_units_seen": {
+    "[201] 201": 19,
+    "[202] 202": 19,
+    "[203] 203": 19,
+    "[205] 205": 19,
+    "[206] 206": 19,
+    "[207] 207": 19,
+    "[209] 209": 19,
+    "[210] 210": 19,
+    "[211] 211": 19,
+    "[212] 212": 19,
+    "[213] 213": 19,
+    "[214] 214": 19,
+    "[215] 215": 19,
+    "[216] 216": 19,
+    "[217] 217": 19,
+    "[218] 218": 19,
+    "[219] 219": 19,
+    "[221] 221": 19,
+    "[208] 208": 19
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[201] 201"
+  },
+  {
+   "pid": "68",
+   "ref": "PBNK12/2026/00013",
+   "partner": "Imaan Mangal",
+   "date": "2026-02-12",
+   "amount": "256271.24",
+   "tgt_unit": "Park Residency - 1 Bedroom 215",
+   "exact_old": true,
+   "old_units_seen": {
+    "[201] 201": 19,
+    "[202] 202": 19,
+    "[203] 203": 19,
+    "[205] 205": 19,
+    "[206] 206": 19,
+    "[207] 207": 19,
+    "[209] 209": 19,
+    "[210] 210": 19,
+    "[211] 211": 19,
+    "[212] 212": 19,
+    "[213] 213": 19,
+    "[214] 214": 19,
+    "[215] 215": 19,
+    "[216] 216": 19,
+    "[217] 217": 19,
+    "[218] 218": 19,
+    "[219] 219": 19,
+    "[221] 221": 19,
+    "[208] 208": 19
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[201] 201"
+  },
+  {
+   "pid": "69",
+   "ref": "PBNK12/2026/00014",
+   "partner": "Imaan Mangal",
+   "date": "2026-02-12",
+   "amount": "114841.13",
+   "tgt_unit": "Park Residency - Studio 216",
+   "exact_old": true,
+   "old_units_seen": {
+    "[201] 201": 19,
+    "[202] 202": 19,
+    "[203] 203": 19,
+    "[205] 205": 19,
+    "[206] 206": 19,
+    "[207] 207": 19,
+    "[209] 209": 19,
+    "[210] 210": 19,
+    "[211] 211": 19,
+    "[212] 212": 19,
+    "[213] 213": 19,
+    "[214] 214": 19,
+    "[215] 215": 19,
+    "[216] 216": 19,
+    "[217] 217": 19,
+    "[218] 218": 19,
+    "[219] 219": 19,
+    "[221] 221": 19,
+    "[208] 208": 19
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[201] 201"
+  },
+  {
+   "pid": "70",
+   "ref": "PBNK12/2026/00015",
+   "partner": "Imaan Mangal",
+   "date": "2026-02-12",
+   "amount": "114809.91",
+   "tgt_unit": "Park Residency - Studio 217",
+   "exact_old": true,
+   "old_units_seen": {
+    "[201] 201": 19,
+    "[202] 202": 19,
+    "[203] 203": 19,
+    "[205] 205": 19,
+    "[206] 206": 19,
+    "[207] 207": 19,
+    "[209] 209": 19,
+    "[210] 210": 19,
+    "[211] 211": 19,
+    "[212] 212": 19,
+    "[213] 213": 19,
+    "[214] 214": 19,
+    "[215] 215": 19,
+    "[216] 216": 19,
+    "[217] 217": 19,
+    "[218] 218": 19,
+    "[219] 219": 19,
+    "[221] 221": 19,
+    "[208] 208": 19
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[201] 201"
+  },
+  {
+   "pid": "71",
+   "ref": "PBNK12/2026/00016",
+   "partner": "Imaan Mangal",
+   "date": "2026-02-12",
+   "amount": "112375.12",
+   "tgt_unit": "Park Residency - Studio 218",
+   "exact_old": true,
+   "old_units_seen": {
+    "[201] 201": 19,
+    "[202] 202": 19,
+    "[203] 203": 19,
+    "[205] 205": 19,
+    "[206] 206": 19,
+    "[207] 207": 19,
+    "[209] 209": 19,
+    "[210] 210": 19,
+    "[211] 211": 19,
+    "[212] 212": 19,
+    "[213] 213": 19,
+    "[214] 214": 19,
+    "[215] 215": 19,
+    "[216] 216": 19,
+    "[217] 217": 19,
+    "[218] 218": 19,
+    "[219] 219": 19,
+    "[221] 221": 19,
+    "[208] 208": 19
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[201] 201"
+  },
+  {
+   "pid": "72",
+   "ref": "PBNK12/2026/00017",
+   "partner": "Imaan Mangal",
+   "date": "2026-02-12",
+   "amount": "214860.36",
+   "tgt_unit": "Park Residency - 1 Bedroom 219",
+   "exact_old": true,
+   "old_units_seen": {
+    "[201] 201": 19,
+    "[202] 202": 19,
+    "[203] 203": 19,
+    "[205] 205": 19,
+    "[206] 206": 19,
+    "[207] 207": 19,
+    "[209] 209": 19,
+    "[210] 210": 19,
+    "[211] 211": 19,
+    "[212] 212": 19,
+    "[213] 213": 19,
+    "[214] 214": 19,
+    "[215] 215": 19,
+    "[216] 216": 19,
+    "[217] 217": 19,
+    "[218] 218": 19,
+    "[219] 219": 19,
+    "[221] 221": 19,
+    "[208] 208": 19
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[201] 201"
+  },
+  {
+   "pid": "73",
+   "ref": "PBNK12/2026/00018",
+   "partner": "Imaan Mangal",
+   "date": "2026-02-12",
+   "amount": "200483.10",
+   "tgt_unit": "Park Residency - 1 Bedroom 221",
+   "exact_old": true,
+   "old_units_seen": {
+    "[201] 201": 19,
+    "[202] 202": 19,
+    "[203] 203": 19,
+    "[205] 205": 19,
+    "[206] 206": 19,
+    "[207] 207": 19,
+    "[209] 209": 19,
+    "[210] 210": 19,
+    "[211] 211": 19,
+    "[212] 212": 19,
+    "[213] 213": 19,
+    "[214] 214": 19,
+    "[215] 215": 19,
+    "[216] 216": 19,
+    "[217] 217": 19,
+    "[218] 218": 19,
+    "[219] 219": 19,
+    "[221] 221": 19,
+    "[208] 208": 19
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[201] 201"
+  },
+  {
+   "pid": "74",
+   "ref": "PBNK12/2026/00019",
+   "partner": "Imaan Mangal",
+   "date": "2026-02-12",
+   "amount": "113935.88",
+   "tgt_unit": "Park Residency - Studio 208",
+   "exact_old": true,
+   "old_units_seen": {
+    "[201] 201": 19,
+    "[202] 202": 19,
+    "[203] 203": 19,
+    "[205] 205": 19,
+    "[206] 206": 19,
+    "[207] 207": 19,
+    "[209] 209": 19,
+    "[210] 210": 19,
+    "[211] 211": 19,
+    "[212] 212": 19,
+    "[213] 213": 19,
+    "[214] 214": 19,
+    "[215] 215": 19,
+    "[216] 216": 19,
+    "[217] 217": 19,
+    "[218] 218": 19,
+    "[219] 219": 19,
+    "[221] 221": 19,
+    "[208] 208": 19
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[201] 201"
+  },
+  {
+   "pid": "77",
+   "ref": "PBNK12/2026/00020",
+   "partner": "David Vobornik",
+   "date": "2026-03-12",
+   "amount": "5792.66",
+   "tgt_unit": "Park Residency - Studio 311",
+   "exact_old": true,
+   "old_units_seen": {
+    "[416] 416": 42,
+    "[311] 311": 42
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[416] 416"
+  },
+  {
+   "pid": "78",
+   "ref": "PBNK12/2026/00021",
+   "partner": "David Vobornik",
+   "date": "2026-03-12",
+   "amount": "5530.19",
+   "tgt_unit": "Park Residency - Studio 416",
+   "exact_old": true,
+   "old_units_seen": {
+    "[416] 416": 42,
+    "[311] 311": 42
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[416] 416"
+  },
+  {
+   "pid": "3933",
+   "ref": "PCSH6/2026/00339",
+   "partner": "Mohammed Jassim Mohammed Al Fatlawi",
+   "date": "2026-08-11",
+   "amount": "28000.00",
+   "tgt_unit": "Park Beach Residence II - 2 Bedrooms 309",
+   "exact_old": false,
+   "old_units_seen": {
+    "[307] 307": 420,
+    "[310] 310": 378
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[307] 307"
+  },
+  {
+   "pid": "4149",
+   "ref": "PCSH6/2026/00309",
+   "partner": "Mohammed Jassim Mohammed Al Fatlawi",
+   "date": "2026-09-14",
+   "amount": "28000.00",
+   "tgt_unit": "Park Beach Residence II - 2 Bedrooms 309",
+   "exact_old": false,
+   "old_units_seen": {
+    "[307] 307": 420,
+    "[310] 310": 378
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[307] 307"
+  },
+  {
+   "pid": "4253",
+   "ref": "PCSH8/2024/00197",
+   "partner": "Machiel De Vries",
+   "date": "2024-10-07",
+   "amount": "50000.00",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 101",
+   "exact_old": false,
+   "old_units_seen": {
+    "[512] 512": 56,
+    "[101] 101": 56
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[512] 512"
+  },
+  {
+   "pid": "4254",
+   "ref": "PCSH8/2024/00165",
+   "partner": "Machiel De Vries",
+   "date": "2024-10-31",
+   "amount": "176958.11",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 101",
+   "exact_old": false,
+   "old_units_seen": {
+    "[512] 512": 56,
+    "[101] 101": 56
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[512] 512"
+  },
+  {
+   "pid": "4257",
+   "ref": "PCSH8/2025/00188",
+   "partner": "Machiel De Vries",
+   "date": "2025-01-22",
+   "amount": "3000.00",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 101",
+   "exact_old": false,
+   "old_units_seen": {
+    "[512] 512": 56,
+    "[101] 101": 56
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[512] 512"
+  },
+  {
+   "pid": "4261",
+   "ref": "PCSH8/2025/00104",
+   "partner": "Machiel De Vries",
+   "date": "2025-12-25",
+   "amount": "66287.00",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 101",
+   "exact_old": false,
+   "old_units_seen": {
+    "[512] 512": 56,
+    "[101] 101": 56
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[512] 512"
+  },
+  {
+   "pid": "4552",
+   "ref": "PCSH8/2024/00196",
+   "partner": "Halil Erseven",
+   "date": "2024-10-07",
+   "amount": "49713.00",
+   "tgt_unit": "Park Beach Residence II - Studio 302",
+   "exact_old": false,
+   "old_units_seen": {
+    "[302] 302": 69,
+    "[502] 502": 69
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[302] 302"
+  },
+  {
+   "pid": "4572",
+   "ref": "PCSH8/2024/00230",
+   "partner": "Halil Erseven",
+   "date": "2024-09-17",
+   "amount": "50279.00",
+   "tgt_unit": "Park Beach Residence II - Studio 502",
+   "exact_old": false,
+   "old_units_seen": {
+    "[302] 302": 69,
+    "[502] 502": 69
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[302] 302"
+  },
+  {
+   "pid": "4661",
+   "ref": "PCSH6/2026/00366",
+   "partner": "Mohammed Jassim Mohammed Al Fatlawi",
+   "date": "2026-07-14",
+   "amount": "28000.00",
+   "tgt_unit": "Park Beach Residence II - 2 Bedrooms 309",
+   "exact_old": false,
+   "old_units_seen": {
+    "[307] 307": 420,
+    "[310] 310": 378
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[307] 307"
+  },
+  {
+   "pid": "4662",
+   "ref": "PCSH6/2026/00396",
+   "partner": "Mohammed Jassim Mohammed Al Fatlawi",
+   "date": "2026-06-18",
+   "amount": "28000.00",
+   "tgt_unit": "Park Beach Residence II - 2 Bedrooms 309",
+   "exact_old": false,
+   "old_units_seen": {
+    "[307] 307": 420,
+    "[310] 310": 378
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[307] 307"
+  },
+  {
+   "pid": "4663",
+   "ref": "PCSH6/2026/00436",
+   "partner": "Mohammed Jassim Mohammed Al Fatlawi",
+   "date": "2026-05-15",
+   "amount": "28000.00",
+   "tgt_unit": "Park Beach Residence II - 2 Bedrooms 309",
+   "exact_old": false,
+   "old_units_seen": {
+    "[307] 307": 420,
+    "[310] 310": 378
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[307] 307"
+  },
+  {
+   "pid": "4664",
+   "ref": "PCSH6/2026/00485",
+   "partner": "Mohammed Jassim Mohammed Al Fatlawi",
+   "date": "2026-03-24",
+   "amount": "28000.00",
+   "tgt_unit": "Park Beach Residence II - 2 Bedrooms 309",
+   "exact_old": false,
+   "old_units_seen": {
+    "[307] 307": 420,
+    "[310] 310": 378
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[307] 307"
+  },
+  {
+   "pid": "4665",
+   "ref": "PCSH6/2026/00487",
+   "partner": "Mohammed Jassim Mohammed Al Fatlawi",
+   "date": "2026-03-18",
+   "amount": "28000.00",
+   "tgt_unit": "Park Beach Residence II - 2 Bedrooms 309",
+   "exact_old": false,
+   "old_units_seen": {
+    "[307] 307": 420,
+    "[310] 310": 378
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[307] 307"
+  },
+  {
+   "pid": "4666",
+   "ref": "PCSH6/2026/00519",
+   "partner": "Mohammed Jassim Mohammed Al Fatlawi",
+   "date": "2026-02-13",
+   "amount": "27970.00",
+   "tgt_unit": "Park Beach Residence II - 2 Bedrooms 309",
+   "exact_old": false,
+   "old_units_seen": {
+    "[307] 307": 420,
+    "[310] 310": 378
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[307] 307"
+  },
+  {
+   "pid": "4667",
+   "ref": "PCSH6/2026/00539",
+   "partner": "Mohammed Jassim Mohammed Al Fatlawi",
+   "date": "2026-01-30",
+   "amount": "27470.00",
+   "tgt_unit": "Park Beach Residence II - 2 Bedrooms 309",
+   "exact_old": false,
+   "old_units_seen": {
+    "[307] 307": 420,
+    "[310] 310": 378
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[307] 307"
+  },
+  {
+   "pid": "4668",
+   "ref": "PCSH6/2026/00557",
+   "partner": "Mohammed Jassim Mohammed Al Fatlawi",
+   "date": "2026-01-09",
+   "amount": "27470.00",
+   "tgt_unit": "Park Beach Residence II - 2 Bedrooms 309",
+   "exact_old": false,
+   "old_units_seen": {
+    "[307] 307": 420,
+    "[310] 310": 378
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[307] 307"
+  },
+  {
+   "pid": "4669",
+   "ref": "PCSH6/2025/00553",
+   "partner": "Mohammed Jassim Mohammed Al Fatlawi",
+   "date": "2025-12-16",
+   "amount": "271419.00",
+   "tgt_unit": "Park Beach Residence II - 2 Bedrooms 309",
+   "exact_old": false,
+   "old_units_seen": {
+    "[307] 307": 420,
+    "[310] 310": 378
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[307] 307"
+  },
+  {
+   "pid": "4670",
+   "ref": "PCSH8/2025/00114",
+   "partner": "Mohammed Jassim Mohammed Al Fatlawi",
+   "date": "2025-10-16",
+   "amount": "277418.60",
+   "tgt_unit": "Park Beach Residence II - 2 Bedrooms 309",
+   "exact_old": false,
+   "old_units_seen": {
+    "[307] 307": 420,
+    "[310] 310": 378
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[307] 307"
+  },
+  {
+   "pid": "4692",
+   "ref": "PCSH8/2024/00173",
+   "partner": "Mohammed Jassim Mohammed Al Fatlawi",
+   "date": "2024-10-24",
+   "amount": "6000.00",
+   "tgt_unit": "Park Beach Residence II - Studio 310",
+   "exact_old": false,
+   "old_units_seen": {
+    "[307] 307": 420,
+    "[310] 310": 378
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[307] 307"
+  },
+  {
+   "pid": "4694",
+   "ref": "PCSH8/2024/00184",
+   "partner": "Mohammed Jassim Mohammed Al Fatlawi",
+   "date": "2024-10-10",
+   "amount": "50000.00",
+   "tgt_unit": "Park Beach Residence II - Studio 310",
+   "exact_old": false,
+   "old_units_seen": {
+    "[307] 307": 420,
+    "[310] 310": 378
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[307] 307"
+  },
+  {
+   "pid": "4781",
+   "ref": "PCSH8/2026/00042",
+   "partner": "Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala",
+   "date": "2026-03-28",
+   "amount": "19778.79",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 314",
+   "exact_old": false,
+   "old_units_seen": {
+    "[314] 314": 784
+   },
+   "unique_old_unit": true,
+   "old_unit_top": "[314] 314"
+  },
+  {
+   "pid": "4782",
+   "ref": "PCSH6/2026/00510",
+   "partner": "Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala",
+   "date": "2026-02-24",
+   "amount": "19779.75",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 314",
+   "exact_old": false,
+   "old_units_seen": {
+    "[314] 314": 784
+   },
+   "unique_old_unit": true,
+   "old_unit_top": "[314] 314"
+  },
+  {
+   "pid": "4783",
+   "ref": "PCSH6/2026/00544",
+   "partner": "Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala",
+   "date": "2026-01-28",
+   "amount": "19779.00",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 314",
+   "exact_old": false,
+   "old_units_seen": {
+    "[314] 314": 784
+   },
+   "unique_old_unit": true,
+   "old_unit_top": "[314] 314"
+  },
+  {
+   "pid": "4784",
+   "ref": "PCSH6/2025/00547",
+   "partner": "Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala",
+   "date": "2025-12-23",
+   "amount": "19778.75",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 314",
+   "exact_old": false,
+   "old_units_seen": {
+    "[314] 314": 784
+   },
+   "unique_old_unit": true,
+   "old_unit_top": "[314] 314"
+  },
+  {
+   "pid": "4785",
+   "ref": "PCSH6/2025/00585",
+   "partner": "Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala",
+   "date": "2025-11-18",
+   "amount": "19778.75",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 314",
+   "exact_old": false,
+   "old_units_seen": {
+    "[314] 314": 784
+   },
+   "unique_old_unit": true,
+   "old_unit_top": "[314] 314"
+  },
+  {
+   "pid": "4786",
+   "ref": "PCSH6/2025/00602",
+   "partner": "Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala",
+   "date": "2025-11-03",
+   "amount": "19778.85",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 314",
+   "exact_old": false,
+   "old_units_seen": {
+    "[314] 314": 784
+   },
+   "unique_old_unit": true,
+   "old_unit_top": "[314] 314"
+  },
+  {
+   "pid": "4787",
+   "ref": "PCSH6/2025/00655",
+   "partner": "Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala",
+   "date": "2025-09-17",
+   "amount": "19778.75",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 314",
+   "exact_old": false,
+   "old_units_seen": {
+    "[314] 314": 784
+   },
+   "unique_old_unit": true,
+   "old_unit_top": "[314] 314"
+  },
+  {
+   "pid": "4788",
+   "ref": "PCSH6/2025/00708",
+   "partner": "Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala",
+   "date": "2025-08-18",
+   "amount": "19778.75",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 314",
+   "exact_old": false,
+   "old_units_seen": {
+    "[314] 314": 784
+   },
+   "unique_old_unit": true,
+   "old_unit_top": "[314] 314"
+  },
+  {
+   "pid": "4789",
+   "ref": "PCSH6/2025/00748",
+   "partner": "Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala",
+   "date": "2025-07-14",
+   "amount": "19733.87",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 314",
+   "exact_old": false,
+   "old_units_seen": {
+    "[314] 314": 784
+   },
+   "unique_old_unit": true,
+   "old_unit_top": "[314] 314"
+  },
+  {
+   "pid": "4790",
+   "ref": "PCSH6/2025/00795",
+   "partner": "Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala",
+   "date": "2025-06-13",
+   "amount": "59336.00",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 314",
+   "exact_old": false,
+   "old_units_seen": {
+    "[314] 314": 784
+   },
+   "unique_old_unit": true,
+   "old_unit_top": "[314] 314"
+  },
+  {
+   "pid": "4791",
+   "ref": "PCSH6/2025/00843",
+   "partner": "Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala",
+   "date": "2025-05-14",
+   "amount": "19778.75",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 314",
+   "exact_old": false,
+   "old_units_seen": {
+    "[314] 314": 784
+   },
+   "unique_old_unit": true,
+   "old_unit_top": "[314] 314"
+  },
+  {
+   "pid": "4792",
+   "ref": "PCSH6/2025/00896",
+   "partner": "Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala",
+   "date": "2025-04-14",
+   "amount": "19778.75",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 314",
+   "exact_old": false,
+   "old_units_seen": {
+    "[314] 314": 784
+   },
+   "unique_old_unit": true,
+   "old_unit_top": "[314] 314"
+  },
+  {
+   "pid": "4793",
+   "ref": "PCSH6/2025/00944",
+   "partner": "Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala",
+   "date": "2025-03-21",
+   "amount": "19778.75",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 314",
+   "exact_old": false,
+   "old_units_seen": {
+    "[314] 314": 784
+   },
+   "unique_old_unit": true,
+   "old_unit_top": "[314] 314"
+  },
+  {
+   "pid": "4794",
+   "ref": "PCSH6/2025/00981",
+   "partner": "Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala",
+   "date": "2025-02-28",
+   "amount": "35349.75",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 314",
+   "exact_old": false,
+   "old_units_seen": {
+    "[314] 314": 784
+   },
+   "unique_old_unit": true,
+   "old_unit_top": "[314] 314"
+  },
+  {
+   "pid": "4795",
+   "ref": "PCSH6/2025/00980",
+   "partner": "Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala",
+   "date": "2025-02-28",
+   "amount": "35349.75",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 314",
+   "exact_old": false,
+   "old_units_seen": {
+    "[314] 314": 784
+   },
+   "unique_old_unit": true,
+   "old_unit_top": "[314] 314"
+  },
+  {
+   "pid": "4796",
+   "ref": "PCSH6/2025/00979",
+   "partner": "Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala",
+   "date": "2025-02-28",
+   "amount": "35349.75",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 314",
+   "exact_old": false,
+   "old_units_seen": {
+    "[314] 314": 784
+   },
+   "unique_old_unit": true,
+   "old_unit_top": "[314] 314"
+  },
+  {
+   "pid": "4797",
+   "ref": "PCSH6/2025/00986",
+   "partner": "Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala",
+   "date": "2025-02-26",
+   "amount": "12350.00",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 314",
+   "exact_old": false,
+   "old_units_seen": {
+    "[314] 314": 784
+   },
+   "unique_old_unit": true,
+   "old_unit_top": "[314] 314"
+  },
+  {
+   "pid": "4798",
+   "ref": "PCSH6/2025/01033",
+   "partner": "Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala",
+   "date": "2025-01-27",
+   "amount": "20000.00",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 314",
+   "exact_old": false,
+   "old_units_seen": {
+    "[314] 314": 784
+   },
+   "unique_old_unit": true,
+   "old_unit_top": "[314] 314"
+  },
+  {
+   "pid": "4799",
+   "ref": "PCSH6/2024/00144",
+   "partner": "Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala",
+   "date": "2024-12-30",
+   "amount": "35500.00",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 314",
+   "exact_old": false,
+   "old_units_seen": {
+    "[314] 314": 784
+   },
+   "unique_old_unit": true,
+   "old_unit_top": "[314] 314"
+  },
+  {
+   "pid": "4800",
+   "ref": "PCSH6/2024/00143",
+   "partner": "Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala",
+   "date": "2024-12-30",
+   "amount": "12000.00",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 314",
+   "exact_old": false,
+   "old_units_seen": {
+    "[314] 314": 784
+   },
+   "unique_old_unit": true,
+   "old_unit_top": "[314] 314"
+  },
+  {
+   "pid": "4801",
+   "ref": "PCSH6/2024/00149",
+   "partner": "Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala",
+   "date": "2024-12-20",
+   "amount": "35500.75",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 314",
+   "exact_old": false,
+   "old_units_seen": {
+    "[314] 314": 784
+   },
+   "unique_old_unit": true,
+   "old_unit_top": "[314] 314"
+  },
+  {
+   "pid": "4802",
+   "ref": "PCSH6/2024/00148",
+   "partner": "Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala",
+   "date": "2024-12-20",
+   "amount": "35500.75",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 314",
+   "exact_old": false,
+   "old_units_seen": {
+    "[314] 314": 784
+   },
+   "unique_old_unit": true,
+   "old_unit_top": "[314] 314"
+  },
+  {
+   "pid": "4803",
+   "ref": "PCSH6/2024/00180",
+   "partner": "Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala",
+   "date": "2024-11-28",
+   "amount": "5000.00",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 314",
+   "exact_old": false,
+   "old_units_seen": {
+    "[314] 314": 784
+   },
+   "unique_old_unit": true,
+   "old_unit_top": "[314] 314"
+  },
+  {
+   "pid": "4804",
+   "ref": "PCSH8/2024/00164",
+   "partner": "Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala",
+   "date": "2024-11-02",
+   "amount": "6000.00",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 314",
+   "exact_old": false,
+   "old_units_seen": {
+    "[314] 314": 784
+   },
+   "unique_old_unit": true,
+   "old_unit_top": "[314] 314"
+  },
+  {
+   "pid": "4805",
+   "ref": "PCSH6/2024/00225",
+   "partner": "Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala",
+   "date": "2024-10-29",
+   "amount": "34499.75",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 314",
+   "exact_old": false,
+   "old_units_seen": {
+    "[314] 314": 784
+   },
+   "unique_old_unit": true,
+   "old_unit_top": "[314] 314"
+  },
+  {
+   "pid": "4806",
+   "ref": "PCSH6/2024/00224",
+   "partner": "Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala",
+   "date": "2024-10-29",
+   "amount": "34499.75",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 314",
+   "exact_old": false,
+   "old_units_seen": {
+    "[314] 314": 784
+   },
+   "unique_old_unit": true,
+   "old_unit_top": "[314] 314"
+  },
+  {
+   "pid": "4807",
+   "ref": "PCSH6/2024/00223",
+   "partner": "Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala",
+   "date": "2024-10-29",
+   "amount": "34499.75",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 314",
+   "exact_old": false,
+   "old_units_seen": {
+    "[314] 314": 784
+   },
+   "unique_old_unit": true,
+   "old_unit_top": "[314] 314"
+  },
+  {
+   "pid": "4808",
+   "ref": "PCSH6/2024/00234",
+   "partner": "Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala",
+   "date": "2024-10-16",
+   "amount": "50000.00",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 314",
+   "exact_old": false,
+   "old_units_seen": {
+    "[314] 314": 784
+   },
+   "unique_old_unit": true,
+   "old_unit_top": "[314] 314"
+  },
+  {
+   "pid": "5798",
+   "ref": "PCSH8/2024/00140",
+   "partner": "Mon Myat Thu",
+   "date": "2024-12-10",
+   "amount": "106527.20",
+   "tgt_unit": "Park Beach Residence II - Studio 405",
+   "exact_old": false,
+   "old_units_seen": {
+    "[405] 405": 120,
+    "[406] 406": 90,
+    "[503] 503": 42
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[405] 405"
+  },
+  {
+   "pid": "5800",
+   "ref": "PCSH8/2024/00190",
+   "partner": "Mon Myat Thu",
+   "date": "2024-10-09",
+   "amount": "6000.00",
+   "tgt_unit": "Park Beach Residence II - Studio 405",
+   "exact_old": false,
+   "old_units_seen": {
+    "[405] 405": 120,
+    "[406] 406": 90,
+    "[503] 503": 42
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[405] 405"
+  },
+  {
+   "pid": "5812",
+   "ref": "PCSH8/2024/00139",
+   "partner": "Mon Myat Thu",
+   "date": "2024-12-10",
+   "amount": "238581.80",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 406",
+   "exact_old": false,
+   "old_units_seen": {
+    "[405] 405": 120,
+    "[406] 406": 90,
+    "[503] 503": 42
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[405] 405"
+  },
+  {
+   "pid": "5814",
+   "ref": "PCSH8/2024/00189",
+   "partner": "Mon Myat Thu",
+   "date": "2024-10-09",
+   "amount": "6000.00",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 406",
+   "exact_old": false,
+   "old_units_seen": {
+    "[405] 405": 120,
+    "[406] 406": 90,
+    "[503] 503": 42
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[405] 405"
+  },
+  {
+   "pid": "5893",
+   "ref": "PCSH8/2025/00183",
+   "partner": "Hasan Abdulla Hasan Aldoobi Alshehhi",
+   "date": "2025-02-06",
+   "amount": "3000.00",
+   "tgt_unit": "Park Beach Residence II - Studio 410",
+   "exact_old": false,
+   "old_units_seen": {
+    "[410] 410": 51
+   },
+   "unique_old_unit": true,
+   "old_unit_top": "[410] 410"
+  },
+  {
+   "pid": "5896",
+   "ref": "PCSH8/2024/00201",
+   "partner": "Hasan Abdulla Hasan Aldoobi Alshehhi",
+   "date": "2024-10-05",
+   "amount": "3000.00",
+   "tgt_unit": "Park Beach Residence II - Studio 410",
+   "exact_old": false,
+   "old_units_seen": {
+    "[410] 410": 51
+   },
+   "unique_old_unit": true,
+   "old_unit_top": "[410] 410"
+  },
+  {
+   "pid": "5897",
+   "ref": "PCSH8/2024/00218",
+   "partner": "Hasan Abdulla Hasan Aldoobi Alshehhi",
+   "date": "2024-09-28",
+   "amount": "105659.60",
+   "tgt_unit": "Park Beach Residence II - Studio 410",
+   "exact_old": false,
+   "old_units_seen": {
+    "[410] 410": 51
+   },
+   "unique_old_unit": true,
+   "old_unit_top": "[410] 410"
+  },
+  {
+   "pid": "5975",
+   "ref": "PCSH8/2024/00188",
+   "partner": "Mon Myat Thu",
+   "date": "2024-10-09",
+   "amount": "6000.00",
+   "tgt_unit": "Park Beach Residence II - Studio 503",
+   "exact_old": false,
+   "old_units_seen": {
+    "[405] 405": 120,
+    "[406] 406": 90,
+    "[503] 503": 42
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[405] 405"
+  },
+  {
+   "pid": "5977",
+   "ref": "PCSH8/2024/00234",
+   "partner": "Mon Myat Thu",
+   "date": "2024-09-09",
+   "amount": "50000.00",
+   "tgt_unit": "Park Beach Residence II - Studio 503",
+   "exact_old": false,
+   "old_units_seen": {
+    "[405] 405": 120,
+    "[406] 406": 90,
+    "[503] 503": 42
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[405] 405"
+  },
+  {
+   "pid": "6150",
+   "ref": "PCSH8/2024/00195",
+   "partner": "Raphael Phillipe Dominique Francois Emille Goue",
+   "date": "2024-10-07",
+   "amount": "3000.00",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 509",
+   "exact_old": false,
+   "old_units_seen": {
+    "[509] 509": 52,
+    "[711] 711": 52
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[509] 509"
+  },
+  {
+   "pid": "6159",
+   "ref": "PCSH8/2024/00200",
+   "partner": "Raphael Phillipe Dominique Francois Emille Goue",
+   "date": "2024-10-06",
+   "amount": "3000.00",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 509",
+   "exact_old": false,
+   "old_units_seen": {
+    "[509] 509": 52,
+    "[711] 711": 52
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[509] 509"
+  },
+  {
+   "pid": "6161",
+   "ref": "PCSH8/2024/00237",
+   "partner": "Raphael Phillipe Dominique Francois Emille Goue",
+   "date": "2024-09-05",
+   "amount": "50000.00",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 509",
+   "exact_old": false,
+   "old_units_seen": {
+    "[509] 509": 52,
+    "[711] 711": 52
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[509] 509"
+  },
+  {
+   "pid": "6323",
+   "ref": "PCSH8/2025/00107",
+   "partner": "Mohammed Assahraoui",
+   "date": "2025-11-22",
+   "amount": "9000.00",
+   "tgt_unit": "Park Beach Residence II - Studio 512",
+   "exact_old": false,
+   "old_units_seen": {
+    "[512] 512": 494,
+    "[513] 513": 468
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[512] 512"
+  },
+  {
+   "pid": "6324",
+   "ref": "PCSH8/2025/00127",
+   "partner": "Mohammed Assahraoui",
+   "date": "2025-09-12",
+   "amount": "13057.12",
+   "tgt_unit": "Park Beach Residence II - Studio 512",
+   "exact_old": false,
+   "old_units_seen": {
+    "[512] 512": 494,
+    "[513] 513": 468
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[512] 512"
+  },
+  {
+   "pid": "6325",
+   "ref": "PCSH8/2025/00132",
+   "partner": "Mohammed Assahraoui",
+   "date": "2025-09-08",
+   "amount": "20000.00",
+   "tgt_unit": "Park Beach Residence II - Studio 512",
+   "exact_old": false,
+   "old_units_seen": {
+    "[512] 512": 494,
+    "[513] 513": 468
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[512] 512"
+  },
+  {
+   "pid": "6326",
+   "ref": "PCSH8/2025/00142",
+   "partner": "Mohammed Assahraoui",
+   "date": "2025-07-04",
+   "amount": "26130.65",
+   "tgt_unit": "Park Beach Residence II - Studio 512",
+   "exact_old": false,
+   "old_units_seen": {
+    "[512] 512": 494,
+    "[513] 513": 468
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[512] 512"
+  },
+  {
+   "pid": "6327",
+   "ref": "PCSH8/2025/00147",
+   "partner": "Mohammed Assahraoui",
+   "date": "2025-06-04",
+   "amount": "16482.28",
+   "tgt_unit": "Park Beach Residence II - Studio 512",
+   "exact_old": false,
+   "old_units_seen": {
+    "[512] 512": 494,
+    "[513] 513": 468
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[512] 512"
+  },
+  {
+   "pid": "6328",
+   "ref": "PCSH8/2025/00159",
+   "partner": "Mohammed Assahraoui",
+   "date": "2025-05-03",
+   "amount": "12482.27",
+   "tgt_unit": "Park Beach Residence II - Studio 512",
+   "exact_old": false,
+   "old_units_seen": {
+    "[512] 512": 494,
+    "[513] 513": 468
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[512] 512"
+  },
+  {
+   "pid": "6329",
+   "ref": "PCSH8/2025/00163",
+   "partner": "Mohammed Assahraoui",
+   "date": "2025-04-26",
+   "amount": "1212.00",
+   "tgt_unit": "Park Beach Residence II - Studio 512",
+   "exact_old": false,
+   "old_units_seen": {
+    "[512] 512": 494,
+    "[513] 513": 468
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[512] 512"
+  },
+  {
+   "pid": "6330",
+   "ref": "PCSH8/2025/00172",
+   "partner": "Mohammed Assahraoui",
+   "date": "2025-04-11",
+   "amount": "22183.50",
+   "tgt_unit": "Park Beach Residence II - Studio 512",
+   "exact_old": false,
+   "old_units_seen": {
+    "[512] 512": 494,
+    "[513] 513": 468
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[512] 512"
+  },
+  {
+   "pid": "6331",
+   "ref": "PCSH8/2025/00181",
+   "partner": "Mohammed Assahraoui",
+   "date": "2025-03-06",
+   "amount": "8250.00",
+   "tgt_unit": "Park Beach Residence II - Studio 512",
+   "exact_old": false,
+   "old_units_seen": {
+    "[512] 512": 494,
+    "[513] 513": 468
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[512] 512"
+  },
+  {
+   "pid": "6332",
+   "ref": "PCSH8/2025/00185",
+   "partner": "Mohammed Assahraoui",
+   "date": "2025-01-31",
+   "amount": "23000.00",
+   "tgt_unit": "Park Beach Residence II - Studio 512",
+   "exact_old": false,
+   "old_units_seen": {
+    "[512] 512": 494,
+    "[513] 513": 468
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[512] 512"
+  },
+  {
+   "pid": "6333",
+   "ref": "PCSH8/2024/00199",
+   "partner": "Mohammed Assahraoui",
+   "date": "2024-12-21",
+   "amount": "35250.00",
+   "tgt_unit": "Park Beach Residence II - Studio 512",
+   "exact_old": false,
+   "old_units_seen": {
+    "[512] 512": 494,
+    "[513] 513": 468
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[512] 512"
+  },
+  {
+   "pid": "6334",
+   "ref": "PCSH8/2024/00134",
+   "partner": "Mohammed Assahraoui",
+   "date": "2024-12-19",
+   "amount": "20000.00",
+   "tgt_unit": "Park Beach Residence II - Studio 512",
+   "exact_old": false,
+   "old_units_seen": {
+    "[512] 512": 494,
+    "[513] 513": 468
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[512] 512"
+  },
+  {
+   "pid": "6335",
+   "ref": "PCSH8/2024/00154",
+   "partner": "Mohammed Assahraoui",
+   "date": "2024-11-09",
+   "amount": "10000.00",
+   "tgt_unit": "Park Beach Residence II - Studio 512",
+   "exact_old": false,
+   "old_units_seen": {
+    "[512] 512": 494,
+    "[513] 513": 468
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[512] 512"
+  },
+  {
+   "pid": "6336",
+   "ref": "PCSH8/2024/00153",
+   "partner": "Mohammed Assahraoui",
+   "date": "2024-11-09",
+   "amount": "26000.00",
+   "tgt_unit": "Park Beach Residence II - Studio 512",
+   "exact_old": false,
+   "old_units_seen": {
+    "[512] 512": 494,
+    "[513] 513": 468
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[512] 512"
+  },
+  {
+   "pid": "6339",
+   "ref": "PCSH8/2024/00225",
+   "partner": "Mohammed Assahraoui",
+   "date": "2024-09-27",
+   "amount": "24985.00",
+   "tgt_unit": "Park Beach Residence II - Studio 512",
+   "exact_old": false,
+   "old_units_seen": {
+    "[512] 512": 494,
+    "[513] 513": 468
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[512] 512"
+  },
+  {
+   "pid": "6342",
+   "ref": "PCSH8/2025/00126",
+   "partner": "Mohammed Assahraoui",
+   "date": "2025-09-12",
+   "amount": "5677.88",
+   "tgt_unit": "Park Beach Residence II - Studio 513",
+   "exact_old": false,
+   "old_units_seen": {
+    "[512] 512": 494,
+    "[513] 513": 468
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[512] 512"
+  },
+  {
+   "pid": "6343",
+   "ref": "PCSH8/2025/00131",
+   "partner": "Mohammed Assahraoui",
+   "date": "2025-09-08",
+   "amount": "20000.00",
+   "tgt_unit": "Park Beach Residence II - Studio 513",
+   "exact_old": false,
+   "old_units_seen": {
+    "[512] 512": 494,
+    "[513] 513": 468
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[512] 512"
+  },
+  {
+   "pid": "6344",
+   "ref": "PCSH8/2025/00141",
+   "partner": "Mohammed Assahraoui",
+   "date": "2025-07-04",
+   "amount": "22869.35",
+   "tgt_unit": "Park Beach Residence II - Studio 513",
+   "exact_old": false,
+   "old_units_seen": {
+    "[512] 512": 494,
+    "[513] 513": 468
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[512] 512"
+  },
+  {
+   "pid": "6345",
+   "ref": "PCSH8/2025/00146",
+   "partner": "Mohammed Assahraoui",
+   "date": "2025-06-04",
+   "amount": "16517.72",
+   "tgt_unit": "Park Beach Residence II - Studio 513",
+   "exact_old": false,
+   "old_units_seen": {
+    "[512] 512": 494,
+    "[513] 513": 468
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[512] 512"
+  },
+  {
+   "pid": "6346",
+   "ref": "PCSH8/2025/00158",
+   "partner": "Mohammed Assahraoui",
+   "date": "2025-05-03",
+   "amount": "12517.73",
+   "tgt_unit": "Park Beach Residence II - Studio 513",
+   "exact_old": false,
+   "old_units_seen": {
+    "[512] 512": 494,
+    "[513] 513": 468
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[512] 512"
+  },
+  {
+   "pid": "6348",
+   "ref": "PCSH8/2025/00162",
+   "partner": "Mohammed Assahraoui",
+   "date": "2025-04-26",
+   "amount": "1920.00",
+   "tgt_unit": "Park Beach Residence II - Studio 513",
+   "exact_old": false,
+   "old_units_seen": {
+    "[512] 512": 494,
+    "[513] 513": 468
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[512] 512"
+  },
+  {
+   "pid": "6350",
+   "ref": "PCSH8/2025/00171",
+   "partner": "Mohammed Assahraoui",
+   "date": "2025-04-11",
+   "amount": "22183.50",
+   "tgt_unit": "Park Beach Residence II - Studio 513",
+   "exact_old": false,
+   "old_units_seen": {
+    "[512] 512": 494,
+    "[513] 513": 468
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[512] 512"
+  },
+  {
+   "pid": "6355",
+   "ref": "PCSH8/2025/00184",
+   "partner": "Mohammed Assahraoui",
+   "date": "2025-01-31",
+   "amount": "23000.00",
+   "tgt_unit": "Park Beach Residence II - Studio 513",
+   "exact_old": false,
+   "old_units_seen": {
+    "[512] 512": 494,
+    "[513] 513": 468
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[512] 512"
+  },
+  {
+   "pid": "6368",
+   "ref": "PCSH8/2024/00224",
+   "partner": "Mohammed Assahraoui",
+   "date": "2024-09-27",
+   "amount": "24985.00",
+   "tgt_unit": "Park Beach Residence II - Studio 513",
+   "exact_old": false,
+   "old_units_seen": {
+    "[512] 512": 494,
+    "[513] 513": 468
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[512] 512"
+  },
+  {
+   "pid": "6433",
+   "ref": "PCSH8/2024/00150",
+   "partner": "Yekjan Yuzal",
+   "date": "2024-11-12",
+   "amount": "3000.00",
+   "tgt_unit": "Park Beach Residence II - Studio 603",
+   "exact_old": false,
+   "old_units_seen": {
+    "[603] 603": 60,
+    "[613] 613": 72
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[613] 613"
+  },
+  {
+   "pid": "6434",
+   "ref": "PCSH8/2024/00209",
+   "partner": "Yekjan Yuzal",
+   "date": "2024-10-02",
+   "amount": "64530.00",
+   "tgt_unit": "Park Beach Residence II - Studio 603",
+   "exact_old": false,
+   "old_units_seen": {
+    "[603] 603": 60,
+    "[613] 613": 72
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[613] 613"
+  },
+  {
+   "pid": "6435",
+   "ref": "PCSH8/2024/00223",
+   "partner": "Yekjan Yuzal",
+   "date": "2024-09-27",
+   "amount": "50000.00",
+   "tgt_unit": "Park Beach Residence II - Studio 603",
+   "exact_old": false,
+   "old_units_seen": {
+    "[603] 603": 60,
+    "[613] 613": 72
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[613] 613"
+  },
+  {
+   "pid": "6542",
+   "ref": "PCSH8/2024/00149",
+   "partner": "Yekjan Yuzal",
+   "date": "2024-11-12",
+   "amount": "3000.00",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 613",
+   "exact_old": false,
+   "old_units_seen": {
+    "[603] 603": 60,
+    "[613] 613": 72
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[613] 613"
+  },
+  {
+   "pid": "6543",
+   "ref": "PCSH8/2024/00208",
+   "partner": "Yekjan Yuzal",
+   "date": "2024-10-02",
+   "amount": "181939.00",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 613",
+   "exact_old": false,
+   "old_units_seen": {
+    "[603] 603": 60,
+    "[613] 613": 72
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[613] 613"
+  },
+  {
+   "pid": "6545",
+   "ref": "PCSH8/2024/00222",
+   "partner": "Yekjan Yuzal",
+   "date": "2024-09-27",
+   "amount": "50000.00",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 613",
+   "exact_old": false,
+   "old_units_seen": {
+    "[603] 603": 60,
+    "[613] 613": 72
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[613] 613"
+  },
+  {
+   "pid": "6758",
+   "ref": "PCSH8/2024/00235",
+   "partner": "Raphael Phillipe Dominique Francois Emille Goue",
+   "date": "2024-09-06",
+   "amount": "50000.00",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 711",
+   "exact_old": false,
+   "old_units_seen": {
+    "[509] 509": 52,
+    "[711] 711": 52
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[509] 509"
+  },
+  {
+   "pid": "6829",
+   "ref": "PCSH8/2025/00106",
+   "partner": "Mohammed Assahraoui",
+   "date": "2025-11-22",
+   "amount": "10000.00",
+   "tgt_unit": "Park Beach Residence II - Studio 512",
+   "exact_old": false,
+   "old_units_seen": {
+    "[512] 512": 494,
+    "[513] 513": 468
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[512] 512"
+  },
+  {
+   "pid": "6830",
+   "ref": "PCSH8/2026/00048",
+   "partner": "Mohammed Assahraoui",
+   "date": "2026-01-27",
+   "amount": "21000.00",
+   "tgt_unit": "Park Beach Residence II - Studio 513",
+   "exact_old": false,
+   "old_units_seen": {
+    "[512] 512": 494,
+    "[513] 513": 468
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[512] 512"
+  },
+  {
+   "pid": "6867",
+   "ref": "PCSH6/2026/00303",
+   "partner": "Kim Sandra Naulls & Jack Phillip John Bines",
+   "date": "2026-09-28",
+   "amount": "22297.00",
+   "tgt_unit": "Park Beach Residence II - 1 Bedroom 414",
+   "exact_old": true,
+   "old_units_seen": {
+    "[414] 414": 1
+   },
+   "unique_old_unit": true,
+   "old_unit_top": "[414] 414"
+  },
+  {
+   "pid": "6907",
+   "ref": "PCSH6/2026/00294",
+   "partner": "Halil Erseven",
+   "date": "2026-10-05",
+   "amount": "10866.56",
+   "tgt_unit": "Park Beach Residence II - Studio 302",
+   "exact_old": false,
+   "old_units_seen": {
+    "[302] 302": 69,
+    "[502] 502": 69
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[302] 302"
+  },
+  {
+   "pid": "7007",
+   "ref": "PCSH1/2026/00038",
+   "partner": "Nashwan Darwish Taalo Taalo",
+   "date": "2026-06-05",
+   "amount": "39192.00",
+   "tgt_unit": "Park Residency - 1 Bedroom 505",
+   "exact_old": true,
+   "old_units_seen": {
+    "[502] 502": 8,
+    "[505] 505": 8
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[502] 502"
+  },
+  {
+   "pid": "7008",
+   "ref": "PCSH1/2026/00039",
+   "partner": "Nashwan Darwish Taalo Taalo",
+   "date": "2026-08-26",
+   "amount": "40000.00",
+   "tgt_unit": "Park Residency - 1 Bedroom 502",
+   "exact_old": true,
+   "old_units_seen": {
+    "[502] 502": 8,
+    "[505] 505": 8
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[502] 502"
+  },
+  {
+   "pid": "7009",
+   "ref": "PBNK16/2026/00091",
+   "partner": "Nashwan Darwish Taalo Taalo",
+   "date": "2026-08-27",
+   "amount": "42300.22",
+   "tgt_unit": "Park Residency - 1 Bedroom 505",
+   "exact_old": true,
+   "old_units_seen": {
+    "[502] 502": 8,
+    "[505] 505": 8
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[502] 502"
+  },
+  {
+   "pid": "7010",
+   "ref": "PCSH1/2026/00041",
+   "partner": "Nashwan Darwish Taalo Taalo",
+   "date": "2026-06-05",
+   "amount": "38808.00",
+   "tgt_unit": "Park Residency - 1 Bedroom 502",
+   "exact_old": true,
+   "old_units_seen": {
+    "[502] 502": 8,
+    "[505] 505": 8
+   },
+   "unique_old_unit": false,
+   "old_unit_top": "[502] 502"
+  }
+ ],
+ "prop_map": {
+  "2123": {
+   "name": "307",
+   "cat": "RESIDENTIAL",
+   "unit_type": "1 BR",
+   "community": "PARK BEACH RESIDENCE"
+  },
+  "2154": {
+   "name": "512",
+   "cat": "RESIDENTIAL",
+   "unit_type": "1 BR+S+P",
+   "community": "PARK BEACH RESIDENCE"
+  },
+  "2182": {
+   "name": "101",
+   "cat": "RESIDENTIAL",
+   "unit_type": "1 BED + STUDY",
+   "community": "PARK BEACH RESIDENCE II"
+  },
+  "2204": {
+   "name": "302",
+   "cat": "RESIDENTIAL",
+   "unit_type": "STUDIO",
+   "community": "PARK BEACH RESIDENCE II"
+  },
+  "2212": {
+   "name": "310",
+   "cat": "RESIDENTIAL",
+   "unit_type": "STUDIO",
+   "community": "PARK BEACH RESIDENCE II"
+  },
+  "2216": {
+   "name": "314",
+   "cat": "RESIDENTIAL",
+   "unit_type": "1 BED",
+   "community": "PARK BEACH RESIDENCE II"
+  },
+  "2221": {
+   "name": "405",
+   "cat": "RESIDENTIAL",
+   "unit_type": "STUDIO",
+   "community": "PARK BEACH RESIDENCE II"
+  },
+  "2222": {
+   "name": "406",
+   "cat": "RESIDENTIAL",
+   "unit_type": "1 BED + STUDY",
+   "community": "PARK BEACH RESIDENCE II"
+  },
+  "2226": {
+   "name": "410",
+   "cat": "RESIDENTIAL",
+   "unit_type": "STUDIO",
+   "community": "PARK BEACH RESIDENCE II"
+  },
+  "2230": {
+   "name": "414",
+   "cat": "RESIDENTIAL",
+   "unit_type": "1 BED",
+   "community": "PARK BEACH RESIDENCE II"
+  },
+  "2232": {
+   "name": "502",
+   "cat": "RESIDENTIAL",
+   "unit_type": "STUDIO",
+   "community": "PARK BEACH RESIDENCE II"
+  },
+  "2233": {
+   "name": "503",
+   "cat": "RESIDENTIAL",
+   "unit_type": "STUDIO",
+   "community": "PARK BEACH RESIDENCE II"
+  },
+  "2239": {
+   "name": "509",
+   "cat": "RESIDENTIAL",
+   "unit_type": "1 BED + STUDY",
+   "community": "PARK BEACH RESIDENCE II"
+  },
+  "2242": {
+   "name": "512",
+   "cat": "RESIDENTIAL",
+   "unit_type": "STUDIO",
+   "community": "PARK BEACH RESIDENCE II"
+  },
+  "2243": {
+   "name": "513",
+   "cat": "RESIDENTIAL",
+   "unit_type": "STUDIO",
+   "community": "PARK BEACH RESIDENCE II"
+  },
+  "2248": {
+   "name": "603",
+   "cat": "RESIDENTIAL",
+   "unit_type": "STUDIO",
+   "community": "PARK BEACH RESIDENCE II"
+  },
+  "2258": {
+   "name": "613",
+   "cat": "RESIDENTIAL",
+   "unit_type": "1 BED",
+   "community": "PARK BEACH RESIDENCE II"
+  },
+  "2271": {
+   "name": "711",
+   "cat": "RESIDENTIAL",
+   "unit_type": "1 BED",
+   "community": "PARK BEACH RESIDENCE II"
+  },
+  "2839": {
+   "name": "201",
+   "cat": "RESIDENTIAL",
+   "unit_type": "1BHK",
+   "community": "INTERNATIONAL CITY (WARSAN FOURTH)"
+  },
+  "2840": {
+   "name": "202",
+   "cat": "RESIDENTIAL",
+   "unit_type": "1BHK",
+   "community": "INTERNATIONAL CITY (WARSAN FOURTH)"
+  },
+  "2841": {
+   "name": "203",
+   "cat": "RESIDENTIAL",
+   "unit_type": "2BHK",
+   "community": "INTERNATIONAL CITY (WARSAN FOURTH)"
+  },
+  "2842": {
+   "name": "205",
+   "cat": "RESIDENTIAL",
+   "unit_type": "1BHK",
+   "community": "INTERNATIONAL CITY (WARSAN FOURTH)"
+  },
+  "2843": {
+   "name": "206",
+   "cat": "RESIDENTIAL",
+   "unit_type": "1BHK",
+   "community": "INTERNATIONAL CITY (WARSAN FOURTH)"
+  },
+  "2844": {
+   "name": "207",
+   "cat": "RESIDENTIAL",
+   "unit_type": "1BHK",
+   "community": "INTERNATIONAL CITY (WARSAN FOURTH)"
+  },
+  "2845": {
+   "name": "208",
+   "cat": "RESIDENTIAL",
+   "unit_type": "STUDIO",
+   "community": "INTERNATIONAL CITY (WARSAN FOURTH)"
+  },
+  "2846": {
+   "name": "209",
+   "cat": "RESIDENTIAL",
+   "unit_type": "STUDIO",
+   "community": "INTERNATIONAL CITY (WARSAN FOURTH)"
+  },
+  "2847": {
+   "name": "210",
+   "cat": "RESIDENTIAL",
+   "unit_type": "STUDIO",
+   "community": "INTERNATIONAL CITY (WARSAN FOURTH)"
+  },
+  "2848": {
+   "name": "211",
+   "cat": "RESIDENTIAL",
+   "unit_type": "STUDIO",
+   "community": "INTERNATIONAL CITY (WARSAN FOURTH)"
+  },
+  "2849": {
+   "name": "212",
+   "cat": "RESIDENTIAL",
+   "unit_type": "STUDIO",
+   "community": "INTERNATIONAL CITY (WARSAN FOURTH)"
+  },
+  "2850": {
+   "name": "213",
+   "cat": "RESIDENTIAL",
+   "unit_type": "STUDIO",
+   "community": "INTERNATIONAL CITY (WARSAN FOURTH)"
+  },
+  "2851": {
+   "name": "214",
+   "cat": "RESIDENTIAL",
+   "unit_type": "1 BHK",
+   "community": "INTERNATIONAL CITY (WARSAN FOURTH)"
+  },
+  "2852": {
+   "name": "215",
+   "cat": "RESIDENTIAL",
+   "unit_type": "1 BHK",
+   "community": "INTERNATIONAL CITY (WARSAN FOURTH)"
+  },
+  "2853": {
+   "name": "216",
+   "cat": "RESIDENTIAL",
+   "unit_type": "STUDIO",
+   "community": "INTERNATIONAL CITY (WARSAN FOURTH)"
+  },
+  "2854": {
+   "name": "217",
+   "cat": "RESIDENTIAL",
+   "unit_type": "STUDIO",
+   "community": "INTERNATIONAL CITY (WARSAN FOURTH)"
+  },
+  "2855": {
+   "name": "218",
+   "cat": "RESIDENTIAL",
+   "unit_type": "STUDIO",
+   "community": "INTERNATIONAL CITY (WARSAN FOURTH)"
+  },
+  "2856": {
+   "name": "219",
+   "cat": "RESIDENTIAL",
+   "unit_type": "1 BHK",
+   "community": "INTERNATIONAL CITY (WARSAN FOURTH)"
+  },
+  "2857": {
+   "name": "221",
+   "cat": "RESIDENTIAL",
+   "unit_type": "1 BHK",
+   "community": "INTERNATIONAL CITY (WARSAN FOURTH)"
+  },
+  "2868": {
+   "name": "311",
+   "cat": "RESIDENTIAL",
+   "unit_type": "STUDIO",
+   "community": "INTERNATIONAL CITY (WARSAN FOURTH)"
+  },
+  "2893": {
+   "name": "416",
+   "cat": "RESIDENTIAL",
+   "unit_type": "STUDIO",
+   "community": "INTERNATIONAL CITY (WARSAN FOURTH)"
+  },
+  "2899": {
+   "name": "502",
+   "cat": "RESIDENTIAL",
+   "unit_type": "1BHK",
+   "community": "INTERNATIONAL CITY (WARSAN FOURTH)"
+  },
+  "2902": {
+   "name": "505",
+   "cat": "RESIDENTIAL",
+   "unit_type": "1BHK",
+   "community": "INTERNATIONAL CITY (WARSAN FOURTH)"
+  }
+ }
+}

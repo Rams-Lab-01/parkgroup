@@ -1,0 +1,122 @@
+{
+ "2123": {
+  "name": "307",
+  "community": "PARK BEACH RESIDENCE",
+  "unit_type": "1 BR",
+  "project": false
+ },
+ "2154": {
+  "name": "512",
+  "community": "PARK BEACH RESIDENCE",
+  "unit_type": "1 BR+S+P",
+  "project": false
+ },
+ "2182": {
+  "name": "101",
+  "community": "PARK BEACH RESIDENCE II",
+  "unit_type": "1 BED + STUDY",
+  "project": false
+ },
+ "2204": {
+  "name": "302",
+  "community": "PARK BEACH RESIDENCE II",
+  "unit_type": "STUDIO",
+  "project": false
+ },
+ "2212": {
+  "name": "310",
+  "community": "PARK BEACH RESIDENCE II",
+  "unit_type": "STUDIO",
+  "project": false
+ },
+ "2221": {
+  "name": "405",
+  "community": "PARK BEACH RESIDENCE II",
+  "unit_type": "STUDIO",
+  "project": false
+ },
+ "2222": {
+  "name": "406",
+  "community": "PARK BEACH RESIDENCE II",
+  "unit_type": "1 BED + STUDY",
+  "project": false
+ },
+ "2226": {
+  "name": "410",
+  "community": "PARK BEACH RESIDENCE II",
+  "unit_type": "STUDIO",
+  "project": false
+ },
+ "2232": {
+  "name": "502",
+  "community": "PARK BEACH RESIDENCE II",
+  "unit_type": "STUDIO",
+  "project": false
+ },
+ "2233": {
+  "name": "503",
+  "community": "PARK BEACH RESIDENCE II",
+  "unit_type": "STUDIO",
+  "project": false
+ },
+ "2239": {
+  "name": "509",
+  "community": "PARK BEACH RESIDENCE II",
+  "unit_type": "1 BED + STUDY",
+  "project": false
+ },
+ "2242": {
+  "name": "512",
+  "community": "PARK BEACH RESIDENCE II",
+  "unit_type": "STUDIO",
+  "project": false
+ },
+ "2243": {
+  "name": "513",
+  "community": "PARK BEACH RESIDENCE II",
+  "unit_type": "STUDIO",
+  "project": false
+ },
+ "2248": {
+  "name": "603",
+  "community": "PARK BEACH RESIDENCE II",
+  "unit_type": "STUDIO",
+  "project": false
+ },
+ "2258": {
+  "name": "613",
+  "community": "PARK BEACH RESIDENCE II",
+  "unit_type": "1 BED",
+  "project": false
+ },
+ "2271": {
+  "name": "711",
+  "community": "PARK BEACH RESIDENCE II",
+  "unit_type": "1 BED",
+  "project": false
+ },
+ "2868": {
+  "name": "311",
+  "community": "INTERNATIONAL CITY (WARSAN FOURTH)",
+  "unit_type": "STUDIO",
+  "project": false
+ },
+ "2893": {
+  "name": "416",
+  "community": "INTERNATIONAL CITY (WARSAN FOURTH)",
+  "unit_type": "STUDIO",
+  "project": false
+ },
+ "2899": {
+  "name": "502",
+  "community": "INTERNATIONAL CITY (WARSAN FOURTH)",
+  "unit_type": "1BHK",
+  "project": false
+ },
+ "2902": {
+  "name": "505",
+  "community": "INTERNATIONAL CITY (WARSAN FOURTH)",
+  "unit_type": "1BHK",
+  "project": false
+ }
+}

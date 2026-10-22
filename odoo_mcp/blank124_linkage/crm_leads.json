@@ -1,0 +1,382 @@
+{
+ "David Vobornik": [
+  {
+   "lead": 689,
+   "lname": "416",
+   "date": "2026-08-26",
+   "type": "opportunity",
+   "stage": "SPA",
+   "prob": 0.06,
+   "proj": null,
+   "res_confirmed": false,
+   "property": {
+    "name": "416",
+    "community": "INTERNATIONAL CITY (WARSAN FOURTH)",
+    "unit_type": "STUDIO",
+    "project": false
+   },
+   "preferred": []
+  },
+  {
+   "lead": 683,
+   "lname": "311",
+   "date": "2026-08-25",
+   "type": "opportunity",
+   "stage": "SPA",
+   "prob": 0.06,
+   "proj": null,
+   "res_confirmed": false,
+   "property": {
+    "name": "311",
+    "community": "INTERNATIONAL CITY (WARSAN FOURTH)",
+    "unit_type": "STUDIO",
+    "project": false
+   },
+   "preferred": []
+  }
+ ],
+ "Imaan Mangal": [],
+ "Mohammed Jassim Mohammed Al Fatlawi": [
+  {
+   "lead": 698,
+   "lname": "307",
+   "date": "2026-09-07",
+   "type": "opportunity",
+   "stage": "SPA",
+   "prob": 0.39,
+   "proj": null,
+   "res_confirmed": false,
+   "property": {
+    "name": "307",
+    "community": "PARK BEACH RESIDENCE",
+    "unit_type": "1 BR",
+    "project": false
+   },
+   "preferred": []
+  },
+  {
+   "lead": 677,
+   "lname": "310",
+   "date": "2026-08-20",
+   "type": "opportunity",
+   "stage": "SPA",
+   "prob": 0.39,
+   "proj": null,
+   "res_confirmed": false,
+   "property": {
+    "name": "310",
+    "community": "PARK BEACH RESIDENCE II",
+    "unit_type": "STUDIO",
+    "project": false
+   },
+   "preferred": []
+  }
+ ],
+ "Machiel De Vries": [
+  {
+   "lead": 287,
+   "lname": "101",
+   "date": "2026-04-21",
+   "type": "opportunity",
+   "stage": "SPA",
+   "prob": 1.66,
+   "proj": null,
+   "res_confirmed": false,
+   "property": {
+    "name": "101",
+    "community": "PARK BEACH RESIDENCE II",
+    "unit_type": "1 BED + STUDY",
+    "project": false
+   },
+   "preferred": []
+  },
+  {
+   "lead": 252,
+   "lname": "512",
+   "date": "2026-04-11",
+   "type": "opportunity",
+   "stage": "SPA",
+   "prob": 1.99,
+   "proj": null,
+   "res_confirmed": false,
+   "property": {
+    "name": "512",
+    "community": "PARK BEACH RESIDENCE",
+    "unit_type": "1 BR+S+P",
+    "project": false
+   },
+   "preferred": []
+  }
+ ],
+ "Halil Erseven": [
+  {
+   "lead": 346,
+   "lname": "502",
+   "date": "2026-04-27",
+   "type": "opportunity",
+   "stage": "SPA",
+   "prob": 1.22,
+   "proj": null,
+   "res_confirmed": false,
+   "property": {
+    "name": "502",
+    "community": "PARK BEACH RESIDENCE II",
+    "unit_type": "STUDIO",
+    "project": false
+   },
+   "preferred": []
+  },
+  {
+   "lead": 316,
+   "lname": "302",
+   "date": "2026-04-25",
+   "type": "opportunity",
+   "stage": "SPA",
+   "prob": 1.51,
+   "proj": null,
+   "res_confirmed": false,
+   "property": {
+    "name": "302",
+    "community": "PARK BEACH RESIDENCE II",
+    "unit_type": "STUDIO",
+    "project": false
+   },
+   "preferred": []
+  }
+ ],
+ "Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala": [],
+ "Mon Myat Thu": [
+  {
+   "lead": 347,
+   "lname": "503",
+   "date": "2026-04-27",
+   "type": "opportunity",
+   "stage": "SPA",
+   "prob": 1.22,
+   "proj": null,
+   "res_confirmed": false,
+   "property": {
+    "name": "503",
+    "community": "PARK BEACH RESIDENCE II",
+    "unit_type": "STUDIO",
+    "project": false
+   },
+   "preferred": []
+  },
+  {
+   "lead": 335,
+   "lname": "406",
+   "date": "2026-04-25",
+   "type": "opportunity",
+   "stage": "SPA",
+   "prob": 1.22,
+   "proj": null,
+   "res_confirmed": false,
+   "property": {
+    "name": "406",
+    "community": "PARK BEACH RESIDENCE II",
+    "unit_type": "1 BED + STUDY",
+    "project": false
+   },
+   "preferred": []
+  },
+  {
+   "lead": 334,
+   "lname": "405",
+   "date": "2026-04-25",
+   "type": "opportunity",
+   "stage": "SPA",
+   "prob": 1.22,
+   "proj": null,
+   "res_confirmed": false,
+   "property": {
+    "name": "405",
+    "community": "PARK BEACH RESIDENCE II",
+    "unit_type": "STUDIO",
+    "project": false
+   },
+   "preferred": []
+  }
+ ],
+ "Hasan Abdulla Hasan Aldoobi Alshehhi": [
+  {
+   "lead": 339,
+   "lname": "410",
+   "date": "2026-04-27",
+   "type": "opportunity",
+   "stage": "SPA",
+   "prob": 1.22,
+   "proj": null,
+   "res_confirmed": false,
+   "property": {
+    "name": "410",
+    "community": "PARK BEACH RESIDENCE II",
+    "unit_type": "STUDIO",
+    "project": false
+   },
+   "preferred": []
+  }
+ ],
+ "Raphael Phillipe Dominique Francois Emille Goue": [
+  {
+   "lead": 563,
+   "lname": "711",
+   "date": "2026-06-18",
+   "type": "opportunity",
+   "stage": "SPA",
+   "prob": 1.66,
+   "proj": null,
+   "res_confirmed": false,
+   "property": {
+    "name": "711",
+    "community": "PARK BEACH RESIDENCE II",
+    "unit_type": "1 BED",
+    "project": false
+   },
+   "preferred": []
+  },
+  {
+   "lead": 354,
+   "lname": "509",
+   "date": "2026-04-27",
+   "type": "opportunity",
+   "stage": "SPA",
+   "prob": 1.22,
+   "proj": null,
+   "res_confirmed": false,
+   "property": {
+    "name": "509",
+    "community": "PARK BEACH RESIDENCE II",
+    "unit_type": "1 BED + STUDY",
+    "project": false
+   },
+   "preferred": []
+  }
+ ],
+ "Mohammed Assahraoui": [
+  {
+   "lead": 359,
+   "lname": "513",
+   "date": "2026-04-27",
+   "type": "opportunity",
+   "stage": "SPA",
+   "prob": 1.22,
+   "proj": null,
+   "res_confirmed": false,
+   "property": {
+    "name": "513",
+    "community": "PARK BEACH RESIDENCE II",
+    "unit_type": "STUDIO",
+    "project": false
+   },
+   "preferred": []
+  },
+  {
+   "lead": 358,
+   "lname": "512",
+   "date": "2026-04-27",
+   "type": "opportunity",
+   "stage": "SPA",
+   "prob": 1.22,
+   "proj": null,
+   "res_confirmed": false,
+   "property": {
+    "name": "512",
+    "community": "PARK BEACH RESIDENCE II",
+    "unit_type": "STUDIO",
+    "project": false
+   },
+   "preferred": []
+  }
+ ],
+ "Yekjan Yuzal": [
+  {
+   "lead": 375,
+   "lname": "613",
+   "date": "2026-04-27",
+   "type": "opportunity",
+   "stage": "SPA",
+   "prob": 1.22,
+   "proj": null,
+   "res_confirmed": false,
+   "property": {
+    "name": "613",
+    "community": "PARK BEACH RESIDENCE II",
+    "unit_type": "1 BED",
+    "project": false
+   },
+   "preferred": []
+  },
+  {
+   "lead": 363,
+   "lname": "603",
+   "date": "2026-04-27",
+   "type": "opportunity",
+   "stage": "SPA",
+   "prob": 1.22,
+   "proj": null,
+   "res_confirmed": false,
+   "property": {
+    "name": "603",
+    "community": "PARK BEACH RESIDENCE II",
+    "unit_type": "STUDIO",
+    "project": false
+   },
+   "preferred": []
+  }
+ ],
+ "Kim Sandra Naulls & Jack Phillip John Bines": [],
+ "Nashwan Darwish Taalo Taalo": [
+  {
+   "lead": 543,
+   "lname": "505",
+   "date": "2026-06-12",
+   "type": "opportunity",
+   "stage": "SPA",
+   "prob": 0.09,
+   "proj": null,
+   "res_confirmed": false,
+   "property": {
+    "name": "505",
+    "community": "INTERNATIONAL CITY (WARSAN FOURTH)",
+    "unit_type": "1BHK",
+    "project": false
+   },
+   "preferred": []
+  },
+  {
+   "lead": 537,
+   "lname": "502",
+   "date": "2026-06-11",
+   "type": "opportunity",
+   "stage": "SPA",
+   "prob": 0.09,
+   "proj": null,
+   "res_confirmed": false,
+   "property": {
+    "name": "502",
+    "community": "INTERNATIONAL CITY (WARSAN FOURTH)",
+    "unit_type": "1BHK",
+    "project": false
+   },
+   "preferred": []
+  },
+  {
+   "lead": 519,
+   "lname": "505",
+   "date": "2026-06-05",
+   "type": "opportunity",
+   "stage": "New",
+   "prob": 0.04,
+   "proj": null,
+   "res_confirmed": false,
+   "property": {
+    "name": "505",
+    "community": "INTERNATIONAL CITY (WARSAN FOURTH)",
+    "unit_type": "1BHK",
+    "project": false
+   },
+   "preferred": []
+  }
+ ]
+}
