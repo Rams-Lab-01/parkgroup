@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Park Group - EOI & Reservation Management',
-    'version': '19.0.1.0.8',
+    'version': '19.0.1.0.9',
     'category': 'Real Estate',
     'summary': 'Expression of Interest (EOI), refundable reservation workflow, contract stage pipeline and luxury QWeb agreements',
     'description': """Park Group Real Estate - EOI & Booking Extension

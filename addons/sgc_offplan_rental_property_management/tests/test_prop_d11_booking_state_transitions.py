@@ -13,6 +13,7 @@ handled by action_cancel) always happens before a return to draft.
 
 Agent-created verification tests, added alongside the PROP-D11 fix.
 """
+from odoo import fields
 from odoo.exceptions import UserError
 from odoo.tests.common import TransactionCase, tagged
 
@@ -22,14 +23,14 @@ class TestPropD11BookingStateTransitions(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.project = cls.env["property.project"].create({
+        cls.project = self.env["property.project"].create({
             "name": "PROP-D11 Project", "company_id": cls.env.company.id,
         })
-        cls.property = cls.env["property.details"].create({
+        cls.property = self.env["property.details"].create({
             "name": "PROP-D11 Property", "project_id": cls.project.id,
             "company_id": cls.env.company.id,
         })
-        cls.vendor_partner = cls.env["res.partner"].create({
+        cls.vendor_partner = self.env["res.partner"].create({
             "name": "PROP-D11 Vendor",
         })
 
@@ -39,6 +40,35 @@ class TestPropD11BookingStateTransitions(TransactionCase):
             "property_id": self.property.id,
         })
 
+    def _register_receipt_against_unit(self):
+        """Post a receipt against the unit.
+
+        Where sgc_property_eoi_workflow is installed, a unit may only move to
+        'booked' once money is posted against it in Accounting, so a booking
+        that gets confirmed needs that receipt. Where that module is not
+        installed there is no gate and nothing is needed.
+        """
+        payments = self.env["account.payment"]
+        if "manual_property_id" not in payments._fields:
+            return
+        journal = self.env["account.journal"].search(
+            [("type", "=", "bank"), ("company_id", "=", self.env.company.id)], limit=1)
+        if not journal:
+            journal = self.env["account.journal"].create({
+                "name": "PROP-D11 Bank", "code": "PD11BNK", "type": "bank",
+                "company_id": self.env.company.id,
+            })
+        buyer = self.env["res.partner"].create({"name": "PROP-D11 Buyer"})
+        payment = payments.sudo().create({
+            "payment_type": "inbound", "partner_type": "customer",
+            "partner_id": buyer.id, "amount": 50000.0,
+            "currency_id": self.env.company.currency_id.id,
+            "date": fields.Date.today(), "journal_id": journal.id,
+            "company_id": self.env.company.id,
+        })
+        payment.action_post()
+        payment.manual_property_id = self.property.id
+
     # 1. A confirmed booking must still be cancellable (the actual reported
     #    defect -- previously blocked at the view layer, but exercising the
     #    model method directly here since it's the ORM-level guarantee the
@@ -46,6 +76,7 @@ class TestPropD11BookingStateTransitions(TransactionCase):
     #    with no server-side equivalent to unit test).
     def test_confirmed_booking_can_be_cancelled(self):
         booking = self._new_booking()
+        self._register_receipt_against_unit()
         booking.action_confirm()
         self.assertEqual(booking.state, "confirmed")
         self.assertEqual(self.property.state, "booked")
@@ -75,6 +106,7 @@ class TestPropD11BookingStateTransitions(TransactionCase):
     #    cancelled first. Server-side guard, not just a hidden button.
     def test_confirmed_booking_cannot_skip_directly_to_draft(self):
         booking = self._new_booking()
+        self._register_receipt_against_unit()
         booking.action_confirm()
         with self.assertRaises(UserError):
             booking.action_draft()

@@ -84,6 +84,19 @@
                             </field>
                         </group>
                     </group>
+                    <group string="SPA Eligibility">
+                        <group>
+                            <field name="booking_amount" widget="monetary" readonly="1"/>
+                            <field name="spa_eligible"/>
+                            <field name="spa_shortfall" widget="monetary"/>
+                        </group>
+                        <group>
+                            <div class="text-muted">
+                                The SPA for signing is issued once the money received
+                                against the unit covers the booking amount.
+                            </div>
+                        </group>
+                    </group>
                 </page>
 
                 <page string="Joint Purchaser &amp; Signatories" name="purchaser_particulars">

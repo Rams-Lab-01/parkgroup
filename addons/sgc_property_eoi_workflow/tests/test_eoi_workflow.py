@@ -9,9 +9,10 @@ class TestEoiWorkflow(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.currency_aed = cls.env.ref('base.AED', raise_if_not_found=False)
-        if not cls.currency_aed:
-            cls.currency_aed = cls.env.company.currency_id
+        # The money is in the company's currency. Odoo ships most currencies
+        # inactive (AED among them on a fresh database), and a payment cannot
+        # be validated against an inactive currency.
+        cls.currency_aed = cls.env.company.currency_id
 
         # Setup developer company partner
         cls.developer_partner = cls.env['res.partner'].create({
@@ -269,7 +270,7 @@ class TestEoiWorkflow(TransactionCase):
 
     def test_04_full_contract_pipeline(self):
         """Test contract progression: Booked -> Confirmed -> SPA Issued -> SPA Signed."""
-        self._register_receipt()
+        self._register_receipt(amount=185000.0)
         contract = self.env['sale.contract'].create({
             'property_id': self.property.id,
             'buyer_id': self.buyer_partner.id,
@@ -319,6 +320,43 @@ class TestEoiWorkflow(TransactionCase):
         # With the money registered, the booking can move the unit.
         booking.action_confirm()
         self.assertEqual(self.property.state, 'booked')
+
+    def test_04b_spa_needs_the_booking_amount_covered(self):
+        """The booking amount is the basis for issuing the SPA for signing."""
+        contract = self.env['sale.contract'].create({
+            'property_id': self.property.id,
+            'buyer_id': self.buyer_partner.id,
+            'seller_id': self.developer_partner.id,
+            'sale_price': 1850000.0,
+            'booking_amount': 185000.0,
+            'currency_id': self.currency_aed.id,
+            'state': 'confirmed',
+        })
+        self._register_receipt(amount=50000.0)
+        self.assertFalse(contract.spa_eligible, "Half the booking amount is not enough")
+        self.assertAlmostEqual(contract.spa_shortfall, 135000.0, places=2)
+        with self.assertRaises(UserError):
+            contract.action_issue_spa()
+
+        self._register_receipt(amount=135000.0)
+        contract.invalidate_recordset(['spa_eligible', 'spa_shortfall'])
+        self.assertTrue(contract.spa_eligible, "The booking amount is now covered")
+        contract.action_issue_spa()
+        self.assertEqual(contract.state, 'spa_issued')
+
+    def test_04c_spa_needs_a_booking_amount(self):
+        """Without a booking amount there is no basis to issue the SPA."""
+        contract = self.env['sale.contract'].create({
+            'property_id': self.property.id,
+            'buyer_id': self.buyer_partner.id,
+            'seller_id': self.developer_partner.id,
+            'sale_price': 1850000.0,
+            'currency_id': self.currency_aed.id,
+            'state': 'confirmed',
+        })
+        self._register_receipt()
+        with self.assertRaises(UserError):
+            contract.action_issue_spa()
 
     def test_05_qweb_reports_rendering(self):
         """Verify both EOI Agreement and Reservation Form QWeb reports render without errors."""

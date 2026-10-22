@@ -78,6 +78,17 @@ class SaleContract(models.Model):
         ('paid', 'Received'),
     ], compute='_compute_eoi_received', store=True, string='Receipt Status')
 
+    # ── SPA eligibility: the booking amount is the basis ────────────────
+    spa_eligible = fields.Boolean(
+        string='Ready for SPA', compute='_compute_spa_eligible',
+        help='True when the money received against the unit covers the booking amount, '
+             'so the SPA can be issued for signing.',
+    )
+    spa_shortfall = fields.Monetary(
+        string='Still Due', currency_field='currency_id', compute='_compute_spa_eligible',
+        help='What is still missing against the booking amount.',
+    )
+
     @api.depends('eoi_payment_ids.state', 'eoi_payment_ids.amount',
                  'eoi_payment_ids.payment_type', 'eoi_payment_ids.currency_id',
                  'eoi_amount', 'currency_id')
@@ -100,6 +111,33 @@ class SaleContract(models.Model):
                 rec.eoi_receipt_state = 'partial'
             else:
                 rec.eoi_receipt_state = 'none'
+
+    @api.depends('booking_amount', 'currency_id', 'eoi_payment_ids.amount',
+                 'eoi_payment_ids.state', 'property_id')
+    def _compute_spa_eligible(self):
+        for rec in self:
+            received = rec._sgc_received_amount()
+            rec.spa_shortfall = max(rec.booking_amount - received, 0.0)
+            rec.spa_eligible = bool(rec.booking_amount) and received + 0.005 >= rec.booking_amount
+
+    def _sgc_received_amount(self):
+        """What has been received against this contract's unit, in its currency."""
+        self.ensure_one()
+        helper = self.env['sgc.eoi.receipt.helper']
+        states = helper._verified_states()
+        payments = self.eoi_payment_ids
+        if self.property_id:
+            payments |= helper._receipts_for_unit(self.property_id)
+        payments = payments.filtered(
+            lambda p: p.payment_type == 'inbound' and p.state in states)
+        currency = self.currency_id or self.company_id.currency_id
+        company = self.company_id or self.env.company
+        total = 0.0
+        for payment in payments:
+            total += payment.currency_id._convert(
+                payment.amount, currency, company,
+                payment.date or fields.Date.context_today(self))
+        return total
 
     # ── Purchaser Details ────────────────────────────────────────────────
     buyer_name = fields.Char(
@@ -280,7 +318,25 @@ class SaleContract(models.Model):
         return receipts
 
     def action_issue_spa(self):
+        """The SPA is issued once the booking amount is covered by money received.
+
+        The booking amount is the basis: the unit has to have received at least
+        that much in posted receipts before the sale agreement goes out for
+        signing.
+        """
         self.ensure_one()
+        if not self.booking_amount:
+            raise UserError(_(
+                'Set the booking amount before issuing the SPA: it is the basis for '
+                'deciding that the money against unit %s is in.',
+                self.property_id.display_name or self.name))
+        received = self._sgc_received_amount()
+        if received + 0.005 < self.booking_amount:
+            raise UserError(_(
+                'Unit %s has received %s against a booking amount of %s, so the SPA '
+                'cannot be issued for signing yet. Still due: %s.',
+                self.property_id.display_name or self.name,
+                received, self.booking_amount, self.booking_amount - received))
         self.write({
             'state': 'spa_issued',
             'spa_issue_date': fields.Date.today(),
