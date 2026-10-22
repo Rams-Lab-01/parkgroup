@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_eoi_registration_wizard,eoi.registration.wizard,model_eoi_registration_wizard,base.group_user,1,1,1,1
+access_eoi_to_booking_wizard,eoi.to.booking.wizard,model_eoi_to_booking_wizard,base.group_user,1,1,1,1

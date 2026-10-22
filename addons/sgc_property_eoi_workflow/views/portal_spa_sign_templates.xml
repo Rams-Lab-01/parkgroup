@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_spa_sign" name="SPA Digital Signature">
+        <t t-call="website.layout">
+            <t t-set="title">Sales Purchase Agreement - {{ contract.name }}</t>
+            <div id="wrap" class="container my-5">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="card shadow-sm">
+                            <div class="card-body p-5">
+                                <h3 class="mb-1">{{ contract.name }}</h3>
+                                <div class="text-muted mb-3">Sales Purchase Agreement</div>
+                                <table class="table table-sm">
+                                    <tr><th class="w-25">Unit</th><td>{{ contract.property_id.name }}</td></tr>
+                                    <tr><th>Buyer</th><td>{{ contract.buyer_name or contract.buyer_id.name }}</td></tr>
+                                    <tr><th>Unit Type</th><td>{{ contract.unit_type_code }}</td></tr>
+                                    <tr><th>Status</th><td>
+                                        <t t-if="contract.state == 'spa_issued'"><span class="badge text-bg-warning">Awaiting Signature</span></t>
+                                        <t t-else=""><span class="badge text-bg-success">Signed</span></t>
+                                    </td></tr>
+                                </table>
+
+                                <t t-if="error">
+                                    <div class="alert alert-danger" role="alert"><t t-esc="error"/></div>
+                                </t>
+
+                                <t t-if="contract.state == 'spa_issued'">
+                                    <p class="mt-4">Please review the Sales Purchase Agreement, then sign below to accept it.</p>
+                                    <a class="btn btn-outline-primary mb-3" t-attf-href="/my/contract/sale/#{contract.id}/spa/pdf?token=#{contract.spa_access_token}" target="_blank">
+                                        <i class="fa fa-file-pdf-o"/> Preview the SPA
+                                    </a>
+                                    <div class="d-flex justify-content-center">
+                                        <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modalaccept_spa">
+                                            <i class="fa fa-check"/> Accept &amp; Sign
+                                        </button>
+                                    </div>
+                                    <div role="dialog" class="modal fade" id="modalaccept_spa" name="spa_modal_sign">
+                                        <div class="modal-dialog modal-lg">
+                                            <t t-call="sgc_property_eoi_workflow.spa_sign_modal"/>
+                                        </div>
+                                    </div>
+                                </t>
+
+                                <t t-else="">
+                                    <t t-if="signed_ok">
+                                        <div class="alert alert-success" role="alert"><i class="fa fa-check-circle"/> Thank you. Your signature has been recorded.</div>
+                                    </t>
+                                    <div class="alert alert-success mt-3">
+                                        <i class="fa fa-check-circle"/> This agreement was <strong>digitally signed</strong>
+                                        <t t-if="contract.signed_by">by <strong>{{ contract.signed_by }}</strong></t>
+                                        <t t-if="contract.signed_on">on {{ contract.signed_on }}</t>.
+                                    </div>
+                                    <t t-if="contract.signature">
+                                        <img class="border rounded bg-white" style="max-height: 8rem; max-width: 100%;"
+                                             t-att-src="image_data_uri(contract.signature)"/>
+                                    </t>
+                                    <div class="mt-3">
+                                        <a class="btn btn-primary" t-attf-href="/my/contract/sale/#{contract.id}/spa/pdf?token=#{contract.spa_access_token}">
+                                            <i class="fa fa-download"/> Download the signed SPA
+                                        </a>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="spa_sign_modal" name="SPA Sign Modal">
+        <form id="accept_spa" method="POST"
+              t-att-data-contract-id="contract.id"
+              t-att-data-token="contract.spa_access_token"
+              class="js_accept_json modal-content js_website_submit_form">
+            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+            <header class="modal-header">
+                <h4 class="modal-title">Sign the Sales Purchase Agreement</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"/>
+            </header>
+            <main class="modal-body" id="sign-dialog">
+                <span>
+                    By signing, you confirm acceptance of the Sales Purchase Agreement
+                    <b t-out="contract.name"/> for <b t-out="contract.property_id.name"/>.
+                </span>
+                <t t-call="portal.signature_form">
+                    <t t-set="call_url" t-value="'/my/contract/sale/%s/spa/accept?token=%s' % (contract.id, contract.spa_access_token or '')"/>
+                    <t t-set="default_name" t-value="contract.buyer_name or contract.buyer_id.name"/>
+                </t>
+            </main>
+        </form>
+    </template>
+
+    <template id="portal_my_contract_detail_spa_sign"
+              inherit_id="sgc_offplan_rental_property_management.portal_my_contract_detail"
+              name="Portal My Contract: SPA Signature">
+        <xpath expr="//div[hasclass('row','mt-4')]" position="inside">
+            <t t-if="model == 'sale' and contract.state == 'spa_issued'">
+                <div class="col-12">
+                    <div class="card mb-4 border-primary">
+                        <div class="card-body d-flex justify-content-between align-items-center">
+                            <div>
+                                <h4 class="mb-1">Sales Purchase Agreement</h4>
+                                <p class="text-muted mb-0">Your agreement is ready. Please review and sign it.</p>
+                            </div>
+                            <a class="btn btn-primary" t-attf-href="/my/contract/sale/#{contract.id}/spa/sign">
+                                <i class="fa fa-pencil"/> Review &amp; Sign
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+    </template>
+</odoo>

@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="reservation_form_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <div class="article" style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 9pt; color: #1e293b; line-height: 1.4; padding: 10px 15px;">
+                    
+                    <!-- ─── HEADER / LETTERHEAD ──────────────────────────────────────── -->
+                    <table style="width: 100%; margin-bottom: 20px; border-collapse: collapse;">
+                        <tr>
+                            <td style="vertical-align: middle; width: 62%;">
+                                <div style="background-color: #1b3a57; color: #ffffff; font-weight: 800; font-size: 13pt; padding: 10px 16px; letter-spacing: 0.5px; border-radius: 2px;">
+                                    UNIT RESERVATION AGREEMENT
+                                </div>
+                                <div style="font-size: 8pt; color: #64748b; font-weight: 600; margin-top: 4px; padding-left: 2px;">
+                                    OFFICIAL DEVELOPER BOOKING FORM &amp; PAYMENT SCHEDULE
+                                </div>
+                            </td>
+                            <td style="vertical-align: middle; text-align: right; width: 38%;">
+                                <div style="font-family: Georgia, serif; font-size: 24pt; font-weight: 900; color: #1b3a57; line-height: 0.9; letter-spacing: 2px;">
+                                    PARK
+                                </div>
+                                <div style="font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 9.5pt; font-weight: 700; color: #c9a961; letter-spacing: 4px; margin-top: 3px;">
+                                    GROUP
+                                </div>
+                                <div style="font-size: 8pt; color: #64748b; margin-top: 4px;">
+                                    Ref: <span style="font-weight: 700; color: #1b3a57;" t-esc="o.name or 'RES/2026/001'"/>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- Status Bar -->
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 14px; background-color: #f8fafc; border: 1px solid #cbd5e1;">
+                        <tr>
+                            <td style="padding: 6px 12px; font-size: 8.5pt; width: 33%;">
+                                <strong>Booking Date:</strong> <span t-esc="o.booking_date or o.contract_date or ''"/>
+                            </td>
+                            <td style="padding: 6px 12px; font-size: 8.5pt; width: 34%; text-align: center;">
+                                <strong>Status:</strong> 
+                                <span style="background-color: #dbeafe; color: #1e40af; font-weight: 700; padding: 2px 8px; border-radius: 3px; text-transform: uppercase;">
+                                    <span t-esc="dict(o._fields['state'].selection).get(o.state, o.state)"/>
+                                </span>
+                            </td>
+                            <td style="padding: 6px 12px; font-size: 8.5pt; width: 33%; text-align: right;">
+                                <strong>Project:</strong> <span style="color: #1b3a57; font-weight: 700;" t-esc="o.property_id.project_id.name or 'Park Group Development'"/>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- ─── SECTION 1: DEVELOPER DETAILS ─────────────────────────────── -->
+                    <div style="background-color: #1b3a57; color: #ffffff; font-weight: 700; font-size: 9pt; padding: 5px 10px; margin-bottom: 0;">
+                        1. DEVELOPER / SELLER PARTICULARS
+                    </div>
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 14px; border: 1px solid #cbd5e1; font-size: 8.5pt;">
+                        <tr style="border-bottom: 1px solid #cbd5e1;">
+                            <td style="width: 25%; padding: 6px 8px; font-weight: 700; background-color: #f8fafc; border-right: 1px solid #cbd5e1;">Developer / Seller</td>
+                            <td style="width: 75%; padding: 6px 8px; font-weight: 600;" colspan="3">
+                                <span t-esc="o.seller_company_name or o.company_id.name or 'PARK RESIDENCY REAL ESTATE DEVELOPMENT LLC'"/>
+                            </td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #cbd5e1;">
+                            <td style="width: 25%; padding: 6px 8px; font-weight: 700; background-color: #f8fafc; border-right: 1px solid #cbd5e1;">Trade License / RERA</td>
+                            <td style="width: 35%; padding: 6px 8px; border-right: 1px solid #cbd5e1;">
+                                <span t-esc="o.seller_registration_no or '114030 / RERA Developer No. 9992'"/>
+                            </td>
+                            <td style="width: 18%; padding: 6px 8px; font-weight: 700; background-color: #f8fafc; border-right: 1px solid #cbd5e1;">Telephone / Email</td>
+                            <td style="width: 22%; padding: 6px 8px;">
+                                <span t-esc="o.seller_telephone or '+971 4 222 9992'"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 6px 8px; font-weight: 700; background-color: #f8fafc; border-right: 1px solid #cbd5e1;">Registered Office</td>
+                            <td style="padding: 6px 8px;" colspan="3">
+                                <span t-esc="o.seller_office_address or 'Office 323 &amp; 325, Sultan Business Center, Oud Metha, Dubai, UAE'"/>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- ─── SECTION 2: PURCHASER(S) DETAILS ──────────────────────────── -->
+                    <div style="background-color: #1b3a57; color: #ffffff; font-weight: 700; font-size: 9pt; padding: 5px 10px; margin-bottom: 0;">
+                        2. PURCHASER(S) PARTICULARS
+                    </div>
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 14px; border: 1px solid #cbd5e1; font-size: 8.5pt;">
+                        <tr style="background-color: #f1f5f9; border-bottom: 1px solid #cbd5e1; text-align: center; font-weight: 700;">
+                            <td style="width: 24%; padding: 5px 8px; border-right: 1px solid #cbd5e1;">Particular</td>
+                            <td style="width: 38%; padding: 5px 8px; border-right: 1px solid #cbd5e1;">Primary Purchaser</td>
+                            <td style="width: 38%; padding: 5px 8px;">Joint Purchaser (if applicable)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #cbd5e1;">
+                            <td style="padding: 5px 8px; font-weight: 700; background-color: #f8fafc; border-right: 1px solid #cbd5e1;">Full Name</td>
+                            <td style="padding: 5px 8px; font-weight: 600; border-right: 1px solid #cbd5e1;">
+                                <span t-esc="o.buyer_name or o.buyer_id.name or ''"/>
+                            </td>
+                            <td style="padding: 5px 8px;">
+                                <span t-esc="o.joint_buyer_name or o.joint_buyer_id.name or 'N/A'"/>
+                            </td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #cbd5e1;">
+                            <td style="padding: 5px 8px; font-weight: 700; background-color: #f8fafc; border-right: 1px solid #cbd5e1;">Nationality</td>
+                            <td style="padding: 5px 8px; border-right: 1px solid #cbd5e1;">
+                                <span t-esc="o.buyer_nationality_id.name or o.buyer_id.country_id.name or ''"/>
+                            </td>
+                            <td style="padding: 5px 8px;">
+                                <span t-esc="o.joint_buyer_nationality_id.name or o.joint_buyer_id.country_id.name or 'N/A'"/>
+                            </td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #cbd5e1;">
+                            <td style="padding: 5px 8px; font-weight: 700; background-color: #f8fafc; border-right: 1px solid #cbd5e1;">Passport No.</td>
+                            <td style="padding: 5px 8px; border-right: 1px solid #cbd5e1;">
+                                <span t-esc="o.buyer_passport_no or ''"/>
+                            </td>
+                            <td style="padding: 5px 8px;">
+                                <span t-esc="o.joint_buyer_passport_no or 'N/A'"/>
+                            </td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #cbd5e1;">
+                            <td style="padding: 5px 8px; font-weight: 700; background-color: #f8fafc; border-right: 1px solid #cbd5e1;">Emirates ID</td>
+                            <td style="padding: 5px 8px; border-right: 1px solid #cbd5e1;">
+                                <span t-esc="o.buyer_emirates_id or ''"/>
+                            </td>
+                            <td style="padding: 5px 8px;">
+                                <span t-esc="o.joint_buyer_emirates_id or 'N/A'"/>
+                            </td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #cbd5e1;">
+                            <td style="padding: 5px 8px; font-weight: 700; background-color: #f8fafc; border-right: 1px solid #cbd5e1;">Residential Address</td>
+                            <td style="padding: 5px 8px; border-right: 1px solid #cbd5e1;">
+                                <span t-esc="o.buyer_address or o.buyer_id.contact_address or ''"/>
+                            </td>
+                            <td style="padding: 5px 8px;">
+                                <span t-esc="o.joint_buyer_address or 'N/A'"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px 8px; font-weight: 700; background-color: #f8fafc; border-right: 1px solid #cbd5e1;">Mobile / Email</td>
+                            <td style="padding: 5px 8px; border-right: 1px solid #cbd5e1;">
+                                <span t-esc="o.buyer_mobile or o.buyer_id.phone or ''"/> / <span t-esc="o.buyer_email or o.buyer_id.email or ''"/>
+                            </td>
+                            <td style="padding: 5px 8px;">
+                                <span t-esc="o.joint_buyer_mobile or 'N/A'"/> / <span t-esc="o.joint_buyer_email or 'N/A'"/>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- ─── SECTION 3: UNIT & PROPERTY SPECIFICATIONS ───────────────── -->
+                    <div style="background-color: #1b3a57; color: #ffffff; font-weight: 700; font-size: 9pt; padding: 5px 10px; margin-bottom: 0;">
+                        3. UNIT SPECIFICATIONS &amp; PROPERTY DETAILS
+                    </div>
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 14px; border: 1px solid #cbd5e1; font-size: 8.5pt;">
+                        <tr style="border-bottom: 1px solid #cbd5e1;">
+                            <td style="width: 25%; padding: 5px 8px; font-weight: 700; background-color: #f8fafc; border-right: 1px solid #cbd5e1;">Development Project</td>
+                            <td style="width: 25%; padding: 5px 8px; font-weight: 600; border-right: 1px solid #cbd5e1;">
+                                <span t-esc="o.property_id.project_id.name or 'Park Group Development'"/>
+                            </td>
+                            <td style="width: 25%; padding: 5px 8px; font-weight: 700; background-color: #f8fafc; border-right: 1px solid #cbd5e1;">Unit Number</td>
+                            <td style="width: 25%; padding: 5px 8px; font-weight: 700; color: #1b3a57;">
+                                <span t-esc="o.property_id.name or ''"/>
+                            </td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #cbd5e1;">
+                            <td style="padding: 5px 8px; font-weight: 700; background-color: #f8fafc; border-right: 1px solid #cbd5e1;">Typology / Bedrooms</td>
+                            <td style="padding: 5px 8px; border-right: 1px solid #cbd5e1;">
+                                <span t-esc="o.unit_type_code or o.property_id.unit_type or 'Residential'"/>
+                            </td>
+                            <td style="padding: 5px 8px; font-weight: 700; background-color: #f8fafc; border-right: 1px solid #cbd5e1;">Floor Level</td>
+                            <td style="padding: 5px 8px;">
+                                <span t-esc="o.property_id.floor or 'Typical'"/>
+                            </td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #cbd5e1;">
+                            <td style="padding: 5px 8px; font-weight: 700; background-color: #f8fafc; border-right: 1px solid #cbd5e1;">Suite Area (Sq.Ft.)</td>
+                            <td style="padding: 5px 8px; border-right: 1px solid #cbd5e1;">
+                                <span t-esc="'{:,.2f}'.format(o.unit_size_sqft or o.property_id.area or 0.0)"/> Sq.Ft.
+                            </td>
+                            <td style="padding: 5px 8px; font-weight: 700; background-color: #f8fafc; border-right: 1px solid #cbd5e1;">Suite Area (Sq.M.)</td>
+                            <td style="padding: 5px 8px;">
+                                <span t-esc="'{:,.2f}'.format((o.unit_size_sqft or o.property_id.area or 0.0) * 0.092903)"/> Sq.M.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px 8px; font-weight: 700; background-color: #f8fafc; border-right: 1px solid #cbd5e1;">Plot / Makani Number</td>
+                            <td style="padding: 5px 8px; border-right: 1px solid #cbd5e1;">
+                                <span t-esc="o.plot_number or o.property_id.makani_number or 'Plot 3720562'"/>
+                            </td>
+                            <td style="padding: 5px 8px; font-weight: 700; background-color: #f8fafc; border-right: 1px solid #cbd5e1;">Allocated Parking</td>
+                            <td style="padding: 5px 8px;">
+                                1 Allocated Bay (Covered)
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- ─── SECTION 4: FINANCIAL & COMMERCIAL TERMS ──────────────────── -->
+                    <div style="background-color: #1b3a57; color: #ffffff; font-weight: 700; font-size: 9pt; padding: 5px 10px; margin-bottom: 0;">
+                        4. PURCHASE PRICE &amp; BOOKING FINANCIALS
+                    </div>
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 14px; border: 1px solid #cbd5e1; font-size: 8.5pt;">
+                        <tr style="border-bottom: 1px solid #cbd5e1;">
+                            <td style="width: 32%; padding: 6px 8px; font-weight: 700; background-color: #f8fafc; border-right: 1px solid #cbd5e1;">
+                                Total Purchase Price (AED)
+                            </td>
+                            <td style="width: 68%; padding: 6px 8px; font-weight: 800; font-size: 10.5pt; color: #1b3a57;">
+                                <span t-esc="o.currency_id.symbol or 'AED'"/> <span t-esc="'{:,.2f}'.format(o.sale_price or 0.0)"/>
+                            </td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #cbd5e1;">
+                            <td style="padding: 6px 8px; font-weight: 700; background-color: #f8fafc; border-right: 1px solid #cbd5e1;">
+                                Booking Deposit Paid (AED)
+                            </td>
+                            <td style="padding: 6px 8px; font-weight: 700; color: #166534;">
+                                <span t-esc="o.currency_id.symbol or 'AED'"/> <span t-esc="'{:,.2f}'.format(o.booking_amount or o.eoi_amount or 0.0)"/>
+                                <span style="font-weight: normal; color: #64748b; font-size: 8pt; margin-left: 10px;">
+                                    (Mode: <span t-esc="o.eoi_payment_mode or 'Cheque / Wire Transfer'"/> / Ref: <span t-esc="o.eoi_cheque_no or 'Recorded'"/>)
+                                </span>
+                            </td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #cbd5e1;">
+                            <td style="padding: 6px 8px; font-weight: 700; background-color: #f8fafc; border-right: 1px solid #cbd5e1;">
+                                DLD 4% Registration Fee
+                            </td>
+                            <td style="padding: 6px 8px;">
+                                <span t-esc="o.currency_id.symbol or 'AED'"/> <span t-esc="'{:,.2f}'.format((o.sale_price or 0.0) * 0.04)"/> + Admin Fees (Payable directly upon SPA execution)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 6px 8px; font-weight: 700; background-color: #f8fafc; border-right: 1px solid #cbd5e1;">
+                                Escrow Account Compliance
+                            </td>
+                            <td style="padding: 6px 8px; font-size: 8pt; color: #334155;">
+                                <strong>Law No. 8 of 2007:</strong> Escrow Bank: <strong>Abu Dhabi Commercial Bank (ADCB) / Emirates NBD</strong> | Escrow Account Name: <strong>Park Group Real Estate Escrow Project A/C</strong>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- ─── SECTION 5: PAYMENT MILESTONE PLAN ────────────────────────── -->
+                    <div style="background-color: #1b3a57; color: #ffffff; font-weight: 700; font-size: 9pt; padding: 5px 10px; margin-bottom: 0;">
+                        5. PAYMENT SCHEDULE &amp; MILESTONES
+                    </div>
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 14px; border: 1px solid #cbd5e1; font-size: 8pt;">
+                        <thead>
+                            <tr style="background-color: #f1f5f9; border-bottom: 1px solid #cbd5e1; text-align: left; font-weight: 700;">
+                                <th style="padding: 5px 8px; width: 8%; border-right: 1px solid #cbd5e1; text-align: center;">No.</th>
+                                <th style="padding: 5px 8px; width: 44%; border-right: 1px solid #cbd5e1;">Milestone / Construction Stage</th>
+                                <th style="padding: 5px 8px; width: 14%; border-right: 1px solid #cbd5e1; text-align: center;">Percentage</th>
+                                <th style="padding: 5px 8px; width: 16%; border-right: 1px solid #cbd5e1; text-align: center;">Due Date</th>
+                                <th style="padding: 5px 8px; width: 18%; text-align: right;">Amount (AED)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-if="o.installment_ids">
+                                <t t-foreach="o.installment_ids" t-as="inst">
+                                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                                        <td style="padding: 4px 6px; text-align: center; border-right: 1px solid #cbd5e1;">
+                                            <span t-esc="inst_index + 1"/>
+                                        </td>
+                                        <td style="padding: 4px 8px; font-weight: 600; border-right: 1px solid #cbd5e1;">
+                                            <span t-esc="inst.name or 'Installment Milestone'"/>
+                                        </td>
+                                        <td style="padding: 4px 6px; text-align: center; border-right: 1px solid #cbd5e1;">
+                                            <span t-esc="inst.percentage"/>%
+                                        </td>
+                                        <td style="padding: 4px 6px; text-align: center; border-right: 1px solid #cbd5e1;">
+                                            <span t-esc="inst.due_date or 'As Scheduled'"/>
+                                        </td>
+                                        <td style="padding: 4px 8px; text-align: right; font-weight: 600;">
+                                            <span t-esc="'{:,.2f}'.format(inst.amount or 0.0)"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </t>
+                            <t t-else="">
+                                <tr style="border-bottom: 1px solid #e2e8f0;">
+                                    <td style="padding: 4px 6px; text-align: center; border-right: 1px solid #cbd5e1;">1</td>
+                                    <td style="padding: 4px 8px; font-weight: 600; border-right: 1px solid #cbd5e1;">Down Payment (Upon Booking)</td>
+                                    <td style="padding: 4px 6px; text-align: center; border-right: 1px solid #cbd5e1;">10%</td>
+                                    <td style="padding: 4px 6px; text-align: center; border-right: 1px solid #cbd5e1;">Immediate</td>
+                                    <td style="padding: 4px 8px; text-align: right; font-weight: 600;"><span t-esc="'{:,.2f}'.format((o.sale_price or 0.0) * 0.10)"/></td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #e2e8f0;">
+                                    <td style="padding: 4px 6px; text-align: center; border-right: 1px solid #cbd5e1;">2</td>
+                                    <td style="padding: 4px 8px; font-weight: 600; border-right: 1px solid #cbd5e1;">1st Construction Milestone (20% Completed)</td>
+                                    <td style="padding: 4px 6px; text-align: center; border-right: 1px solid #cbd5e1;">10%</td>
+                                    <td style="padding: 4px 6px; text-align: center; border-right: 1px solid #cbd5e1;">Within 90 Days</td>
+                                    <td style="padding: 4px 8px; text-align: right; font-weight: 600;"><span t-esc="'{:,.2f}'.format((o.sale_price or 0.0) * 0.10)"/></td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #e2e8f0;">
+                                    <td style="padding: 4px 6px; text-align: center; border-right: 1px solid #cbd5e1;">3</td>
+                                    <td style="padding: 4px 8px; font-weight: 600; border-right: 1px solid #cbd5e1;">2nd Construction Milestone (40% Completed)</td>
+                                    <td style="padding: 4px 6px; text-align: center; border-right: 1px solid #cbd5e1;">10%</td>
+                                    <td style="padding: 4px 6px; text-align: center; border-right: 1px solid #cbd5e1;">As per RERA Audit</td>
+                                    <td style="padding: 4px 8px; text-align: right; font-weight: 600;"><span t-esc="'{:,.2f}'.format((o.sale_price or 0.0) * 0.10)"/></td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #e2e8f0;">
+                                    <td style="padding: 4px 6px; text-align: center; border-right: 1px solid #cbd5e1;">4</td>
+                                    <td style="padding: 4px 8px; font-weight: 600; border-right: 1px solid #cbd5e1;">3rd Construction Milestone (60% Completed)</td>
+                                    <td style="padding: 4px 6px; text-align: center; border-right: 1px solid #cbd5e1;">10%</td>
+                                    <td style="padding: 4px 6px; text-align: center; border-right: 1px solid #cbd5e1;">As per RERA Audit</td>
+                                    <td style="padding: 4px 8px; text-align: right; font-weight: 600;"><span t-esc="'{:,.2f}'.format((o.sale_price or 0.0) * 0.10)"/></td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #e2e8f0;">
+                                    <td style="padding: 4px 6px; text-align: center; border-right: 1px solid #cbd5e1;">5</td>
+                                    <td style="padding: 4px 8px; font-weight: 600; border-right: 1px solid #cbd5e1;">On Handover &amp; Completion Notice</td>
+                                    <td style="padding: 4px 6px; text-align: center; border-right: 1px solid #cbd5e1;">60%</td>
+                                    <td style="padding: 4px 6px; text-align: center; border-right: 1px solid #cbd5e1;">Completion Date</td>
+                                    <td style="padding: 4px 8px; text-align: right; font-weight: 600;"><span t-esc="'{:,.2f}'.format((o.sale_price or 0.0) * 0.60)"/></td>
+                                </tr>
+                            </t>
+                            <tr style="background-color: #f8fafc; font-weight: 800; border-top: 2px solid #94a3b8;">
+                                <td colspan="2" style="padding: 6px 8px; text-align: right; border-right: 1px solid #cbd5e1;">TOTAL CONTRACT PRICE</td>
+                                <td style="padding: 6px 6px; text-align: center; border-right: 1px solid #cbd5e1;">100%</td>
+                                <td style="padding: 6px 6px; text-align: center; border-right: 1px solid #cbd5e1;">-</td>
+                                <td style="padding: 6px 8px; text-align: right; color: #1b3a57; font-size: 9pt;">
+                                    <span t-esc="'{:,.2f}'.format(o.sale_price or 0.0)"/> AED
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- ─── PAGE BREAK / SECTION 6: TERMS & CONDITIONS ───────────────── -->
+                    <div style="page-break-before: always; padding-top: 15px;">
+                        
+                        <div style="background-color: #1b3a57; color: #ffffff; font-weight: 700; font-size: 9.5pt; padding: 6px 12px; margin-bottom: 12px;">
+                            6. TERMS &amp; CONDITIONS OF RESERVATION
+                        </div>
+
+                        <div style="font-size: 8pt; color: #334155; line-height: 1.5; text-align: justify;">
+                            <ol style="padding-left: 18px; margin: 0 0 14px;">
+                                <li style="margin-bottom: 7px;">
+                                    <strong>Binding Reservation:</strong> By executing this Reservation Agreement, the Purchaser irrevocably agrees to reserve the Unit specified herein and undertakes to purchase the Unit in accordance with the terms herein and the formal Sale and Purchase Agreement (SPA).
+                                </li>
+                                <li style="margin-bottom: 7px;">
+                                    <strong>Execution of Sale and Purchase Agreement (SPA):</strong> The Purchaser covenants to sign and return the Developer's standard SPA within thirty (30) calendar days from receipt thereof, along with all requisite KYC documentation, passport copies, and applicable Dubai Land Department (DLD) registration fees (4%).
+                                </li>
+                                <li style="margin-bottom: 7px;">
+                                    <strong>Escrow Account Compliance (UAE Law No. 8 of 2007):</strong> In compliance with the laws and regulations of the Emirate of Dubai, all installments and payments under this Agreement shall be remitted exclusively to the designated RERA-approved Project Escrow Account. No cash payments are accepted for unit installments.
+                                </li>
+                                <li style="margin-bottom: 7px;">
+                                    <strong>Default &amp; Cancellation Remedies:</strong> In the event the Purchaser fails to remit any installment on its due date or fails to sign and return the SPA within the stipulated timeframe, the Developer reserves the right to issue formal notice and exercise all remedies provided by law, including Law No. 19 of 2017 amending Law No. 13 of 2008 Regulating the Interim Real Property Register in the Emirate of Dubai.
+                                </li>
+                                <li style="margin-bottom: 7px;">
+                                    <strong>Areas and Specifications:</strong> Unit boundaries and areas are measured in accordance with Dubai Land Department regulations. Minor variations in layout, finishes, or net floor area not exceeding statutory tolerances (+/- 5%) shall not entitle the Purchaser to cancel this reservation or claim price adjustments.
+                                </li>
+                                <li style="margin-bottom: 7px;">
+                                    <strong>Non-Assignment:</strong> The rights conferred upon the Purchaser under this Reservation Agreement are strictly personal and non-transferable without the prior written consent of the Developer and satisfaction of the statutory resale equity requirement (minimum 30% of Purchase Price settled).
+                                </li>
+                                <li style="margin-bottom: 7px;">
+                                    <strong>Governing Law &amp; Jurisdiction:</strong> This Agreement shall be governed by and construed in accordance with the laws of the Emirate of Dubai and the Federal Laws of the United Arab Emirates. Any dispute arising under this Agreement shall fall under the exclusive jurisdiction of the competent Courts of Dubai.
+                                </li>
+                            </ol>
+
+                            <p style="background-color: #f8fafc; border-left: 3px solid #1b3a57; padding: 8px 10px; font-weight: 600; margin-top: 12px; margin-bottom: 25px;">
+                                I/We hereby declare that I/we have read, understood, and unconditionally accepted all the terms and conditions outlined in this Unit Reservation Agreement, and affirm that all information provided is accurate and complete.
+                            </p>
+                        </div>
+
+                        <!-- ─── SECTION 7: SIGNATURES ─────────────────────────────────── -->
+                        <div style="background-color: #1b3a57; color: #ffffff; font-weight: 700; font-size: 9pt; padding: 5px 10px; margin-bottom: 12px;">
+                            7. EXECUTION &amp; SIGNATURES
+                        </div>
+
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 8.5pt;">
+                            <tr>
+                                <td style="width: 48%; vertical-align: top; padding: 12px; border: 1px solid #cbd5e1; background-color: #ffffff;">
+                                    <div style="font-weight: 700; color: #1b3a57; margin-bottom: 6px;">PURCHASER</div>
+                                    <div style="color: #64748b; font-size: 8pt; margin-bottom: 35px;">
+                                        Name: <span style="color: #0f172a; font-weight: 600;" t-esc="o.buyer_name or o.buyer_id.name or ''"/><br/>
+                                        Passport / EID: <span style="color: #0f172a;" t-esc="o.buyer_passport_no or o.buyer_emirates_id or ''"/>
+                                    </div>
+                                    <div style="border-bottom: 1px dashed #475569; width: 85%; margin-bottom: 6px;"></div>
+                                    <div style="font-size: 7.5pt; color: #64748b;">Signature &amp; Date</div>
+                                </td>
+                                <td style="width: 4%;"></td>
+                                <td style="width: 48%; vertical-align: top; padding: 12px; border: 1px solid #cbd5e1; background-color: #ffffff;">
+                                    <div style="font-weight: 700; color: #1b3a57; margin-bottom: 6px;">FOR AND ON BEHALF OF THE DEVELOPER</div>
+                                    <div style="color: #64748b; font-size: 8pt; margin-bottom: 35px;">
+                                        Entity: <span style="color: #0f172a; font-weight: 600;" t-esc="o.seller_company_name or 'PARK RESIDENCY REAL ESTATE DEVELOPMENT LLC'"/><br/>
+                                        Title: Authorized Signatory
+                                    </div>
+                                    <div style="border-bottom: 1px dashed #475569; width: 85%; margin-bottom: 6px;"></div>
+                                    <div style="font-size: 7.5pt; color: #64748b;">Official Stamp &amp; Signature</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding-top: 15px;" colspan="3">
+                                    <t t-if="o.joint_buyer_id or o.joint_buyer_name">
+                                        <div style="padding: 12px; border: 1px solid #cbd5e1; background-color: #ffffff; width: 48%;">
+                                            <div style="font-weight: 700; color: #1b3a57; margin-bottom: 6px;">JOINT PURCHASER</div>
+                                            <div style="color: #64748b; font-size: 8pt; margin-bottom: 35px;">
+                                                Name: <span style="color: #0f172a; font-weight: 600;" t-esc="o.joint_buyer_name or o.joint_buyer_id.name or ''"/><br/>
+                                                Passport / EID: <span style="color: #0f172a;" t-esc="o.joint_buyer_passport_no or o.joint_buyer_emirates_id or ''"/>
+                                            </div>
+                                            <div style="border-bottom: 1px dashed #475569; width: 85%; margin-bottom: 6px;"></div>
+                                            <div style="font-size: 7.5pt; color: #64748b;">Signature &amp; Date</div>
+                                        </div>
+                                    </t>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </div>
+
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

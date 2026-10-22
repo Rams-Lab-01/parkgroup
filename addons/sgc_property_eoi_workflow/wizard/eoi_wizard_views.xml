@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- EOI Registration Wizard -->
+    <record id="view_eoi_registration_wizard_form" model="ir.ui.view">
+        <field name="name">eoi.registration.wizard.form</field>
+        <field name="model">eoi.registration.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Register Expression of Interest (EOI)">
+                <sheet>
+                    <div class="oe_title">
+                        <h2>Expression of Interest "EOI"</h2>
+                        <p class="text-muted">Record initial refundable buyer reservation prior to project launch / full booking.</p>
+                    </div>
+                    <div class="alert alert-info" role="alert">
+                        The unit is only reserved once the receipt is posted in Accounting and
+                        registered against the unit. Without a posted receipt the unit cannot
+                        move to EOI.
+                    </div>
+                    <group>
+                        <group string="Property &amp; Pricing">
+                            <field name="property_id" readonly="1"/>
+                            <field name="sale_price" widget="monetary"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="company_id" invisible="1"/>
+                        </group>
+                        <group string="Purchasers">
+                            <field name="buyer_id" required="1"/>
+                            <field name="joint_buyer_id"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="EOI Deposit Terms">
+                            <field name="eoi_amount" widget="monetary" required="1"/>
+                            <field name="eoi_payment_mode" required="1"/>
+                            <field name="eoi_cheque_no" invisible="eoi_payment_mode not in ['cheque', 'post_dated_cheque', 'card_auth']"/>
+                            <field name="eoi_cheque_bank" invisible="eoi_payment_mode not in ['cheque', 'post_dated_cheque', 'bank_transfer']"/>
+                            <field name="eoi_cheque_date" invisible="eoi_payment_mode not in ['cheque', 'post_dated_cheque']"/>
+                            <field name="eoi_date" required="1"/>
+                            <field name="eoi_expiry_date"/>
+                        </group>
+                        <group string="Receipt (Accounting)">
+                            <field name="existing_payment_id"/>
+                            <field name="payment_amount" widget="monetary" required="1"
+                                   invisible="existing_payment_id"/>
+                            <field name="payment_date" invisible="existing_payment_id"/>
+                            <field name="journal_id" invisible="existing_payment_id"/>
+                        </group>
+                    </group>
+                    <group string="Special Conditions">
+                        <field name="notes" nolabel="1" placeholder="e.g. CHQ not to be cashed in / fully refundable within 7 days from booking date..."/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_register_eoi" type="object" string="Confirm &amp; Register EOI" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- EOI to Booking Wizard -->
+    <record id="view_eoi_to_booking_wizard_form" model="ir.ui.view">
+        <field name="name">eoi.to.booking.wizard.form</field>
+        <field name="model">eoi.to.booking.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Convert to Formal Booking">
+                <sheet>
+                    <div class="oe_title">
+                        <h2>Convert to Formal Booking</h2>
+                        <p class="text-muted">Transition unit from EOI to Booked stage upon receipt of official booking deposit.</p>
+                    </div>
+                    <group>
+                        <group string="Contract Particulars">
+                            <field name="property_id" readonly="1"/>
+                            <field name="buyer_id" readonly="1"/>
+                            <field name="sale_price" widget="monetary"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="company_id" invisible="1"/>
+                        </group>
+                        <group string="Booking Payment Terms">
+                            <field name="booking_amount" widget="monetary" required="1"/>
+                            <field name="payment_schedule_id"/>
+                            <field name="booking_date" required="1"/>
+                        </group>
+                    </group>
+                    <group string="Booking Receipt (Accounting)">
+                        <field name="record_booking_receipt"/>
+                        <field name="existing_payment_id" invisible="not record_booking_receipt"/>
+                        <field name="payment_amount" widget="monetary"
+                               invisible="not record_booking_receipt or existing_payment_id"/>
+                        <field name="payment_date" invisible="not record_booking_receipt or existing_payment_id"/>
+                        <field name="journal_id" invisible="not record_booking_receipt or existing_payment_id"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_convert_to_booked" type="object" string="Confirm Booking" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

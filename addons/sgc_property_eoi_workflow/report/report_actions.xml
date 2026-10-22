@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Expression of Interest Report Action -->
+    <record id="action_report_eoi_agreement" model="ir.actions.report">
+        <field name="name">Expression of Interest "EOI"</field>
+        <field name="model">sale.contract</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">sgc_property_eoi_workflow.eoi_agreement_template</field>
+        <field name="report_file">sgc_property_eoi_workflow.eoi_agreement_template</field>
+        <field name="print_report_name">('EOI - %s - %s' % (object.property_id.name or 'Unit', object.buyer_id.name or 'Buyer')).replace('/', '-')</field>
+        <field name="paperformat_id" ref="sgc_offplan_rental_property_management.paperformat_property_report"/>
+        <field name="binding_model_id" ref="sgc_offplan_rental_property_management.model_sale_contract"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- Reservation Form Report Action -->
+    <record id="action_report_reservation_form" model="ir.actions.report">
+        <field name="name">Reservation Form</field>
+        <field name="model">sale.contract</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">sgc_property_eoi_workflow.reservation_form_template</field>
+        <field name="report_file">sgc_property_eoi_workflow.reservation_form_template</field>
+        <field name="print_report_name">('Reservation - %s - %s' % (object.property_id.name or 'Unit', object.buyer_id.name or 'Buyer')).replace('/', '-')</field>
+        <field name="paperformat_id" ref="sgc_offplan_rental_property_management.paperformat_property_report"/>
+        <field name="binding_model_id" ref="sgc_offplan_rental_property_management.model_sale_contract"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

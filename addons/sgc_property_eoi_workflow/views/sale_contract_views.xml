@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_sale_contract_form_eoi_inherit" model="ir.ui.view">
+        <field name="name">sale.contract.form.eoi.inherit</field>
+        <field name="model">sale.contract</field>
+        <field name="inherit_id" ref="sgc_offplan_rental_property_management.sale_contract_form_view"/>
+        <field name="arch" type="xml">
+            <!-- Update statusbar visible -->
+            <xpath expr="//header//field[@name='state']" position="attributes">
+                <attribute name="statusbar_visible">draft,eoi,booked,confirmed,spa_issued,spa_signed,certificate_issued,in_progress,handover</attribute>
+            </xpath>
+
+            <!-- Action buttons in header -->
+            <xpath expr="//header" position="inside">
+                <button name="action_print_eoi_agreement" type="object"
+                    string="Print EOI Agreement (PDF)" class="btn-primary"
+                    invisible="state != 'eoi'"/>
+                <button name="action_convert_to_booked" type="object"
+                    string="Convert to Booked" class="btn-success"
+                    invisible="state != 'eoi'"/>
+                <button name="action_cancel_refund_reason" type="object"
+                    string="Refund / Cancel EOI" class="btn-secondary"
+                    invisible="state != 'eoi'"/>
+
+                <button name="action_print_reservation_form" type="object"
+                    string="Print Reservation Form (PDF)" class="btn-primary"
+                    invisible="state not in ['booked', 'confirmed']"/>
+                <button name="action_confirm_sale" type="object"
+                    string="Confirm Sale" class="btn-success"
+                    invisible="state != 'booked'"/>
+                <button name="action_issue_spa" type="object"
+                    string="Issue SPA" class="btn-info"
+                    invisible="state != 'confirmed'"/>
+                <button name="action_sign_spa" type="object"
+                    string="Sign SPA" class="btn-success"
+                    invisible="state != 'spa_issued'"/>
+                <button name="action_send_spa" type="object"
+                    string="Send SPA by Email" class="btn-primary"
+                    invisible="state != 'spa_issued'"/>
+                <button name="action_issue_certificate" type="object"
+                    string="Issue Certificate" class="btn-info"
+                    invisible="state != 'spa_signed'"/>
+                <button name="action_start_construction" type="object"
+                    string="Start Construction" class="btn-primary"
+                    invisible="state != 'certificate_issued'"/>
+                <button name="action_mark_handover" type="object"
+                    string="Mark Handover" class="btn-success"
+                    invisible="state != 'in_progress'"/>
+            </xpath>
+
+            <!-- Add EOI & Joint Purchaser notebook tabs -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Expression of Interest (EOI)" name="eoi_details">
+                    <group>
+                        <group string="EOI Payment Particulars">
+                            <field name="eoi_amount" widget="monetary"/>
+                            <field name="eoi_payment_mode"/>
+                            <field name="eoi_cheque_no" invisible="eoi_payment_mode not in ['cheque', 'card_auth']"/>
+                            <field name="eoi_cheque_bank" invisible="eoi_payment_mode not in ['cheque', 'bank_transfer']"/>
+                            <field name="eoi_date"/>
+                            <field name="eoi_expiry_date"/>
+                            <field name="eoi_refundable"/>
+                        </group>
+                        <group string="Special Conditions &amp; Cheque Notes">
+                            <field name="eoi_remarks" placeholder="e.g. CHQ not to be cashed in / fully refundable within 7 days..."/>
+                        </group>
+                    </group>
+                    <group string="Receipts (Accounting)">
+                        <group>
+                            <field name="eoi_received_amount" widget="monetary"/>
+                            <field name="eoi_receipt_state"/>
+                        </group>
+                        <group>
+                            <field name="eoi_payment_ids" nolabel="1" colspan="2">
+                                <list string="Receipts" decoration-info="state == 'draft'"
+                                      decoration-muted="state == 'canceled'">
+                                    <field name="date"/>
+                                    <field name="name"/>
+                                    <field name="partner_id"/>
+                                    <field name="journal_id"/>
+                                    <field name="amount" widget="monetary"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </group>
+                    </group>
+                </page>
+
+                <page string="Joint Purchaser &amp; Signatories" name="purchaser_particulars">
+                    <group>
+                        <group string="Primary Purchaser Particulars">
+                            <field name="buyer_name"/>
+                            <field name="buyer_address"/>
+                            <field name="buyer_mobile"/>
+                            <field name="buyer_email"/>
+                            <field name="buyer_nationality_id" options="{'no_create': True}"/>
+                            <field name="buyer_passport_no"/>
+                            <field name="buyer_emirates_id"/>
+                            <field name="buyer_authorized_signatory"/>
+                            <field name="buyer_designation"/>
+                        </group>
+                        <group string="Joint Purchaser (If applicable)">
+                            <field name="joint_buyer_id"/>
+                            <field name="joint_buyer_name"/>
+                            <field name="joint_buyer_address"/>
+                            <field name="joint_buyer_mobile"/>
+                            <field name="joint_buyer_email"/>
+                            <field name="joint_buyer_nationality_id" options="{'no_create': True}"/>
+                            <field name="joint_buyer_passport_no"/>
+                            <field name="joint_buyer_emirates_id"/>
+                        </group>
+                    </group>
+                </page>
+
+                <page string="Seller &amp; Developer Details" name="seller_particulars">
+                    <group>
+                        <group string="Developer / Seller">
+                            <field name="seller_company_name"/>
+                            <field name="seller_registration_no"/>
+                            <field name="seller_office_address"/>
+                            <field name="seller_telephone"/>
+                            <field name="seller_signatory"/>
+                        </group>
+                        <group string="Unit Specifications for Agreements">
+                            <field name="plot_number"/>
+                            <field name="unit_type_code"/>
+                            <field name="unit_size_sqft"/>
+                            <field name="booking_date"/>
+                            <field name="spa_issue_date"/>
+                            <field name="spa_signed_date"/>
+                            <field name="signed_by" readonly="1"/>
+                            <field name="signed_on" readonly="1"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

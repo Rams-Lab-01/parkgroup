@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_property_details_form_eoi_inherit" model="ir.ui.view">
+        <field name="name">property.details.form.eoi.inherit</field>
+        <field name="model">property.details</field>
+        <field name="inherit_id" ref="sgc_offplan_rental_property_management.property_details_form_view"/>
+        <field name="arch" type="xml">
+            <!-- Update statusbar visible to include EOI -->
+            <xpath expr="//header//field[@name='state']" position="attributes">
+                <attribute name="statusbar_visible">available,eoi,booked,sold,rented</attribute>
+            </xpath>
+
+            <!-- Replace standard Book / Hold with EOI and Booking actions -->
+            <xpath expr="//header//button[@name='action_create_booking']" position="replace">
+                <button name="action_open_eoi_wizard" type="object"
+                    string="Register EOI" class="btn-primary"
+                    invisible="state != 'available'"/>
+                <button name="action_open_booking_wizard" type="object"
+                    string="Direct Booking" class="btn-warning"
+                    invisible="state != 'available'"/>
+                <button name="action_convert_eoi_to_booked" type="object"
+                    string="Convert EOI to Booked" class="btn-success"
+                    invisible="state != 'eoi'"/>
+                <button name="action_cancel_eoi" type="object"
+                    string="Refund / Cancel EOI" class="btn-secondary"
+                    invisible="state != 'eoi'"/>
+            </xpath>
+
+            <!-- Add EOI Smart Button -->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_eoi_contracts"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-bookmark"
+                        invisible="sale_lease not in ['sale', 'both']">
+                    <field name="eoi_count" widget="statinfo" string="EOI"/>
+                </button>
+                <button name="action_view_eoi_receipts"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-money"
+                        invisible="sale_lease not in ['sale', 'both']">
+                    <field name="eoi_received_amount" widget="monetary" string="Received"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Inherit Search view to add filter for EOI -->
+    <record id="view_property_details_search_eoi_inherit" model="ir.ui.view">
+        <field name="name">property.details.search.eoi.inherit</field>
+        <field name="model">property.details</field>
+        <field name="inherit_id" ref="sgc_offplan_rental_property_management.property_details_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='filter_available']" position="after">
+                <filter name="filter_eoi" string="EOI (Reserved)" domain="[('state', '=', 'eoi')]"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

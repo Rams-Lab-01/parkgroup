@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="eoi_agreement_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <div class="article" style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 9.5pt; color: #1e293b; line-height: 1.4; padding: 10px 15px;">
+                    
+                    <!-- ─── PAGE 1: PARTICULARS ──────────────────────────────────────── -->
+                    
+                    <!-- Header -->
+                    <table style="width: 100%; margin-bottom: 25px; border-collapse: collapse;">
+                        <tr>
+                            <td style="vertical-align: middle; width: 65%;">
+                                <div style="background-color: #bcd4f2; color: #0f2438; font-weight: 800; font-size: 14pt; padding: 10px 18px; letter-spacing: 0.5px; border-radius: 2px;">
+                                    EXPRESSION OF INTEREST "EOI"
+                                </div>
+                            </td>
+                            <td style="vertical-align: middle; text-align: right; width: 35%;">
+                                <div style="font-family: Georgia, serif; font-size: 26pt; font-weight: 900; color: #1b3a57; line-height: 0.9; letter-spacing: 2px;">
+                                    PARK
+                                </div>
+                                <div style="font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 10pt; font-weight: 700; color: #64748b; letter-spacing: 4px; margin-top: 3px;">
+                                    GROUP
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- SECTION 1: SELLER'S DETAILS -->
+                    <div style="background-color: #bcd4f2; color: #0f2438; font-weight: 800; font-size: 10pt; padding: 6px 12px; letter-spacing: 0.5px; margin-bottom: 0;">
+                        SELLER'S DETAILS
+                    </div>
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 18px; border: 1px solid #cbd5e1;">
+                        <tr style="border-bottom: 1px solid #cbd5e1;">
+                            <td style="width: 32%; padding: 7px 10px; font-weight: 700; background-color: #f8fafc; border-right: 1px solid #cbd5e1;">
+                                Name of the Seller
+                            </td>
+                            <td style="padding: 7px 10px; font-weight: 600;">
+                                <span t-esc="o.seller_company_name or o.company_id.name or 'PARK RESIDENCY REAL ESTATE DEVELOPMENT LLC'"/>
+                            </td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #cbd5e1;">
+                            <td style="padding: 7px 10px; font-weight: 700; background-color: #f8fafc; border-right: 1px solid #cbd5e1;">
+                                Registration Number
+                            </td>
+                            <td style="padding: 7px 10px;">
+                                <span t-esc="o.seller_registration_no or '114030 / RERA-9992'"/>
+                            </td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #cbd5e1;">
+                            <td style="padding: 7px 10px; font-weight: 700; background-color: #f8fafc; border-right: 1px solid #cbd5e1;">
+                                Address
+                            </td>
+                            <td style="padding: 7px 10px;">
+                                <span t-esc="o.seller_office_address or 'Office 323 &amp; 325, Sultan Business Center, Oud Metha,, Dubai, 114030, United Arab Emirates'"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 7px 10px; font-weight: 700; background-color: #f8fafc; border-right: 1px solid #cbd5e1;">
+                                Telephone Number
+                            </td>
+                            <td style="padding: 7px 10px;">
+                                <span t-esc="o.seller_telephone or '+971 4 222 9992'"/>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- SECTION 2: PURCHASER DETAILS -->
+                    <div style="background-color: #bcd4f2; color: #0f2438; font-weight: 800; font-size: 10pt; padding: 6px 12px; letter-spacing: 0.5px; margin-bottom: 0;">
+                        PURCHASER DETAILS
+                    </div>
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 18px; border: 1px solid #cbd5e1;">
+                        <tr style="background-color: #f1f5f9; border-bottom: 1px solid #cbd5e1; text-align: center; font-weight: 800;">
+                            <td style="width: 25%; padding: 7px 10px; border-right: 1px solid #cbd5e1;"></td>
+                            <td style="width: 37.5%; padding: 7px 10px; border-right: 1px solid #cbd5e1;">Purchaser</td>
+                            <td style="width: 37.5%; padding: 7px 10px;">Joint Purchaser (If applicable)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #cbd5e1;">
+                            <td style="padding: 7px 10px; font-weight: 700; background-color: #f8fafc; border-right: 1px solid #cbd5e1;">Name</td>
+                            <td style="padding: 7px 10px; border-right: 1px solid #cbd5e1; font-weight: 600;">
+                                <span t-esc="o.buyer_name or o.buyer_id.name or ''"/>
+                            </td>
+                            <td style="padding: 7px 10px;">
+                                <span t-esc="o.joint_buyer_name or o.joint_buyer_id.name or ''"/>
+                            </td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #cbd5e1;">
+                            <td style="padding: 7px 10px; font-weight: 700; background-color: #f8fafc; border-right: 1px solid #cbd5e1;">Address</td>
+                            <td style="padding: 7px 10px; border-right: 1px solid #cbd5e1;">
+                                <span t-esc="o.buyer_address or o.buyer_id.contact_address or o.buyer_id.country_id.name or ''"/>
+                            </td>
+                            <td style="padding: 7px 10px;">
+                                <span t-esc="o.joint_buyer_address or o.joint_buyer_id.contact_address or ''"/>
+                            </td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #cbd5e1;">
+                            <td style="padding: 7px 10px; font-weight: 700; background-color: #f8fafc; border-right: 1px solid #cbd5e1;">Mobile</td>
+                            <td style="padding: 7px 10px; border-right: 1px solid #cbd5e1;">
+                                <span t-esc="o.buyer_mobile or o.buyer_id.phone or ''"/>
+                            </td>
+                            <td style="padding: 7px 10px;">
+                                <span t-esc="o.joint_buyer_mobile or o.joint_buyer_id.phone or ''"/>
+                            </td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #cbd5e1;">
+                            <td style="padding: 7px 10px; font-weight: 700; background-color: #f8fafc; border-right: 1px solid #cbd5e1;">Email</td>
+                            <td style="padding: 7px 10px; border-right: 1px solid #cbd5e1;">
+                                <span t-esc="o.buyer_email or o.buyer_id.email or ''"/>
+                            </td>
+                            <td style="padding: 7px 10px;">
+                                <span t-esc="o.joint_buyer_email or o.joint_buyer_id.email or ''"/>
+                            </td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #cbd5e1;">
+                            <td style="padding: 7px 10px; font-weight: 700; background-color: #f8fafc; border-right: 1px solid #cbd5e1;">Nationality</td>
+                            <td style="padding: 7px 10px; border-right: 1px solid #cbd5e1;">
+                                <span t-esc="o.buyer_nationality_id.name or o.buyer_id.country_id.name or ''"/>
+                            </td>
+                            <td style="padding: 7px 10px;">
+                                <span t-esc="o.joint_buyer_nationality_id.name or o.joint_buyer_id.country_id.name or ''"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 7px 10px; font-weight: 700; background-color: #f8fafc; border-right: 1px solid #cbd5e1;">Passport No. / EID</td>
+                            <td style="padding: 7px 10px; border-right: 1px solid #cbd5e1;">
+                                <span t-esc="o.buyer_passport_no or o.buyer_emirates_id or ''"/>
+                            </td>
+                            <td style="padding: 7px 10px;">
+                                <span t-esc="o.joint_buyer_passport_no or o.joint_buyer_emirates_id or ''"/>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- SECTION 3: DETAILS OF UNIT -->
+                    <div style="background-color: #bcd4f2; color: #0f2438; font-weight: 800; font-size: 10pt; padding: 6px 12px; letter-spacing: 0.5px; margin-bottom: 0;">
+                        DETAILS OF UNIT
+                    </div>
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 18px; border: 1px solid #cbd5e1;">
+                        <tr style="border-bottom: 1px solid #cbd5e1;">
+                            <td style="width: 32%; padding: 7px 10px; font-weight: 700; background-color: #f8fafc; border-right: 1px solid #cbd5e1;">
+                                Booking Date
+                            </td>
+                            <td style="padding: 7px 10px;">
+                                <span t-esc="o.eoi_date or o.contract_date or ''"/>
+                            </td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #cbd5e1;">
+                            <td style="padding: 7px 10px; font-weight: 700; background-color: #f8fafc; border-right: 1px solid #cbd5e1;">
+                                Project
+                            </td>
+                            <td style="padding: 7px 10px; font-weight: 700; text-transform: uppercase;">
+                                <span t-esc="o.property_id.project_id.name or 'PARK BEACH RESIDENCE'"/>
+                            </td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #cbd5e1;">
+                            <td style="padding: 7px 10px; font-weight: 700; background-color: #f8fafc; border-right: 1px solid #cbd5e1;">
+                                Unit Type
+                            </td>
+                            <td style="padding: 7px 10px; text-transform: uppercase;">
+                                <span t-esc="o.unit_type_code or o.property_id.unit_type or '1 BR+S+P'"/>
+                                <t t-if="o.property_id.name">
+                                    (<span t-esc="o.property_id.name"/>)
+                                </t>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 7px 10px; font-weight: 700; background-color: #f8fafc; border-right: 1px solid #cbd5e1;">
+                                Sale Price (AED)
+                            </td>
+                            <td style="padding: 7px 10px; font-weight: 800; font-size: 11pt; color: #0f172a;">
+                                <span t-esc="'{:,.2f}'.format(o.sale_price)"/>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- SECTION 4: EOI PAYMENT DETAILS -->
+                    <div style="background-color: #bcd4f2; color: #0f2438; font-weight: 800; font-size: 10pt; padding: 6px 12px; letter-spacing: 0.5px; margin-bottom: 0;">
+                        EOI PAYMENT DETAILS
+                    </div>
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 25px; border: 1px solid #cbd5e1;">
+                        <tr style="border-bottom: 1px solid #cbd5e1;">
+                            <td style="width: 32%; padding: 7px 10px; font-weight: 700; background-color: #f8fafc; border-right: 1px solid #cbd5e1;">
+                                EOI Amount (AED)
+                            </td>
+                            <td style="padding: 7px 10px; font-weight: 800; color: #166534;">
+                                <span t-esc="'{:,.2f}'.format(o.eoi_amount or 0.0)"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 7px 10px; font-weight: 700; background-color: #f8fafc; border-right: 1px solid #cbd5e1;">
+                                Mode of Payment
+                            </td>
+                            <td style="padding: 7px 10px;">
+                                <span t-esc="dict(o._fields['eoi_payment_mode'].selection).get(o.eoi_payment_mode) or 'Current Dated Cheque'"/>
+                                <t t-if="o.eoi_cheque_no">
+                                    - Ref: <strong t-esc="o.eoi_cheque_no"/>
+                                </t>
+                                <t t-if="o.eoi_cheque_bank">
+                                    (<span t-esc="o.eoi_cheque_bank"/>)
+                                </t>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- ─── PAGE 2: TERMS & CONDITIONS ───────────────────────────────── -->
+                    <div style="page-break-before: always;"/>
+
+                    <!-- Page 2 Header -->
+                    <table style="width: 100%; margin-bottom: 25px; border-collapse: collapse;">
+                        <tr>
+                            <td style="vertical-align: middle; width: 65%;">
+                                <div style="background-color: #bcd4f2; color: #0f2438; font-weight: 800; font-size: 14pt; padding: 10px 18px; letter-spacing: 0.5px; border-radius: 2px;">
+                                    EXPRESSION OF INTEREST "EOI"
+                                </div>
+                            </td>
+                            <td style="vertical-align: middle; text-align: right; width: 35%;">
+                                <div style="font-family: Georgia, serif; font-size: 26pt; font-weight: 900; color: #1b3a57; line-height: 0.9; letter-spacing: 2px;">
+                                    PARK
+                                </div>
+                                <div style="font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 10pt; font-weight: 700; color: #64748b; letter-spacing: 4px; margin-top: 3px;">
+                                    GROUP
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="font-size: 11pt; font-weight: 800; color: #0f172a; text-transform: uppercase; margin-bottom: 12px;">
+                            TERMS &amp; CONDITIONS OF EOI
+                        </h3>
+
+                        <ol style="padding-left: 20px; margin: 0; line-height: 1.55; text-align: justify; font-size: 8.8pt; color: #334155;">
+                            <li style="margin-bottom: 9px;">
+                                The Purchaser is interested in the Project and wishes to book a unit as mentioned in the particulars of property of this EOI prior to the official launch of the Project. To this effect, the Purchaser will provide the Seller at the date of this EOI with a current dated cheque in the sum of the EOI Amount, drawn on a UAE licensed bank in the name of the Seller or Card Authorization Letter if the Purchaser oversees.
+                            </li>
+                            <li style="margin-bottom: 9px;">
+                                The Seller shall invite the Purchaser to sign the terms of the Booking Form (BF) on the Project official launch date which is expected to be on or about <strong t-esc="o.eoi_expiry_date or 'Official Launch Date'"/>. The Purchaser acknowledges and agrees that it will sign the BF which will be based on the standard terms and conditions and payment plan applicable to all purchasers within the Project. Further, the Purchaser acknowledges and agrees that the Unit price will be within the price range mentioned under Particular of Unit of this EOI. Upon signing the BF, the Seller will allocate the EOI Amount towards the purchase price of the Unit under the BF.
+                            </li>
+                            <li style="margin-bottom: 9px;">
+                                In case the Purchaser chooses to cancel this EOI any time prior to executing the BF or does not sign the BF within a period of one (1) week from the Launch Date, the EOI Amount shall be forfeited, and the Seller shall retain the EOI Amount. Any receipts issued by the Seller to the Purchaser in relation to the EOI Amount will immediately be cancelled and be of no legal force or effect.
+                            </li>
+                            <li style="margin-bottom: 9px;">
+                                The Seller reserves the right to cancel this EOI at any time prior to entering the BF without the requirement for a court order, prior notice or any other formality. If this EOI is cancelled by the Seller, the EOI Amount shall be returned to the Purchaser within 7 calendar days without any interest and the Purchaser irrevocably acknowledges and agrees that it shall have no claims whatsoever against the Seller.
+                            </li>
+                            <li style="margin-bottom: 9px;">
+                                The Purchaser acknowledges and understands that the Project is in the conceptual stage and yet to be registered and approved by relevant government authorities. The Purchaser hereby waives any right to claim for delay, interest, damages and losses against the Seller in the event the Project is not registered, and the BF not signed. The Purchaser hereby undertakes not to sue, commence, voluntarily aid in any way, prosecute or cause to be commenced or prosecuted against the Seller or its parent, subsidiaries, assigns, transferees, representatives, principals, agents, officers or directors, any action, suit or other proceeding concerning this EOI, in this jurisdiction or any other.
+                            </li>
+                            <li style="margin-bottom: 9px;">
+                                This EOI is personal to the Purchaser and is not assignable or transferable and the Purchaser may not at any time assign its rights and obligations under this EOI to any third party.
+                            </li>
+                            <li style="margin-bottom: 12px;">
+                                This EOI shall be governed by and construed in accordance with the laws of the Emirate of Dubai and the federal laws of the United Arab Emirates to the extent applicable and shall be subject to the jurisdiction of the courts of Dubai.
+                            </li>
+                        </ol>
+
+                        <p style="font-size: 8.8pt; line-height: 1.5; color: #1e293b; margin-top: 15px; margin-bottom: 25px;">
+                            I/We hereby confirm that I/We have fully understood and accepted the terms and conditions above-mentioned, and further confirm that the details provided by me/us in this EOI are true and accurate.
+                        </p>
+                    </div>
+
+                    <!-- Date & Signatures -->
+                    <div style="margin-top: 35px;">
+                        <p style="font-weight: 700; margin-bottom: 30px; font-size: 9.5pt;">
+                            Date: <span t-esc="o.eoi_date or o.contract_date or ''"/>
+                        </p>
+
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                            <tr>
+                                <td style="width: 50%; vertical-align: top; padding-right: 25px;">
+                                    <div style="font-weight: 700; font-size: 9pt; margin-bottom: 45px;">
+                                        Signature of Purchaser
+                                    </div>
+                                    <div style="border-bottom: 1px solid #475569; width: 85%;"></div>
+                                </td>
+                                <td style="width: 50%; vertical-align: top; padding-left: 25px;">
+                                    <div style="font-weight: 700; font-size: 9pt; margin-bottom: 45px;">
+                                        For and on behalf of the Seller
+                                    </div>
+                                    <div style="border-bottom: 1px solid #475569; width: 85%;"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding-top: 35px;" colspan="2">
+                                    <div style="font-weight: 700; font-size: 9pt; margin-bottom: 45px;">
+                                        Signature of Joint Purchaser (if applicable)
+                                    </div>
+                                    <div style="border-bottom: 1px solid #475569; width: 42%;"></div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

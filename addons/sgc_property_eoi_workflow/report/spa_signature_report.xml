@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="spa_contract_digital_signature"
+              inherit_id="sgc_offplan_rental_property_management.sales_purchase_agreement_document"
+              name="SPA: Digital Signature Block">
+        <xpath expr="//t[@t-call='sgc_offplan_rental_property_management.property_report_signatures']" position="after">
+            <t t-if="o and o._name == 'sale.contract' and o.signed_by">
+                <div class="o_pmg_section o_pmg_keep" style="margin-top: 12px;">
+                    <div class="o_pmg_section-heading"><span class="o_pmg_num">&#10003;</span>Digitally Signed</div>
+                    <div class="o_pmg_section-body">
+                        <p class="o_pmg_clause">
+                            Signed on the customer portal by <strong t-out="o.signed_by"/><t t-if="o.signed_on"> on <t t-out="o.signed_on.strftime('%d %b %Y at %H:%M')"/></t>.
+                        </p>
+                        <img t-if="o.signature" t-att-src="image_data_uri(o.signature)"
+                             style="max-height: 6rem; max-width: 14rem; border: 1px solid #e2e8f0; background: #ffffff;"/>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+    </template>
+</odoo>
