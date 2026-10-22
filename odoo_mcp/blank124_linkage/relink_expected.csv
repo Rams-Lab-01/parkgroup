@@ -1,0 +1,125 @@
+pid,expected_unit_no,expected_project,evidence,partner,amount,date
+27,416,Park Residency,exact-day-agree,David Vobornik,30000.0,2026-01-22
+45,416,Park Residency,exact-day-agree,David Vobornik,80603.88,2026-01-27
+54,311,Park Residency,exact-day-agree,David Vobornik,30000.0,2026-02-06
+55,311,Park Residency,exact-day-agree,David Vobornik,85853.15,2026-02-09
+56,201,Park Residency,exact-day-agree,Imaan Mangal,193431.59,2026-02-12
+57,202,Park Residency,exact-day-agree,Imaan Mangal,220194.95,2026-02-12
+58,203,Park Residency,exact-day-agree,Imaan Mangal,294302.25,2026-02-12
+59,205,Park Residency,exact-day-agree,Imaan Mangal,220164.81,2026-02-12
+60,206,Park Residency,exact-day-agree,Imaan Mangal,202292.43,2026-02-12
+61,207,Park Residency,exact-day-agree,Imaan Mangal,207928.41,2026-02-12
+62,209,Park Residency,exact-day-agree,Imaan Mangal,114435.33,2026-02-12
+63,210,Park Residency,exact-day-agree,Imaan Mangal,112812.13,2026-02-12
+64,211,Park Residency,exact-day-agree,Imaan Mangal,115059.63,2026-02-12
+65,212,Park Residency,exact-day-agree,Imaan Mangal,112219.04,2026-02-12
+66,213,Park Residency,exact-day-agree,Imaan Mangal,113998.31,2026-02-12
+67,214,Park Residency,exact-day-agree,Imaan Mangal,231918.99,2026-02-12
+68,215,Park Residency,exact-day-agree,Imaan Mangal,256271.24,2026-02-12
+69,216,Park Residency,exact-day-agree,Imaan Mangal,114841.13,2026-02-12
+70,217,Park Residency,exact-day-agree,Imaan Mangal,114809.91,2026-02-12
+71,218,Park Residency,exact-day-agree,Imaan Mangal,112375.12,2026-02-12
+72,219,Park Residency,exact-day-agree,Imaan Mangal,214860.36,2026-02-12
+73,221,Park Residency,exact-day-agree,Imaan Mangal,200483.1,2026-02-12
+74,208,Park Residency,exact-day-agree,Imaan Mangal,113935.88,2026-02-12
+77,311,Park Residency,exact-day-agree,David Vobornik,5792.66,2026-03-12
+78,416,Park Residency,exact-day-agree,David Vobornik,5530.19,2026-03-12
+3933,309,Park Beach Residence II,pgre-watson-exact-amount-day,Mohammed Jassim Mohammed Al Fatlawi,28000.0,2026-08-11
+4149,309,Park Beach Residence II,pgre-watson-exact-amount-day,Mohammed Jassim Mohammed Al Fatlawi,28000.0,2026-09-14
+4253,101,Park Beach Residence II,exact-day-agree,Machiel De Vries,50000.0,2024-10-07
+4254,101,Park Beach Residence II,exact-day-agree,Machiel De Vries,176958.11,2024-10-31
+4257,101,Park Beach Residence II,exact-day-agree,Machiel De Vries,3000.0,2025-01-22
+4261,101,Park Beach Residence II,exact-day-agree,Machiel De Vries,66287.0,2025-12-25
+4552,302,Park Beach Residence II,exact-day-agree,Halil Erseven,49713.0,2024-10-07
+4572,502,Park Beach Residence II,exact-day-agree,Halil Erseven,50279.0,2024-09-17
+4661,309,Park Beach Residence II,pgre-watson-exact-amount-day,Mohammed Jassim Mohammed Al Fatlawi,28000.0,2026-07-14
+4662,309,Park Beach Residence II,pgre-watson-exact-amount-day,Mohammed Jassim Mohammed Al Fatlawi,28000.0,2026-06-18
+4663,309,Park Beach Residence II,pgre-watson-exact-amount-day,Mohammed Jassim Mohammed Al Fatlawi,28000.0,2026-05-15
+4664,309,Park Beach Residence II,pgre-watson-exact-amount-day,Mohammed Jassim Mohammed Al Fatlawi,28000.0,2026-03-24
+4665,309,Park Beach Residence II,pgre-watson-exact-amount-day,Mohammed Jassim Mohammed Al Fatlawi,28000.0,2026-03-18
+4666,309,Park Beach Residence II,pgre-watson-exact-amount-day,Mohammed Jassim Mohammed Al Fatlawi,27970.0,2026-02-13
+4667,309,Park Beach Residence II,pgre-watson-exact-amount-day,Mohammed Jassim Mohammed Al Fatlawi,27470.0,2026-01-30
+4668,309,Park Beach Residence II,pgre-watson-exact-amount-day,Mohammed Jassim Mohammed Al Fatlawi,27470.0,2026-01-09
+4669,309,Park Beach Residence II,pgre-watson-exact-amount-day,Mohammed Jassim Mohammed Al Fatlawi,271419.0,2025-12-16
+4670,309,Park Beach Residence II,pgre-watson-exact-amount-day,Mohammed Jassim Mohammed Al Fatlawi,277418.6,2025-10-16
+4692,310,Park Beach Residence II,exact-day-agree,Mohammed Jassim Mohammed Al Fatlawi,6000.0,2024-10-24
+4694,310,Park Beach Residence II,exact-day-agree,Mohammed Jassim Mohammed Al Fatlawi,50000.0,2024-10-10
+4781,314,Park Beach Residence II,exact-day-agree,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,19778.79,2026-03-28
+4782,314,Park Beach Residence II,exact-day-agree,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,19779.75,2026-02-24
+4783,314,Park Beach Residence II,exact-day-agree,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,19779.0,2026-01-28
+4784,314,Park Beach Residence II,exact-day-agree,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,19778.75,2025-12-23
+4785,314,Park Beach Residence II,exact-day-agree,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,19778.75,2025-11-18
+4786,314,Park Beach Residence II,exact-day-agree,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,19778.85,2025-11-03
+4787,314,Park Beach Residence II,exact-day-agree,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,19778.75,2025-09-17
+4788,314,Park Beach Residence II,exact-day-agree,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,19778.75,2025-08-18
+4789,314,Park Beach Residence II,exact-day-agree,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,19733.87,2025-07-14
+4790,314,Park Beach Residence II,exact-day-agree,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,59336.0,2025-06-13
+4791,314,Park Beach Residence II,exact-day-agree,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,19778.75,2025-05-14
+4792,314,Park Beach Residence II,exact-day-agree,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,19778.75,2025-04-14
+4793,314,Park Beach Residence II,exact-day-agree,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,19778.75,2025-03-21
+4794,314,Park Beach Residence II,exact-day-agree,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,35349.75,2025-02-28
+4795,314,Park Beach Residence II,exact-day-agree,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,35349.75,2025-02-28
+4796,314,Park Beach Residence II,exact-day-agree,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,35349.75,2025-02-28
+4797,314,Park Beach Residence II,exact-day-agree,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,12350.0,2025-02-26
+4798,314,Park Beach Residence II,exact-day-agree,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,20000.0,2025-01-27
+4799,314,Park Beach Residence II,exact-day-agree,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,35500.0,2024-12-30
+4800,314,Park Beach Residence II,exact-day-agree,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,12000.0,2024-12-30
+4801,314,Park Beach Residence II,exact-day-agree,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,35500.75,2024-12-20
+4802,314,Park Beach Residence II,exact-day-agree,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,35500.75,2024-12-20
+4803,314,Park Beach Residence II,exact-day-agree,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,5000.0,2024-11-28
+4804,314,Park Beach Residence II,exact-day-agree,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,6000.0,2024-11-02
+4805,314,Park Beach Residence II,exact-day-agree,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,34499.75,2024-10-29
+4806,314,Park Beach Residence II,exact-day-agree,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,34499.75,2024-10-29
+4807,314,Park Beach Residence II,exact-day-agree,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,34499.75,2024-10-29
+4808,314,Park Beach Residence II,exact-day-agree,Chitalwala Naseema Hakimuddin / Rajab Ali Mukadam / Hasan Abuzer Tata Wala,50000.0,2024-10-16
+5798,405,Park Beach Residence II,exact-day-agree,Mon Myat Thu,106527.2,2024-12-10
+5800,405,Park Beach Residence II,exact-day-agree,Mon Myat Thu,6000.0,2024-10-09
+5812,406,Park Beach Residence II,exact-day-agree,Mon Myat Thu,238581.8,2024-12-10
+5814,406,Park Beach Residence II,exact-day-agree,Mon Myat Thu,6000.0,2024-10-09
+5893,410,Park Beach Residence II,exact-day-agree,Hasan Abdulla Hasan Aldoobi Alshehhi,3000.0,2025-02-06
+5896,410,Park Beach Residence II,exact-day-agree,Hasan Abdulla Hasan Aldoobi Alshehhi,3000.0,2024-10-05
+5897,410,Park Beach Residence II,exact-day-agree,Hasan Abdulla Hasan Aldoobi Alshehhi,105659.6,2024-09-28
+5975,503,Park Beach Residence II,exact-day-agree,Mon Myat Thu,6000.0,2024-10-09
+5977,503,Park Beach Residence II,exact-day-agree,Mon Myat Thu,50000.0,2024-09-09
+6150,509,Park Beach Residence II,exact-day-agree,Raphael Phillipe Dominique Francois Emille Goue,3000.0,2024-10-07
+6159,509,Park Beach Residence II,exact-day-agree,Raphael Phillipe Dominique Francois Emille Goue,3000.0,2024-10-06
+6161,509,Park Beach Residence II,exact-day-agree,Raphael Phillipe Dominique Francois Emille Goue,50000.0,2024-09-05
+6323,512,Park Beach Residence II,exact-day-agree,Mohammed Assahraoui,9000.0,2025-11-22
+6324,512,Park Beach Residence II,exact-day-agree,Mohammed Assahraoui,13057.12,2025-09-12
+6325,512,Park Beach Residence II,exact-day-agree,Mohammed Assahraoui,20000.0,2025-09-08
+6326,512,Park Beach Residence II,exact-day-agree,Mohammed Assahraoui,26130.65,2025-07-04
+6327,512,Park Beach Residence II,exact-day-agree,Mohammed Assahraoui,16482.28,2025-06-04
+6328,512,Park Beach Residence II,exact-day-agree,Mohammed Assahraoui,12482.27,2025-05-03
+6329,512,Park Beach Residence II,exact-day-agree,Mohammed Assahraoui,1212.0,2025-04-26
+6330,512,Park Beach Residence II,exact-day-agree,Mohammed Assahraoui,22183.5,2025-04-11
+6331,512,Park Beach Residence II,exact-day-agree,Mohammed Assahraoui,8250.0,2025-03-06
+6332,512,Park Beach Residence II,exact-day-agree,Mohammed Assahraoui,23000.0,2025-01-31
+6333,512,Park Beach Residence II,exact-day-agree,Mohammed Assahraoui,35250.0,2024-12-21
+6334,512,Park Beach Residence II,exact-day-agree,Mohammed Assahraoui,20000.0,2024-12-19
+6335,512,Park Beach Residence II,exact-day-agree,Mohammed Assahraoui,10000.0,2024-11-09
+6336,512,Park Beach Residence II,exact-day-agree,Mohammed Assahraoui,26000.0,2024-11-09
+6339,512,Park Beach Residence II,exact-day-agree,Mohammed Assahraoui,24985.0,2024-09-27
+6342,513,Park Beach Residence II,exact-day-agree,Mohammed Assahraoui,5677.88,2025-09-12
+6343,513,Park Beach Residence II,exact-day-agree,Mohammed Assahraoui,20000.0,2025-09-08
+6344,513,Park Beach Residence II,exact-day-agree,Mohammed Assahraoui,22869.35,2025-07-04
+6345,513,Park Beach Residence II,exact-day-agree,Mohammed Assahraoui,16517.72,2025-06-04
+6346,513,Park Beach Residence II,exact-day-agree,Mohammed Assahraoui,12517.73,2025-05-03
+6348,513,Park Beach Residence II,exact-day-agree,Mohammed Assahraoui,1920.0,2025-04-26
+6350,513,Park Beach Residence II,exact-day-agree,Mohammed Assahraoui,22183.5,2025-04-11
+6355,513,Park Beach Residence II,exact-day-agree,Mohammed Assahraoui,23000.0,2025-01-31
+6368,513,Park Beach Residence II,exact-day-agree,Mohammed Assahraoui,24985.0,2024-09-27
+6433,603,Park Beach Residence II,exact-day-agree,Yekjan Yuzal,3000.0,2024-11-12
+6434,603,Park Beach Residence II,exact-day-agree,Yekjan Yuzal,64530.0,2024-10-02
+6435,603,Park Beach Residence II,exact-day-agree,Yekjan Yuzal,50000.0,2024-09-27
+6542,613,Park Beach Residence II,exact-day-agree,Yekjan Yuzal,3000.0,2024-11-12
+6543,613,Park Beach Residence II,exact-day-agree,Yekjan Yuzal,181939.0,2024-10-02
+6545,613,Park Beach Residence II,exact-day-agree,Yekjan Yuzal,50000.0,2024-09-27
+6758,711,Park Beach Residence II,exact-day-agree,Raphael Phillipe Dominique Francois Emille Goue,50000.0,2024-09-06
+6829,512,Park Beach Residence II,exact-day-agree,Mohammed Assahraoui,10000.0,2025-11-22
+6830,513,Park Beach Residence II,exact-day-agree,Mohammed Assahraoui,21000.0,2026-01-27
+6867,414,Park Beach Residence II,exact-day-agree,Kim Sandra Naulls & Jack Phillip John Bines,22297.0,2026-09-28
+6907,302,Park Beach Residence II,exact-day-agree,Halil Erseven,10866.56,2026-10-05
+7007,505,Park Residency,exact-day-agree,Nashwan Darwish Taalo Taalo,39192.0,2026-06-05
+7008,502,Park Residency,exact-day-agree,Nashwan Darwish Taalo Taalo,40000.0,2026-08-26
+7009,505,Park Residency,exact-day-agree,Nashwan Darwish Taalo Taalo,42300.22,2026-08-27
+7010,502,Park Residency,exact-day-agree,Nashwan Darwish Taalo Taalo,38808.0,2026-06-05
