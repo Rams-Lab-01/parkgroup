@@ -42,6 +42,13 @@
                         invisible="sale_lease not in ['sale', 'both']">
                     <field name="eoi_received_amount" widget="monetary" string="Received"/>
                 </button>
+                <button name="action_view_eoi_payments"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-credit-card"
+                        invisible="not eoi_count or not eoi_payment_count">
+                    <field name="eoi_payment_count" widget="statinfo" string="EOI Payment"/>
+                </button>
             </xpath>
         </field>
     </record>

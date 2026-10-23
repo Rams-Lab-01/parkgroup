@@ -54,10 +54,28 @@ class PropertyDetails(models.Model):
         for rec in self:
             rec.eoi_received_amount = helper._received_for_unit(rec)
 
+    eoi_payment_count = fields.Integer(
+        string='EOI Payments', compute='_compute_eoi_payments',
+        help='The receipts linked to this unit\'s EOI.',
+    )
+
+    @api.depends('sale_contract_ids.state', 'sale_contract_ids.eoi_payment_ids')
+    def _compute_eoi_payments(self):
+        for rec in self:
+            rec.eoi_payment_count = len(rec._sgc_eoi_payment_receipts())
+
     def _sgc_eoi_receipts(self):
         """The posted customer receipts registered against this unit."""
         self.ensure_one()
         return self.env['sgc.eoi.receipt.helper']._receipts_for_unit(self)
+
+    def _sgc_eoi_payment_receipts(self):
+        """The EOI money of this unit: the receipts linked to its EOI contracts,
+        plus any posted receipt registered against the unit itself."""
+        self.ensure_one()
+        receipts = self.sale_contract_ids.filtered(
+            lambda c: c.state == 'eoi').mapped('eoi_payment_ids')
+        return receipts | self._sgc_eoi_receipts()
 
     def write(self, vals):
         """A unit only enters the sale journey once a receipt is registered against it.
@@ -158,4 +176,16 @@ class PropertyDetails(models.Model):
             'res_model': 'account.payment',
             'view_mode': 'list,form',
             'domain': [('property_id', '=', self.id)],
+        }
+
+    def action_view_eoi_payments(self):
+        """The EOI money registered against this unit."""
+        self.ensure_one()
+        receipts = self._sgc_eoi_payment_receipts()
+        return {
+            'name': _('EOI Payments - %s', self.name),
+            'type': 'ir.actions.act_window',
+            'res_model': 'account.payment',
+            'view_mode': 'list,form',
+            'domain': [('id', 'in', receipts.ids)],
         }

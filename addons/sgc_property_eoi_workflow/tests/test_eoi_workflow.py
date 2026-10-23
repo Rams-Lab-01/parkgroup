@@ -189,6 +189,33 @@ class TestEoiWorkflow(TransactionCase):
             ('property_id', '=', self.property.id)])), 1,
             "The receipt must not be duplicated")
 
+    def test_01c_eoi_payment_button_appears_once_linked(self):
+        """The EOI Payment button counts the receipts linked to the unit's EOI."""
+        self.assertEqual(self.property.eoi_payment_count, 0,
+                         "No payment is linked to the unit yet")
+        wizard = self.env['eoi.registration.wizard'].create({
+            'property_id': self.property.id,
+            'buyer_id': self.buyer_partner.id,
+            'sale_price': self.property.sale_price,
+            'currency_id': self.currency_aed.id,
+            'eoi_amount': 50000.0,
+            'payment_amount': 50000.0,
+            'payment_date': date.today(),
+            'journal_id': self._journal().id,
+            'eoi_payment_mode': 'bank_transfer',
+            'eoi_date': date.today(),
+        })
+        wizard.action_register_eoi()
+        self.property.invalidate_recordset(['eoi_payment_count', 'eoi_count'])
+        self.assertEqual(self.property.eoi_count, 1, "The unit carries an EOI")
+        self.assertEqual(self.property.eoi_payment_count, 1,
+                         "The receipt linked to the EOI is counted")
+        action = self.property.action_view_eoi_payments()
+        self.assertEqual(action['res_model'], 'account.payment')
+        receipts = self.env['account.payment'].browse(action['domain'][0][2])
+        self.assertEqual(len(receipts), 1)
+        self.assertEqual(receipts.property_id, self.property)
+
     def test_02_eoi_cancellation_and_refund(self):
         """Test cancelling and refunding EOI returns unit to Available status."""
         self._register_receipt()
