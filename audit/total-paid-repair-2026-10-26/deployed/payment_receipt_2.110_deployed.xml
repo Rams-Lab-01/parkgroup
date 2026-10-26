@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- One "Payment Receipt" print, two layouts picked by the payment itself:
+         - linked to a unit / contract  -> real-estate receipt (rcpt_unit)
+         - everything else (vendors, suppliers, other income) -> Payment / Receipt Voucher (rcpt_voucher)
+
+         Design = sgc_report_standard (the Annual Report): navy #0D2A48, gold #B4945C, text #1B2B3F, grey #7E8895,
+         tint #E9EEF4 / #F1F5F8, rule #E2E6EB; PRSans body, PRSerif figures, shared footer band.
+         wkhtmltopdf notes: whole-px font sizes only, tables for layout (no flex/grid),
+         dpi 96 + disable_shrinking so px maps 1:1 to the page. -->
+    <record id="paperformat_payment_receipt" model="report.paperformat">
+        <field name="name">A4 - Payment Receipt</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">8</field>
+        <field name="margin_bottom">16</field>
+        <field name="margin_left">10</field>
+        <field name="margin_right">10</field>
+        <field name="header_spacing">0</field>
+        <field name="dpi">96</field>
+        <field name="disable_shrinking" eval="True"/>
+    </record>
+
+    <record id="account.action_report_payment_receipt" model="ir.actions.report">
+        <field name="paperformat_id" ref="paperformat_payment_receipt"/>
+    </record>
+
+    <!-- Point the stock outer template at our document; the stock one stays untouched. -->
+    <template id="report_payment_receipt" inherit_id="account.report_payment_receipt">
+        <xpath expr="//t[@t-call='account.report_payment_receipt_document']" position="attributes">
+            <attribute name="t-call">sgc_payment_receipt.report_payment_receipt_document</attribute>
+        </xpath>
+    </template>
+
+    <!-- ================================================================= shared parts -->
+    <template id="rcpt_style">
+        <style t-out="res_company._sgc_font_css()"/>
+        <style>
+            .sgc-rcpt { font-family: 'PRSans', 'Noto Sans', 'DejaVu Sans', sans-serif; font-size: 11px; color: #1B2B3F; line-height: 14px; }
+            .sgc-rcpt table { width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; } /* collapsed borders leave hairlines on every td in wkhtmltopdf */
+            .sgc-rcpt td, .sgc-rcpt th { border: 0 !important; padding: 0; vertical-align: top; text-align: left; }
+            .sgc-rcpt strong, .sgc-rcpt b { font-weight: 700; }
+            .sgc-rcpt .mut { color: #7E8895; }
+            .sgc-rcpt .lbl { font-size: 9px; color: #7E8895; text-transform: uppercase; letter-spacing: 1px; }
+            .sgc-rcpt .bh { background: #0D2A48; color: #ffffff; font-size: 9px; font-weight: 700;
+                            letter-spacing: 1px; text-transform: uppercase; padding: 5px 8px; }
+            .sgc-rcpt td.bb { border: 1px solid #D3D8E0 !important; padding: 6px 8px; }
+            .sgc-rcpt .kv td { padding: 2px 0; font-size: 11px; }
+            .sgc-rcpt .kv td.k { width: 32%; color: #7E8895; font-size: 10px; }
+            .sgc-rcpt .kv td.v { font-weight: 600; word-wrap: break-word; }
+            .sgc-rcpt .pay td { border: 1px solid #D3D8E0 !important; border-left-width: 0 !important; padding: 5px 8px; }
+            .sgc-rcpt .pay td:first-child { border-left-width: 1px !important; }
+            .sgc-rcpt .pay .val { font-size: 11px; font-weight: 600; }
+            .sgc-rcpt .lines th { background: #0D2A48; color: #ffffff; font-size: 9px; font-weight: 700; letter-spacing: 1px;
+                                  text-transform: uppercase; padding: 6px 6px; }
+            .sgc-rcpt .lines td { padding: 5px 6px; border-bottom: 1px solid #E2E6EB !important; }
+            .sgc-rcpt .lines tbody tr:nth-child(even) td { background: #F1F5F8; }
+            .sgc-rcpt .lines tr { page-break-inside: avoid; }
+            .sgc-rcpt .r { text-align: right !important; }
+            .sgc-rcpt .sec { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+                             color: #0D2A48; border-bottom: 2px solid #B4945C; padding-bottom: 3px; margin: 10px 0 6px 0; }
+            .sgc-rcpt .sum td { padding: 4px 8px; border-bottom: 1px solid #E2E6EB !important; }
+            .sgc-rcpt .terms { font-size: 9px; color: #7E8895; line-height: 12px; }
+            .sgc-rcpt .sig { border-top: 1px solid #1B2B3F; padding-top: 3px; font-size: 9px; color: #7E8895; }
+        </style>
+    </template>
+
+    <!-- Letterhead: company left, title + number + date right. Needs: o, d, company, doc_title, no_label. -->
+    <template id="rcpt_letterhead">
+        <table>
+            <tr>
+                <td style="width: 60%;">
+                    <table>
+                        <tr>
+                            <td t-if="d['logo']" style="width: 150px; vertical-align: middle;">
+                                <img t-att-src="image_data_uri(d['logo'])" alt="Logo" style="max-height: 52px; max-width: 140px;"/>
+                            </td>
+                            <td style="vertical-align: middle;">
+                                <div style="font-size: 14px; line-height: 17px; font-weight: 700; color: #0D2A48; text-transform: uppercase;" t-out="company.name"/>
+                                <div class="mut" style="font-size: 9px; line-height: 12px;" t-if="d['address']" t-out="d['address']"/>
+                                <div class="mut" style="font-size: 9px; line-height: 12px;" t-if="d['contact']" t-out="d['contact']"/>
+                                <div class="mut" style="font-size: 9px; line-height: 12px;" t-if="company.partner_id.vat">TRN: <t t-out="company.partner_id.vat"/></div>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td style="width: 40%; text-align: right;">
+                    <div style="font-size: 20px; line-height: 24px; font-weight: 700; color: #0D2A48; letter-spacing: 3px; text-transform: uppercase; text-align: right;"
+                         t-out="doc_title"/>
+                    <table style="margin-top: 4px;">
+                        <tr>
+                            <td class="mut r" style="width: 42%; font-size: 10px;" t-out="no_label"/>
+                            <td class="r" style="font-weight: 600; font-size: 12px;" t-out="o.name or 'Draft'"/>
+                        </tr>
+                        <tr>
+                            <td class="mut r" style="font-size: 10px;">Date</td>
+                            <td class="r" style="font-weight: 600;"><span t-field="o.date" t-options="{'format': 'dd MMM yyyy'}"/></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <div style="border-top: 2px solid #B4945C; margin-top: 8px;"/>
+        <div t-if="o.state not in ('in_process', 'paid')"
+             style="margin-top: 6px; border: 1px solid #b42318; color: #b42318; font-weight: 700; text-align: center; padding: 3px;">
+            <span t-field="o.state"/> - NOT A VALID <t t-out="doc_title.upper()"/>
+        </div>
+    </template>
+
+    <!-- Amount block: navy figure + words. Needs: o, cur, is_in. -->
+    <template id="rcpt_amount">
+        <table style="margin-top: 8px;">
+            <tr>
+                <td style="width: 36%; background: #0D2A48; color: #ffffff; padding: 8px 12px; vertical-align: middle;">
+                    <div style="font-size: 9px; letter-spacing: 1px; text-transform: uppercase; color: #B4945C;"><t t-if="is_in">Amount Received</t><t t-else="">Amount Paid</t></div>
+                    <div style="font-family: 'PRSerif', 'Caladea', 'DejaVu Serif', serif; font-size: 22px; line-height: 26px; font-weight: 700;"><span t-out="o.amount" t-options="{'widget': 'monetary', 'display_currency': cur}"/></div>
+                </td>
+                <td style="width: 64%; background: #F1F5F8; border: 1px solid #E2E6EB !important; padding: 8px 12px; vertical-align: middle;">
+                    <div class="lbl">Amount in words</div>
+                    <div style="font-size: 12px; line-height: 16px; font-weight: 700; color: #0D2A48;"><t t-out="cur.amount_to_text(o.amount).replace(' And ', ' and ')"/> only</div>
+                </td>
+            </tr>
+        </table>
+    </template>
+
+    <!-- ================================================================= router -->
+    <template id="report_payment_receipt_document">
+        <t t-set="o" t-value="o.with_context(lang=lang)"/>
+        <t t-set="d" t-value="o._sgc_receipt_data()"/>
+        <t t-set="company" t-value="o.company_id.sudo()"/>
+        <t t-set="cust" t-value="o.partner_id"/>
+        <t t-set="cur" t-value="o.currency_id"/>
+        <t t-set="is_in" t-value="o.payment_type == 'inbound'"/>
+
+        <div class="article sgc-rcpt"
+             t-att-data-oe-model="o._name" t-att-data-oe-id="o.id"
+             t-att-data-oe-lang="o.env.context.get('lang')">
+            <t t-call="sgc_payment_receipt.rcpt_style"/>
+            <t t-if="d['is_unit']"><t t-call="sgc_payment_receipt.rcpt_unit"/></t>
+            <t t-else=""><t t-call="sgc_payment_receipt.rcpt_voucher"/></t>
+        </div>
+
+        <t t-call="sgc_report_standard.footer"/>
+    </template>
+
+    <!-- ================================================================= generic voucher -->
+    <template id="rcpt_voucher">
+        <t t-set="doc_title" t-value="'Receipt Voucher' if is_in else 'Payment Voucher'"/>
+        <t t-set="no_label" t-value="'Voucher No.'"/>
+        <t t-call="sgc_payment_receipt.rcpt_letterhead"/>
+
+        <!-- Counterparty + voucher details: header row + body row so both boxes share one height -->
+        <table style="margin-top: 10px;">
+            <tr>
+                <th class="bh" style="width: 49%;"><t t-if="is_in">Received From</t><t t-else="">Paid To</t></th>
+                <th style="width: 2%;"/>
+                <th class="bh" style="width: 49%;">Voucher Details</th>
+            </tr>
+            <tr>
+                <td class="bb">
+                    <div style="font-size: 13px; line-height: 17px; font-weight: 700; margin-bottom: 3px;" t-out="cust.name"/>
+                    <table class="kv">
+                        <tr t-if="d['party_address']"><td class="k">Address</td><td class="v" t-out="d['party_address']"/></tr>
+                        <tr t-if="cust.phone"><td class="k">Phone</td><td class="v" t-out="cust.phone"/></tr>
+                        <tr t-if="cust.email"><td class="k">Email</td><td class="v" t-out="cust.email"/></tr>
+                        <tr t-if="cust.vat"><td class="k">TRN</td><td class="v" t-out="cust.vat"/></tr>
+                        <tr t-if="d['party_bank']"><td class="k">Bank account</td><td class="v" t-out="d['party_bank']"/></tr>
+                    </table>
+                </td>
+                <td/>
+                <td class="bb">
+                    <table class="kv">
+                        <tr><td class="k">Payment date</td><td class="v"><span t-field="o.date" t-options="{'format': 'dd MMM yyyy'}"/></td></tr>
+                        <tr><td class="k">Method</td><td class="v" t-out="o.payment_method_line_id.name or '-'"/></tr>
+                        <tr><td class="k">Bank / Journal</td><td class="v" t-out="o.journal_id.name"/></tr>
+                        <tr t-if="d['pdc']">
+                            <td class="k">Cheque</td>
+                            <td class="v"><t t-out="d['pdc'].cheque_number"/><span t-if="d['pdc'].bank_name" class="mut" style="font-weight: 400;"> | <t t-out="d['pdc'].bank_name"/></span><span t-if="d['pdc'].cheque_date" class="mut" style="font-weight: 400;"> | <span t-field="d['pdc'].cheque_date" t-options="{'format': 'dd MMM yyyy'}"/></span></td>
+                        </tr>
+                        <tr t-elif="o.check_number or o.payment_reference"><td class="k">Reference</td><td class="v" t-out="o.check_number or o.payment_reference"/></tr>
+                        <tr t-if="d['project']"><td class="k">Project</td><td class="v" t-out="d['project'].name"/></tr>
+                        <tr t-if="o.destination_account_id"><td class="k">Ledger account</td><td class="v" t-out="o.destination_account_id.display_name"/></tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <div t-if="o.memo" style="margin-top: 6px;"><span class="mut" style="font-size: 10px;">Purpose:</span> <strong t-out="o.memo"/></div>
+
+        <t t-call="sgc_payment_receipt.rcpt_amount"/>
+
+        <!-- Documents settled -->
+        <div class="sec">Bills &amp; Invoices Settled&#160;<span class="mut" style="font-weight: 400; letter-spacing: 0; text-transform: none;">(amounts in <t t-out="cur.name"/>)</span></div>
+        <table class="lines">
+            <thead>
+                <tr>
+                    <th style="width: 4%;">#</th>
+                    <th style="width: 18%;">Document</th>
+                    <th style="width: 19%;">Reference</th>
+                    <th style="width: 12%;">Date</th>
+                    <th style="width: 12%;">Due</th>
+                    <th class="r" style="width: 12%;">Amount</th>
+                    <th class="r" style="width: 12%;">Paid Now</th>
+                    <th class="r" style="width: 11%;">Balance</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr t-foreach="d['rows']" t-as="r">
+                    <td class="mut" t-out="r_index + 1"/>
+                    <td><strong t-out="r['move'].name"/></td>
+                    <td style="word-wrap: break-word;" t-out="r['move'].ref or '-'"/>
+                    <td style="white-space: nowrap;"><span t-if="r['move'].invoice_date or r['move'].date" t-out="r['move'].invoice_date or r['move'].date" t-options="{'widget': 'date', 'format': 'dd MMM yyyy'}"/></td>
+                    <td style="white-space: nowrap;"><span t-if="r['due']" t-out="r['due']" t-options="{'widget': 'date', 'format': 'dd MMM yyyy'}"/></td>
+                    <td class="r" t-out="r['amount']" t-options="{'widget': 'float', 'precision': 2}"/>
+                    <td class="r"><strong t-out="r['paid']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                    <td class="r" t-out="r['balance']" t-options="{'widget': 'float', 'precision': 2}"/>
+                </tr>
+                <tr t-if="d['unallocated']">
+                    <td/>
+                    <td colspan="5"><strong>On account</strong> <span class="mut">- advance / not yet matched to a bill or invoice</span></td>
+                    <td class="r"><strong t-out="d['unallocated']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                    <td/>
+                </tr>
+                <tr>
+                    <td colspan="6" class="r" style="border-top: 2px solid #B4945C !important; border-bottom: 0 !important; font-weight: 700; text-transform: uppercase; font-size: 10px; letter-spacing: 1px; color: #0D2A48;">Total <t t-if="is_in">received</t><t t-else="">paid</t></td>
+                    <td class="r" style="border-top: 2px solid #B4945C !important; border-bottom: 0 !important; font-weight: 700; font-size: 12px; color: #0D2A48;"><span t-out="o.amount" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                    <td style="border-top: 2px solid #B4945C !important; border-bottom: 0 !important;"/>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="sec">Notes</div>
+        <div class="terms">
+            1. Please quote the voucher number in all correspondence.<br/>
+            2. Payments by cheque or transfer are subject to realisation by the bank.<br/>
+            3. This voucher is generated by the system and is valid without a stamp when issued by the Finance Department.
+        </div>
+
+        <!-- Signatures: preparer is printed, the rest are signed by hand -->
+        <table style="margin-top: 14px; page-break-inside: avoid;">
+            <tr>
+                <td style="width: 30%; height: 36px; vertical-align: bottom; font-size: 10px; padding-bottom: 2px;" t-out="o.create_uid.name"/>
+                <td style="width: 5%;"/>
+                <td style="width: 30%;"/>
+                <td style="width: 5%;"/>
+                <td style="width: 30%;"/>
+            </tr>
+            <tr>
+                <td><div class="sig">Prepared by</div></td>
+                <td/>
+                <td><div class="sig"><t t-if="is_in">Authorised signatory</t><t t-else="">Approved by</t></div></td>
+                <td/>
+                <td><div class="sig"><t t-if="is_in">Payer acknowledgement</t><t t-else="">Received by (payee)</t></div></td>
+            </tr>
+        </table>
+    </template>
+
+    <!-- ================================================================= real-estate receipt -->
+    <template id="rcpt_unit">
+        <t t-set="con" t-value="d['contract']"/>
+        <t t-set="prop" t-value="d['property']"/>
+        <t t-set="doc_title" t-value="o.payment_receipt_title"/>
+        <t t-set="no_label" t-value="'Receipt No.'"/>
+        <t t-call="sgc_payment_receipt.rcpt_letterhead"/>
+
+        <!-- Parties: header row + body row so both boxes share one height -->
+        <table style="margin-top: 10px;">
+            <tr>
+                <th class="bh" style="width: 49%;"><t t-if="is_in">Received From</t><t t-else="">Paid To</t></th>
+                <th style="width: 2%;"/>
+                <th class="bh" style="width: 49%;">Property &amp; Contract</th>
+            </tr>
+            <tr>
+                <td class="bb">
+                    <div style="font-size: 13px; line-height: 17px; font-weight: 700; margin-bottom: 3px;" t-out="cust.name"/>
+                    <table class="kv">
+                        <tr t-if="cust.phone"><td class="k">Phone</td><td class="v" t-out="cust.phone"/></tr>
+                        <tr t-if="cust.email"><td class="k">Email</td><td class="v" t-out="cust.email"/></tr>
+                        <tr t-if="con.buyer_emirates_id"><td class="k">Emirates ID</td><td class="v" t-out="con.buyer_emirates_id"/></tr>
+                        <tr t-if="con.buyer_passport_no"><td class="k">Passport No.</td><td class="v" t-out="con.buyer_passport_no"/></tr>
+                        <tr t-if="con.joint_buyer_name"><td class="k">Joint buyer</td><td class="v" t-out="con.joint_buyer_name"/></tr>
+                        <tr t-if="cust.vat"><td class="k">TRN</td><td class="v" t-out="cust.vat"/></tr>
+                    </table>
+                </td>
+                <td/>
+                <td class="bb">
+                    <table class="kv">
+                        <tr t-if="d['project']"><td class="k">Project</td><td class="v" t-out="d['project'].name"/></tr>
+                        <tr t-if="o.property_unit_no or prop.unit_number">
+                            <td class="k">Unit No.</td><td class="v" t-out="o.property_unit_no or prop.unit_number"/>
+                        </tr>
+                        <tr t-if="prop.unit_type or prop.floor">
+                            <td class="k">Type / Floor</td>
+                            <td class="v"><span t-if="prop.unit_type" t-field="prop.unit_type"/><span t-if="prop.unit_type and prop.floor"> | </span><span t-if="prop.floor">Floor <t t-out="prop.floor"/></span></td>
+                        </tr>
+                        <tr t-if="con.unit_size_sqft or prop.area">
+                            <td class="k">Area</td>
+                            <td class="v"><t t-out="con.unit_size_sqft or prop.area" t-options="{'widget': 'float', 'precision': 2}"/> sq.ft</td>
+                        </tr>
+                        <tr t-if="con">
+                            <td class="k">Contract (SPA)</td>
+                            <td class="v"><t t-out="con.name"/><span t-if="con.contract_date" class="mut" style="font-weight: 400;"> | <span t-field="con.contract_date" t-options="{'format': 'dd MMM yyyy'}"/></span></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+
+        <!-- Payment details -->
+        <div class="sec">Payment Details</div>
+        <table class="pay">
+            <tr>
+                <td style="width: 20%;"><div class="lbl">Payment Date</div><div class="val"><span t-field="o.date" t-options="{'format': 'dd MMM yyyy'}"/></div></td>
+                <td style="width: 25%;"><div class="lbl">Method</div><div class="val" t-out="o.payment_method_line_id.name or '-'"/></td>
+                <td style="width: 25%;"><div class="lbl">Bank / Journal</div><div class="val" t-out="o.journal_id.name"/></td>
+                <td style="width: 30%;">
+                    <div class="lbl"><t t-if="d['pdc']">Cheque</t><t t-else="">Reference</t></div>
+                    <div class="val" style="word-wrap: break-word;">
+                        <t t-if="d['pdc']"><t t-out="d['pdc'].cheque_number"/><span t-if="d['pdc'].bank_name" class="mut" style="font-weight: 400;"> | <t t-out="d['pdc'].bank_name"/></span></t>
+                        <t t-else=""><t t-out="o.check_number or o.payment_reference or '-'"/></t>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <div t-if="o.memo" class="mut" style="margin-top: 4px; font-size: 10px;">Description: <t t-out="o.memo"/></div>
+
+        <t t-call="sgc_payment_receipt.rcpt_amount"/>
+
+        <!-- Instalments settled -->
+        <div class="sec">Instalments Settled by this Receipt&#160;<span class="mut" style="font-weight: 400; letter-spacing: 0; text-transform: none;">(amounts in <t t-out="cur.name"/>)</span></div>
+        <table class="lines">
+            <thead>
+                <tr>
+                    <th style="width: 5%;">#</th>
+                    <th style="width: 21%;">Instalment</th>
+                    <th style="width: 19%;">Invoice Ref.</th>
+                    <th style="width: 13%;">Due Date</th>
+                    <th class="r" style="width: 14%;">Amount</th>
+                    <th class="r" style="width: 14%;">Paid Now</th>
+                    <th class="r" style="width: 14%;">Balance</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr t-foreach="d['rows']" t-as="r">
+                    <td class="mut" t-out="r_index + 1"/>
+                    <td>
+                        <t t-if="r['inst']">
+                            <strong t-out="r['inst'].name"/>
+                            <div t-if="r['pos']" class="mut" style="font-size: 9px;">No. <t t-out="r['pos']"/> of <t t-out="d['plan_count']"/></div>
+                        </t>
+                        <span t-else="" class="mut">-</span>
+                    </td>
+                    <td t-out="r['move'].name"/>
+                    <td><span t-if="r['due']" t-out="r['due']" t-options="{'widget': 'date', 'format': 'dd MMM yyyy'}"/></td>
+                    <td class="r" t-out="r['amount']" t-options="{'widget': 'float', 'precision': 2}"/>
+                    <td class="r"><strong t-out="r['paid']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                    <td class="r" t-out="r['balance']" t-options="{'widget': 'float', 'precision': 2}"/>
+                </tr>
+                <tr t-if="d['unallocated']">
+                    <td/>
+                    <td colspan="4"><strong>On account</strong> <span class="mut">- not yet allocated to an instalment</span></td>
+                    <td class="r"><strong t-out="d['unallocated']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                    <td/>
+                </tr>
+                <tr>
+                    <td colspan="5" class="r" style="border-top: 2px solid #B4945C !important; border-bottom: 0 !important; font-weight: 700; text-transform: uppercase; font-size: 10px; letter-spacing: 1px; color: #0D2A48;">Total received</td>
+                    <td class="r" style="border-top: 2px solid #B4945C !important; border-bottom: 0 !important; font-weight: 700; font-size: 12px; color: #0D2A48;"><span t-out="o.amount" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                    <td style="border-top: 2px solid #B4945C !important; border-bottom: 0 !important;"/>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Contract position + terms -->
+        <table style="margin-top: 12px;">
+            <tr>
+                <td style="width: 52%; padding-right: 14px;">
+                    <div class="sec" style="margin-top: 0;">Notes</div>
+                    <div class="terms">
+                        1. Payments by cheque or transfer are subject to realisation by the bank.<br/>
+                        2. Please quote the receipt number and unit number in all correspondence.<br/>
+                        3. This receipt is generated by the system and is valid without a stamp when issued by the Finance Department.
+                    </div>
+                </td>
+                <td style="width: 48%;">
+                    <t t-if="con">
+                        <div class="sec" style="margin-top: 0;">Contract Position</div>
+                        <table class="sum">
+                            <tr><td class="mut">Unit price</td><td class="r"><span t-out="con.sale_price" t-options="{'widget': 'monetary', 'display_currency': con.currency_id}"/></td></tr>
+                            <tr><td class="mut">Total paid to date</td><td class="r"><span t-out="con.total_paid" t-options="{'widget': 'monetary', 'display_currency': con.currency_id}"/></td></tr>
+                            <tr t-if="con.total_paid_fees"><td class="mut">of which fees</td><td class="r"><span t-out="con.total_paid_fees" t-options="{'widget': 'monetary', 'display_currency': con.currency_id}"/></td></tr>
+                            <tr><td><strong>Balance due</strong></td><td class="r"><strong t-out="con.balance_due" t-options="{'widget': 'monetary', 'display_currency': con.currency_id}"/></td></tr>
+                            <tr t-if="d['next_inst']">
+                                <td class="mut">Next instalment</td>
+                                <td class="r"><t t-out="d['next_inst'].name"/><span class="mut" t-if="d['next_inst'].due_date"> | <span t-field="d['next_inst'].due_date" t-options="{'format': 'dd MMM yyyy'}"/></span></td>
+                            </tr>
+                        </table>
+                    </t>
+                </td>
+            </tr>
+        </table>
+
+        <!-- Signatures -->
+        <table style="margin-top: 26px; page-break-inside: avoid;">
+            <tr>
+                <td style="width: 40%;"><div class="sig">Authorised signatory - <t t-out="company.name"/></div></td>
+                <td style="width: 20%;"/>
+                <td style="width: 40%;"><div class="sig">Customer acknowledgement</div></td>
+            </tr>
+        </table>
+    </template>
+</odoo>
